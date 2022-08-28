@@ -251,6 +251,7 @@ void BTTask::_bind_methods() {
 
 	// Public Methods.
 	ClassDB::bind_method(D_METHOD("is_root"), &BTTask::is_root);
+	ClassDB::bind_method(D_METHOD("get_root"), &BTTask::get_root);
 	ClassDB::bind_method(D_METHOD("initialize", "p_agent", "p_blackboard"), &BTTask::initialize);
 	ClassDB::bind_method(D_METHOD("clone"), &BTTask::clone);
 	ClassDB::bind_method(D_METHOD("execute", "p_delta"), &BTTask::execute);
