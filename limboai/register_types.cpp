@@ -13,6 +13,9 @@
 #include "bt_delay.h"
 #include "bt_invert.h"
 #include "bt_parallel.h"
+#include "bt_repeat.h"
+#include "bt_repeat_until_failure.h"
+#include "bt_repeat_until_success.h"
 #include "bt_selector.h"
 #include "bt_sequence.h"
 #include "bt_task.h"
@@ -32,6 +35,9 @@ void register_limboai_types() {
 	ClassDB::register_class<BTAlwaysFail>();
 	ClassDB::register_class<BTAlwaysSucceed>();
 	ClassDB::register_class<BTDelay>();
+	ClassDB::register_class<BTRepeat>();
+	ClassDB::register_class<BTRepeatUntilFailure>();
+	ClassDB::register_class<BTRepeatUntilSuccess>();
 	LimboStringNames::create();
 }
 
