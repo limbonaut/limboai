@@ -20,15 +20,18 @@
 #include "bt_selector.h"
 #include "bt_sequence.h"
 #include "bt_task.h"
+#include "bt_time_limit.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
 
 void register_limboai_types() {
 	ClassDB::register_class<BTTask>();
+
 	ClassDB::register_class<BTComposite>();
 	ClassDB::register_class<BTDecorator>();
 	ClassDB::register_class<BTAction>();
 	ClassDB::register_class<BTCondition>();
+
 	ClassDB::register_class<BTSequence>();
 	ClassDB::register_class<BTSelector>();
 	ClassDB::register_class<BTParallel>();
@@ -40,6 +43,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTRepeatUntilFailure>();
 	ClassDB::register_class<BTRepeatUntilSuccess>();
 	ClassDB::register_class<BTRunLimit>();
+	ClassDB::register_class<BTTimeLimit>();
 	LimboStringNames::create();
 }
 
