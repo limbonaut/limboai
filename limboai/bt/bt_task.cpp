@@ -8,8 +8,8 @@
 #include "core/variant.h"
 #include "editor/editor_node.h"
 
-#include "limbo_string_names.h"
-#include "limbo_utility.h"
+#include "../limbo_string_names.h"
+#include "../limbo_utility.h"
 
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {
@@ -23,7 +23,7 @@ String BTTask::_generate_name() const {
 			return name;
 		}
 	}
-	return get_class();
+	return get_class().trim_prefix("BT");
 }
 
 Array BTTask::_get_children() const {

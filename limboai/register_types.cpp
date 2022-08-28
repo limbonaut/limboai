@@ -4,24 +4,25 @@
 
 #include "core/class_db.h"
 
-#include "bt_action.h"
-#include "bt_always_fail.h"
-#include "bt_always_succeed.h"
-#include "bt_composite.h"
-#include "bt_condition.h"
-#include "bt_cooldown.h"
-#include "bt_decorator.h"
-#include "bt_delay.h"
-#include "bt_invert.h"
-#include "bt_parallel.h"
-#include "bt_repeat.h"
-#include "bt_repeat_until_failure.h"
-#include "bt_repeat_until_success.h"
-#include "bt_run_limit.h"
-#include "bt_selector.h"
-#include "bt_sequence.h"
-#include "bt_task.h"
-#include "bt_time_limit.h"
+#include "bt/bt_action.h"
+#include "bt/bt_always_fail.h"
+#include "bt/bt_always_succeed.h"
+#include "bt/bt_composite.h"
+#include "bt/bt_condition.h"
+#include "bt/bt_cooldown.h"
+#include "bt/bt_decorator.h"
+#include "bt/bt_delay.h"
+#include "bt/bt_invert.h"
+#include "bt/bt_parallel.h"
+#include "bt/bt_probability.h"
+#include "bt/bt_repeat.h"
+#include "bt/bt_repeat_until_failure.h"
+#include "bt/bt_repeat_until_success.h"
+#include "bt/bt_run_limit.h"
+#include "bt/bt_selector.h"
+#include "bt/bt_sequence.h"
+#include "bt/bt_task.h"
+#include "bt/bt_time_limit.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
 
@@ -46,6 +47,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTRunLimit>();
 	ClassDB::register_class<BTTimeLimit>();
 	ClassDB::register_class<BTCooldown>();
+	ClassDB::register_class<BTProbability>();
 	LimboStringNames::create();
 }
 
