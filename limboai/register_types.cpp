@@ -12,6 +12,8 @@
 #include "bt/bt_cooldown.h"
 #include "bt/bt_decorator.h"
 #include "bt/bt_delay.h"
+#include "bt/bt_dynamic_selector.h"
+#include "bt/bt_dynamic_sequence.h"
 #include "bt/bt_invert.h"
 #include "bt/bt_parallel.h"
 #include "bt/bt_probability.h"
@@ -35,8 +37,11 @@ void register_limboai_types() {
 	ClassDB::register_class<BTCondition>();
 
 	ClassDB::register_class<BTSequence>();
+	ClassDB::register_class<BTDynamicSequence>();
+	ClassDB::register_class<BTDynamicSelector>();
 	ClassDB::register_class<BTSelector>();
 	ClassDB::register_class<BTParallel>();
+
 	ClassDB::register_class<BTInvert>();
 	ClassDB::register_class<BTAlwaysFail>();
 	ClassDB::register_class<BTAlwaysSucceed>();
@@ -48,6 +53,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTTimeLimit>();
 	ClassDB::register_class<BTCooldown>();
 	ClassDB::register_class<BTProbability>();
+
 	LimboStringNames::create();
 }
 

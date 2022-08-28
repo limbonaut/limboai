@@ -7,7 +7,7 @@ void BTSequence::_enter() {
 }
 
 int BTSequence::_tick(float p_delta) {
-	int status = FRESH;
+	int status = SUCCESS;
 	for (int i = 0; i < get_child_count(); i++) {
 		status = get_child(i)->execute(p_delta);
 		if (status != SUCCESS) {
