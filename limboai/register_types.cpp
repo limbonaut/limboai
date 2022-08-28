@@ -16,6 +16,7 @@
 #include "bt_repeat.h"
 #include "bt_repeat_until_failure.h"
 #include "bt_repeat_until_success.h"
+#include "bt_run_limit.h"
 #include "bt_selector.h"
 #include "bt_sequence.h"
 #include "bt_task.h"
@@ -38,6 +39,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTRepeat>();
 	ClassDB::register_class<BTRepeatUntilFailure>();
 	ClassDB::register_class<BTRepeatUntilSuccess>();
+	ClassDB::register_class<BTRunLimit>();
 	LimboStringNames::create();
 }
 

@@ -1,7 +1,7 @@
 /* bt_delay.h */
 
-#ifndef BT_DELAY
-#define BT_DELAY
+#ifndef BT_DELAY_H
+#define BT_DELAY_H
 
 #include "bt_decorator.h"
 #include "core/object.h"
@@ -28,4 +28,4 @@ public:
 	float get_seconds() const { return seconds; };
 };
 
-#endif // BT_DELAY
+#endif // BT_DELAY_H
