@@ -9,6 +9,7 @@
 #include "bt_always_succeed.h"
 #include "bt_composite.h"
 #include "bt_condition.h"
+#include "bt_cooldown.h"
 #include "bt_decorator.h"
 #include "bt_delay.h"
 #include "bt_invert.h"
@@ -44,6 +45,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTRepeatUntilSuccess>();
 	ClassDB::register_class<BTRunLimit>();
 	ClassDB::register_class<BTTimeLimit>();
+	ClassDB::register_class<BTCooldown>();
 	LimboStringNames::create();
 }
 
