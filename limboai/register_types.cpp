@@ -14,6 +14,7 @@
 #include "bt/bt_delay.h"
 #include "bt/bt_dynamic_selector.h"
 #include "bt/bt_dynamic_sequence.h"
+#include "bt/bt_fail.h"
 #include "bt/bt_invert.h"
 #include "bt/bt_parallel.h"
 #include "bt/bt_probability.h"
@@ -58,6 +59,8 @@ void register_limboai_types() {
 	ClassDB::register_class<BTTimeLimit>();
 	ClassDB::register_class<BTCooldown>();
 	ClassDB::register_class<BTProbability>();
+
+	ClassDB::register_class<BTFail>();
 
 	LimboStringNames::create();
 }
