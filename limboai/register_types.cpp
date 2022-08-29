@@ -20,6 +20,7 @@
 #include "bt/bt_probability.h"
 #include "bt/bt_random_selector.h"
 #include "bt/bt_random_sequence.h"
+#include "bt/bt_random_wait.h"
 #include "bt/bt_repeat.h"
 #include "bt/bt_repeat_until_failure.h"
 #include "bt/bt_repeat_until_success.h"
@@ -28,6 +29,8 @@
 #include "bt/bt_sequence.h"
 #include "bt/bt_task.h"
 #include "bt/bt_time_limit.h"
+#include "bt/bt_wait.h"
+#include "bt/bt_wait_ticks.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
 
@@ -61,6 +64,9 @@ void register_limboai_types() {
 	ClassDB::register_class<BTProbability>();
 
 	ClassDB::register_class<BTFail>();
+	ClassDB::register_class<BTWait>();
+	ClassDB::register_class<BTRandomWait>();
+	ClassDB::register_class<BTWaitTicks>();
 
 	LimboStringNames::create();
 }
