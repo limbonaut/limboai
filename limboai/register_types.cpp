@@ -17,6 +17,8 @@
 #include "bt/bt_invert.h"
 #include "bt/bt_parallel.h"
 #include "bt/bt_probability.h"
+#include "bt/bt_random_selector.h"
+#include "bt/bt_random_sequence.h"
 #include "bt/bt_repeat.h"
 #include "bt/bt_repeat_until_failure.h"
 #include "bt/bt_repeat_until_success.h"
@@ -39,6 +41,9 @@ void register_limboai_types() {
 	ClassDB::register_class<BTSequence>();
 	ClassDB::register_class<BTDynamicSequence>();
 	ClassDB::register_class<BTDynamicSelector>();
+	ClassDB::register_class<BTSelector>();
+	ClassDB::register_class<BTRandomSelector>();
+	ClassDB::register_class<BTRandomSequence>();
 	ClassDB::register_class<BTSelector>();
 	ClassDB::register_class<BTParallel>();
 
