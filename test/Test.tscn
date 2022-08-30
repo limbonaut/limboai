@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Agent.tscn" type="PackedScene" id=1]
+
+[node name="Test" type="Node2D"]
+
+[node name="Agent" parent="." instance=ExtResource( 1 )]

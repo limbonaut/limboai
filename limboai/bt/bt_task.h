@@ -10,6 +10,7 @@
 #include "core/ustring.h"
 #include "core/vector.h"
 #include "scene/resources/texture.h"
+#include <cstddef>
 
 class BTTask : public Resource {
 	GDCLASS(BTTask, Resource);
@@ -21,18 +22,14 @@ public:
 		FAILURE,
 		SUCCESS,
 	};
-	enum TaskType {
-		ACTION,
-		CONDITION,
-		COMPOSITE,
-		DECORATOR,
-	};
 
 private:
+	friend class BehaviorTree;
+
 	String _custom_name;
 	Object *_agent;
 	Dictionary _blackboard;
-	Ref<BTTask> _parent;
+	BTTask *_parent;
 	Vector<Ref<BTTask>> _children;
 	int _status;
 
@@ -51,8 +48,8 @@ protected:
 public:
 	Object *get_agent() const { return _agent; };
 	Dictionary get_blackboard() const { return _blackboard; };
-	Ref<BTTask> get_parent() const { return _parent; };
-	bool is_root() const { return _parent.is_null(); };
+	Ref<BTTask> get_parent() const { return Ref<BTTask>(_parent); };
+	bool is_root() const { return _parent == nullptr; };
 	Ref<BTTask> get_root() const;
 	int get_status() const { return _status; };
 	String get_custom_name() const { return _custom_name; };
@@ -76,6 +73,7 @@ public:
 	void print_tree(int p_initial_tabs = 0) const;
 
 	BTTask();
+	~BTTask();
 };
 
 #endif // BTTASK_H

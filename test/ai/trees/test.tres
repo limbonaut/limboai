@@ -1,0 +1,6 @@
+[gd_resource type="BehaviorTree" load_steps=2 format=2]
+
+[sub_resource type="BTSequence" id=1]
+
+[resource]
+root_task = SubResource( 1 )

@@ -4,6 +4,7 @@
 
 #include "core/class_db.h"
 
+#include "bt/behavior_tree.h"
 #include "bt/bt_action.h"
 #include "bt/bt_always_fail.h"
 #include "bt/bt_always_succeed.h"
@@ -17,6 +18,7 @@
 #include "bt/bt_fail.h"
 #include "bt/bt_invert.h"
 #include "bt/bt_parallel.h"
+#include "bt/bt_player.h"
 #include "bt/bt_probability.h"
 #include "bt/bt_random_selector.h"
 #include "bt/bt_random_sequence.h"
@@ -36,6 +38,8 @@
 
 void register_limboai_types() {
 	ClassDB::register_class<BTTask>();
+	ClassDB::register_class<BehaviorTree>();
+	ClassDB::register_class<BTPlayer>();
 
 	ClassDB::register_class<BTComposite>();
 	ClassDB::register_class<BTDecorator>();
