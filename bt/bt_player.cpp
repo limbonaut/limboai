@@ -8,6 +8,7 @@
 #include "core/engine.h"
 #include "core/io/resource_loader.h"
 #include "core/object.h"
+#include "core/variant.h"
 #include <cstddef>
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
@@ -108,4 +109,6 @@ void BTPlayer::_bind_methods() {
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
 	BIND_ENUM_CONSTANT(MANUAL);
+
+	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "p_status")));
 }
