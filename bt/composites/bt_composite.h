@@ -3,7 +3,7 @@
 #ifndef BT_COMPOSITE_H
 #define BT_COMPOSITE_H
 
-#include "bt_task.h"
+#include "../bt_task.h"
 #include "core/object.h"
 
 class BTComposite : public BTTask {

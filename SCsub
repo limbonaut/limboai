@@ -1,0 +1,10 @@
+# SCsub
+
+Import('env')
+
+env.add_source_files(env.modules_sources, "*.cpp")
+env.add_source_files(env.modules_sources, "bt/*.cpp")
+env.add_source_files(env.modules_sources, "bt/composites/*.cpp")
+env.add_source_files(env.modules_sources, "bt/actions/*.cpp")
+env.add_source_files(env.modules_sources, "bt/decorators/*.cpp")
+env.add_source_files(env.modules_sources, "bt/conditions/*.cpp")

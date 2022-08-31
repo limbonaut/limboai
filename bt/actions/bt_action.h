@@ -3,7 +3,7 @@
 #ifndef BT_ACTION_H
 #define BT_ACTION_H
 
-#include "bt_task.h"
+#include "../bt_task.h"
 #include "core/object.h"
 
 class BTAction : public BTTask {

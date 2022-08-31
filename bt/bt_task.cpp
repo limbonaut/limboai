@@ -2,14 +2,13 @@
 
 #include "bt_task.h"
 
-#include "../limbo_string_names.h"
-#include "../limbo_utility.h"
 #include "core/class_db.h"
 #include "core/object.h"
 #include "core/script_language.h"
 #include "core/variant.h"
 #include "editor/editor_node.h"
-#include <cstddef>
+#include "modules/limboai/limbo_string_names.h"
+#include "modules/limboai/limbo_utility.h"
 
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {
@@ -38,42 +37,42 @@ Array BTTask::_get_children() const {
 }
 
 void BTTask::_set_children(Array p_children) {
-	_children.clear();
+	children.clear();
 	const int num_children = p_children.size();
-	_children.resize(num_children);
+	children.resize(num_children);
 	for (int i = 0; i < num_children; i++) {
 		Variant task_var = p_children[i];
 		const Ref<BTTask> task_ref = task_var;
-		_children.set(i, task_var);
+		children.set(i, task_var);
 	}
 }
 
 String BTTask::get_task_name() const {
-	if (_custom_name.empty()) {
+	if (custom_name.empty()) {
 		return _generate_name();
 	}
-	return _custom_name;
+	return custom_name;
 }
 
 Ref<BTTask> BTTask::get_root() const {
 	const BTTask *task = this;
 	while (!task->is_root()) {
-		task = task->_parent;
+		task = task->parent;
 	}
 	return Ref<BTTask>(task);
 }
 
 void BTTask::set_custom_name(const String &p_name) {
-	if (_custom_name != p_name) {
-		_custom_name = p_name;
+	if (custom_name != p_name) {
+		custom_name = p_name;
 		emit_changed();
 	}
 };
 
 void BTTask::initialize(Object *p_agent, Dictionary p_blackboard) {
-	_agent = p_agent;
-	_blackboard = p_blackboard;
-	for (int i = 0; i < _children.size(); i++) {
+	agent = p_agent;
+	blackboard = p_blackboard;
+	for (int i = 0; i < children.size(); i++) {
 		get_child(i)->initialize(p_agent, p_blackboard);
 	}
 	if (get_script_instance() &&
@@ -86,18 +85,18 @@ void BTTask::initialize(Object *p_agent, Dictionary p_blackboard) {
 
 Ref<BTTask> BTTask::clone() const {
 	Ref<BTTask> inst = duplicate(true);
-	inst->_parent = nullptr;
+	inst->parent = nullptr;
 	CRASH_COND(inst->get_parent().is_valid());
-	for (int i = 0; i < _children.size(); i++) {
+	for (int i = 0; i < children.size(); i++) {
 		Ref<BTTask> c = get_child(i)->clone();
-		c->_parent = inst.ptr();
-		inst->_children.set(i, c);
+		c->parent = inst.ptr();
+		inst->children.set(i, c);
 	}
 	return inst;
 }
 
 int BTTask::execute(float p_delta) {
-	if (_status == RUNNING) {
+	if (status != RUNNING) {
 		if (get_script_instance() &&
 				// get_script_instance()->get_script()->is_valid() &&
 				get_script_instance()->has_method(LimboStringNames::get_singleton()->_enter)) {
@@ -106,15 +105,16 @@ int BTTask::execute(float p_delta) {
 			_enter();
 		}
 	}
+
 	if (get_script_instance() &&
 			// get_script_instance()->get_script()->is_valid() &&
 			get_script_instance()->has_method(LimboStringNames::get_singleton()->_tick)) {
-		_status = get_script_instance()->call(LimboStringNames::get_singleton()->_tick, Variant(p_delta));
+		status = get_script_instance()->call(LimboStringNames::get_singleton()->_tick, Variant(p_delta));
 	} else {
-		_status = _tick(p_delta);
+		status = _tick(p_delta);
 	}
 
-	if (_status != RUNNING) {
+	if (status != RUNNING) {
 		if (get_script_instance() &&
 				// get_script_instance()->get_script()->is_valid() &&
 				get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
@@ -123,14 +123,14 @@ int BTTask::execute(float p_delta) {
 			_exit();
 		}
 	}
-	return _status;
+	return status;
 }
 
 void BTTask::cancel() {
-	for (int i = 0; i < _children.size(); i++) {
+	for (int i = 0; i < children.size(); i++) {
 		get_child(i)->cancel();
 	}
-	if (_status == RUNNING) {
+	if (status == RUNNING) {
 		if (get_script_instance() &&
 				// get_script_instance()->get_script()->is_valid() &&
 				get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
@@ -139,59 +139,59 @@ void BTTask::cancel() {
 			_exit();
 		}
 	}
-	_status = FRESH;
+	status = FRESH;
 }
 
 Ref<BTTask> BTTask::get_child(int p_idx) const {
-	ERR_FAIL_INDEX_V(p_idx, _children.size(), nullptr);
-	return _children.get(p_idx);
+	ERR_FAIL_INDEX_V(p_idx, children.size(), nullptr);
+	return children.get(p_idx);
 }
 
 int BTTask::get_child_count() const {
-	return _children.size();
+	return children.size();
 }
 
 void BTTask::add_child(Ref<BTTask> p_child) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
-	p_child->_parent = this;
-	_children.push_back(p_child);
+	p_child->parent = this;
+	children.push_back(p_child);
 	emit_changed();
 }
 
 void BTTask::add_child_at_index(Ref<BTTask> p_child, int p_idx) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
-	if (p_idx < 0 || p_idx > _children.size()) {
-		p_idx = _children.size();
+	if (p_idx < 0 || p_idx > children.size()) {
+		p_idx = children.size();
 	}
-	_children.insert(p_idx, p_child);
-	p_child->_parent = this;
+	children.insert(p_idx, p_child);
+	p_child->parent = this;
 	emit_changed();
 }
 
 void BTTask::remove_child(Ref<BTTask> p_child) {
-	int idx = _children.find(p_child);
+	int idx = children.find(p_child);
 	if (idx == -1) {
 		ERR_FAIL_MSG("p_child not found!");
 	} else {
-		_children.remove(idx);
-		p_child->_parent = nullptr;
+		children.remove(idx);
+		p_child->parent = nullptr;
 		emit_changed();
 	}
 }
 
 bool BTTask::has_child(const Ref<BTTask> &p_child) const {
-	return _children.find(p_child) != -1;
+	return children.find(p_child) != -1;
 }
 
 int BTTask::get_child_index(const Ref<BTTask> &p_child) const {
-	return _children.find(p_child);
+	return children.find(p_child);
 }
 
 Ref<BTTask> BTTask::next_sibling() const {
-	if (_parent != nullptr) {
-		int idx = _parent->get_child_index(Ref<BTTask>(this));
-		if (idx != -1 && _parent->get_child_count() > (idx + 1)) {
-			return _parent->get_child(idx + 1);
+	if (parent != nullptr) {
+		int idx = parent->get_child_index(Ref<BTTask>(this));
+		if (idx != -1 && parent->get_child_count() > (idx + 1)) {
+			return parent->get_child(idx + 1);
 		}
 	}
 	return Ref<BTTask>();
@@ -202,7 +202,7 @@ String BTTask::get_configuration_warning() const {
 }
 
 Ref<Texture> BTTask::get_icon() const {
-	return EditorNode::get_singleton()->get_class_icon("BTAction", "Object");
+	return EditorNode::get_singleton()->get_class_icon(_class_name, "Object");
 }
 
 void BTTask::print_tree(int p_initial_tabs) const {
@@ -274,18 +274,18 @@ void BTTask::_bind_methods() {
 }
 
 BTTask::BTTask() {
-	_custom_name = String();
-	_agent = nullptr;
-	_parent = nullptr;
-	_blackboard = Dictionary();
-	_children = Vector<Ref<BTTask>>();
-	_status = FRESH;
+	custom_name = String();
+	agent = nullptr;
+	parent = nullptr;
+	blackboard = Dictionary();
+	children = Vector<Ref<BTTask>>();
+	status = FRESH;
 }
 
 BTTask::~BTTask() {
 	for (int i = 0; i < get_child_count(); i++) {
 		ERR_FAIL_COND(!get_child(i).is_valid());
-		get_child(i)->_parent = nullptr;
+		get_child(i)->parent = nullptr;
 		get_child(i).unref();
 	}
 }

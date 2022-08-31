@@ -12,7 +12,7 @@ void BehaviorTree::init() {
 	BTTask *task = root_task.ptr();
 	while (task != nullptr) {
 		for (int i = 0; i < task->get_child_count(); i++) {
-			task->get_child(i)->_parent = task;
+			task->get_child(i)->parent = task;
 			stack.push_back(task->get_child(i).ptr());
 		}
 		task = nullptr;

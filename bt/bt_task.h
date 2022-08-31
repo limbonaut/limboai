@@ -5,12 +5,12 @@
 
 #include "core/array.h"
 #include "core/dictionary.h"
+#include "core/object.h"
 #include "core/reference.h"
 #include "core/resource.h"
 #include "core/ustring.h"
 #include "core/vector.h"
 #include "scene/resources/texture.h"
-#include <cstddef>
 
 class BTTask : public Resource {
 	GDCLASS(BTTask, Resource);
@@ -26,12 +26,12 @@ public:
 private:
 	friend class BehaviorTree;
 
-	String _custom_name;
-	Object *_agent;
-	Dictionary _blackboard;
-	BTTask *_parent;
-	Vector<Ref<BTTask>> _children;
-	int _status;
+	String custom_name;
+	Object *agent;
+	Dictionary blackboard;
+	BTTask *parent;
+	Vector<Ref<BTTask>> children;
+	int status;
 
 	Array _get_children() const;
 	void _set_children(Array children);
@@ -40,19 +40,19 @@ protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const;
-	virtual void _setup(){};
-	virtual void _enter(){};
-	virtual void _exit(){};
-	virtual int _tick(float p_delta) { return FAILURE; };
+	virtual void _setup() {}
+	virtual void _enter() {}
+	virtual void _exit() {}
+	virtual int _tick(float p_delta) { return FAILURE; }
 
 public:
-	Object *get_agent() const { return _agent; };
-	Dictionary get_blackboard() const { return _blackboard; };
-	Ref<BTTask> get_parent() const { return Ref<BTTask>(_parent); };
-	bool is_root() const { return _parent == nullptr; };
+	Object *get_agent() const { return agent; }
+	Dictionary get_blackboard() const { return blackboard; }
+	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
+	bool is_root() const { return parent == nullptr; }
 	Ref<BTTask> get_root() const;
-	int get_status() const { return _status; };
-	String get_custom_name() const { return _custom_name; };
+	int get_status() const { return status; }
+	String get_custom_name() const { return custom_name; }
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 

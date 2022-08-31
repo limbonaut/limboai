@@ -23,8 +23,8 @@ public:
 	void set_run_limit(int p_value) {
 		run_limit = p_value;
 		emit_changed();
-	};
-	int get_run_limit() const { return run_limit; };
+	}
+	int get_run_limit() const { return run_limit; }
 };
 
 #endif // BT_RUN_LIMIT_H

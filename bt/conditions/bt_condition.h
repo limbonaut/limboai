@@ -3,7 +3,7 @@
 #ifndef BT_CONDITION_H
 #define BT_CONDITION_H
 
-#include "bt_task.h"
+#include "../bt_task.h"
 #include "core/object.h"
 
 class BTCondition : public BTTask {

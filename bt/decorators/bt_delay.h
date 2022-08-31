@@ -24,8 +24,8 @@ public:
 	void set_seconds(float p_value) {
 		seconds = p_value;
 		emit_changed();
-	};
-	float get_seconds() const { return seconds; };
+	}
+	float get_seconds() const { return seconds; }
 };
 
 #endif // BT_DELAY_H

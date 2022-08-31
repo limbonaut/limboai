@@ -3,7 +3,7 @@
 #ifndef BT_DECORATOR_H
 #define BT_DECORATOR_H
 
-#include "bt_task.h"
+#include "../bt_task.h"
 #include "core/object.h"
 
 class BTDecorator : public BTTask {

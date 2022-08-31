@@ -24,8 +24,8 @@ public:
 	void set_time_limit(float p_value) {
 		time_limit = p_value;
 		emit_changed();
-	};
-	float get_time_limit() const { return time_limit; };
+	}
+	float get_time_limit() const { return time_limit; }
 };
 
 #endif // BT_TIME_LIMIT_H

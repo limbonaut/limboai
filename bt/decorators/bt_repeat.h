@@ -25,13 +25,13 @@ public:
 	void set_times(int p_value) {
 		times = p_value;
 		emit_changed();
-	};
-	int get_times() const { return times; };
+	}
+	int get_times() const { return times; }
 	void set_abort_on_failure(bool p_value) {
 		abort_on_failure = p_value;
 		emit_changed();
-	};
-	bool get_abort_on_failure() const { return abort_on_failure; };
+	}
+	bool get_abort_on_failure() const { return abort_on_failure; }
 };
 
 #endif // BT_REPEAT_H
