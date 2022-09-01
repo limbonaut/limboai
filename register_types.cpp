@@ -36,6 +36,10 @@
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
 
+#ifdef TOOLS_ENABLED
+#include "editor/limbo_ai_editor_plugin.h"
+#endif
+
 void register_limboai_types() {
 	ClassDB::register_class<BTTask>();
 	ClassDB::register_class<BehaviorTree>();
@@ -71,6 +75,10 @@ void register_limboai_types() {
 	ClassDB::register_class<BTWaitTicks>();
 
 	ClassDB::register_class<BTCondition>();
+
+#ifdef TOOLS_ENABLED
+	EditorPlugins::add_by_type<LimboAIEditorPlugin>();
+#endif
 
 	LimboStringNames::create();
 }

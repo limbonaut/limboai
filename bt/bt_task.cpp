@@ -42,7 +42,8 @@ void BTTask::_set_children(Array p_children) {
 	children.resize(num_children);
 	for (int i = 0; i < num_children; i++) {
 		Variant task_var = p_children[i];
-		const Ref<BTTask> task_ref = task_var;
+		Ref<BTTask> task_ref = task_var;
+		task_ref->parent = this;
 		children.set(i, task_var);
 	}
 }
@@ -202,7 +203,7 @@ String BTTask::get_configuration_warning() const {
 }
 
 Ref<Texture> BTTask::get_icon() const {
-	return EditorNode::get_singleton()->get_class_icon(_class_name, "Object");
+	return EditorNode::get_singleton()->get_class_icon(get_class(), "Object");
 }
 
 void BTTask::print_tree(int p_initial_tabs) const {
