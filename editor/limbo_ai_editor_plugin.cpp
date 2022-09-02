@@ -4,17 +4,18 @@
 
 #include "limbo_ai_editor_plugin.h"
 
-#include "../bt/composites/bt_parallel.h"
-#include "../bt/composites/bt_selector.h"
-#include "../bt/composites/bt_sequence.h"
 #include "core/class_db.h"
+#include "core/error_list.h"
+#include "core/error_macros.h"
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
 #include "core/list.h"
 #include "core/math/math_defs.h"
 #include "core/object.h"
+#include "core/os/dir_access.h"
 #include "core/os/memory.h"
 #include "core/print_string.h"
+#include "core/script_language.h"
 #include "core/string_name.h"
 #include "core/typedefs.h"
 #include "core/ustring.h"
@@ -22,7 +23,12 @@
 #include "core/vector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
+#include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/behavior_tree.h"
+#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/composites/bt_parallel.h"
+#include "modules/limboai/bt/composites/bt_selector.h"
+#include "modules/limboai/bt/composites/bt_sequence.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/file_dialog.h"
@@ -259,8 +265,10 @@ void TaskPanel::_init() {
 	categories["Condition"] = List<String>();
 	_populate_core_tasks_from_class("BTCondition", &categories["Condition"]);
 
-	List<String> keys;
+	categories["User"] = List<String>();
+	_populate_scripted_tasks_from_dir("res://ai/tasks/", &categories["User"]);
 
+	List<String> keys;
 	categories.get_key_list(&keys);
 	keys.sort();
 	for (List<String>::Element *E = keys.front(); E; E = E->next()) {
@@ -268,8 +276,19 @@ void TaskPanel::_init() {
 		List<String> task_list = categories.get(cat);
 		TaskSection *sec = memnew(TaskSection(cat, editor));
 		for (List<String>::Element *E = task_list.front(); E; E = E->next()) {
-			String tname = E->get();
-			sec->add_task_button(tname, get_icon(tname, "EditorIcons"), tname);
+			String meta = E->get();
+			String tname;
+			Ref<Texture> icon;
+			if (meta.begins_with("res:")) {
+				// Scripted class
+				tname = meta.get_file().get_basename();
+				icon = editor->get_object_icon(ResourceLoader::load(meta).ptr());
+			} else {
+				// Core class
+				tname = meta;
+				icon = get_icon(tname, "EditorIcons");
+			}
+			sec->add_task_button(tname, icon, meta);
 		}
 		sec->set_filter("");
 		sec->connect("task_button_pressed", this, "_on_task_button_pressed");
@@ -284,6 +303,26 @@ void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, 
 	for (List<StringName>::Element *E = inheriters.front(); E; E = E->next()) {
 		p_task_classes->push_back(E->get());
 	}
+}
+
+void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes) {
+	DirAccess *dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+
+	if (dir->change_dir(p_path) == OK) {
+		dir->list_dir_begin();
+		String fn = dir->get_next();
+		while (!fn.empty()) {
+			if (fn.ends_with(".gd")) {
+				String full_path = p_path.plus_file(fn);
+				p_task_classes->push_back(full_path);
+			}
+			fn = dir->get_next();
+		}
+		dir->list_dir_end();
+	} else {
+		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
+	}
+	memdelete(dir);
 }
 
 void TaskPanel::_bind_methods() {
@@ -330,9 +369,9 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_prototype) {
 		parent = task_tree->get_bt()->get_root_task();
 	}
 	if (parent.is_null()) {
-		task_tree->get_bt()->set_root_task(p_prototype->clone());
+		task_tree->get_bt()->set_root_task(p_prototype);
 	} else {
-		parent->add_child(p_prototype->clone());
+		parent->add_child(p_prototype);
 	}
 	task_tree->update_tree();
 }
@@ -476,8 +515,18 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) const {
 	editor->edit_resource(p_task);
 }
 
-void LimboAIEditor::_on_panel_task_selected(const StringName &p_task) {
-	_add_task(Ref<BTTask>(ClassDB::instance(p_task)));
+void LimboAIEditor::_on_panel_task_selected(String p_task) {
+	if (p_task.begins_with("res:")) {
+		Ref<Script> script = ResourceLoader::load(p_task, "Script");
+		Variant inst = ClassDB::instance(script->get_instance_base_type());
+		ERR_FAIL_COND_MSG(!((Object *)inst)->is_class("BTTask"), vformat("Task script doesn't inherit BTTask: %s", p_task));
+		if (inst && script.is_valid()) {
+			((Object *)inst)->set_script(script.get_ref_ptr());
+			_add_task(Variant(inst));
+		}
+	} else {
+		_add_task(Ref<BTTask>(ClassDB::instance(p_task)));
+	}
 }
 
 void LimboAIEditor::_on_visibility_changed() const {
