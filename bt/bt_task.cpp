@@ -85,7 +85,7 @@ void BTTask::initialize(Object *p_agent, Dictionary p_blackboard) {
 }
 
 Ref<BTTask> BTTask::clone() const {
-	Ref<BTTask> inst = duplicate(true);
+	Ref<BTTask> inst = duplicate(false);
 	inst->parent = nullptr;
 	CRASH_COND(inst->get_parent().is_valid());
 	for (int i = 0; i < children.size(); i++) {
