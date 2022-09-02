@@ -15,10 +15,12 @@
 #include "core/os/memory.h"
 #include "core/print_string.h"
 #include "core/string_name.h"
+#include "core/typedefs.h"
 #include "core/variant.h"
 #include "core/vector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
+#include "modules/limboai/bt/behavior_tree.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/file_dialog.h"
@@ -326,11 +328,15 @@ void LimboAIEditor::_update_header() {
 	header->set_icon(editor->get_object_icon(task_tree->get_bt().ptr(), "BehaviorTree"));
 }
 
+void LimboAIEditor::_update_history_buttons() {
+	history_back->set_disabled(idx_history == 0);
+	history_forward->set_disabled(idx_history == (history.size() - 1));
+}
+
 void LimboAIEditor::_new_bt() {
 	BehaviorTree *bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
-	task_tree->load_bt(bt);
-	_update_header();
+	_edit_bt(bt);
 }
 
 void LimboAIEditor::_save_bt(String p_path) {
@@ -343,7 +349,29 @@ void LimboAIEditor::_save_bt(String p_path) {
 
 void LimboAIEditor::_load_bt(String p_path) {
 	ERR_FAIL_COND_MSG(p_path.empty(), "Empty p_path");
-	task_tree->load_bt(ResourceLoader::load(p_path, "BehaviorTree"));
+	Ref<BehaviorTree> bt = ResourceLoader::load(p_path, "BehaviorTree");
+
+	if (history.find(bt) != -1) {
+		history.erase(bt);
+		history.push_back(bt);
+	}
+
+	_edit_bt(bt);
+}
+
+void LimboAIEditor::_edit_bt(Ref<BehaviorTree> p_behavior_tree) {
+	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "p_behavior_tree is null");
+	task_tree->load_bt(p_behavior_tree);
+
+	int idx = history.find(p_behavior_tree);
+	if (idx != -1) {
+		idx_history = idx;
+	} else {
+		history.push_back(p_behavior_tree);
+		idx_history = history.size() - 1;
+	}
+
+	_update_history_buttons();
 	_update_header();
 }
 
@@ -459,6 +487,16 @@ void LimboAIEditor::_on_save_pressed() {
 	}
 }
 
+void LimboAIEditor::_on_history_back() {
+	idx_history = MAX(idx_history - 1, 0);
+	_edit_bt(history[idx_history]);
+}
+
+void LimboAIEditor::_on_history_forward() {
+	idx_history = MIN(idx_history + 1, history.size() - 1);
+	_edit_bt(history[idx_history]);
+}
+
 void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
 	ClassDB::bind_method(D_METHOD("_on_tree_rmb"), &LimboAIEditor::_on_tree_rmb);
@@ -468,9 +506,12 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_visibility_changed"), &LimboAIEditor::_on_visibility_changed);
 	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &LimboAIEditor::_on_header_pressed);
 	ClassDB::bind_method(D_METHOD("_on_save_pressed"), &LimboAIEditor::_on_save_pressed);
+	ClassDB::bind_method(D_METHOD("_on_history_back"), &LimboAIEditor::_on_history_back);
+	ClassDB::bind_method(D_METHOD("_on_history_forward"), &LimboAIEditor::_on_history_forward);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
+	ClassDB::bind_method(D_METHOD("_edit_bt", "p_behavior_tree"), &LimboAIEditor::_edit_bt);
 }
 
 LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
@@ -558,6 +599,24 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 	panel->add_child(memnew(VSeparator));
 
+	HBoxContainer *nav = memnew(HBoxContainer);
+	panel->add_child(nav);
+	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
+
+	history_back = memnew(Button);
+	history_back->set_icon(editor->get_gui_base()->get_icon("Back", "EditorIcons"));
+	history_back->set_flat(true);
+	history_back->set_focus_mode(FOCUS_NONE);
+	history_back->connect("pressed", this, "_on_history_back");
+	nav->add_child(history_back);
+
+	history_forward = memnew(Button);
+	history_forward->set_icon(editor->get_gui_base()->get_icon("Forward", "EditorIcons"));
+	history_forward->set_flat(true);
+	history_forward->set_focus_mode(FOCUS_NONE);
+	history_forward->connect("pressed", this, "_on_history_forward");
+	nav->add_child(history_forward);
+
 	header = memnew(Button);
 	vb->add_child(header);
 	header->set_text_align(Button::ALIGN_LEFT);
@@ -578,7 +637,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 	TaskPanel *task_panel = memnew(TaskPanel(p_editor));
 	hsc->add_child(task_panel);
-	hsc->set_split_offset(-400);
+	hsc->set_split_offset(-300);
 	task_panel->connect("task_selected", this, "_on_panel_task_selected");
 
 	menu = memnew(PopupMenu);
@@ -586,12 +645,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	menu->connect("id_pressed", this, "_on_action_selected");
 	menu->set_hide_on_window_lose_focus(true);
 
-	BehaviorTree *bt = memnew(BehaviorTree);
-	BTSelector *seq = memnew(BTSelector);
-	bt->set_root_task(seq);
-
-	task_tree->load_bt(bt);
-	_update_header();
+	_new_bt();
 
 	task_tree->connect("visibility_changed", this, "_on_visibility_changed");
 }

@@ -99,17 +99,24 @@ private:
 	};
 
 	EditorNode *editor;
+	Vector<Ref<BehaviorTree>> history;
+	int idx_history;
+
 	Button *header;
 	TaskTree *task_tree;
 	PopupMenu *menu;
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
+	Button *history_back;
+	Button *history_forward;
 
 	void _add_task(const Ref<BTTask> &p_prototype);
 	void _update_header();
+	void _update_history_buttons();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
+	void _edit_bt(Ref<BehaviorTree> p_behavior_tree);
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
@@ -118,6 +125,8 @@ private:
 	void _on_header_pressed() const;
 	void _on_save_pressed();
 	void _on_panel_task_selected(const StringName &p_task);
+	void _on_history_back();
+	void _on_history_forward();
 
 protected:
 	static void _bind_methods();
