@@ -10,12 +10,14 @@
 #include "core/class_db.h"
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
+#include "core/list.h"
 #include "core/math/math_defs.h"
 #include "core/object.h"
 #include "core/os/memory.h"
 #include "core/print_string.h"
 #include "core/string_name.h"
 #include "core/typedefs.h"
+#include "core/ustring.h"
 #include "core/variant.h"
 #include "core/vector.h"
 #include "editor/editor_node.h"
@@ -197,6 +199,14 @@ void TaskSection::set_filter(String p_filter_text) {
 	}
 }
 
+void TaskSection::add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta) {
+	Button *btn = memnew(Button);
+	btn->set_text(p_name);
+	btn->set_icon(icon);
+	btn->connect("pressed", this, "_on_task_button_pressed", varray(p_meta));
+	tasks_container->add_child(btn);
+}
+
 void TaskSection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_task_button_pressed", "p_class"), &TaskSection::_on_task_button_pressed);
 	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &TaskSection::_on_header_pressed);
@@ -204,32 +214,16 @@ void TaskSection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_button_pressed"));
 }
 
-TaskSection::TaskSection(const StringName &p_class_or_resource, const StringName &p_section, EditorNode *p_editor) {
+TaskSection::TaskSection(String p_category_name, EditorNode *p_editor) {
 	section_header = memnew(Button);
 	add_child(section_header);
-	section_header->set_text(p_section);
+	section_header->set_text(p_category_name);
 	section_header->set_icon(p_editor->get_gui_base()->get_icon("GuiTreeArrowDown", "EditorIcons"));
 	section_header->set_focus_mode(FOCUS_NONE);
 	section_header->connect("pressed", this, "_on_header_pressed");
 
 	tasks_container = memnew(HFlowContainer);
 	add_child(tasks_container);
-
-	List<StringName> composites;
-	ClassDB::get_inheriters_from_class(p_class_or_resource, &composites);
-	for (List<StringName>::Element *cn = composites.front(); cn; cn = cn->next()) {
-		Button *task_btn = memnew(Button);
-		task_btn->set_text(cn->get());
-		task_btn->set_icon(p_editor->get_class_icon(cn->get()));
-		task_btn->set_focus_mode(FOCUS_NONE);
-		task_btn->set_h_size_flags(SIZE_EXPAND_FILL);
-		task_btn->connect("pressed", this, "_on_task_button_pressed", varray(cn->get()));
-		tasks_container->add_child(task_btn);
-	}
-
-	if (tasks_container->get_child_count() == 0) {
-		hide();
-	}
 }
 
 TaskSection::~TaskSection() {
@@ -250,6 +244,46 @@ void TaskPanel::_on_filter_text_changed(String p_text) {
 
 void TaskPanel::_init() {
 	filter_edit->set_right_icon(get_icon("Search", "EditorIcons"));
+
+	HashMap<String, List<String>> categories;
+
+	categories["Composite"] = List<String>();
+	_populate_core_tasks_from_class("BTComposite", &categories["Composite"]);
+
+	categories["Action"] = List<String>();
+	_populate_core_tasks_from_class("BTAction", &categories["Action"]);
+
+	categories["Decorator"] = List<String>();
+	_populate_core_tasks_from_class("BTDecorator", &categories["Decorator"]);
+
+	categories["Condition"] = List<String>();
+	_populate_core_tasks_from_class("BTCondition", &categories["Condition"]);
+
+	List<String> keys;
+
+	categories.get_key_list(&keys);
+	keys.sort();
+	for (List<String>::Element *E = keys.front(); E; E = E->next()) {
+		String cat = E->get();
+		List<String> task_list = categories.get(cat);
+		TaskSection *sec = memnew(TaskSection(cat, editor));
+		for (List<String>::Element *E = task_list.front(); E; E = E->next()) {
+			String tname = E->get();
+			sec->add_task_button(tname, get_icon(tname, "EditorIcons"), tname);
+		}
+		sec->set_filter("");
+		sec->connect("task_button_pressed", this, "_on_task_button_pressed");
+		sections->add_child(sec);
+	}
+}
+
+void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes) {
+	List<StringName> inheriters;
+	ClassDB::get_inheriters_from_class(p_base_class, &inheriters);
+
+	for (List<StringName>::Element *E = inheriters.front(); E; E = E->next()) {
+		p_task_classes->push_back(E->get());
+	}
 }
 
 void TaskPanel::_bind_methods() {
@@ -280,22 +314,6 @@ TaskPanel::TaskPanel(EditorNode *p_editor) {
 	sc->add_child(sections);
 	sections->set_h_size_flags(SIZE_EXPAND_FILL);
 	sections->set_v_size_flags(SIZE_EXPAND_FILL);
-
-	TaskSection *comp_sec = memnew(TaskSection("BTComposite", "Composites", p_editor));
-	sections->add_child(comp_sec);
-	comp_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
-
-	TaskSection *dec_sec = memnew(TaskSection("BTDecorator", "Decorators", p_editor));
-	sections->add_child(dec_sec);
-	dec_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
-
-	TaskSection *act_sec = memnew(TaskSection("BTAction", "Actions", p_editor));
-	sections->add_child(act_sec);
-	act_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
-
-	TaskSection *cond_sec = memnew(TaskSection("BTCondition", "Conditions", p_editor));
-	sections->add_child(cond_sec);
-	cond_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
 
 	call_deferred("_init");
 }

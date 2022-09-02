@@ -61,8 +61,9 @@ protected:
 
 public:
 	void set_filter(String p_filter);
+	void add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta);
 
-	TaskSection(const StringName &p_class_or_resource, const StringName &p_section, EditorNode *p_editor);
+	TaskSection(String p_category_name, EditorNode *p_editor);
 	~TaskSection();
 };
 
@@ -75,6 +76,7 @@ private:
 	VBoxContainer *sections;
 
 	void _init();
+	void _populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes);
 	void _on_task_button_pressed(const StringName &p_task);
 	void _on_filter_text_changed(String p_text);
 
