@@ -1,14 +1,17 @@
 /* limbo_ai_editor_plugin.h */
 
+#ifdef TOOLS_ENABLED
 #ifndef LIMBO_AI_EDITOR_PLUGIN_H
 #define LIMBO_AI_EDITOR_PLUGIN_H
-#ifdef TOOLS_ENABLED
 
 #include "../bt/behavior_tree.h"
 #include "core/object.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/file_dialog.h"
+#include "scene/gui/flow_container.h"
+#include "scene/gui/line_edit.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/tree.h"
 
@@ -43,6 +46,46 @@ public:
 	~TaskTree();
 };
 
+class TaskSection : public VBoxContainer {
+	GDCLASS(TaskSection, VBoxContainer);
+
+private:
+	FlowContainer *tasks_container;
+	Button *section_header;
+
+	void _on_task_button_pressed(const StringName &p_task);
+	void _on_header_pressed();
+
+protected:
+	static void _bind_methods();
+
+public:
+	void set_filter(String p_filter);
+
+	TaskSection(const StringName &p_class_or_resource, const StringName &p_section, EditorNode *p_editor);
+	~TaskSection();
+};
+
+class TaskPanel : public PanelContainer {
+	GDCLASS(TaskPanel, PanelContainer)
+
+private:
+	EditorNode *editor;
+	LineEdit *filter_edit;
+	VBoxContainer *sections;
+
+	void _init();
+	void _on_task_button_pressed(const StringName &p_task);
+	void _on_filter_text_changed(String p_text);
+
+protected:
+	static void _bind_methods();
+
+public:
+	TaskPanel(EditorNode *p_editor);
+	~TaskPanel();
+};
+
 class LimboAIEditor : public Control {
 	GDCLASS(LimboAIEditor, Control);
 
@@ -70,10 +113,11 @@ private:
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
-	void _on_task_selected(const Ref<BTTask> &p_task) const;
+	void _on_tree_task_selected(const Ref<BTTask> &p_task) const;
 	void _on_visibility_changed() const;
 	void _on_header_pressed() const;
 	void _on_save_pressed();
+	void _on_panel_task_selected(const StringName &p_task);
 
 protected:
 	static void _bind_methods();

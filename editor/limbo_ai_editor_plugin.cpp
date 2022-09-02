@@ -14,15 +14,21 @@
 #include "core/object.h"
 #include "core/os/memory.h"
 #include "core/print_string.h"
+#include "core/string_name.h"
 #include "core/variant.h"
 #include "core/vector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 #include "scene/gui/box_container.h"
+#include "scene/gui/button.h"
 #include "scene/gui/file_dialog.h"
+#include "scene/gui/flow_container.h"
 #include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
 #include "scene/gui/popup_menu.h"
+#include "scene/gui/scroll_container.h"
 #include "scene/gui/separator.h"
+#include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
 #include <cstddef>
 
@@ -163,6 +169,140 @@ TaskTree::~TaskTree() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+void TaskSection::_on_task_button_pressed(const StringName &p_task) {
+	emit_signal("task_button_pressed", p_task);
+}
+
+void TaskSection::_on_header_pressed() {
+	tasks_container->set_visible(!tasks_container->is_visible());
+	section_header->set_icon(tasks_container->is_visible() ? get_icon("GuiTreeArrowDown", "EditorIcons") : get_icon("GuiTreeArrowRight", "EditorIcons"));
+}
+
+void TaskSection::set_filter(String p_filter_text) {
+	int num_hidden = 0;
+	if (p_filter_text.empty()) {
+		for (int i = 0; i < tasks_container->get_child_count(); i++) {
+			Object::cast_to<Button>(tasks_container->get_child(i))->show();
+		}
+		set_visible(tasks_container->get_child_count() > 0);
+	} else {
+		for (int i = 0; i < tasks_container->get_child_count(); i++) {
+			Button *btn = Object::cast_to<Button>(tasks_container->get_child(i));
+			btn->set_visible(btn->get_text().findn(p_filter_text) != -1);
+			num_hidden += !btn->is_visible();
+		}
+		set_visible(num_hidden < tasks_container->get_child_count());
+	}
+}
+
+void TaskSection::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_on_task_button_pressed", "p_class"), &TaskSection::_on_task_button_pressed);
+	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &TaskSection::_on_header_pressed);
+
+	ADD_SIGNAL(MethodInfo("task_button_pressed"));
+}
+
+TaskSection::TaskSection(const StringName &p_class_or_resource, const StringName &p_section, EditorNode *p_editor) {
+	section_header = memnew(Button);
+	add_child(section_header);
+	section_header->set_text(p_section);
+	section_header->set_icon(p_editor->get_gui_base()->get_icon("GuiTreeArrowDown", "EditorIcons"));
+	section_header->set_focus_mode(FOCUS_NONE);
+	section_header->connect("pressed", this, "_on_header_pressed");
+
+	tasks_container = memnew(HFlowContainer);
+	add_child(tasks_container);
+
+	List<StringName> composites;
+	ClassDB::get_inheriters_from_class(p_class_or_resource, &composites);
+	for (List<StringName>::Element *cn = composites.front(); cn; cn = cn->next()) {
+		Button *task_btn = memnew(Button);
+		task_btn->set_text(cn->get());
+		task_btn->set_icon(p_editor->get_class_icon(cn->get()));
+		task_btn->set_focus_mode(FOCUS_NONE);
+		task_btn->set_h_size_flags(SIZE_EXPAND_FILL);
+		task_btn->connect("pressed", this, "_on_task_button_pressed", varray(cn->get()));
+		tasks_container->add_child(task_btn);
+	}
+
+	if (tasks_container->get_child_count() == 0) {
+		hide();
+	}
+}
+
+TaskSection::~TaskSection() {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
+	emit_signal("task_selected", p_task);
+}
+
+void TaskPanel::_on_filter_text_changed(String p_text) {
+	for (int i = 0; i < sections->get_child_count(); i++) {
+		TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
+		sec->set_filter(p_text);
+	}
+}
+
+void TaskPanel::_init() {
+	filter_edit->set_right_icon(get_icon("Search", "EditorIcons"));
+}
+
+void TaskPanel::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_init"), &TaskPanel::_init);
+	ClassDB::bind_method(D_METHOD("_on_task_button_pressed"), &TaskPanel::_on_task_button_pressed);
+	ClassDB::bind_method(D_METHOD("_on_filter_text_changed"), &TaskPanel::_on_filter_text_changed);
+
+	ADD_SIGNAL(MethodInfo("task_selected"));
+}
+
+TaskPanel::TaskPanel(EditorNode *p_editor) {
+	editor = p_editor;
+
+	VBoxContainer *vb = memnew(VBoxContainer);
+	add_child(vb);
+
+	filter_edit = memnew(LineEdit);
+	vb->add_child(filter_edit);
+	filter_edit->set_clear_button_enabled(true);
+	filter_edit->connect("text_changed", this, "_on_filter_text_changed");
+
+	ScrollContainer *sc = memnew(ScrollContainer);
+	vb->add_child(sc);
+	sc->set_h_size_flags(SIZE_EXPAND_FILL);
+	sc->set_v_size_flags(SIZE_EXPAND_FILL);
+
+	sections = memnew(VBoxContainer);
+	sc->add_child(sections);
+	sections->set_h_size_flags(SIZE_EXPAND_FILL);
+	sections->set_v_size_flags(SIZE_EXPAND_FILL);
+
+	TaskSection *comp_sec = memnew(TaskSection("BTComposite", "Composites", p_editor));
+	sections->add_child(comp_sec);
+	comp_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
+
+	TaskSection *dec_sec = memnew(TaskSection("BTDecorator", "Decorators", p_editor));
+	sections->add_child(dec_sec);
+	dec_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
+
+	TaskSection *act_sec = memnew(TaskSection("BTAction", "Actions", p_editor));
+	sections->add_child(act_sec);
+	act_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
+
+	TaskSection *cond_sec = memnew(TaskSection("BTCondition", "Conditions", p_editor));
+	sections->add_child(cond_sec);
+	cond_sec->connect("task_button_pressed", this, "_on_task_button_pressed");
+
+	call_deferred("_init");
+}
+
+TaskPanel::~TaskPanel() {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_prototype) {
 	ERR_FAIL_COND(p_prototype.is_null());
 	Ref<BTTask> parent = task_tree->get_selected();
@@ -286,8 +426,12 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 	}
 }
 
-void LimboAIEditor::_on_task_selected(const Ref<BTTask> &p_task) const {
+void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) const {
 	editor->edit_resource(p_task);
+}
+
+void LimboAIEditor::_on_panel_task_selected(const StringName &p_task) {
+	_add_task(Ref<BTTask>(ClassDB::instance(p_task)));
 }
 
 void LimboAIEditor::_on_visibility_changed() const {
@@ -319,7 +463,8 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
 	ClassDB::bind_method(D_METHOD("_on_tree_rmb"), &LimboAIEditor::_on_tree_rmb);
 	ClassDB::bind_method(D_METHOD("_on_action_selected", "p_id"), &LimboAIEditor::_on_action_selected);
-	ClassDB::bind_method(D_METHOD("_on_task_selected", "p_task"), &LimboAIEditor::_on_task_selected);
+	ClassDB::bind_method(D_METHOD("_on_tree_task_selected", "p_task"), &LimboAIEditor::_on_tree_task_selected);
+	ClassDB::bind_method(D_METHOD("_on_panel_task_selected", "p_task"), &LimboAIEditor::_on_panel_task_selected);
 	ClassDB::bind_method(D_METHOD("_on_visibility_changed"), &LimboAIEditor::_on_visibility_changed);
 	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &LimboAIEditor::_on_header_pressed);
 	ClassDB::bind_method(D_METHOD("_on_save_pressed"), &LimboAIEditor::_on_save_pressed);
@@ -347,13 +492,13 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	load_dialog->connect("file_selected", this, "_load_bt");
 	load_dialog->hide();
 
-	VBoxContainer *vbox = memnew(VBoxContainer);
-	vbox->set_anchor(MARGIN_RIGHT, ANCHOR_END);
-	vbox->set_anchor(MARGIN_BOTTOM, ANCHOR_END);
-	add_child(vbox);
+	VBoxContainer *vb = memnew(VBoxContainer);
+	vb->set_anchor(MARGIN_RIGHT, ANCHOR_END);
+	vb->set_anchor(MARGIN_BOTTOM, ANCHOR_END);
+	add_child(vb);
 
 	HBoxContainer *panel = memnew(HBoxContainer);
-	vbox->add_child(panel);
+	vb->add_child(panel);
 
 	Button *selector_btn = memnew(Button);
 	selector_btn->set_text(TTR("Selector"));
@@ -414,17 +559,27 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	panel->add_child(memnew(VSeparator));
 
 	header = memnew(Button);
-	vbox->add_child(header);
+	vb->add_child(header);
 	header->set_text_align(Button::ALIGN_LEFT);
 	header->add_constant_override("hseparation", 8);
 	header->connect("pressed", this, "_on_header_pressed");
 
+	HSplitContainer *hsc = memnew(HSplitContainer);
+	vb->add_child(hsc);
+	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
+	hsc->set_v_size_flags(SIZE_EXPAND_FILL);
+
 	task_tree = memnew(TaskTree);
+	hsc->add_child(task_tree);
 	task_tree->set_v_size_flags(SIZE_EXPAND_FILL);
 	task_tree->set_h_size_flags(SIZE_EXPAND_FILL);
-	vbox->add_child(task_tree);
 	task_tree->connect("rmb_pressed", this, "_on_tree_rmb");
-	task_tree->connect("task_selected", this, "_on_task_selected");
+	task_tree->connect("task_selected", this, "_on_tree_task_selected");
+
+	TaskPanel *task_panel = memnew(TaskPanel(p_editor));
+	hsc->add_child(task_panel);
+	hsc->set_split_offset(-400);
+	task_panel->connect("task_selected", this, "_on_panel_task_selected");
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
