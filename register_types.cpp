@@ -7,6 +7,7 @@
 #include "bt/actions/bt_action.h"
 #include "bt/actions/bt_fail.h"
 #include "bt/actions/bt_random_wait.h"
+#include "bt/actions/bt_subtree.h"
 #include "bt/actions/bt_wait.h"
 #include "bt/actions/bt_wait_ticks.h"
 #include "bt/behavior_tree.h"
@@ -73,6 +74,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTWait>();
 	ClassDB::register_class<BTRandomWait>();
 	ClassDB::register_class<BTWaitTicks>();
+	ClassDB::register_class<BTSubtree>();
 
 	ClassDB::register_class<BTCondition>();
 
