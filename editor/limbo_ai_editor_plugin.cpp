@@ -377,16 +377,16 @@ TaskPanel::~TaskPanel() {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void LimboAIEditor::_add_task(const Ref<BTTask> &p_prototype) {
-	ERR_FAIL_COND(p_prototype.is_null());
+void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
 	Ref<BTTask> parent = task_tree->get_selected();
 	if (parent.is_null()) {
 		parent = task_tree->get_bt()->get_root_task();
 	}
 	if (parent.is_null()) {
-		task_tree->get_bt()->set_root_task(p_prototype);
+		task_tree->get_bt()->set_root_task(p_task);
 	} else {
-		parent->add_child(p_prototype);
+		parent->add_child(p_task);
 	}
 	_mark_as_dirty(true);
 	task_tree->update_tree();
@@ -614,6 +614,7 @@ void LimboAIEditor::apply_changes() {
 
 void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
+	ClassDB::bind_method(D_METHOD("_add_task_with_prototype", "p_prototype"), &LimboAIEditor::_add_task_with_prototype);
 	ClassDB::bind_method(D_METHOD("_on_tree_rmb"), &LimboAIEditor::_on_tree_rmb);
 	ClassDB::bind_method(D_METHOD("_on_action_selected", "p_id"), &LimboAIEditor::_on_action_selected);
 	ClassDB::bind_method(D_METHOD("_on_tree_task_selected", "p_task"), &LimboAIEditor::_on_tree_task_selected);
@@ -662,7 +663,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	selector_btn->set_icon(editor->get_class_icon("BTSelector"));
 	selector_btn->set_flat(true);
 	selector_btn->set_focus_mode(Control::FOCUS_NONE);
-	selector_btn->connect("pressed", this, "_add_task", varray(Ref<BTTask>(memnew(BTSelector))));
+	selector_btn->connect("pressed", this, "_add_task_with_prototype", varray(Ref<BTTask>(memnew(BTSelector))));
 	panel->add_child(selector_btn);
 
 	Button *sequence_btn = memnew(Button);
@@ -671,7 +672,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	sequence_btn->set_icon(editor->get_class_icon("BTSequence"));
 	sequence_btn->set_flat(true);
 	sequence_btn->set_focus_mode(Control::FOCUS_NONE);
-	sequence_btn->connect("pressed", this, "_add_task", varray(Ref<BTTask>(memnew(BTSequence))));
+	sequence_btn->connect("pressed", this, "_add_task_with_prototype", varray(Ref<BTTask>(memnew(BTSequence))));
 	panel->add_child(sequence_btn);
 
 	Button *parallel_btn = memnew(Button);
@@ -680,7 +681,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	parallel_btn->set_icon(editor->get_class_icon("BTParallel"));
 	parallel_btn->set_flat(true);
 	parallel_btn->set_focus_mode(Control::FOCUS_NONE);
-	parallel_btn->connect("pressed", this, "_add_task", varray(Ref<BTTask>(memnew(BTParallel))));
+	parallel_btn->connect("pressed", this, "_add_task_with_prototype", varray(Ref<BTTask>(memnew(BTParallel))));
 	panel->add_child(parallel_btn);
 
 	panel->add_child(memnew(VSeparator));

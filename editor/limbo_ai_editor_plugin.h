@@ -114,7 +114,8 @@ private:
 	Button *history_back;
 	Button *history_forward;
 
-	void _add_task(const Ref<BTTask> &p_prototype);
+	void _add_task(const Ref<BTTask> &p_task);
+	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header();
 	void _update_history_buttons();
 	void _new_bt();
