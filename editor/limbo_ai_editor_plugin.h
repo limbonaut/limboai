@@ -8,6 +8,7 @@
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 #include "modules/limboai/bt/behavior_tree.h"
+#include "modules/limboai/bt/bt_task.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
@@ -22,6 +23,7 @@ private:
 	Tree *tree;
 	Ref<BehaviorTree> bt;
 	Ref<BTTask> last_selected;
+	bool editable;
 
 	TreeItem *_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, int p_idx = -1);
 	void _update_item(TreeItem *p_item);
@@ -30,6 +32,10 @@ private:
 
 	void _on_item_selected();
 	void _on_item_rmb_selected(const Vector2 &p_pos);
+
+	Variant get_drag_data_fw(const Point2 &p_point, Control *p_from);
+	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
+	void drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
 
 protected:
 	static void _bind_methods();
@@ -133,6 +139,7 @@ private:
 	void _on_panel_task_selected(String p_task);
 	void _on_history_back();
 	void _on_history_forward();
+	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 
 protected:
 	static void _bind_methods();

@@ -184,6 +184,17 @@ bool BTTask::has_child(const Ref<BTTask> &p_child) const {
 	return children.find(p_child) != -1;
 }
 
+bool BTTask::is_descendant_of(const Ref<BTTask> &p_task) const {
+	const BTTask *task = this;
+	while (task != nullptr) {
+		task = task->parent;
+		if (task == p_task.ptr()) {
+			return true;
+		}
+	}
+	return false;
+}
+
 int BTTask::get_child_index(const Ref<BTTask> &p_child) const {
 	return children.find(p_child);
 }
@@ -262,6 +273,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_child_at_index", "p_child", "p_idx"), &BTTask::add_child_at_index);
 	ClassDB::bind_method(D_METHOD("remove_child", "p_child"), &BTTask::remove_child);
 	ClassDB::bind_method(D_METHOD("has_child", "p_child"), &BTTask::has_child);
+	ClassDB::bind_method(D_METHOD("is_descendant_of", "p_task"), &BTTask::is_descendant_of);
 	ClassDB::bind_method(D_METHOD("get_child_index", "p_child"), &BTTask::get_child_index);
 	ClassDB::bind_method(D_METHOD("next_sibling"), &BTTask::next_sibling);
 	ClassDB::bind_method(D_METHOD("print_tree", "p_initial_tabs"), &BTTask::print_tree, Variant(0));

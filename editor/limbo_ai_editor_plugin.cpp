@@ -5,6 +5,7 @@
 #include "limbo_ai_editor_plugin.h"
 
 #include "core/class_db.h"
+#include "core/dictionary.h"
 #include "core/error_list.h"
 #include "core/error_macros.h"
 #include "core/io/resource_loader.h"
@@ -42,6 +43,8 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
 #include <cstddef>
+
+//////////////////////////////  TaskTree  //////////////////////////////////////
 
 TreeItem *TaskTree::_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, int p_idx) {
 	ERR_FAIL_COND_V(p_task.is_null(), nullptr);
@@ -153,6 +156,53 @@ void TaskTree::deselect() {
 	}
 }
 
+Variant TaskTree::get_drag_data_fw(const Point2 &p_point, Control *p_from) {
+	if (editable && tree->get_item_at_position(p_point)) {
+		Dictionary drag_data;
+		drag_data["type"] = "task";
+		drag_data["task"] = tree->get_item_at_position(p_point)->get_metadata(0);
+		tree->set_drop_mode_flags(Tree::DROP_MODE_INBETWEEN | Tree::DROP_MODE_ON_ITEM);
+		return drag_data;
+	}
+	return Variant();
+}
+
+bool TaskTree::can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const {
+	if (!editable) {
+		return false;
+	}
+
+	Dictionary d = p_data;
+	if (!d.has("type") || !d.has("task")) {
+		return false;
+	}
+
+	int section = tree->get_drop_section_at_position(p_point);
+	TreeItem *item = tree->get_item_at_position(p_point);
+	if (!item || section < -1 || (section == -1 && !item->get_parent())) {
+		return false;
+	}
+
+	if (String(d["type"]) == "task") {
+		Ref<BTTask> task = d["task"];
+		const Ref<BTTask> to_task = item->get_metadata(0);
+		if (task != to_task && !to_task->is_descendant_of(task)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void TaskTree::drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) {
+	Dictionary d = p_data;
+	TreeItem *item = tree->get_item_at_position(p_point);
+	if (item && d.has("task")) {
+		Ref<BTTask> task = d["task"];
+		emit_signal("task_dragged", task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+	}
+}
+
 void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_item_rmb_selected"), &TaskTree::_on_item_rmb_selected);
 	ClassDB::bind_method(D_METHOD("_on_item_selected"), &TaskTree::_on_item_selected);
@@ -163,11 +213,21 @@ void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_selected"), &TaskTree::get_selected);
 	ClassDB::bind_method(D_METHOD("deselect"), &TaskTree::deselect);
 
+	ClassDB::bind_method(D_METHOD("get_drag_data_fw"), &TaskTree::get_drag_data_fw);
+	ClassDB::bind_method(D_METHOD("can_drop_data_fw"), &TaskTree::can_drop_data_fw);
+	ClassDB::bind_method(D_METHOD("drop_data_fw"), &TaskTree::drop_data_fw);
+
 	ADD_SIGNAL(MethodInfo("rmb_pressed"));
 	ADD_SIGNAL(MethodInfo("task_selected"));
+	ADD_SIGNAL(MethodInfo("task_dragged",
+			PropertyInfo(Variant::OBJECT, "p_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
+			PropertyInfo(Variant::OBJECT, "p_to_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
+			PropertyInfo(Variant::INT, "p_type")));
 }
 
 TaskTree::TaskTree() {
+	editable = true;
+
 	tree = memnew(Tree);
 	add_child(tree);
 	tree->set_columns(2);
@@ -179,12 +239,15 @@ TaskTree::TaskTree() {
 	tree->set_allow_rmb_select(true);
 	tree->connect("item_rmb_selected", this, "_on_item_rmb_selected");
 	tree->connect("item_selected", this, "_on_item_selected");
+	tree->set_drag_forwarding(this);
 }
 
 TaskTree::~TaskTree() {
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////  TaskTree  //////////////////////////////////////
+
+////////////////////////////// TaskSection  ////////////////////////////////////
 
 void TaskSection::_on_task_button_pressed(const StringName &p_task) {
 	emit_signal("task_button_pressed", p_task);
@@ -242,7 +305,9 @@ TaskSection::TaskSection(String p_category_name, EditorNode *p_editor) {
 TaskSection::~TaskSection() {
 }
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////// TaskSection  ////////////////////////////////////
+
+//////////////////////////////  TaskPanel  /////////////////////////////////////
 
 void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
 	emit_signal("task_selected", p_task);
@@ -375,7 +440,9 @@ TaskPanel::TaskPanel(EditorNode *p_editor) {
 TaskPanel::~TaskPanel() {
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////  TaskPanel  /////////////////////////////////////
+
+////////////////////////////  LimboAIEditor  ///////////////////////////////////
 
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
@@ -600,6 +667,28 @@ void LimboAIEditor::_on_history_forward() {
 	_edit_bt(history[idx_history]);
 }
 
+void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type) {
+	if (p_task == p_to_task) {
+		return;
+	}
+	if (p_type == 0) {
+		p_task->get_parent()->remove_child(p_task);
+		p_to_task->add_child(p_task);
+		task_tree->update_tree();
+		_mark_as_dirty(true);
+	} else if (p_type == -1 && p_to_task->get_parent().is_valid()) {
+		p_task->get_parent()->remove_child(p_task);
+		p_to_task->get_parent()->add_child_at_index(p_task, p_to_task->get_parent()->get_child_index(p_to_task));
+		task_tree->update_tree();
+		_mark_as_dirty(true);
+	} else if (p_type == 1 && p_to_task->get_parent().is_valid()) {
+		p_task->get_parent()->remove_child(p_task);
+		p_to_task->get_parent()->add_child_at_index(p_task, p_to_task->get_parent()->get_child_index(p_to_task) + 1);
+		task_tree->update_tree();
+		_mark_as_dirty(true);
+	}
+}
+
 void LimboAIEditor::apply_changes() {
 	for (int i = 0; i < history.size(); i++) {
 		Ref<BehaviorTree> bt = history.get(i);
@@ -624,6 +713,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_save_pressed"), &LimboAIEditor::_on_save_pressed);
 	ClassDB::bind_method(D_METHOD("_on_history_back"), &LimboAIEditor::_on_history_back);
 	ClassDB::bind_method(D_METHOD("_on_history_forward"), &LimboAIEditor::_on_history_forward);
+	ClassDB::bind_method(D_METHOD("_on_task_dragged", "p_task", "p_to_task", "p_type"), &LimboAIEditor::_on_task_dragged);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
@@ -751,6 +841,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	task_tree->connect("rmb_pressed", this, "_on_tree_rmb");
 	task_tree->connect("task_selected", this, "_on_tree_task_selected");
 	task_tree->connect("visibility_changed", this, "_on_visibility_changed");
+	task_tree->connect("task_dragged", this, "_on_task_dragged");
 
 	TaskPanel *task_panel = memnew(TaskPanel(p_editor));
 	hsc->add_child(task_panel);
@@ -778,7 +869,9 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 LimboAIEditor::~LimboAIEditor() {
 }
 
-////////////////////////////////////////////////////////////////////////////////
+////////////////////////////  LimboAIEditor  ///////////////////////////////////
+
+/////////////////////////  LimboAIEditorPlugin  ////////////////////////////////
 
 const Ref<Texture> LimboAIEditorPlugin::get_icon() const {
 	// TODO:

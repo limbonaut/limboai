@@ -66,6 +66,7 @@ public:
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);
 	void remove_child(Ref<BTTask> p_child);
 	bool has_child(const Ref<BTTask> &p_child) const;
+	bool is_descendant_of(const Ref<BTTask> &p_task) const;
 	int get_child_index(const Ref<BTTask> &p_child) const;
 	Ref<BTTask> next_sibling() const;
 	virtual String get_configuration_warning() const;
