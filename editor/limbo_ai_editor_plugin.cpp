@@ -63,7 +63,13 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	p_item->set_icon(0, task->get_icon());
 	p_item->set_editable(0, false);
 
-	// TODO: Update configuration warning.
+	for (int i = 0; i < p_item->get_button_count(0); i++) {
+		p_item->erase_button(0, i);
+	}
+	String warning = task->get_configuration_warning();
+	if (!warning.empty()) {
+		p_item->add_button(0, get_icon("NodeWarning", "EditorIcons"), 0, false, warning);
+	}
 
 	// TODO: Update probabilities.
 }
