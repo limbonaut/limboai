@@ -120,13 +120,26 @@ void TaskTree::_on_item_rmb_selected(const Vector2 &p_pos) {
 void TaskTree::_on_item_selected() {
 	if (last_selected.is_valid()) {
 		update_task(last_selected);
+		if (last_selected->is_connected("changed", this, "_on_task_changed")) {
+			last_selected->disconnect("changed", this, "_on_task_changed");
+		}
 	}
 	last_selected = get_selected();
+	last_selected->connect("changed", this, "_on_task_changed");
 	emit_signal("task_selected", last_selected);
+}
+
+void TaskTree::_on_task_changed() {
+	_update_item(tree->get_selected());
 }
 
 void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "Tried to load a null tree.");
+
+	if (last_selected.is_valid() and last_selected->is_connected("changed", this, "_on_task_changed")) {
+		last_selected->disconnect("changed", this, "_on_task_changed");
+	}
+
 	bt = p_behavior_tree;
 	tree->clear();
 	if (bt->get_root_task().is_valid()) {
@@ -206,6 +219,7 @@ void TaskTree::drop_data_fw(const Point2 &p_point, const Variant &p_data, Contro
 void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_item_rmb_selected"), &TaskTree::_on_item_rmb_selected);
 	ClassDB::bind_method(D_METHOD("_on_item_selected"), &TaskTree::_on_item_selected);
+	ClassDB::bind_method(D_METHOD("_on_task_changed"), &TaskTree::_on_task_changed);
 	ClassDB::bind_method(D_METHOD("load_bt", "p_behavior_tree"), &TaskTree::load_bt);
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
 	ClassDB::bind_method(D_METHOD("update_tree"), &TaskTree::update_tree);
@@ -243,6 +257,9 @@ TaskTree::TaskTree() {
 }
 
 TaskTree::~TaskTree() {
+	if (last_selected.is_valid() and last_selected->is_connected("changed", this, "_on_task_changed")) {
+		last_selected->disconnect("changed", this, "_on_task_changed");
+	}
 }
 
 //////////////////////////////  TaskTree  //////////////////////////////////////

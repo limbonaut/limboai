@@ -32,6 +32,7 @@ private:
 
 	void _on_item_selected();
 	void _on_item_rmb_selected(const Vector2 &p_pos);
+	void _on_task_changed();
 
 	Variant get_drag_data_fw(const Point2 &p_point, Control *p_from);
 	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
