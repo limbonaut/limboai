@@ -526,7 +526,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				if (parent.is_null()) {
 					parent = sel;
 				}
-				parent->add_child(sel->clone());
+				parent->add_child_at_index(sel->clone(), parent->get_child_index(sel) + 1);
 				task_tree->update_tree();
 				_mark_as_dirty(true);
 			}
