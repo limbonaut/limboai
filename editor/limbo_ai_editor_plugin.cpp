@@ -388,6 +388,7 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_prototype) {
 	} else {
 		parent->add_child(p_prototype);
 	}
+	_mark_as_dirty(true);
 	task_tree->update_tree();
 }
 
@@ -395,7 +396,10 @@ void LimboAIEditor::_update_header() {
 	String text = task_tree->get_bt()->get_path();
 	if (text.empty()) {
 		text = TTR("New Behavior Tree");
+	} else if (dirty.has(task_tree->get_bt())) {
+		text += "(*)";
 	}
+
 	header->set_text(text);
 	header->set_icon(editor->get_object_icon(task_tree->get_bt().ptr(), "BehaviorTree"));
 }
@@ -417,6 +421,7 @@ void LimboAIEditor::_save_bt(String p_path) {
 	task_tree->get_bt()->set_path(p_path, true);
 	ResourceSaver::save(p_path, task_tree->get_bt(), ResourceSaver::FLAG_CHANGE_PATH);
 	_update_header();
+	_mark_as_dirty(false);
 }
 
 void LimboAIEditor::_load_bt(String p_path) {
@@ -447,6 +452,17 @@ void LimboAIEditor::_edit_bt(Ref<BehaviorTree> p_behavior_tree) {
 	_update_header();
 }
 
+void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
+	Ref<BehaviorTree> bt = task_tree->get_bt();
+	if (p_dirty && !dirty.has(bt)) {
+		dirty.insert(bt);
+		_update_header();
+	} else if (p_dirty == false && dirty.has(bt)) {
+		dirty.erase(bt);
+		_update_header();
+	}
+}
+
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->set_size(Size2(1, 1));
 	menu->set_position(p_menu_pos);
@@ -474,6 +490,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				}
 				task_tree->update_tree();
 				editor->edit_node(nullptr);
+				_mark_as_dirty(true);
 			}
 		} break;
 		case ACTION_MOVE_UP: {
@@ -485,6 +502,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 					parent->remove_child(sel);
 					parent->add_child_at_index(sel, idx - 1);
 					task_tree->update_tree();
+					_mark_as_dirty(true);
 				}
 			}
 		} break;
@@ -497,6 +515,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 					parent->remove_child(sel);
 					parent->add_child_at_index(sel, idx + 1);
 					task_tree->update_tree();
+					_mark_as_dirty(true);
 				}
 			}
 		} break;
@@ -509,6 +528,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				}
 				parent->add_child(sel->clone());
 				task_tree->update_tree();
+				_mark_as_dirty(true);
 			}
 		} break;
 		case ACTION_MAKE_ROOT: {
@@ -521,6 +541,7 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				task_tree->get_bt()->set_root_task(sel);
 				sel->add_child(old_root);
 				task_tree->update_tree();
+				_mark_as_dirty(true);
 			}
 		} break;
 	}
@@ -577,6 +598,18 @@ void LimboAIEditor::_on_history_back() {
 void LimboAIEditor::_on_history_forward() {
 	idx_history = MIN(idx_history + 1, history.size() - 1);
 	_edit_bt(history[idx_history]);
+}
+
+void LimboAIEditor::apply_changes() {
+	for (int i = 0; i < history.size(); i++) {
+		Ref<BehaviorTree> bt = history.get(i);
+		String path = bt->get_path();
+		if (ResourceLoader::exists(path)) {
+			ResourceSaver::save(path, bt);
+		}
+		dirty.clear();
+		_update_header();
+	}
 }
 
 void LimboAIEditor::_bind_methods() {
@@ -749,6 +782,10 @@ LimboAIEditor::~LimboAIEditor() {
 const Ref<Texture> LimboAIEditorPlugin::get_icon() const {
 	// TODO:
 	return nullptr;
+}
+
+void LimboAIEditorPlugin::apply_changes() {
+	limbo_ai_editor->apply_changes();
 }
 
 void LimboAIEditorPlugin::_notification(int p_notification) {

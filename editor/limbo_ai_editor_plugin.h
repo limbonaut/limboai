@@ -104,6 +104,7 @@ private:
 	EditorNode *editor;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
+	Set<Ref<BehaviorTree>> dirty;
 
 	Button *header;
 	TaskTree *task_tree;
@@ -120,6 +121,7 @@ private:
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _edit_bt(Ref<BehaviorTree> p_behavior_tree);
+	void _mark_as_dirty(bool p_dirty);
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
@@ -135,6 +137,8 @@ protected:
 	static void _bind_methods();
 
 public:
+	void apply_changes();
+
 	LimboAIEditor(EditorNode *p_editor);
 	~LimboAIEditor();
 };
@@ -154,6 +158,7 @@ public:
 	virtual const Ref<Texture> get_icon() const;
 	bool has_main_screen() const { return true; }
 	virtual void make_visible(bool p_visible);
+	virtual void apply_changes();
 
 	LimboAIEditorPlugin(EditorNode *p_editor);
 	~LimboAIEditorPlugin();
