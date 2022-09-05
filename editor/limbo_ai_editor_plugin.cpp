@@ -8,6 +8,7 @@
 #include "core/dictionary.h"
 #include "core/error_list.h"
 #include "core/error_macros.h"
+#include "core/io/image_loader.h"
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
 #include "core/list.h"
@@ -25,6 +26,7 @@
 #include "core/vector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
+#include "editor/editor_scale.h"
 #include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/bt_task.h"
@@ -64,7 +66,11 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
-	p_item->set_icon(0, task->get_icon());
+	if (task->get_script_instance() && !task->get_script_instance()->get_script()->get_path().empty()) {
+		p_item->set_icon(0, LimboAIEditor::get_task_icon(task->get_script_instance()->get_script()->get_path()));
+	} else {
+		p_item->set_icon(0, LimboAIEditor::get_task_icon(task->get_class()));
+	}
 	p_item->set_editable(0, false);
 
 	for (int i = 0; i < p_item->get_button_count(0); i++) {
@@ -375,15 +381,8 @@ void TaskPanel::_init() {
 			String meta = E->get();
 			String tname;
 			Ref<Texture> icon;
-			if (meta.begins_with("res:")) {
-				// Scripted class
-				tname = meta.get_file().get_basename();
-				icon = editor->get_object_icon(ResourceLoader::load(meta).ptr());
-			} else {
-				// Core class
-				tname = meta;
-				icon = get_icon(tname, "EditorIcons");
-			}
+			icon = LimboAIEditor::get_task_icon(meta);
+			tname = meta.begins_with("res:") ? meta.get_file().get_basename().trim_prefix("BT") : meta.trim_prefix("BT");
 			sec->add_task_button(tname, icon, meta);
 		}
 		sec->set_filter("");
@@ -717,6 +716,33 @@ void LimboAIEditor::apply_changes() {
 		dirty.clear();
 		_update_header();
 	}
+}
+
+Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
+	// TODO: Implement caching.
+	String base_type = p_script_path_or_class;
+	if (p_script_path_or_class.begins_with("res:")) {
+		Ref<Script> script = ResourceLoader::load(p_script_path_or_class, "Script");
+		Ref<Script> base_script = script;
+		while (base_script.is_valid()) {
+			StringName name = EditorNode::get_editor_data().script_class_get_name(base_script->get_path());
+			String icon_path = EditorNode::get_editor_data().script_class_get_icon_path(name);
+			if (!icon_path.empty()) {
+				Ref<Image> img = memnew(Image);
+				Error err = ImageLoader::load_image(icon_path, img);
+				if (err == OK) {
+					Ref<ImageTexture> icon = memnew(ImageTexture);
+					img->resize(16 * EDSCALE, 16 * EDSCALE, Image::INTERPOLATE_LANCZOS);
+					icon->create_from_image(img);
+					return icon;
+				}
+			}
+			base_script = base_script->get_base_script();
+		}
+		base_type = script->get_instance_base_type();
+	}
+
+	return EditorNode::get_singleton()->get_class_icon(base_type, "BTTask");
 }
 
 void LimboAIEditor::_bind_methods() {

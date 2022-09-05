@@ -15,6 +15,7 @@
 #include "scene/gui/line_edit.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/tree.h"
+#include "scene/resources/texture.h"
 
 class TaskTree : public Control {
 	GDCLASS(TaskTree, Control);
@@ -146,6 +147,8 @@ protected:
 	static void _bind_methods();
 
 public:
+	static Ref<Texture> get_task_icon(String p_script_path_or_class);
+
 	void apply_changes();
 
 	LimboAIEditor(EditorNode *p_editor);

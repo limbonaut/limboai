@@ -215,9 +215,10 @@ String BTTask::get_configuration_warning() const {
 	return String();
 }
 
-Ref<Texture> BTTask::get_icon() const {
-	return EditorNode::get_singleton()->get_class_icon(get_class(), "Object");
-}
+// Ref<Texture> BTTask::get_icon() const {
+// 	// FIXME: Potential problem if tools are not built.
+// 	return EditorNode::get_singleton()->get_class_icon(get_class(), "Object");
+// }
 
 void BTTask::print_tree(int p_initial_tabs) const {
 	String tabs = "--";
@@ -260,8 +261,8 @@ void BTTask::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::STRING, ""), "_generate_name"));
 	ClassDB::bind_method(D_METHOD("_get_configuration_warning"), &BTTask::get_configuration_warning);
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::STRING, ""), "_get_configuration_warning"));
-	ClassDB::bind_method(D_METHOD("_get_icon"), &BTTask::get_icon);
-	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "_get_icon"));
+	// ClassDB::bind_method(D_METHOD("_get_icon"), &BTTask::get_icon);
+	// BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "_get_icon"));
 
 	// Public Methods.
 	ClassDB::bind_method(D_METHOD("is_root"), &BTTask::is_root);

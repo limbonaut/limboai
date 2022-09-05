@@ -70,7 +70,7 @@ public:
 	int get_child_index(const Ref<BTTask> &p_child) const;
 	Ref<BTTask> next_sibling() const;
 	virtual String get_configuration_warning() const;
-	virtual Ref<Texture> get_icon() const;
+	// virtual Ref<Texture> get_icon() const;
 	void print_tree(int p_initial_tabs = 0) const;
 
 	BTTask();
