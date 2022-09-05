@@ -83,7 +83,6 @@ private:
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
 
-	void _init();
 	void _populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes);
 	void _populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes);
 	void _on_task_button_pressed(const StringName &p_task);
@@ -93,6 +92,8 @@ protected:
 	static void _bind_methods();
 
 public:
+	void refresh();
+
 	TaskPanel(EditorNode *p_editor);
 	~TaskPanel();
 };
@@ -121,6 +122,7 @@ private:
 	FileDialog *load_dialog;
 	Button *history_back;
 	Button *history_forward;
+	TaskPanel *task_panel;
 
 	void _add_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }

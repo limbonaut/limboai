@@ -344,8 +344,12 @@ void TaskPanel::_on_filter_text_changed(String p_text) {
 	}
 }
 
-void TaskPanel::_init() {
+void TaskPanel::refresh() {
 	filter_edit->set_right_icon(get_icon("Search", "EditorIcons"));
+
+	for (int i = 0; i < sections->get_child_count(); i++) {
+		sections->get_child(i)->queue_delete();
+	}
 
 	HashMap<String, List<String>> categories;
 
@@ -423,7 +427,7 @@ void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p
 }
 
 void TaskPanel::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_init"), &TaskPanel::_init);
+	ClassDB::bind_method(D_METHOD("refresh"), &TaskPanel::refresh);
 	ClassDB::bind_method(D_METHOD("_on_task_button_pressed"), &TaskPanel::_on_task_button_pressed);
 	ClassDB::bind_method(D_METHOD("_on_filter_text_changed"), &TaskPanel::_on_filter_text_changed);
 
@@ -450,8 +454,6 @@ TaskPanel::TaskPanel(EditorNode *p_editor) {
 	sc->add_child(sections);
 	sections->set_h_size_flags(SIZE_EXPAND_FILL);
 	sections->set_v_size_flags(SIZE_EXPAND_FILL);
-
-	call_deferred("_init");
 }
 
 TaskPanel::~TaskPanel() {
@@ -657,6 +659,8 @@ void LimboAIEditor::_on_visibility_changed() const {
 		} else {
 			editor->edit_resource(task_tree->get_bt());
 		}
+
+		task_panel->refresh();
 	}
 }
 
@@ -895,7 +899,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	task_tree->connect("visibility_changed", this, "_on_visibility_changed");
 	task_tree->connect("task_dragged", this, "_on_task_dragged");
 
-	TaskPanel *task_panel = memnew(TaskPanel(p_editor));
+	task_panel = memnew(TaskPanel(p_editor));
 	hsc->add_child(task_panel);
 	hsc->set_split_offset(-300);
 	task_panel->connect("task_selected", this, "_on_panel_task_selected");
