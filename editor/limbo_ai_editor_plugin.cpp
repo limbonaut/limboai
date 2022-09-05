@@ -356,11 +356,11 @@ void TaskPanel::_init() {
 
 	categories["User"] = List<String>();
 
-	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_location_1");
+	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
 	_populate_scripted_tasks_from_dir(dir1, &categories["User"]);
-	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_location_2");
+	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_2");
 	_populate_scripted_tasks_from_dir(dir2, &categories["User"]);
-	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_location_3");
+	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_3");
 	_populate_scripted_tasks_from_dir(dir3, &categories["User"]);
 
 	List<String> keys;
@@ -872,15 +872,21 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 	_new_bt();
 
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_location_1", "res://ai/tasks");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_location_1",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_location_1", PROPERTY_HINT_DIR));
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_location_2", "");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_location_2",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_location_2", PROPERTY_HINT_DIR));
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_location_3", "");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_location_3",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_location_3", PROPERTY_HINT_DIR));
+	GLOBAL_DEF("limbo_ai/behavior_tree/behavior_tree_default_dir", "res://ai/trees");
+	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/behavior_tree_default_dir",
+			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR));
+	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_1", "res://ai/tasks");
+	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_1",
+			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_1", PROPERTY_HINT_DIR));
+	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_2", "");
+	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_2",
+			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR));
+	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_3", "");
+	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_3",
+			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR));
+
+	save_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
+	load_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
 }
 
 LimboAIEditor::~LimboAIEditor() {
