@@ -3,6 +3,7 @@
 #include "bt_task.h"
 
 #include "core/class_db.h"
+#include "core/error_macros.h"
 #include "core/object.h"
 #include "core/script_language.h"
 #include "core/variant.h"
@@ -13,12 +14,13 @@
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {
 		if (get_script_instance()->has_method(LimboStringNames::get_singleton()->_generate_name)) {
+			ERR_FAIL_COND_V_MSG(!get_script_instance()->get_script()->is_tool(), "ERROR: not a tool script", "Task script should be a \"tool\" script!");
 			return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
 		}
 		String name = get_script_instance()->get_script()->get_path();
 		if (!name.empty()) {
 			// Generate name based on script file
-			name = name.get_basename().get_file();
+			name = name.get_basename().get_file().trim_prefix("BT");
 			return name;
 		}
 	}
