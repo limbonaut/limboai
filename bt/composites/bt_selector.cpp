@@ -8,7 +8,7 @@ void BTSelector::_enter() {
 
 int BTSelector::_tick(float p_delta) {
 	int status = FAILURE;
-	for (int i = 0; i < get_child_count(); i++) {
+	for (int i = last_running_idx; i < get_child_count(); i++) {
 		status = get_child(i)->execute(p_delta);
 		if (status != FAILURE) {
 			last_running_idx = i;
