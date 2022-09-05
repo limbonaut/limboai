@@ -33,6 +33,7 @@
 #include "modules/limboai/bt/composites/bt_sequence.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
+#include "scene/gui/control.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/label.h"
@@ -822,6 +823,14 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 	panel->add_child(memnew(VSeparator));
 
+	Button *new_script_btn = memnew(Button);
+	panel->add_child(new_script_btn);
+	new_script_btn->set_text(TTR("New Task"));
+	new_script_btn->set_tooltip(TTR("Create new task script and edit it."));
+	new_script_btn->set_icon(editor->get_gui_base()->get_icon("ScriptCreate", "EditorIcons"));
+	new_script_btn->set_flat(true);
+	new_script_btn->set_focus_mode(Control::FOCUS_NONE);
+
 	HBoxContainer *nav = memnew(HBoxContainer);
 	panel->add_child(nav);
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
@@ -887,6 +896,8 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 	save_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
 	load_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
+	new_script_btn->connect("pressed", ScriptEditor::get_singleton(), "open_script_create_dialog",
+			varray("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).plus_file("new_task")));
 }
 
 LimboAIEditor::~LimboAIEditor() {
