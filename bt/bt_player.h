@@ -50,6 +50,9 @@ public:
 	void set_auto_restart(bool p_value) { auto_restart = p_value; }
 	bool get_auto_restart() const { return auto_restart; }
 
+	void set_blackboard(Dictionary p_value) { blackboard = p_value; }
+	Dictionary get_blackboard() const { return blackboard; }
+
 	void update(float p_delta);
 	void restart();
 };

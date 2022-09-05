@@ -25,7 +25,7 @@ void BTPlayer::_load_tree() {
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	behavior_tree = p_tree;
-	if (Engine::get_singleton()->is_editor_hint() == false) {
+	if (Engine::get_singleton()->is_editor_hint() == false && get_owner()) {
 		_load_tree();
 		set_update_mode(update_mode);
 	}
@@ -97,6 +97,8 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_active"), &BTPlayer::get_active);
 	ClassDB::bind_method(D_METHOD("set_auto_restart", "p_value"), &BTPlayer::set_auto_restart);
 	ClassDB::bind_method(D_METHOD("get_auto_restart"), &BTPlayer::get_auto_restart);
+	ClassDB::bind_method(D_METHOD("set_blackboard", "p_blackboard"), &BTPlayer::set_blackboard);
+	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTPlayer::get_blackboard);
 
 	ClassDB::bind_method(D_METHOD("update", "p_delta"), &BTPlayer::update);
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
@@ -105,6 +107,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_restart"), "set_auto_restart", "get_auto_restart");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "blackboard"), "set_blackboard", "get_blackboard");
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
