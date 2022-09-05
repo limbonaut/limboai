@@ -117,6 +117,7 @@ private:
 
 	Button *header;
 	TaskTree *task_tree;
+	Panel *usage_hint;
 	PopupMenu *menu;
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
@@ -131,7 +132,6 @@ private:
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
-	void _edit_bt(Ref<BehaviorTree> p_behavior_tree);
 	void _mark_as_dirty(bool p_dirty);
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
@@ -150,6 +150,8 @@ protected:
 
 public:
 	static Ref<Texture> get_task_icon(String p_script_path_or_class);
+
+	void edit_bt(Ref<BehaviorTree> p_behavior_tree);
 
 	void apply_changes();
 
@@ -173,6 +175,8 @@ public:
 	bool has_main_screen() const { return true; }
 	virtual void make_visible(bool p_visible);
 	virtual void apply_changes();
+	virtual void edit(Object *p_object);
+	virtual bool handles(Object *p_object) const;
 
 	LimboAIEditorPlugin(EditorNode *p_editor);
 	~LimboAIEditorPlugin();

@@ -24,6 +24,7 @@
 #include "core/ustring.h"
 #include "core/variant.h"
 #include "core/vector.h"
+#include "editor/editor_inspector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 #include "editor/editor_scale.h"
@@ -465,6 +466,7 @@ TaskPanel::~TaskPanel() {
 
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
+	ERR_FAIL_COND(task_tree->get_bt().is_null());
 	Ref<BTTask> parent = task_tree->get_selected();
 	if (parent.is_null()) {
 		parent = task_tree->get_bt()->get_root_task();
@@ -498,7 +500,7 @@ void LimboAIEditor::_update_history_buttons() {
 void LimboAIEditor::_new_bt() {
 	BehaviorTree *bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
-	_edit_bt(bt);
+	editor->edit_resource(bt);
 }
 
 void LimboAIEditor::_save_bt(String p_path) {
@@ -519,11 +521,16 @@ void LimboAIEditor::_load_bt(String p_path) {
 		history.push_back(bt);
 	}
 
-	_edit_bt(bt);
+	editor->edit_resource(bt);
 }
 
-void LimboAIEditor::_edit_bt(Ref<BehaviorTree> p_behavior_tree) {
+void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "p_behavior_tree is null");
+
+	if (task_tree->get_bt() == p_behavior_tree) {
+		return;
+	}
+
 	task_tree->load_bt(p_behavior_tree);
 
 	int idx = history.find(p_behavior_tree);
@@ -533,6 +540,10 @@ void LimboAIEditor::_edit_bt(Ref<BehaviorTree> p_behavior_tree) {
 		history.push_back(p_behavior_tree);
 		idx_history = history.size() - 1;
 	}
+
+	usage_hint->hide();
+	task_tree->show();
+	task_panel->show();
 
 	_update_history_buttons();
 	_update_header();
@@ -656,7 +667,7 @@ void LimboAIEditor::_on_visibility_changed() const {
 		Ref<BTTask> sel = task_tree->get_selected();
 		if (sel.is_valid()) {
 			editor->edit_resource(sel);
-		} else {
+		} else if (task_tree->get_bt().is_valid() && editor->get_inspector()->get_edited_object() != task_tree->get_bt().ptr()) {
 			editor->edit_resource(task_tree->get_bt());
 		}
 
@@ -680,12 +691,12 @@ void LimboAIEditor::_on_save_pressed() {
 
 void LimboAIEditor::_on_history_back() {
 	idx_history = MAX(idx_history - 1, 0);
-	_edit_bt(history[idx_history]);
+	editor->edit_resource(history[idx_history]);
 }
 
 void LimboAIEditor::_on_history_forward() {
 	idx_history = MIN(idx_history + 1, history.size() - 1);
-	_edit_bt(history[idx_history]);
+	editor->edit_resource(history[idx_history]);
 }
 
 void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type) {
@@ -765,7 +776,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
-	ClassDB::bind_method(D_METHOD("_edit_bt", "p_behavior_tree"), &LimboAIEditor::_edit_bt);
+	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree"), &LimboAIEditor::edit_bt);
 }
 
 LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
@@ -898,18 +909,30 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	task_tree->connect("task_selected", this, "_on_tree_task_selected");
 	task_tree->connect("visibility_changed", this, "_on_visibility_changed");
 	task_tree->connect("task_dragged", this, "_on_task_dragged");
+	task_tree->hide();
+
+	usage_hint = memnew(Panel);
+	usage_hint->set_v_size_flags(SIZE_EXPAND_FILL);
+	usage_hint->set_h_size_flags(SIZE_EXPAND_FILL);
+	hsc->add_child(usage_hint);
+	Label *usage_label = memnew(Label);
+	usage_label->set_anchor(MARGIN_RIGHT, 1);
+	usage_label->set_anchor(MARGIN_BOTTOM, 1);
+	usage_label->set_align(Label::ALIGN_CENTER);
+	usage_label->set_valign(Label::VALIGN_CENTER);
+	usage_label->set_text(TTR("Create a new or load an existing behavior tree."));
+	usage_hint->add_child(usage_label);
 
 	task_panel = memnew(TaskPanel(p_editor));
 	hsc->add_child(task_panel);
 	hsc->set_split_offset(-300);
 	task_panel->connect("task_selected", this, "_on_panel_task_selected");
+	task_panel->hide();
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
 	menu->connect("id_pressed", this, "_on_action_selected");
 	menu->set_hide_on_window_lose_focus(true);
-
-	_new_bt();
 
 	GLOBAL_DEF("limbo_ai/behavior_tree/behavior_tree_default_dir", "res://ai/trees");
 	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/behavior_tree_default_dir",
@@ -952,6 +975,16 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 
 void LimboAIEditorPlugin::make_visible(bool p_visible) {
 	limbo_ai_editor->set_visible(p_visible);
+}
+
+void LimboAIEditorPlugin::edit(Object *p_object) {
+	if (Object::cast_to<BehaviorTree>(p_object)) {
+		limbo_ai_editor->edit_bt(Object::cast_to<BehaviorTree>(p_object));
+	}
+}
+
+bool LimboAIEditorPlugin::handles(Object *p_object) const {
+	return p_object->is_class("BehaviorTree");
 }
 
 LimboAIEditorPlugin::LimboAIEditorPlugin(EditorNode *p_editor) {
