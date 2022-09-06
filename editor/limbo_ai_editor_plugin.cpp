@@ -681,6 +681,9 @@ void LimboAIEditor::_on_header_pressed() const {
 }
 
 void LimboAIEditor::_on_save_pressed() {
+	if (task_tree->get_bt().is_null()) {
+		return;
+	}
 	String path = task_tree->get_bt()->get_path();
 	if (path.empty()) {
 		save_dialog->popup_centered_ratio();
