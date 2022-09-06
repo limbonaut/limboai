@@ -14,6 +14,7 @@
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/popup_menu.h"
+#include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/texture.h"
 
@@ -116,6 +117,7 @@ private:
 	Set<Ref<BehaviorTree>> dirty;
 
 	Button *header;
+	HSplitContainer *hsc;
 	TaskTree *task_tree;
 	Panel *usage_hint;
 	PopupMenu *menu;
@@ -147,6 +149,8 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	static Ref<Texture> get_task_icon(String p_script_path_or_class);

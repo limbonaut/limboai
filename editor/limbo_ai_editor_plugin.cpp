@@ -8,6 +8,7 @@
 #include "core/dictionary.h"
 #include "core/error_list.h"
 #include "core/error_macros.h"
+#include "core/io/config_file.h"
 #include "core/io/image_loader.h"
 #include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
@@ -28,6 +29,7 @@
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 #include "editor/editor_scale.h"
+#include "editor/editor_settings.h"
 #include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/bt_task.h"
@@ -763,6 +765,25 @@ Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
 	return EditorNode::get_singleton()->get_class_icon(base_type, "BTTask");
 }
 
+void LimboAIEditor::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_ENTER_TREE: {
+			ConfigFile conf;
+			String conf_path = EditorSettings::get_singleton()->get_project_settings_dir().plus_file("limbo_ai.cfg");
+			if (conf.load(conf_path) == OK) {
+				hsc->set_split_offset(conf.get_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset()));
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			ConfigFile conf;
+			String conf_path = EditorSettings::get_singleton()->get_project_settings_dir().plus_file("limbo_ai.cfg");
+			conf.load(conf_path);
+			conf.set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
+			conf.save(conf_path);
+		} break;
+	}
+}
+
 void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
 	ClassDB::bind_method(D_METHOD("_add_task_with_prototype", "p_prototype"), &LimboAIEditor::_add_task_with_prototype);
@@ -899,7 +920,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	header->add_constant_override("hseparation", 8);
 	header->connect("pressed", this, "_on_header_pressed");
 
-	HSplitContainer *hsc = memnew(HSplitContainer);
+	hsc = memnew(HSplitContainer);
 	vb->add_child(hsc);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
 	hsc->set_v_size_flags(SIZE_EXPAND_FILL);
