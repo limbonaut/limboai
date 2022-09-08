@@ -8,8 +8,10 @@
 #include "core/script_language.h"
 #include "core/variant.h"
 #include "editor/editor_node.h"
+#include "modules/limboai/blackboard.h"
 #include "modules/limboai/limbo_string_names.h"
 #include "modules/limboai/limbo_utility.h"
+#include <cstddef>
 
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {
@@ -72,7 +74,9 @@ void BTTask::set_custom_name(const String &p_name) {
 	}
 };
 
-void BTTask::initialize(Object *p_agent, Dictionary p_blackboard) {
+void BTTask::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+	ERR_FAIL_COND(p_agent == nullptr);
+	ERR_FAIL_COND(p_blackboard == nullptr);
 	agent = p_agent;
 	blackboard = p_blackboard;
 	for (int i = 0; i < children.size(); i++) {
@@ -239,7 +243,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_NONE, "", 0, "Object"), "", "get_agent");
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "blackboard", PROPERTY_HINT_NONE, "", 0, "Dictionary"), "", "get_blackboard");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "", 0, "Blackboard"), "", "get_blackboard");
 	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_NONE, "", 0, "BTTask"), "", "get_parent");
 	ClassDB::bind_method(D_METHOD("get_children"), &BTTask::_get_children);
@@ -261,8 +265,6 @@ void BTTask::_bind_methods() {
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::STRING, ""), "_generate_name"));
 	ClassDB::bind_method(D_METHOD("_get_configuration_warning"), &BTTask::get_configuration_warning);
 	BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::STRING, ""), "_get_configuration_warning"));
-	// ClassDB::bind_method(D_METHOD("_get_icon"), &BTTask::get_icon);
-	// BIND_VMETHOD(MethodInfo(PropertyInfo(Variant::OBJECT, "", PROPERTY_HINT_RESOURCE_TYPE, "Texture"), "_get_icon"));
 
 	// Public Methods.
 	ClassDB::bind_method(D_METHOD("is_root"), &BTTask::is_root);
@@ -293,7 +295,6 @@ BTTask::BTTask() {
 	custom_name = String();
 	agent = nullptr;
 	parent = nullptr;
-	blackboard = Dictionary();
 	children = Vector<Ref<BTTask>>();
 	status = FRESH;
 }

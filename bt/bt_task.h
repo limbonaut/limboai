@@ -10,6 +10,7 @@
 #include "core/resource.h"
 #include "core/ustring.h"
 #include "core/vector.h"
+#include "modules/limboai/blackboard.h"
 #include "scene/resources/texture.h"
 
 class BTTask : public Resource {
@@ -28,7 +29,7 @@ private:
 
 	String custom_name;
 	Object *agent;
-	Dictionary blackboard;
+	Ref<Blackboard> blackboard;
 	BTTask *parent;
 	Vector<Ref<BTTask>> children;
 	int status;
@@ -47,7 +48,7 @@ protected:
 
 public:
 	Object *get_agent() const { return agent; }
-	Dictionary get_blackboard() const { return blackboard; }
+	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
 	bool is_root() const { return parent == nullptr; }
 	Ref<BTTask> get_root() const;
@@ -56,7 +57,7 @@ public:
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
-	void initialize(Object *p_agent, Dictionary p_blackboard);
+	void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual Ref<BTTask> clone() const;
 	int execute(float p_delta);
 	void cancel();

@@ -4,6 +4,7 @@
 
 #include "core/class_db.h"
 
+#include "blackboard.h"
 #include "bt/actions/bt_action.h"
 #include "bt/actions/bt_console_print.h"
 #include "bt/actions/bt_fail.h"
@@ -43,6 +44,7 @@
 #endif
 
 void register_limboai_types() {
+	ClassDB::register_class<Blackboard>();
 	ClassDB::register_class<BTTask>();
 	ClassDB::register_class<BehaviorTree>();
 	ClassDB::register_class<BTPlayer>();

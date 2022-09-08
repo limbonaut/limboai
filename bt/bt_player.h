@@ -3,11 +3,11 @@
 #ifndef BT_PLAYER_H
 #define BT_PLAYER_H
 
-#include "core/object.h"
-#include "scene/main/node.h"
-
 #include "behavior_tree.h"
 #include "bt_task.h"
+#include "core/object.h"
+#include "modules/limboai/blackboard.h"
+#include "scene/main/node.h"
 #include <pulse/proplist.h>
 
 class BTPlayer : public Node {
@@ -25,7 +25,7 @@ private:
 	UpdateMode update_mode = UpdateMode::IDLE;
 	bool active = false;
 	bool auto_restart = false;
-	Dictionary blackboard;
+	Ref<Blackboard> blackboard;
 
 	Ref<BehaviorTree> _loaded_tree;
 	Ref<BTTask> _root_task;
@@ -34,6 +34,9 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value); }
+	Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
 
 	void _notification(int p_notification);
 
@@ -50,11 +53,14 @@ public:
 	void set_auto_restart(bool p_value) { auto_restart = p_value; }
 	bool get_auto_restart() const { return auto_restart; }
 
-	void set_blackboard(Dictionary p_value) { blackboard = p_value; }
-	Dictionary get_blackboard() const { return blackboard; }
+	Ref<Blackboard> get_blackboard() const { return blackboard; }
+	void set_blackboard(const Ref<Blackboard> &p_blackboard) { blackboard = p_blackboard; }
 
 	void update(float p_delta);
 	void restart();
+
+	BTPlayer();
+	~BTPlayer();
 };
 
 #endif // BT_PLAYER_H

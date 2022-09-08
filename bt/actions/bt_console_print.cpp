@@ -23,30 +23,30 @@ int BTConsolePrint::_tick(float p_delta) {
 			print_line(text);
 		} break;
 		case 1: {
-			print_line(vformat(text, get_blackboard().get(format_var_args[0], "")));
+			print_line(vformat(text, get_blackboard()->get_var(format_var_args[0], "")));
 		} break;
 		case 2: {
-			print_line(vformat(text, get_blackboard().get(format_var_args[0], ""),
-					get_blackboard().get(format_var_args[1], "")));
+			print_line(vformat(text, get_blackboard()->get_var(format_var_args[0], ""),
+					get_blackboard()->get_var(format_var_args[1], "")));
 		} break;
 		case 3: {
-			print_line(vformat(text, get_blackboard().get(format_var_args[0], ""),
-					get_blackboard().get(format_var_args[1], ""),
-					get_blackboard().get(format_var_args[2], "")));
+			print_line(vformat(text, get_blackboard()->get_var(format_var_args[0], ""),
+					get_blackboard()->get_var(format_var_args[1], ""),
+					get_blackboard()->get_var(format_var_args[2], "")));
 		} break;
 		case 4: {
-			print_line(vformat(text, get_blackboard().get(format_var_args[0], ""),
-					get_blackboard().get(format_var_args[1], ""),
-					get_blackboard().get(format_var_args[2], ""),
-					get_blackboard().get(format_var_args[3], "")));
+			print_line(vformat(text, get_blackboard()->get_var(format_var_args[0], ""),
+					get_blackboard()->get_var(format_var_args[1], ""),
+					get_blackboard()->get_var(format_var_args[2], ""),
+					get_blackboard()->get_var(format_var_args[3], "")));
 		} break;
 		case 5:
 		default: {
-			print_line(vformat(text, get_blackboard().get(format_var_args[0], ""),
-					get_blackboard().get(format_var_args[1], ""),
-					get_blackboard().get(format_var_args[2], ""),
-					get_blackboard().get(format_var_args[3], ""),
-					get_blackboard().get(format_var_args[4], "")));
+			print_line(vformat(text, get_blackboard()->get_var(format_var_args[0], ""),
+					get_blackboard()->get_var(format_var_args[1], ""),
+					get_blackboard()->get_var(format_var_args[2], ""),
+					get_blackboard()->get_var(format_var_args[3], ""),
+					get_blackboard()->get_var(format_var_args[4], "")));
 		} break;
 	}
 	return SUCCESS;

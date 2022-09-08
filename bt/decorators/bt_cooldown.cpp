@@ -13,14 +13,14 @@ void BTCooldown::_setup() {
 	if (cooldown_state_var.empty()) {
 		cooldown_state_var = vformat("cooldown_%d", rand());
 	}
-	get_blackboard()[cooldown_state_var] = false;
+	get_blackboard()->set(cooldown_state_var, false);
 	if (start_cooled) {
 		_chill();
 	}
 }
 
 int BTCooldown::_tick(float p_delta) {
-	if (get_blackboard().get(cooldown_state_var, true)) {
+	if (get_blackboard()->get_var(cooldown_state_var, true)) {
 		return FAILURE;
 	}
 	int status = get_child(0)->execute(p_delta);
@@ -31,7 +31,7 @@ int BTCooldown::_tick(float p_delta) {
 }
 
 void BTCooldown::_chill() {
-	get_blackboard()[cooldown_state_var] = true;
+	get_blackboard()->set(cooldown_state_var, true);
 	if (_timer.is_valid()) {
 		_timer->set_time_left(duration);
 	} else {
@@ -41,7 +41,7 @@ void BTCooldown::_chill() {
 }
 
 void BTCooldown::_on_timeout() {
-	get_blackboard()[cooldown_state_var] = false;
+	get_blackboard()->set(cooldown_state_var, false);
 	_timer.unref();
 }
 

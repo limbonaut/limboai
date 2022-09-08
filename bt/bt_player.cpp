@@ -8,7 +8,9 @@
 #include "core/engine.h"
 #include "core/io/resource_loader.h"
 #include "core/object.h"
+#include "core/os/memory.h"
 #include "core/variant.h"
+#include "modules/limboai/blackboard.h"
 #include <cstddef>
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
@@ -100,6 +102,9 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_blackboard", "p_blackboard"), &BTPlayer::set_blackboard);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTPlayer::get_blackboard);
 
+	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &BTPlayer::_set_blackboard_data);
+	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &BTPlayer::_get_blackboard_data);
+
 	ClassDB::bind_method(D_METHOD("update", "p_delta"), &BTPlayer::update);
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
 
@@ -107,11 +112,19 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_restart"), "set_auto_restart", "get_auto_restart");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "blackboard"), "set_blackboard", "get_blackboard");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "", "get_blackboard");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
 	BIND_ENUM_CONSTANT(MANUAL);
 
 	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "p_status")));
+}
+
+BTPlayer::BTPlayer() {
+	blackboard = Ref<Blackboard>(memnew(Blackboard));
+}
+
+BTPlayer::~BTPlayer() {
 }
