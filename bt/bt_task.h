@@ -57,7 +57,7 @@ public:
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
-	void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
+	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual Ref<BTTask> clone() const;
 	int execute(float p_delta);
 	void cancel();

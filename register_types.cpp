@@ -9,7 +9,6 @@
 #include "bt/actions/bt_console_print.h"
 #include "bt/actions/bt_fail.h"
 #include "bt/actions/bt_random_wait.h"
-#include "bt/actions/bt_subtree.h"
 #include "bt/actions/bt_wait.h"
 #include "bt/actions/bt_wait_ticks.h"
 #include "bt/behavior_tree.h"
@@ -30,11 +29,13 @@
 #include "bt/decorators/bt_decorator.h"
 #include "bt/decorators/bt_delay.h"
 #include "bt/decorators/bt_invert.h"
+#include "bt/decorators/bt_new_scope.h"
 #include "bt/decorators/bt_probability.h"
 #include "bt/decorators/bt_repeat.h"
 #include "bt/decorators/bt_repeat_until_failure.h"
 #include "bt/decorators/bt_repeat_until_success.h"
 #include "bt/decorators/bt_run_limit.h"
+#include "bt/decorators/bt_subtree.h"
 #include "bt/decorators/bt_time_limit.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
@@ -77,6 +78,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTWait>();
 	ClassDB::register_class<BTRandomWait>();
 	ClassDB::register_class<BTWaitTicks>();
+	ClassDB::register_class<BTNewScope>();
 	ClassDB::register_class<BTSubtree>();
 	ClassDB::register_class<BTConsolePrint>();
 
