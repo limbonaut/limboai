@@ -13,13 +13,14 @@ void BTCooldown::_setup() {
 	if (cooldown_state_var.empty()) {
 		cooldown_state_var = vformat("cooldown_%d", rand());
 	}
-	get_blackboard()->set(cooldown_state_var, false);
+	get_blackboard()->set_var(cooldown_state_var, false);
 	if (start_cooled) {
 		_chill();
 	}
 }
 
 int BTCooldown::_tick(float p_delta) {
+	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	if (get_blackboard()->get_var(cooldown_state_var, true)) {
 		return FAILURE;
 	}
@@ -31,7 +32,7 @@ int BTCooldown::_tick(float p_delta) {
 }
 
 void BTCooldown::_chill() {
-	get_blackboard()->set(cooldown_state_var, true);
+	get_blackboard()->set_var(cooldown_state_var, true);
 	if (_timer.is_valid()) {
 		_timer->set_time_left(duration);
 	} else {
@@ -41,7 +42,7 @@ void BTCooldown::_chill() {
 }
 
 void BTCooldown::_on_timeout() {
-	get_blackboard()->set(cooldown_state_var, false);
+	get_blackboard()->set_var(cooldown_state_var, false);
 	_timer.unref();
 }
 
@@ -56,6 +57,7 @@ void BTCooldown::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_trigger_on_failure"), &BTCooldown::get_trigger_on_failure);
 	ClassDB::bind_method(D_METHOD("set_cooldown_state_var", "p_value"), &BTCooldown::set_cooldown_state_var);
 	ClassDB::bind_method(D_METHOD("get_cooldown_state_var"), &BTCooldown::get_cooldown_state_var);
+	ClassDB::bind_method(D_METHOD("_on_timeout"), &BTCooldown::_on_timeout);
 
 	ADD_PROPERTY(PropertyInfo(Variant::REAL, "duration"), "set_duration", "get_duration");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "process_pause"), "set_process_pause", "get_process_pause");
