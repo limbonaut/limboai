@@ -3,10 +3,10 @@
 #ifndef BEHAVIOR_TREE_H
 #define BEHAVIOR_TREE_H
 
+#include "bt_task.h"
 #include "core/object.h"
 #include "core/resource.h"
-
-#include "bt_task.h"
+#include "modules/limboai/blackboard.h"
 
 class BehaviorTree : public Resource {
 	GDCLASS(BehaviorTree, Resource);
@@ -33,6 +33,7 @@ public:
 
 	void init();
 	Ref<BehaviorTree> clone() const;
+	Ref<BTTask> instance(Object *p_agent, const Ref<Blackboard> &p_blackboard) const;
 };
 
 #endif // BEHAVIOR_TREE_H

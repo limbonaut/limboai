@@ -26,7 +26,7 @@ public:
 	}
 	Ref<BehaviorTree> get_subtree() const { return subtree; }
 
-	virtual Ref<BTTask> clone() const;
+	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual String get_configuration_warning() const;
 };
 

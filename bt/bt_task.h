@@ -57,8 +57,8 @@ public:
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
-	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual Ref<BTTask> clone() const;
+	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	int execute(float p_delta);
 	void cancel();
 	Ref<BTTask> get_child(int p_idx) const;
@@ -66,6 +66,7 @@ public:
 	void add_child(Ref<BTTask> p_child);
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);
 	void remove_child(Ref<BTTask> p_child);
+	void remove_child_at_index(int p_idx);
 	bool has_child(const Ref<BTTask> &p_child) const;
 	bool is_descendant_of(const Ref<BTTask> &p_task) const;
 	int get_child_index(const Ref<BTTask> &p_child) const;

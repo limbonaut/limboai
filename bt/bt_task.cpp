@@ -93,7 +93,8 @@ void BTTask::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
 Ref<BTTask> BTTask::clone() const {
 	Ref<BTTask> inst = duplicate(false);
 	inst->parent = nullptr;
-	CRASH_COND(inst->get_parent().is_valid());
+	inst->agent = nullptr;
+	inst->blackboard.unref();
 	for (int i = 0; i < children.size(); i++) {
 		Ref<BTTask> c = get_child(i)->clone();
 		c->parent = inst.ptr();
@@ -184,6 +185,11 @@ void BTTask::remove_child(Ref<BTTask> p_child) {
 		p_child->parent = nullptr;
 		emit_changed();
 	}
+}
+
+void BTTask::remove_child_at_index(int p_idx) {
+	ERR_FAIL_INDEX(p_idx, get_child_count());
+	children.remove(p_idx);
 }
 
 bool BTTask::has_child(const Ref<BTTask> &p_child) const {
@@ -277,6 +283,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_child", "p_child"), &BTTask::add_child);
 	ClassDB::bind_method(D_METHOD("add_child_at_index", "p_child", "p_idx"), &BTTask::add_child_at_index);
 	ClassDB::bind_method(D_METHOD("remove_child", "p_child"), &BTTask::remove_child);
+	ClassDB::bind_method(D_METHOD("remove_child_at_index", "p_idx"), &BTTask::remove_child_at_index);
 	ClassDB::bind_method(D_METHOD("has_child", "p_child"), &BTTask::has_child);
 	ClassDB::bind_method(D_METHOD("is_descendant_of", "p_task"), &BTTask::is_descendant_of);
 	ClassDB::bind_method(D_METHOD("get_child_index", "p_child"), &BTTask::get_child_index);

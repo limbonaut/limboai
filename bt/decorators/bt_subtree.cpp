@@ -11,6 +11,7 @@
 #include "modules/limboai/bt/actions/bt_fail.h"
 #include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/bt/decorators/bt_decorator.h"
+#include "modules/limboai/bt/decorators/bt_new_scope.h"
 
 String BTSubtree::_generate_name() const {
 	String s;
@@ -24,16 +25,18 @@ String BTSubtree::_generate_name() const {
 	return vformat("Subtree %s", s);
 }
 
-Ref<BTTask> BTSubtree::clone() const {
-	Ref<BTTask> copy = BTDecorator::clone();
-	if (!Engine::get_singleton()->is_editor_hint()) {
-		ERR_FAIL_COND_V_MSG(!subtree.is_valid(), copy, "Subtree is not assigned.");
-		ERR_FAIL_COND_V_MSG(!subtree->get_root_task().is_valid(), copy, "Subtree root task is not valid.");
-		ERR_FAIL_COND_V_MSG(get_child_count() != 0, copy, "Subtree prototype shouldn't have children.");
+void BTSubtree::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+	ERR_FAIL_COND_MSG(!subtree.is_valid(), "Subtree is not assigned.");
+	ERR_FAIL_COND_MSG(!subtree->get_root_task().is_valid(), "Subtree root task is not valid.");
+	ERR_FAIL_COND_MSG(get_child_count() != 0, "Subtree task shouldn't have children during initialization.");
 
-		copy->add_child(subtree->get_root_task()->clone());
-	}
-	return copy;
+	// while (get_child_count() > 0) {
+	// 	remove_child_at_index(get_child_count() - 1);
+	// }
+
+	add_child(subtree->get_root_task()->clone());
+
+	BTNewScope::initialize(p_agent, p_blackboard);
 }
 
 int BTSubtree::_tick(float p_delta) {

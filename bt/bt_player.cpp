@@ -21,8 +21,7 @@ void BTPlayer::_load_tree() {
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "Behavior tree has no valid root task.");
 	_loaded_tree = behavior_tree;
-	_root_task = _loaded_tree->get_root_task()->clone();
-	_root_task->initialize(get_owner(), blackboard);
+	_root_task = _loaded_tree->instance(get_owner(), blackboard);
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
