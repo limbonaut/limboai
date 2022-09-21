@@ -4,16 +4,21 @@
 #define LIMBO_UTILITY_H
 
 #include "core/object.h"
-#include "core/script_language.h"
 
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
 
 protected:
+	static LimboUtility *singleton;
 	static void _bind_methods();
 
 public:
-	static String get_script_class(const Ref<Script> &p_script);
+	static LimboUtility *get_singleton();
+
+	String decorate_var(String p_variable);
+
+	LimboUtility();
+	~LimboUtility();
 };
 
 #endif // LIMBO_UTILITY_H

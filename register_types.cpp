@@ -37,12 +37,15 @@
 #include "bt/decorators/bt_run_limit.h"
 #include "bt/decorators/bt_subtree.h"
 #include "bt/decorators/bt_time_limit.h"
+#include "core/os/memory.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/limbo_ai_editor_plugin.h"
 #endif
+
+static LimboUtility *_limbo_utility = nullptr;
 
 void register_limboai_types() {
 	ClassDB::register_class<Blackboard>();
@@ -84,6 +87,10 @@ void register_limboai_types() {
 
 	ClassDB::register_class<BTCondition>();
 
+	_limbo_utility = memnew(LimboUtility);
+	ClassDB::register_class<LimboUtility>();
+	Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
+
 #ifdef TOOLS_ENABLED
 	EditorPlugins::add_by_type<LimboAIEditorPlugin>();
 #endif
@@ -93,4 +100,6 @@ void register_limboai_types() {
 
 void unregister_limboai_types() {
 	LimboStringNames::free();
+
+	memdelete(_limbo_utility);
 }
