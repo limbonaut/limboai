@@ -14,7 +14,7 @@ void BTNewScope::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard
 }
 
 int BTNewScope::_tick(float p_delta) {
-	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator doesn't have a child.");
+	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	return get_child(0)->execute(p_delta);
 }
 

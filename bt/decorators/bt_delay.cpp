@@ -3,6 +3,7 @@
 #include "bt_delay.h"
 #include "core/array.h"
 #include "core/class_db.h"
+#include "core/error_macros.h"
 #include "core/object.h"
 #include "core/variant.h"
 
@@ -15,6 +16,7 @@ void BTDelay::_enter() {
 }
 
 int BTDelay::_tick(float p_delta) {
+	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	time_passed += p_delta;
 	if (time_passed <= seconds) {
 		return RUNNING;

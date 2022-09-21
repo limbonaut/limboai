@@ -29,6 +29,7 @@ Ref<BTTask> BTSubtree::clone() const {
 	if (!Engine::get_singleton()->is_editor_hint()) {
 		ERR_FAIL_COND_V_MSG(!subtree.is_valid(), copy, "Subtree is not assigned.");
 		ERR_FAIL_COND_V_MSG(!subtree->get_root_task().is_valid(), copy, "Subtree root task is not valid.");
+		ERR_FAIL_COND_V_MSG(get_child_count() != 0, copy, "Subtree prototype shouldn't have children.");
 
 		copy->add_child(subtree->get_root_task()->clone());
 	}
