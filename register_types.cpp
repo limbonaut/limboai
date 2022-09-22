@@ -28,6 +28,7 @@
 #include "bt/decorators/bt_cooldown.h"
 #include "bt/decorators/bt_decorator.h"
 #include "bt/decorators/bt_delay.h"
+#include "bt/decorators/bt_for_each.h"
 #include "bt/decorators/bt_invert.h"
 #include "bt/decorators/bt_new_scope.h"
 #include "bt/decorators/bt_probability.h"
@@ -75,6 +76,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTTimeLimit>();
 	ClassDB::register_class<BTCooldown>();
 	ClassDB::register_class<BTProbability>();
+	ClassDB::register_class<BTForEach>();
 
 	ClassDB::register_class<BTAction>();
 	ClassDB::register_class<BTFail>();
