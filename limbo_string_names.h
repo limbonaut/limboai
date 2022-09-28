@@ -29,6 +29,11 @@ public:
 	StringName _exit;
 	StringName _tick;
 	StringName behavior_tree_finished;
+	StringName setup;
+	StringName entered;
+	StringName exited;
+	StringName updated;
+	StringName _update;
 };
 
 #endif // LIMBO_STRING_NAMES_H

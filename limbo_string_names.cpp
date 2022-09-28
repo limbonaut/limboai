@@ -12,4 +12,9 @@ LimboStringNames::LimboStringNames() {
 	_exit = StaticCString::create("_exit");
 	_tick = StaticCString::create("_tick");
 	behavior_tree_finished = StaticCString::create("behavior_tree_finished");
+	setup = StaticCString::create("setup");
+	entered = StaticCString::create("entered");
+	exited = StaticCString::create("exited");
+	updated = StaticCString::create("updated");
+	_update = StaticCString::create("_update");
 }
