@@ -129,8 +129,19 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		uint64_t key = _get_transition_key(active_state, p_event);
 		if (transitions.has(key)) {
 			LimboState *to_state = transitions[key];
-			_change_state(to_state);
-			event_consumed = true;
+			bool permitted = true;
+			if (to_state->guard.obj != nullptr) {
+				Variant result = to_state->guard.obj->callv(to_state->guard.func, to_state->guard.binds);
+				if (unlikely(result.get_type() != Variant::BOOL)) {
+					ERR_PRINT_ONCE(vformat("State guard func \"%s()\" returned non-boolean value (%s).", to_state->guard.func, to_state));
+				} else {
+					permitted = bool(result);
+				}
+			}
+			if (permitted) {
+				_change_state(to_state);
+				event_consumed = true;
+			}
 		}
 	}
 

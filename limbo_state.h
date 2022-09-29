@@ -4,22 +4,29 @@
 #define LIMBO_STATE_H
 
 #include "blackboard.h"
+#include "core/class_db.h"
+#include "core/object.h"
 #include "core/string_name.h"
 #include "core/ustring.h"
 #include "core/variant.h"
 #include "scene/main/node.h"
 
-// TODO Implement guards
 class LimboHSM;
 
 class LimboState : public Node {
 	GDCLASS(LimboState, Node);
 
 private:
+	struct GuardCallback {
+		Object *obj = nullptr;
+		StringName func;
+		Array binds;
+	};
+
 	Object *agent;
 	Ref<Blackboard> blackboard;
 	Map<String, StringName> handlers;
-	// Guard *guard;
+	GuardCallback guard;
 
 protected:
 	friend LimboHSM;
@@ -51,7 +58,9 @@ public:
 	String event_finished() const { return EVENT_FINISHED; }
 	LimboState *get_root() const;
 	bool is_active() const { return active; }
-	uint32_t hash() const;
+
+	void set_guard_func(Object *p_object, const StringName &p_func, const Array &p_binds = Array());
+	void clear_guard_func();
 
 	LimboState();
 };

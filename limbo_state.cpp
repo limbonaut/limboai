@@ -109,6 +109,21 @@ LimboState *LimboState::call_on_update(Object *p_object, const StringName &p_met
 	return this;
 }
 
+void LimboState::set_guard_func(Object *p_object, const StringName &p_func, const Array &p_binds) {
+	ERR_FAIL_COND(p_object == nullptr);
+	ERR_FAIL_COND(!p_object->has_method(p_func));
+
+	guard.obj = p_object;
+	guard.func = p_func;
+	guard.binds = p_binds;
+}
+
+void LimboState::clear_guard_func() {
+	guard.obj = nullptr;
+	guard.func = "";
+	guard.binds.clear();
+}
+
 void LimboState::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_EXIT_TREE: {
@@ -134,6 +149,8 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("call_on_enter", "p_object", "p_method"), &LimboState::call_on_enter);
 	ClassDB::bind_method(D_METHOD("call_on_exit", "p_object", "p_method"), &LimboState::call_on_exit);
 	ClassDB::bind_method(D_METHOD("call_on_update", "p_object", "p_method"), &LimboState::call_on_update);
+	ClassDB::bind_method(D_METHOD("set_guard_func", "p_object", "p_func", "p_binds"), &LimboState::set_guard_func, Array());
+	ClassDB::bind_method(D_METHOD("clear_guard_func"), &LimboState::clear_guard_func);
 
 	BIND_VMETHOD(MethodInfo("_setup"));
 	BIND_VMETHOD(MethodInfo("_enter"));
@@ -149,6 +166,8 @@ void LimboState::_bind_methods() {
 LimboState::LimboState() {
 	agent = nullptr;
 	active = false;
+
+	guard.obj = nullptr;
 
 	set_process(false);
 	set_physics_process(false);
