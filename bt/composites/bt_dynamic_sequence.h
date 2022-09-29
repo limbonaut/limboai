@@ -3,7 +3,7 @@
 #ifndef BT_DYNAMIC_SEQUENCE_H
 #define BT_DYNAMIC_SEQUENCE_H
 
-#import "bt_composite.h"
+#include "bt_composite.h"
 #include "core/object.h"
 
 class BTDynamicSequence : public BTComposite {

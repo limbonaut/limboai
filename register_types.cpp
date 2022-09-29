@@ -97,9 +97,9 @@ void register_limboai_types() {
 
 	_limbo_utility = memnew(LimboUtility);
 	ClassDB::register_class<LimboUtility>();
-	Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 
 #ifdef TOOLS_ENABLED
+	Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 	EditorPlugins::add_by_type<LimboAIEditorPlugin>();
 #endif
 

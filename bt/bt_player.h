@@ -8,7 +8,6 @@
 #include "core/object.h"
 #include "modules/limboai/blackboard.h"
 #include "scene/main/node.h"
-#include <pulse/proplist.h>
 
 class BTPlayer : public Node {
 	GDCLASS(BTPlayer, Node);

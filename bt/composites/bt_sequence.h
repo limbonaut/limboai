@@ -3,7 +3,7 @@
 #ifndef BT_SEQUENCE_H
 #define BT_SEQUENCE_H
 
-#import "bt_composite.h"
+#include "bt_composite.h"
 #include "core/object.h"
 
 class BTSequence : public BTComposite {
