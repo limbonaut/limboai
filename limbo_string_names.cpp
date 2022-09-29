@@ -17,4 +17,5 @@ LimboStringNames::LimboStringNames() {
 	exited = StaticCString::create("exited");
 	updated = StaticCString::create("updated");
 	_update = StaticCString::create("_update");
+	state_changed = StaticCString::create("state_changed");
 }

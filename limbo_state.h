@@ -10,6 +10,7 @@
 #include "scene/main/node.h"
 
 // TODO Implement guards
+class LimboHSM;
 
 class LimboState : public Node {
 	GDCLASS(LimboState, Node);
@@ -18,10 +19,12 @@ private:
 	Object *agent;
 	Ref<Blackboard> blackboard;
 	Map<String, StringName> handlers;
-	bool active;
 	// Guard *guard;
 
 protected:
+	friend LimboHSM;
+	bool active;
+
 	static void _bind_methods();
 
 	void _notification(int p_what);
@@ -48,6 +51,7 @@ public:
 	String event_finished() const { return EVENT_FINISHED; }
 	LimboState *get_root() const;
 	bool is_active() const { return active; }
+	uint32_t hash() const;
 
 	LimboState();
 };

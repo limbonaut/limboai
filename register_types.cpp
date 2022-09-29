@@ -39,6 +39,7 @@
 #include "bt/decorators/bt_subtree.h"
 #include "bt/decorators/bt_time_limit.h"
 #include "core/os/memory.h"
+#include "limbo_hsm.h"
 #include "limbo_state.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
@@ -53,6 +54,7 @@ void register_limboai_types() {
 	ClassDB::register_class<Blackboard>();
 
 	ClassDB::register_class<LimboState>();
+	ClassDB::register_class<LimboHSM>();
 
 	ClassDB::register_class<BTTask>();
 	ClassDB::register_class<BehaviorTree>();

@@ -5,6 +5,7 @@
 #include "core/class_db.h"
 #include "core/error_macros.h"
 #include "core/object.h"
+#include "core/typedefs.h"
 #include "core/variant.h"
 #include "limbo_string_names.h"
 
@@ -41,6 +42,9 @@ void LimboState::_enter() {
 };
 
 void LimboState::_exit() {
+	if (!active) {
+		return;
+	}
 	if (get_script_instance() &&
 			get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
 		get_script_instance()->call(LimboStringNames::get_singleton()->_exit);
@@ -62,12 +66,6 @@ void LimboState::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard
 	ERR_FAIL_COND(!p_blackboard.is_valid());
 	agent = p_agent;
 	blackboard = p_blackboard;
-	for (int i = 0; i < get_child_count(); i++) {
-		LimboState *c = Object::cast_to<LimboState>(get_child(i));
-		if (c) {
-			c->initialize(p_agent, p_blackboard);
-		}
-	}
 	_setup();
 };
 
