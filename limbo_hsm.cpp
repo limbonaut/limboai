@@ -2,6 +2,7 @@
 
 #include "limbo_hsm.h"
 
+#include "core/class_db.h"
 #include "core/engine.h"
 #include "core/error_macros.h"
 #include "core/object.h"
@@ -88,9 +89,9 @@ void LimboHSM::_update(float p_delta) {
 }
 
 void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String &p_event) {
-	ERR_FAIL_COND(p_from_state == nullptr);
-	ERR_FAIL_COND(p_from_state->get_parent() != this);
-	ERR_FAIL_COND(!p_from_state->is_class("LimboState"));
+	// ERR_FAIL_COND(p_from_state == nullptr);
+	ERR_FAIL_COND(p_from_state != nullptr && p_from_state->get_parent() != this);
+	ERR_FAIL_COND(p_from_state != nullptr && !p_from_state->is_class("LimboState"));
 	ERR_FAIL_COND(p_to_state == nullptr);
 	ERR_FAIL_COND(p_to_state->get_parent() != this);
 	ERR_FAIL_COND(!p_to_state->is_class("LimboState"));
@@ -127,8 +128,18 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 
 	if (!event_consumed && active_state) {
 		uint64_t key = _get_transition_key(active_state, p_event);
+		LimboState *to_state = nullptr;
 		if (transitions.has(key)) {
-			LimboState *to_state = transitions[key];
+			to_state = transitions[key];
+		}
+		if (to_state == nullptr) {
+			// Get ANYSTATE transition.
+			key = _get_transition_key(nullptr, p_event);
+			if (transitions.has(key)) {
+				to_state = transitions[key];
+			}
+		}
+		if (to_state != nullptr) {
 			bool permitted = true;
 			if (to_state->guard.obj != nullptr) {
 				Variant result = to_state->guard.obj->callv(to_state->guard.func, to_state->guard.binds);
@@ -203,12 +214,14 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_active", "p_active"), &LimboHSM::set_active);
 	ClassDB::bind_method(D_METHOD("update", "p_delta"), &LimboHSM::update);
 	ClassDB::bind_method(D_METHOD("add_transition", "p_from_state", "p_to_state", "p_event"), &LimboHSM::add_transition);
+	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
 	BIND_ENUM_CONSTANT(MANUAL);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle, Physics, Manual"), "set_update_mode", "get_update_mode");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE"), "", "anystate");
 
 	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_NONE, "", 0, "LimboState")));
 }

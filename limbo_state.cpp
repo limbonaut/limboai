@@ -157,6 +157,8 @@ void LimboState::_bind_methods() {
 	BIND_VMETHOD(MethodInfo("_exit"));
 	BIND_VMETHOD(MethodInfo("_update", PropertyInfo(Variant::REAL, "p_delta")));
 
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED"), "", "event_finished");
+
 	ADD_SIGNAL(MethodInfo("setup"));
 	ADD_SIGNAL(MethodInfo("entered"));
 	ADD_SIGNAL(MethodInfo("exited"));

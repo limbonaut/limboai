@@ -53,6 +53,7 @@ public:
 
 	void update(float p_delta) { _update(p_delta); }
 	void add_transition(Node *p_from_state, Node *p_to_state, const String &p_event);
+	LimboState *anystate() const { return nullptr; };
 
 	LimboHSM();
 };
