@@ -21,6 +21,10 @@ void BTPlayer::_load_tree() {
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "Behavior tree has no valid root task.");
 	_loaded_tree = behavior_tree;
+	if (prefetch_nodepath_vars == true) {
+		// blackboard->prefetch_nodepath_vars(get_owner());
+		blackboard->prefetch_nodepath_vars(this);
+	}
 	_root_task = _loaded_tree->instance(get_owner(), blackboard);
 }
 
@@ -100,6 +104,8 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_auto_restart"), &BTPlayer::get_auto_restart);
 	ClassDB::bind_method(D_METHOD("set_blackboard", "p_blackboard"), &BTPlayer::set_blackboard);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTPlayer::get_blackboard);
+	ClassDB::bind_method(D_METHOD("set_prefetch_nodepath_vars", "p_value"), &BTPlayer::set_prefetch_nodepath_vars);
+	ClassDB::bind_method(D_METHOD("get_prefetch_nodepath_vars"), &BTPlayer::get_prefetch_nodepath_vars);
 
 	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &BTPlayer::_set_blackboard_data);
 	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &BTPlayer::_get_blackboard_data);
@@ -113,6 +119,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_restart"), "set_auto_restart", "get_auto_restart");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars"), "set_prefetch_nodepath_vars", "get_prefetch_nodepath_vars");
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);

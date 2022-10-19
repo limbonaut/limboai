@@ -28,6 +28,7 @@ public:
 	Variant get_var(const Variant &p_key, const Variant &p_default) const;
 	void set_var(const Variant &p_key, const Variant &p_value);
 	bool has_var(const Variant &p_key) const;
+	void prefetch_nodepath_vars(Node *p_node);
 };
 
 #endif // BLACKBOARD_H

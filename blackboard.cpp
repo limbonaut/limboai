@@ -1,6 +1,10 @@
 /* blackboard.cpp */
 
 #include "blackboard.h"
+#include "core/error_macros.h"
+#include "core/variant.h"
+#include "scene/main/node.h"
+#include <cstddef>
 
 Variant Blackboard::get_var(const Variant &p_key, const Variant &p_default) const {
 	if (data.has(p_key)) {
@@ -19,6 +23,19 @@ void Blackboard::set_var(const Variant &p_key, const Variant &p_value) {
 bool Blackboard::has_var(const Variant &p_key) const {
 	return data.has(p_key) || (parent.is_valid() && parent->has_var(p_key));
 }
+
+void Blackboard::prefetch_nodepath_vars(Node *p_node) {
+	ERR_FAIL_COND(p_node == nullptr);
+	for (int i = 0; i < data.size(); i++) {
+		Variant value = data.get_value_at_index(i);
+		if (value.get_type() == Variant::NODE_PATH) {
+			Node *fetched_node = p_node->get_node_or_null(value);
+			if (fetched_node != nullptr) {
+				data[data.get_key_at_index(i)] = fetched_node;
+			}
+		}
+	}
+};
 
 void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_data"), &Blackboard::get_data);

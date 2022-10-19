@@ -25,6 +25,7 @@ private:
 	bool active = false;
 	bool auto_restart = false;
 	Ref<Blackboard> blackboard;
+	bool prefetch_nodepath_vars = true;
 
 	Ref<BehaviorTree> _loaded_tree;
 	Ref<BTTask> _root_task;
@@ -54,6 +55,9 @@ public:
 
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	void set_blackboard(const Ref<Blackboard> &p_blackboard) { blackboard = p_blackboard; }
+
+	void set_prefetch_nodepath_vars(bool p_value) { prefetch_nodepath_vars = p_value; }
+	bool get_prefetch_nodepath_vars() const { return prefetch_nodepath_vars; }
 
 	void update(float p_delta);
 	void restart();
