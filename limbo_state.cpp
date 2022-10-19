@@ -136,6 +136,7 @@ void LimboState::_notification(int p_what) {
 
 void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root"), &LimboState::get_root);
+	ClassDB::bind_method(D_METHOD("get_agent"), &LimboState::get_agent);
 	ClassDB::bind_method(D_METHOD("event_finished"), &LimboState::event_finished);
 	ClassDB::bind_method(D_METHOD("is_active"), &LimboState::is_active);
 	ClassDB::bind_method(D_METHOD("_setup"), &LimboState::_setup);
@@ -151,6 +152,7 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("call_on_update", "p_object", "p_method"), &LimboState::call_on_update);
 	ClassDB::bind_method(D_METHOD("set_guard_func", "p_object", "p_func", "p_binds"), &LimboState::set_guard_func, Array());
 	ClassDB::bind_method(D_METHOD("clear_guard_func"), &LimboState::clear_guard_func);
+	ClassDB::bind_method(D_METHOD("get_blackboard"), &LimboState::get_blackboard);
 
 	BIND_VMETHOD(MethodInfo("_setup"));
 	BIND_VMETHOD(MethodInfo("_enter"));

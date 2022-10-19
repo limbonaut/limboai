@@ -46,6 +46,9 @@ protected:
 public:
 	static const String EVENT_FINISHED;
 
+	Ref<Blackboard> get_blackboard() const { return blackboard; }
+	Object *get_agent() const { return agent; }
+
 	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
 
