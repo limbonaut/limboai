@@ -985,8 +985,7 @@ LimboAIEditor::~LimboAIEditor() {
 /////////////////////////  LimboAIEditorPlugin  ////////////////////////////////
 
 const Ref<Texture> LimboAIEditorPlugin::get_icon() const {
-	// TODO:
-	return nullptr;
+	return editor->get_gui_base()->get_icon("LimboAIEditor", "EditorIcons");
 }
 
 void LimboAIEditorPlugin::apply_changes() {
