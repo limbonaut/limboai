@@ -13,6 +13,7 @@
 #include "bt/actions/bt_wait_ticks.h"
 #include "bt/behavior_tree.h"
 #include "bt/bt_player.h"
+#include "bt/bt_state.h"
 #include "bt/bt_task.h"
 #include "bt/composites/bt_composite.h"
 #include "bt/composites/bt_dynamic_selector.h"
@@ -59,6 +60,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BTTask>();
 	ClassDB::register_class<BehaviorTree>();
 	ClassDB::register_class<BTPlayer>();
+	ClassDB::register_class<BTState>();
 
 	ClassDB::register_class<BTComposite>();
 	ClassDB::register_class<BTSequence>();
