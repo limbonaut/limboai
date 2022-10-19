@@ -45,4 +45,5 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("has_var", "p_key"), &Blackboard::has_var);
 	ClassDB::bind_method(D_METHOD("set_parent_scope", "p_blackboard"), &Blackboard::set_parent_scope);
 	ClassDB::bind_method(D_METHOD("get_parent_scope"), &Blackboard::get_parent_scope);
+	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "p_node"), &Blackboard::prefetch_nodepath_vars);
 }
