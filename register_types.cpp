@@ -4,6 +4,30 @@
 
 #include "core/class_db.h"
 
+#include "bb_param/bb_aabb.h"
+#include "bb_param/bb_array.h"
+#include "bb_param/bb_basis.h"
+#include "bb_param/bb_bool.h"
+#include "bb_param/bb_byte_array.h"
+#include "bb_param/bb_color.h"
+#include "bb_param/bb_color_array.h"
+#include "bb_param/bb_dictionary.h"
+#include "bb_param/bb_float.h"
+#include "bb_param/bb_int.h"
+#include "bb_param/bb_int_array.h"
+#include "bb_param/bb_param.h"
+#include "bb_param/bb_plane.h"
+#include "bb_param/bb_quat.h"
+#include "bb_param/bb_real_array.h"
+#include "bb_param/bb_rect2.h"
+#include "bb_param/bb_string.h"
+#include "bb_param/bb_string_array.h"
+#include "bb_param/bb_transform.h"
+#include "bb_param/bb_transform2d.h"
+#include "bb_param/bb_vector2.h"
+#include "bb_param/bb_vector2_array.h"
+#include "bb_param/bb_vector3.h"
+#include "bb_param/bb_vector3_array.h"
 #include "blackboard.h"
 #include "bt/actions/bt_action.h"
 #include "bt/actions/bt_console_print.h"
@@ -96,6 +120,31 @@ void register_limboai_types() {
 	ClassDB::register_class<BTConsolePrint>();
 
 	ClassDB::register_class<BTCondition>();
+
+	ClassDB::register_class<BBParam>();
+	ClassDB::register_class<BBInt>();
+	ClassDB::register_class<BBBool>();
+	ClassDB::register_class<BBFloat>();
+	ClassDB::register_class<BBString>();
+	ClassDB::register_class<BBVector2>();
+	ClassDB::register_class<BBRect2>();
+	ClassDB::register_class<BBVector3>();
+	ClassDB::register_class<BBTransform2D>();
+	ClassDB::register_class<BBPlane>();
+	ClassDB::register_class<BBQuat>();
+	ClassDB::register_class<BBAabb>();
+	ClassDB::register_class<BBBasis>();
+	ClassDB::register_class<BBTransform>();
+	ClassDB::register_class<BBColor>();
+	ClassDB::register_class<BBDictionary>();
+	ClassDB::register_class<BBArray>();
+	ClassDB::register_class<BBByteArray>();
+	ClassDB::register_class<BBIntArray>();
+	ClassDB::register_class<BBRealArray>();
+	ClassDB::register_class<BBColorArray>();
+	ClassDB::register_class<BBStringArray>();
+	ClassDB::register_class<BBVector2Array>();
+	ClassDB::register_class<BBVector3Array>();
 
 	_limbo_utility = memnew(LimboUtility);
 	ClassDB::register_class<LimboUtility>();
