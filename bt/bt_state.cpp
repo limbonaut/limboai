@@ -35,7 +35,7 @@ void BTState::_bind_methods() {
 	// ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_data"), &BTState::_set_blackboard_data);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
+	// ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
 }
 
 BTState::BTState() {

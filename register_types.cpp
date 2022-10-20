@@ -15,6 +15,7 @@
 #include "bb_param/bb_float.h"
 #include "bb_param/bb_int.h"
 #include "bb_param/bb_int_array.h"
+#include "bb_param/bb_node.h"
 #include "bb_param/bb_param.h"
 #include "bb_param/bb_plane.h"
 #include "bb_param/bb_quat.h"
@@ -121,7 +122,8 @@ void register_limboai_types() {
 
 	ClassDB::register_class<BTCondition>();
 
-	ClassDB::register_class<BBParam>();
+	// ClassDB::register_class<BBParam>();
+	ClassDB::register_virtual_class<BBParam>();
 	ClassDB::register_class<BBInt>();
 	ClassDB::register_class<BBBool>();
 	ClassDB::register_class<BBFloat>();
@@ -136,6 +138,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BBBasis>();
 	ClassDB::register_class<BBTransform>();
 	ClassDB::register_class<BBColor>();
+	ClassDB::register_class<BBNode>();
 	ClassDB::register_class<BBDictionary>();
 	ClassDB::register_class<BBArray>();
 	ClassDB::register_class<BBByteArray>();
