@@ -122,7 +122,6 @@ void register_limboai_types() {
 
 	ClassDB::register_class<BTCondition>();
 
-	// ClassDB::register_class<BBParam>();
 	ClassDB::register_virtual_class<BBParam>();
 	ClassDB::register_class<BBInt>();
 	ClassDB::register_class<BBBool>();

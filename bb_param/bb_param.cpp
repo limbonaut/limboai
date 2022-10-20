@@ -8,6 +8,25 @@
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
+void BBParam::set_value_source(ValueSource p_value) {
+	value_source = p_value;
+	property_list_changed_notify();
+	_update_name();
+	emit_changed();
+}
+
+void BBParam::set_saved_value(Variant p_value) {
+	saved_value = p_value;
+	_update_name();
+	emit_changed();
+}
+
+void BBParam::set_variable(const String &p_value) {
+	variable = p_value;
+	_update_name();
+	emit_changed();
+}
+
 Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
 	ERR_FAIL_COND_V(p_blackboard.is_valid(), p_default);
 
@@ -34,7 +53,7 @@ void BBParam::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_variable", "p_variable_name"), &BBParam::set_variable);
 	ClassDB::bind_method(D_METHOD("get_variable"), &BBParam::get_variable);
 	ClassDB::bind_method(D_METHOD("get_type"), &BBParam::get_type);
-	ClassDB::bind_method(D_METHOD("get_value"), &BBParam::get_value);
+	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value, Blackboard Var"), "set_value_source", "get_value_source");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");

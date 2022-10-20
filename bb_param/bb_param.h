@@ -5,8 +5,10 @@
 
 #include "core/object.h"
 #include "core/resource.h"
+#include "core/typedefs.h"
 #include "core/variant.h"
 #include "modules/limboai/blackboard.h"
+#include "modules/limboai/limbo_utility.h"
 
 class BBParam : public Resource {
 	GDCLASS(BBParam, Resource);
@@ -22,6 +24,10 @@ private:
 	Variant saved_value;
 	String variable;
 
+	_FORCE_INLINE_ void _update_name() {
+		set_name((value_source == SAVED_VALUE) ? String(saved_value) : LimboUtility::get_singleton()->decorate_var(variable));
+	}
+
 protected:
 	static void _bind_methods();
 
@@ -30,23 +36,13 @@ protected:
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 public:
-	void set_value_source(ValueSource p_value) {
-		value_source = p_value;
-		property_list_changed_notify();
-		emit_changed();
-	}
+	void set_value_source(ValueSource p_value);
 	ValueSource get_value_source() const { return value_source; }
 
-	void set_saved_value(Variant p_value) {
-		saved_value = p_value;
-		emit_changed();
-	}
+	void set_saved_value(Variant p_value);
 	Variant get_saved_value() const { return saved_value; }
 
-	void set_variable(const String &p_value) {
-		variable = p_value;
-		emit_changed();
-	}
+	void set_variable(const String &p_value);
 	String get_variable() const { return variable; }
 
 	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
