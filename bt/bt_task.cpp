@@ -100,6 +100,33 @@ Ref<BTTask> BTTask::clone() const {
 		c->parent = inst.ptr();
 		inst->children.set(i, c);
 	}
+
+	// Make BBParam properties unique.
+	List<PropertyInfo> props;
+	inst->get_property_list(&props);
+	Map<RES, RES> duplicates;
+	for (List<PropertyInfo>::Element *E = props.front(); E; E = E->next()) {
+		if (!(E->get().usage & PROPERTY_USAGE_STORAGE)) {
+			continue;
+		}
+
+		Variant v = inst->get(E->get().name);
+
+		if (v.is_ref()) {
+			REF ref = v;
+			if (ref.is_valid()) {
+				RES res = ref;
+				if (res.is_valid() && res->is_class("BBParam")) {
+					if (!duplicates.has(res)) {
+						duplicates[res] = res->duplicate();
+					}
+					res = duplicates[res];
+					inst->set(E->get().name, res);
+				}
+			}
+		}
+	}
+
 	return inst;
 }
 
