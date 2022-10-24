@@ -48,6 +48,7 @@ protected:
 
 public:
 	Object *get_agent() const { return agent; }
+	void set_agent(Object *p_agent) { agent = p_agent; }
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
 	bool is_root() const { return parent == nullptr; }
