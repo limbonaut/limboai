@@ -45,6 +45,8 @@ public:
 	void set_variable(const String &p_value);
 	String get_variable() const { return variable; }
 
+	virtual String to_string();
+
 	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
 
 	BBParam();

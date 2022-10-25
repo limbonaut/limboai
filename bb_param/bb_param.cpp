@@ -5,6 +5,7 @@
 #include "core/error_macros.h"
 #include "core/object.h"
 #include "core/variant.h"
+#include "modules/limboai/limbo_utility.h"
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
@@ -35,8 +36,16 @@ void BBParam::set_variable(const String &p_value) {
 	emit_changed();
 }
 
+String BBParam::to_string() {
+	if (value_source == SAVED_VALUE) {
+		return String(saved_value);
+	} else {
+		return LimboUtility::get_singleton()->decorate_var(variable);
+	}
+}
+
 Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
-	ERR_FAIL_COND_V(p_blackboard.is_valid(), p_default);
+	ERR_FAIL_COND_V(!p_blackboard.is_valid(), p_default);
 
 	if (value_source == SAVED_VALUE) {
 		return saved_value;
