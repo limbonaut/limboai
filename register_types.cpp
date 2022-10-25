@@ -25,6 +25,7 @@
 #include "bb_param/bb_string_array.h"
 #include "bb_param/bb_transform.h"
 #include "bb_param/bb_transform2d.h"
+#include "bb_param/bb_variant.h"
 #include "bb_param/bb_vector2.h"
 #include "bb_param/bb_vector2_array.h"
 #include "bb_param/bb_vector3.h"
@@ -147,6 +148,7 @@ void register_limboai_types() {
 	ClassDB::register_class<BBStringArray>();
 	ClassDB::register_class<BBVector2Array>();
 	ClassDB::register_class<BBVector3Array>();
+	ClassDB::register_class<BBVariant>();
 
 	_limbo_utility = memnew(LimboUtility);
 	ClassDB::register_class<LimboUtility>();

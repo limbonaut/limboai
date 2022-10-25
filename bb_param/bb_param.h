@@ -40,7 +40,7 @@ public:
 	ValueSource get_value_source() const { return value_source; }
 
 	void set_saved_value(Variant p_value);
-	Variant get_saved_value() const { return saved_value; }
+	Variant get_saved_value();
 
 	void set_variable(const String &p_value);
 	String get_variable() const { return variable; }
