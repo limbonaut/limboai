@@ -113,6 +113,11 @@ LimboState *LimboHSM::get_leaf_state() const {
 	}
 }
 
+void LimboHSM::set_initial_state(Node *p_state) {
+	ERR_FAIL_COND(p_state == nullptr || !p_state->is_class("LimboState"));
+	initial_state = Object::cast_to<LimboState>(p_state);
+}
+
 bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event.empty(), false);
 
@@ -209,6 +214,10 @@ void LimboHSM::_notification(int p_what) {
 void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_update_mode", "p_mode"), &LimboHSM::set_update_mode);
 	ClassDB::bind_method(D_METHOD("get_update_mode"), &LimboHSM::get_update_mode);
+
+	ClassDB::bind_method(D_METHOD("set_initial_state", "p_state"), &LimboHSM::set_initial_state);
+	ClassDB::bind_method(D_METHOD("get_initial_state"), &LimboHSM::get_initial_state);
+
 	ClassDB::bind_method(D_METHOD("get_active_state"), &LimboHSM::get_active_state);
 	ClassDB::bind_method(D_METHOD("get_leaf_state"), &LimboHSM::get_leaf_state);
 	ClassDB::bind_method(D_METHOD("set_active", "p_active"), &LimboHSM::set_active);
@@ -221,7 +230,8 @@ void LimboHSM::_bind_methods() {
 	BIND_ENUM_CONSTANT(MANUAL);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle, Physics, Manual"), "set_update_mode", "get_update_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE"), "", "anystate");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_NONE, "", 0), "", "anystate");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "initial_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "set_initial_state", "get_initial_state");
 
 	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_NONE, "", 0, "LimboState")));
 }

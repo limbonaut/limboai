@@ -13,7 +13,7 @@ const String LimboState::EVENT_FINISHED = "finished";
 
 LimboState *LimboState::get_root() const {
 	const LimboState *state = this;
-	while (get_parent() && get_parent()->is_class("LimboState")) {
+	while (state->get_parent() && state->get_parent()->is_class("LimboState")) {
 		state = Object::cast_to<LimboState>(get_parent());
 	}
 	return const_cast<LimboState *>(state);
@@ -137,6 +137,7 @@ void LimboState::_notification(int p_what) {
 void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root"), &LimboState::get_root);
 	ClassDB::bind_method(D_METHOD("get_agent"), &LimboState::get_agent);
+	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &LimboState::set_agent);
 	ClassDB::bind_method(D_METHOD("event_finished"), &LimboState::event_finished);
 	ClassDB::bind_method(D_METHOD("is_active"), &LimboState::is_active);
 	ClassDB::bind_method(D_METHOD("_setup"), &LimboState::_setup);
@@ -159,7 +160,9 @@ void LimboState::_bind_methods() {
 	BIND_VMETHOD(MethodInfo("_exit"));
 	BIND_VMETHOD(MethodInfo("_update", PropertyInfo(Variant::REAL, "p_delta")));
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED"), "", "event_finished");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
 
 	ADD_SIGNAL(MethodInfo("setup"));
 	ADD_SIGNAL(MethodInfo("entered"));

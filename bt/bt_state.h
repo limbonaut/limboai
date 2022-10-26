@@ -13,7 +13,6 @@ class BTState : public LimboState {
 
 private:
 	Ref<BehaviorTree> behavior_tree;
-	// Ref<Blackboard> blackboard;
 	Ref<BTTask> root_task;
 
 protected:
@@ -24,14 +23,9 @@ protected:
 	virtual void _exit();
 	virtual void _update(float p_delta);
 
-	// void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value); }
-	// Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
-
 public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_value) { behavior_tree = p_value; }
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; }
-
-	// virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 
 	BTState();
 };

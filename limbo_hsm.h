@@ -48,6 +48,9 @@ public:
 	LimboState *get_leaf_state() const;
 	void set_active(bool p_active);
 
+	void set_initial_state(Node *p_state);
+	LimboState *get_initial_state() const { return initial_state; }
+
 	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
 
