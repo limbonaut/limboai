@@ -35,7 +35,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value); }
+	void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value.duplicate()); }
 	Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
 
 	void _notification(int p_notification);
