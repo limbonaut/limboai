@@ -85,6 +85,7 @@ private:
 	VBoxContainer *sections;
 
 	void _populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes);
+	void _populate_from_user_dir(String p_path, HashMap<String, List<String>> *p_categories);
 	void _populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes);
 	void _on_task_button_pressed(const StringName &p_task);
 	void _on_filter_text_changed(String p_text);

@@ -356,25 +356,30 @@ void TaskPanel::refresh() {
 
 	HashMap<String, List<String>> categories;
 
-	categories["Composite"] = List<String>();
-	_populate_core_tasks_from_class("BTComposite", &categories["Composite"]);
+	categories["Composites"] = List<String>();
+	_populate_core_tasks_from_class("BTComposite", &categories["Composites"]);
 
-	categories["Action"] = List<String>();
-	_populate_core_tasks_from_class("BTAction", &categories["Action"]);
+	categories["Actions"] = List<String>();
+	_populate_core_tasks_from_class("BTAction", &categories["Actions"]);
 
-	categories["Decorator"] = List<String>();
-	_populate_core_tasks_from_class("BTDecorator", &categories["Decorator"]);
+	categories["Decorators"] = List<String>();
+	_populate_core_tasks_from_class("BTDecorator", &categories["Decorators"]);
 
-	categories["Condition"] = List<String>();
-	_populate_core_tasks_from_class("BTCondition", &categories["Condition"]);
+	categories["Conditions"] = List<String>();
+	_populate_core_tasks_from_class("BTCondition", &categories["Conditions"]);
 
 	categories["User"] = List<String>();
 
 	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
+	_populate_from_user_dir(dir1, &categories);
 	_populate_scripted_tasks_from_dir(dir1, &categories["User"]);
+
 	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_2");
+	_populate_from_user_dir(dir2, &categories);
 	_populate_scripted_tasks_from_dir(dir2, &categories["User"]);
+
 	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_3");
+	_populate_from_user_dir(dir3, &categories);
 	_populate_scripted_tasks_from_dir(dir3, &categories["User"]);
 
 	List<String> keys;
@@ -383,6 +388,11 @@ void TaskPanel::refresh() {
 	for (List<String>::Element *E = keys.front(); E; E = E->next()) {
 		String cat = E->get();
 		List<String> task_list = categories.get(cat);
+
+		if (task_list.size() == 0) {
+			continue;
+		}
+
 		TaskSection *sec = memnew(TaskSection(cat, editor));
 		for (List<String>::Element *E = task_list.front(); E; E = E->next()) {
 			String meta = E->get();
@@ -405,6 +415,32 @@ void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, 
 	for (List<StringName>::Element *E = inheriters.front(); E; E = E->next()) {
 		p_task_classes->push_back(E->get());
 	}
+}
+
+void TaskPanel::_populate_from_user_dir(String p_path, HashMap<String, List<String>> *p_categories) {
+	if (p_path.empty()) {
+		return;
+	}
+	DirAccess *dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+	if (dir->change_dir(p_path) == OK) {
+		dir->list_dir_begin();
+		String fn = dir->get_next();
+		while (!fn.empty()) {
+			if (dir->current_is_dir()) {
+				String full_path = p_path.plus_file(fn);
+				String category = fn.capitalize();
+				if (!p_categories->has(category)) {
+					p_categories->set(category, List<String>());
+				}
+				_populate_scripted_tasks_from_dir(full_path, &p_categories->get(category));
+			}
+			fn = dir->get_next();
+		}
+		dir->list_dir_end();
+	} else {
+		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
+	}
+	memdelete(dir);
 }
 
 void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes) {
@@ -653,8 +689,18 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) const {
 void LimboAIEditor::_on_panel_task_selected(String p_task) {
 	if (p_task.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_task, "Script");
+		ERR_FAIL_COND_MSG(!script->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
 		Variant inst = ClassDB::instance(script->get_instance_base_type());
-		ERR_FAIL_COND_MSG(!((Object *)inst)->is_class("BTTask"), vformat("Task script doesn't inherit BTTask: %s", p_task));
+		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instance base type \"%s\".", script->get_instance_base_type()));
+
+		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
+			if (!inst.is_ref()) {
+				memdelete((Object *)inst);
+			}
+			ERR_PRINT(vformat("LimboAI: Failed to instance task. Script is not a BTTask: %s", p_task));
+			return;
+		}
+
 		if (inst && script.is_valid()) {
 			((Object *)inst)->set_script(script.get_ref_ptr());
 			_add_task(Variant(inst));
@@ -762,6 +808,7 @@ Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
 		base_type = script->get_instance_base_type();
 	}
 
+	// TODO: Walk inheritance tree until icon is found.
 	return EditorNode::get_singleton()->get_class_icon(base_type, "BTTask");
 }
 
