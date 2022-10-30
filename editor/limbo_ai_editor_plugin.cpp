@@ -372,15 +372,12 @@ void TaskPanel::refresh() {
 
 	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
 	_populate_from_user_dir(dir1, &categories);
-	_populate_scripted_tasks_from_dir(dir1, &categories["User"]);
 
 	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_2");
 	_populate_from_user_dir(dir2, &categories);
-	_populate_scripted_tasks_from_dir(dir2, &categories["User"]);
 
 	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_3");
 	_populate_from_user_dir(dir3, &categories);
-	_populate_scripted_tasks_from_dir(dir3, &categories["User"]);
 
 	List<String> keys;
 	categories.get_key_list(&keys);
@@ -427,11 +424,20 @@ void TaskPanel::_populate_from_user_dir(String p_path, HashMap<String, List<Stri
 		String fn = dir->get_next();
 		while (!fn.empty()) {
 			if (dir->current_is_dir()) {
-				String full_path = p_path.plus_file(fn);
-				String category = fn.capitalize();
+				String full_path;
+				String category;
+				if (fn == ".") {
+					full_path = p_path;
+					category = "User";
+				} else {
+					full_path = p_path.plus_file(fn);
+					category = fn.capitalize();
+				}
+
 				if (!p_categories->has(category)) {
 					p_categories->set(category, List<String>());
 				}
+
 				_populate_scripted_tasks_from_dir(full_path, &p_categories->get(category));
 			}
 			fn = dir->get_next();
@@ -689,7 +695,7 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) const {
 void LimboAIEditor::_on_panel_task_selected(String p_task) {
 	if (p_task.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_task, "Script");
-		ERR_FAIL_COND_MSG(!script->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
+		ERR_FAIL_COND_MSG(script.is_null() || !script->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
 		Variant inst = ClassDB::instance(script->get_instance_base_type());
 		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instance base type \"%s\".", script->get_instance_base_type()));
 
