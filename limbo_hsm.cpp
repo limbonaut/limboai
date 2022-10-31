@@ -168,9 +168,17 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 	return event_consumed;
 }
 
-void LimboHSM::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void LimboHSM::initialize(Object *p_agent, const Ref<Blackboard> &p_parent_scope) {
 	ERR_FAIL_COND(p_agent == nullptr);
-	ERR_FAIL_COND(!p_blackboard.is_valid());
+	if (!p_parent_scope.is_null()) {
+		blackboard->set_parent_scope(p_parent_scope);
+	}
+	_initialize(p_agent, nullptr);
+}
+
+void LimboHSM::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+	ERR_FAIL_COND(p_agent == nullptr);
+	ERR_FAIL_COND_MSG(agent != nullptr, "LimboAI: HSM already initialized.");
 	ERR_FAIL_COND_MSG(get_child_count() == 0, "Cannot initialize LimboHSM: no candidate for initial substate.");
 
 	if (initial_state == nullptr) {
@@ -178,14 +186,23 @@ void LimboHSM::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) 
 		ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Child at index 0 is not a LimboState.");
 	}
 
-	LimboState::initialize(p_agent, p_blackboard);
+	Ref<Blackboard> bb = blackboard;
+	if (!blackboard->get_data().empty()) {
+		if (!p_blackboard.is_null()) {
+			bb->set_parent_scope(p_blackboard);
+		}
+	} else if (!p_blackboard.is_null()) {
+		bb = p_blackboard;
+	}
+
+	LimboState::_initialize(p_agent, bb);
 
 	for (int i = 0; i < get_child_count(); i++) {
 		LimboState *c = Object::cast_to<LimboState>(get_child(i));
 		if (unlikely(c == nullptr)) {
 			ERR_PRINT(vformat("LimboHSM: Child at index %d is not a LimboState.", i));
 		} else {
-			c->initialize(p_agent, p_blackboard);
+			c->_initialize(p_agent, bb);
 		}
 	}
 }
@@ -218,12 +235,17 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_initial_state", "p_state"), &LimboHSM::set_initial_state);
 	ClassDB::bind_method(D_METHOD("get_initial_state"), &LimboHSM::get_initial_state);
 
+	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &LimboHSM::_set_blackboard_data);
+	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &LimboHSM::_get_blackboard_data);
+
 	ClassDB::bind_method(D_METHOD("get_active_state"), &LimboHSM::get_active_state);
 	ClassDB::bind_method(D_METHOD("get_leaf_state"), &LimboHSM::get_leaf_state);
 	ClassDB::bind_method(D_METHOD("set_active", "p_active"), &LimboHSM::set_active);
 	ClassDB::bind_method(D_METHOD("update", "p_delta"), &LimboHSM::update);
 	ClassDB::bind_method(D_METHOD("add_transition", "p_from_state", "p_to_state", "p_event"), &LimboHSM::add_transition);
 	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);
+
+	ClassDB::bind_method(D_METHOD("initialize", "p_agent", "p_parent_scope"), &LimboHSM::initialize, Variant());
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
@@ -232,6 +254,7 @@ void LimboHSM::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle, Physics, Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_NONE, "", 0), "", "anystate");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "initial_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "set_initial_state", "get_initial_state");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
 
 	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_NONE, "", 0, "LimboState")));
 }
@@ -240,4 +263,5 @@ LimboHSM::LimboHSM() {
 	update_mode = UpdateMode::IDLE;
 	active_state = nullptr;
 	initial_state = nullptr;
+	blackboard = Ref<Blackboard>(memnew(Blackboard));
 }

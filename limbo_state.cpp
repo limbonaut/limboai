@@ -61,7 +61,7 @@ void LimboState::_update(float p_delta) {
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 };
 
-void LimboState::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(!p_blackboard.is_valid());
 	agent = p_agent;
@@ -144,7 +144,7 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_enter"), &LimboState::_enter);
 	ClassDB::bind_method(D_METHOD("_exit"), &LimboState::_exit);
 	ClassDB::bind_method(D_METHOD("_update", "p_delta"), &LimboState::_update);
-	ClassDB::bind_method(D_METHOD("initialize", "p_agent", "p_blackboard"), &LimboState::initialize);
+	ClassDB::bind_method(D_METHOD("_initialize", "p_agent", "p_blackboard"), &LimboState::_initialize);
 	ClassDB::bind_method(D_METHOD("dispatch", "p_event", "p_cargo"), &LimboState::dispatch, Variant());
 	ClassDB::bind_method(D_METHOD("named", "p_name"), &LimboState::named);
 	ClassDB::bind_method(D_METHOD("add_event_handler", "p_event", "p_method"), &LimboState::add_event_handler);

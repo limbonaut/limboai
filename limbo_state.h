@@ -36,6 +36,7 @@ protected:
 
 	void _notification(int p_what);
 
+	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual void _setup();
 	virtual void _enter();
 	virtual void _exit();
@@ -51,7 +52,6 @@ public:
 	Object *get_agent() const { return agent; }
 	void set_agent(Object *p_agent) { agent = p_agent; }
 
-	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
 
 	LimboState *named(String p_name);
