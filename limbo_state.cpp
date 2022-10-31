@@ -63,9 +63,17 @@ void LimboState::_update(float p_delta) {
 
 void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
-	ERR_FAIL_COND(!p_blackboard.is_valid());
+
 	agent = p_agent;
-	blackboard = p_blackboard;
+
+	if (!p_blackboard.is_null()) {
+		if (!blackboard->get_data().empty()) {
+			blackboard->set_parent_scope(p_blackboard);
+		} else {
+			blackboard = p_blackboard;
+		}
+	}
+
 	_setup();
 };
 
@@ -155,6 +163,9 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("clear_guard_func"), &LimboState::clear_guard_func);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &LimboState::get_blackboard);
 
+	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &LimboState::_set_blackboard_data);
+	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &LimboState::_get_blackboard_data);
+
 	BIND_VMETHOD(MethodInfo("_setup"));
 	BIND_VMETHOD(MethodInfo("_enter"));
 	BIND_VMETHOD(MethodInfo("_exit"));
@@ -163,6 +174,7 @@ void LimboState::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
 
 	ADD_SIGNAL(MethodInfo("setup"));
 	ADD_SIGNAL(MethodInfo("entered"));
@@ -173,6 +185,7 @@ void LimboState::_bind_methods() {
 LimboState::LimboState() {
 	agent = nullptr;
 	active = false;
+	blackboard = Ref<Blackboard>(memnew(Blackboard));
 
 	guard.obj = nullptr;
 

@@ -36,6 +36,9 @@ protected:
 
 	void _notification(int p_what);
 
+	void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value.duplicate()); }
+	Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
+
 	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual void _setup();
 	virtual void _enter();
