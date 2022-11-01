@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTTask" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="_enter" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_exit" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_generate_name" qualifiers="virtual">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="_get_configuration_warning" qualifiers="virtual">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="_setup" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_tick" qualifiers="virtual">
+			<return type="int" />
+			<argument index="0" name="p_delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="add_child">
+			<return type="void" />
+			<argument index="0" name="p_child" type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="add_child_at_index">
+			<return type="void" />
+			<argument index="0" name="p_child" type="BTTask" />
+			<argument index="1" name="p_idx" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="clone" qualifiers="const">
+			<return type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="execute">
+			<return type="int" />
+			<argument index="0" name="p_delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="get_child" qualifiers="const">
+			<return type="BTTask" />
+			<argument index="0" name="p_idx" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_child_count" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_child_index" qualifiers="const">
+			<return type="int" />
+			<argument index="0" name="p_child" type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="get_root" qualifiers="const">
+			<return type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="get_task_name" qualifiers="const">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="has_child" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="p_child" type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="initialize">
+			<return type="void" />
+			<argument index="0" name="p_agent" type="Object" />
+			<argument index="1" name="p_blackboard" type="Blackboard" />
+			<description>
+			</description>
+		</method>
+		<method name="is_descendant_of" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="p_task" type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="is_root" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="next_sibling" qualifiers="const">
+			<return type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="print_tree" qualifiers="const">
+			<return type="void" />
+			<argument index="0" name="p_initial_tabs" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_child">
+			<return type="void" />
+			<argument index="0" name="p_child" type="BTTask" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_child_at_index">
+			<return type="void" />
+			<argument index="0" name="p_idx" type="int" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="agent" type="Object" setter="set_agent" getter="get_agent">
+		</member>
+		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
+		</member>
+		<member name="children" type="Array" setter="set_children" getter="get_children" default="[  ]">
+		</member>
+		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
+		</member>
+		<member name="parent" type="BTTask" setter="" getter="get_parent">
+		</member>
+		<member name="status" type="int" setter="" getter="get_status">
+		</member>
+	</members>
+	<constants>
+		<constant name="FRESH" value="0" enum="TaskStatus">
+		</constant>
+		<constant name="RUNNING" value="1" enum="TaskStatus">
+		</constant>
+		<constant name="FAILURE" value="2" enum="TaskStatus">
+		</constant>
+		<constant name="SUCCESS" value="3" enum="TaskStatus">
+		</constant>
+	</constants>
+</class>

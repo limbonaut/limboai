@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTNewScope" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" default="{}">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

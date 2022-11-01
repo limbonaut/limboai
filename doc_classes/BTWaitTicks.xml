@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTWaitTicks" inherits="BTAction" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="num_ticks" type="int" setter="set_num_ticks" getter="get_num_ticks" default="1">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

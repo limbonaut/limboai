@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTForEach" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="array_var" type="String" setter="set_array_var" getter="get_array_var" default="&quot;&quot;">
+		</member>
+		<member name="save_var" type="String" setter="set_save_var" getter="get_save_var" default="&quot;&quot;">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

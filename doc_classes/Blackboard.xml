@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Blackboard" inherits="Reference" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_data" qualifiers="const">
+			<return type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="get_parent_scope" qualifiers="const">
+			<return type="Blackboard" />
+			<description>
+			</description>
+		</method>
+		<method name="get_var" qualifiers="const">
+			<return type="Variant" />
+			<argument index="0" name="p_key" type="Variant" />
+			<argument index="1" name="p_default" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="has_var" qualifiers="const">
+			<return type="bool" />
+			<argument index="0" name="p_key" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="prefetch_nodepath_vars">
+			<return type="void" />
+			<argument index="0" name="p_node" type="Node" />
+			<description>
+			</description>
+		</method>
+		<method name="set_data">
+			<return type="void" />
+			<argument index="0" name="p_data" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="set_parent_scope">
+			<return type="void" />
+			<argument index="0" name="p_blackboard" type="Blackboard" />
+			<description>
+			</description>
+		</method>
+		<method name="set_var">
+			<return type="void" />
+			<argument index="0" name="p_key" type="Variant" />
+			<argument index="1" name="p_value" type="Variant" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<constants>
+	</constants>
+</class>

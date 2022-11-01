@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTRandomWait" inherits="BTAction" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="duration_min_max" type="Vector2" setter="set_duration_min_max" getter="get_duration_min_max" default="Vector2( 1, 2 )">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTRepeat" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+	</methods>
+	<members>
+		<member name="abort_on_failure" type="bool" setter="set_abort_on_failure" getter="get_abort_on_failure" default="false">
+		</member>
+		<member name="times" type="int" setter="set_times" getter="get_times" default="1">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

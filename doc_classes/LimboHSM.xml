@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LimboHSM" inherits="LimboState" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add_transition">
+			<return type="void" />
+			<argument index="0" name="p_from_state" type="Node" />
+			<argument index="1" name="p_to_state" type="Node" />
+			<argument index="2" name="p_event" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="get_active_state" qualifiers="const">
+			<return type="LimboState" />
+			<description>
+			</description>
+		</method>
+		<method name="get_leaf_state" qualifiers="const">
+			<return type="LimboState" />
+			<description>
+			</description>
+		</method>
+		<method name="initialize">
+			<return type="void" />
+			<argument index="0" name="p_agent" type="Object" />
+			<argument index="1" name="p_parent_scope" type="Blackboard" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="set_active">
+			<return type="void" />
+			<argument index="0" name="p_active" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="update">
+			<return type="void" />
+			<argument index="0" name="p_delta" type="float" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="ANYSTATE" type="LimboState" setter="" getter="anystate">
+		</member>
+		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" overrides="LimboState" default="{}" />
+		<member name="initial_state" type="LimboState" setter="set_initial_state" getter="get_initial_state">
+		</member>
+		<member name="update_mode" type="int" setter="set_update_mode" getter="get_update_mode" enum="LimboHSM.UpdateMode" default="0">
+		</member>
+	</members>
+	<signals>
+		<signal name="state_changed">
+			<argument index="0" name="p_state" type="LimboState" />
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="IDLE" value="0" enum="UpdateMode">
+		</constant>
+		<constant name="PHYSICS" value="1" enum="UpdateMode">
+		</constant>
+		<constant name="MANUAL" value="2" enum="UpdateMode">
+		</constant>
+	</constants>
+</class>

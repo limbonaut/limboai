@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BehaviorTree" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="clone" qualifiers="const">
+			<return type="BehaviorTree" />
+			<description>
+			</description>
+		</method>
+		<method name="init">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="instance" qualifiers="const">
+			<return type="BTTask" />
+			<argument index="0" name="p_agent" type="Object" />
+			<argument index="1" name="p_blackboard" type="Blackboard" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="description" type="String" setter="set_description" getter="get_description" default="&quot;&quot;">
+		</member>
+		<member name="root_task" type="BTTask" setter="set_root_task" getter="get_root_task">
+		</member>
+	</members>
+	<constants>
+	</constants>
+</class>

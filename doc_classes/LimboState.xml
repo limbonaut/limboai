@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LimboState" inherits="Node" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="_enter" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_exit" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_setup" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_update" qualifiers="virtual">
+			<return type="void" />
+			<argument index="0" name="p_delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="add_event_handler">
+			<return type="void" />
+			<argument index="0" name="p_event" type="String" />
+			<argument index="1" name="p_method" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="call_on_enter">
+			<return type="LimboState" />
+			<argument index="0" name="p_object" type="Object" />
+			<argument index="1" name="p_method" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="call_on_exit">
+			<return type="LimboState" />
+			<argument index="0" name="p_object" type="Object" />
+			<argument index="1" name="p_method" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="call_on_update">
+			<return type="LimboState" />
+			<argument index="0" name="p_object" type="Object" />
+			<argument index="1" name="p_method" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="clear_guard_func">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="dispatch">
+			<return type="bool" />
+			<argument index="0" name="p_event" type="String" />
+			<argument index="1" name="p_cargo" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_root" qualifiers="const">
+			<return type="LimboState" />
+			<description>
+			</description>
+		</method>
+		<method name="is_active" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="named">
+			<return type="LimboState" />
+			<argument index="0" name="p_name" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="set_guard_func">
+			<return type="void" />
+			<argument index="0" name="p_object" type="Object" />
+			<argument index="1" name="p_func" type="String" />
+			<argument index="2" name="p_binds" type="Array" default="[  ]" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="EVENT_FINISHED" type="String" setter="" getter="event_finished">
+		</member>
+		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" default="{}">
+		</member>
+		<member name="agent" type="Object" setter="set_agent" getter="get_agent">
+		</member>
+		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
+		</member>
+	</members>
+	<signals>
+		<signal name="entered">
+			<description>
+			</description>
+		</signal>
+		<signal name="exited">
+			<description>
+			</description>
+		</signal>
+		<signal name="setup">
+			<description>
+			</description>
+		</signal>
+		<signal name="updated">
+			<argument index="0" name="p_delta" type="float" />
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+	</constants>
+</class>
