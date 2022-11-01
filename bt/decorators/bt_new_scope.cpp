@@ -2,14 +2,28 @@
 
 #include "bt_new_scope.h"
 #include "core/error_macros.h"
+#include "core/os/memory.h"
 #include "core/ustring.h"
+#include "modules/limboai/blackboard.h"
 
 void BTNewScope::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);
+
 	Ref<Blackboard> bb = memnew(Blackboard);
+
+	// if (blackboard_data.empty()) {
+	// 	bb->set_parent_scope(p_blackboard);
+	// } else {
+	// 	Ref<Blackboard> ro = memnew(Blackboard);
+	// 	ro->set_data(blackboard_data);
+	// 	ro->set_parent_scope(p_blackboard);
+	// 	bb->set_parent_scope(ro);
+	// }
+
+	bb->set_data(blackboard_data.duplicate());
 	bb->set_parent_scope(p_blackboard);
-	bb->set_data(blackboard_data);
+
 	BTDecorator::initialize(p_agent, bb);
 }
 

@@ -423,7 +423,7 @@ void TaskPanel::_populate_from_user_dir(String p_path, HashMap<String, List<Stri
 		dir->list_dir_begin();
 		String fn = dir->get_next();
 		while (!fn.empty()) {
-			if (dir->current_is_dir()) {
+			if (dir->current_is_dir() && fn != "..") {
 				String full_path;
 				String category;
 				if (fn == ".") {

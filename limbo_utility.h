@@ -15,7 +15,8 @@ protected:
 public:
 	static LimboUtility *get_singleton();
 
-	String decorate_var(String p_variable);
+	String decorate_var(String p_variable) const;
+	String get_status_name(int p_status) const;
 
 	LimboUtility();
 	~LimboUtility();
