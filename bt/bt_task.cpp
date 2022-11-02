@@ -276,8 +276,8 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
 	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &BTTask::set_agent);
 
-	ClassDB::bind_method(D_METHOD("get_children"), &BTTask::_get_children);
-	ClassDB::bind_method(D_METHOD("set_children", "p_children"), &BTTask::_set_children);
+	ClassDB::bind_method(D_METHOD("_get_children"), &BTTask::_get_children);
+	ClassDB::bind_method(D_METHOD("_set_children", "p_children"), &BTTask::_set_children);
 
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
 	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
@@ -287,7 +287,7 @@ void BTTask::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NOEDITOR), "set_children", "get_children");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NOEDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", 0), "", "get_status");
 
 	// Virtual methods.
