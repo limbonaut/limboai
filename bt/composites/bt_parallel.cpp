@@ -33,6 +33,9 @@ int BTParallel::_tick(float p_delta) {
 			}
 		}
 	}
+	if (!repeat && (num_failed + num_succeeded) == get_child_count() && return_status == RUNNING) {
+		return_status = FAILURE;
+	}
 	return return_status;
 }
 
