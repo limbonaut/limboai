@@ -118,7 +118,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "auto_restart"), "set_auto_restart", "get_auto_restart");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "", "get_blackboard");
-	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data"), "_set_blackboard_data", "_get_blackboard_data");
+	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_blackboard_data", "_get_blackboard_data");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars"), "set_prefetch_nodepath_vars", "get_prefetch_nodepath_vars");
 
 	BIND_ENUM_CONSTANT(IDLE);
