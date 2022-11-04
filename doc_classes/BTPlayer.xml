@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTPlayer" inherits="Node" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Player of [BehaviorTree] resources.
 	</brief_description>
 	<description>
+		BTPlayer is used for instantiation and playback of [BehaviorTree] resources at run time.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,50 +12,62 @@
 		<method name="restart">
 			<return type="void" />
 			<description>
+				Cancel execution of the tree and start anew. This method does not reset [Blackboard].
 			</description>
 		</method>
 		<method name="set_blackboard">
 			<return type="void" />
 			<argument index="0" name="p_blackboard" type="Blackboard" />
 			<description>
+				Assign a [Blackboard] instance.
 			</description>
 		</method>
 		<method name="update">
 			<return type="void" />
 			<argument index="0" name="p_delta" type="float" />
 			<description>
+				Updates the tree by executing the root task. Call this method when [member update_mode] is set to [constant MANUAL]. When [member update_mode] is not set to [constant MANUAL], the tree is updated automatically. See [enum UpdateMode].
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" default="{}">
-		</member>
 		<member name="active" type="bool" setter="set_active" getter="get_active" default="false">
+			If [code]true[/code], tree is active and will be processed.
 		</member>
 		<member name="auto_restart" type="bool" setter="set_auto_restart" getter="get_auto_restart" default="false">
+			If [code]true[/code] player will restart when it finishes executing the tree and receives a [code]SUCCESS[/code] or [code]FAILURE[/code].
 		</member>
 		<member name="behavior_tree" type="BehaviorTree" setter="set_behavior_tree" getter="get_behavior_tree">
+			[BehaviorTree] resource to instantiate and process at run time.
 		</member>
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
+			[Blackboard] instance that contains data shared by the tasks in [BehaviorTree].
 		</member>
 		<member name="prefetch_nodepath_vars" type="bool" setter="set_prefetch_nodepath_vars" getter="get_prefetch_nodepath_vars" default="true">
+			If [code]true[/code], any NodePath variables in the [Blackboard] are replaced with references during tree instantiation. References are retrieved by calling [method Node.get_node] of BTPlayer.
 		</member>
 		<member name="update_mode" type="int" setter="set_update_mode" getter="get_update_mode" enum="BTPlayer.UpdateMode" default="0">
+			Defines when BehaviorTree is executed. See [enum UpdateMode].
 		</member>
 	</members>
 	<signals>
 		<signal name="behavior_tree_finished">
 			<argument index="0" name="p_status" type="int" />
 			<description>
+				Notifies when behavior tree finishes executing and returns [code]SUCCESS[/code] or [code]FAILURE[/code].
+				Argument [code]p_status[/code] holds the status returned by the behavior tree.
 			</description>
 		</signal>
 	</signals>
 	<constants>
 		<constant name="IDLE" value="0" enum="UpdateMode">
+			Process tree during the idle process.
 		</constant>
 		<constant name="PHYSICS" value="1" enum="UpdateMode">
+			Process tree during the physics process.
 		</constant>
 		<constant name="MANUAL" value="2" enum="UpdateMode">
+			Tree is processed manually by calling [method update].
 		</constant>
 	</constants>
 </class>

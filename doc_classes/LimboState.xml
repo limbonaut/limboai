@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LimboState" inherits="Node" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		A State node for Hierarchical State Machine (HSM).
 	</brief_description>
 	<description>
 	</description>
@@ -10,22 +11,26 @@
 		<method name="_enter" qualifiers="virtual">
 			<return type="void" />
 			<description>
+				Called when state is entered.
 			</description>
 		</method>
 		<method name="_exit" qualifiers="virtual">
 			<return type="void" />
 			<description>
+				Called when state is exited.
 			</description>
 		</method>
 		<method name="_setup" qualifiers="virtual">
 			<return type="void" />
 			<description>
+				Called once during intialization.
 			</description>
 		</method>
 		<method name="_update" qualifiers="virtual">
 			<return type="void" />
 			<argument index="0" name="p_delta" type="float" />
 			<description>
+				Called during update.
 			</description>
 		</method>
 		<method name="add_event_handler">
@@ -33,6 +38,7 @@
 			<argument index="0" name="p_event" type="String" />
 			<argument index="1" name="p_method" type="String" />
 			<description>
+				Register [code]p_method[/code] that will be called when [code]p_event[/code] happens. Method must belong to the state.
 			</description>
 		</method>
 		<method name="call_on_enter">
@@ -40,6 +46,7 @@
 			<argument index="0" name="p_object" type="Object" />
 			<argument index="1" name="p_method" type="String" />
 			<description>
+				A chained method that connects [signal entered] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
 		<method name="call_on_exit">
@@ -47,6 +54,7 @@
 			<argument index="0" name="p_object" type="Object" />
 			<argument index="1" name="p_method" type="String" />
 			<description>
+				A chained method that connects [signal exited] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
 		<method name="call_on_update">
@@ -54,11 +62,13 @@
 			<argument index="0" name="p_object" type="Object" />
 			<argument index="1" name="p_method" type="String" />
 			<description>
+				A chained method that connects [signal updated] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
 		<method name="clear_guard_func">
 			<return type="void" />
 			<description>
+				Removes the guard function that was set by [method set_guard_func].
 			</description>
 		</method>
 		<method name="dispatch">
@@ -66,22 +76,27 @@
 			<argument index="0" name="p_event" type="String" />
 			<argument index="1" name="p_cargo" type="Variant" default="null" />
 			<description>
+				Dispatches recursively a state machine event named [code]p_event[/code] with an optional argument [code]p_cargo[/code]. Returns [code]true[/code] if event was consumed.
+				Events propagate from the leaf state to the root. Propagation stops as soon as some state consumes the event.
 			</description>
 		</method>
 		<method name="get_root" qualifiers="const">
 			<return type="LimboState" />
 			<description>
+				Returns the root [LimboState].
 			</description>
 		</method>
 		<method name="is_active" qualifiers="const">
 			<return type="bool" />
 			<description>
+				Returns [code]true[/code] if it is currently active, i.e. it is the active substate of the parent [LimboHSM].
 			</description>
 		</method>
 		<method name="named">
 			<return type="LimboState" />
 			<argument index="0" name="p_name" type="String" />
 			<description>
+				A chained method that sets the name of this state.
 			</description>
 		</method>
 		<method name="set_guard_func">
@@ -90,35 +105,41 @@
 			<argument index="1" name="p_func" type="String" />
 			<argument index="2" name="p_binds" type="Array" default="[  ]" />
 			<description>
+				Sets the guard function. It is a function that will be called each time a transition to this state should happen. If that function returns [code]false[/code], that transition will not be allowed.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="EVENT_FINISHED" type="String" setter="" getter="event_finished">
-		</member>
-		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" default="{}">
+			A commonly used event that signifies that the state has finished work.
 		</member>
 		<member name="agent" type="Object" setter="set_agent" getter="get_agent">
+			An agent that is associated with the state. Assinged by initialization.
 		</member>
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
+			A key/value data store shared by states of the state machine this state belongs to.
 		</member>
 	</members>
 	<signals>
 		<signal name="entered">
 			<description>
+				Emitted when the state is entered.
 			</description>
 		</signal>
 		<signal name="exited">
 			<description>
+				Emitted when the state is exited.
 			</description>
 		</signal>
 		<signal name="setup">
 			<description>
+				Emitted when the state is initialized.
 			</description>
 		</signal>
 		<signal name="updated">
 			<argument index="0" name="p_delta" type="float" />
 			<description>
+				Emitted when the state is updated.
 			</description>
 		</signal>
 	</signals>

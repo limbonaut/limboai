@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTComposite" inherits="BTTask" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Base class for BT composite tasks.
 	</brief_description>
 	<description>
+		Base class for all behavior tree composite tasks. Extend [code]BTComposite[/code] to create your own.
+		Composite tasks can have one or more child tasks. A composite task will execute its child tasks in a certain order. Depending on the status returned by a child task, execution either continues to the next task in order or stops and a status is returned to the parent task.
 	</description>
 	<tutorials>
 	</tutorials>

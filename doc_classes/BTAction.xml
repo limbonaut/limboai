@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTAction" inherits="BTTask" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Base class for BT actions.
 	</brief_description>
 	<description>
+		Base class for all behavior tree actions. Extend [code]BTAction[/code] to create your own actions.
+		An action performs a task in one or multiple ticks. Actions return [code]RUNNING[/code] status, when it takes more than one tick to perform a task. When a task is finished an action returns [code]SUCCESS[/code] or [code]FAILURE[/code]. Actions cannot have child tasks.
 	</description>
 	<tutorials>
 	</tutorials>

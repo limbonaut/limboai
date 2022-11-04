@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="LimboUtility" inherits="Object" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Helper functions for LimboAI.
 	</brief_description>
 	<description>
 	</description>
@@ -11,12 +12,14 @@
 			<return type="String" />
 			<argument index="0" name="p_variable" type="String" />
 			<description>
+				Returns a string with a [Blackboard] variable name ready to be displayed or printed to console.
 			</description>
 		</method>
 		<method name="get_status_name" qualifiers="const">
 			<return type="String" />
 			<argument index="0" name="p_status" type="int" />
 			<description>
+				Returns name of a [BTTask] status code.
 			</description>
 		</method>
 	</methods>

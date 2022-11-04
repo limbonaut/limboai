@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTRandomWait" inherits="BTAction" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		BT action that waits for a randomized duration to pass and returns [code]SUCCESS[/code].
 	</brief_description>
 	<description>
+		BT action that waits for a randomized duration to pass and returns [code]SUCCESS[/code]. The minimum wait time is defined by [code]duration_min_max.x[/code], and the maximum is defined by [code]duration_min_max.y[/code].
 	</description>
 	<tutorials>
 	</tutorials>

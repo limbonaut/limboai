@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTTimeLimit" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		BT decorator that allots a limited time for child's execution.
 	</brief_description>
 	<description>
+		BT decorator that allots a limited time for child's execution. Cancels execution and returns [code]FAILURE[/code] if [member time_limit] is exceeded.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,6 +12,7 @@
 	</methods>
 	<members>
 		<member name="time_limit" type="float" setter="set_time_limit" getter="get_time_limit" default="5.0">
+			Time allotted for a child task's execution.
 		</member>
 	</members>
 	<constants>

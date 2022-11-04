@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTParallel" inherits="BTComposite" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		BT composite that executes tasks simultaneously.
 	</brief_description>
 	<description>
+		BT composite that executes tasks simultaneously until one of the criterea is met. BTParallel will execute each task from first to last at least once before returning a result.
+		If set to [member repeat], the tasks will be executed again, even if they returned [code]SUCCESS[/code] or [code]FAILURE[/code] on the previous tick.
+		Returns [code]FAILURE[/code] when a required number of tasks return [code]FAILURE[/code]. When not set to [member repeat], if no criteria was met, but all tasks returned [code]SUCCESS[/code] or [code]FAILURE[/code], a [code]FAILURE[/code] will be returned.
+		Returns [code]SUCCESS[/code] when a required number of tasks return [code]SUCCESS[/code].
+		Returns [code]RUNNING[/code] after executing all tasks from first to last, and for as long as the above criterea are not met.
 	</description>
 	<tutorials>
 	</tutorials>

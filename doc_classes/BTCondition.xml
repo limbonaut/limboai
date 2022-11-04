@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTCondition" inherits="BTTask" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Base class for BT conditions.
 	</brief_description>
 	<description>
+		Base class for all behavior tree conditions. Extend [code]BTCondition[/code] to create your own conditions.
+		Conditions don't take multiple ticks to finish and return [constant BTTask.SUCCESS] or [constant BTTask.FAILURE] immeditely.
 	</description>
 	<tutorials>
 	</tutorials>

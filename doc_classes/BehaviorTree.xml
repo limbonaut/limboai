@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BehaviorTree" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Contains behavior tree data.
 	</brief_description>
 	<description>
 	</description>
@@ -10,11 +11,13 @@
 		<method name="clone" qualifiers="const">
 			<return type="BehaviorTree" />
 			<description>
+				Makes a copy of behavior tree.
 			</description>
 		</method>
 		<method name="init">
 			<return type="void" />
 			<description>
+				Initializes a loaded behavior tree, making sure tasks are properly linked.
 			</description>
 		</method>
 		<method name="instance" qualifiers="const">
@@ -22,13 +25,16 @@
 			<argument index="0" name="p_agent" type="Object" />
 			<argument index="1" name="p_blackboard" type="Blackboard" />
 			<description>
+				Instantiates behavior tree and returns the root [BTTask].
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="description" type="String" setter="set_description" getter="get_description" default="&quot;&quot;">
+			User-provided description of BehaviorTree.
 		</member>
 		<member name="root_task" type="BTTask" setter="set_root_task" getter="get_root_task">
+			Stores root task.
 		</member>
 	</members>
 	<constants>

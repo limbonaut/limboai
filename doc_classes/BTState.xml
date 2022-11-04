@@ -1,16 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTState" inherits="LimboState" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		A state node for [LimboHSM] that hosts a [BehaviorTree].
 	</brief_description>
 	<description>
+		This state node instantiates an instance of [BehaviorTree] and dispatches events, when the tree returns [code]SUCCESS[/code] or [code]FAILURE[/code].
+		When the tree returns [code]SUCCESS[/code], this state dispatches [member success_event].
+		When the tree returns [code]FAILURE[/code], this state dispatches [member failure_event].
 	</description>
 	<tutorials>
 	</tutorials>
 	<methods>
 	</methods>
 	<members>
-		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" overrides="LimboState" default="{}" />
 		<member name="behavior_tree" type="BehaviorTree" setter="set_behavior_tree" getter="get_behavior_tree">
+			A [BehaviorTree] resource that contains state behavior.
+		</member>
+		<member name="failure_event" type="String" setter="set_failure_event" getter="get_failure_event" default="&quot;failure&quot;">
+			HSM event that will be dispatched when the behavior tree returns [code]FAILURE[/code].
+		</member>
+		<member name="success_event" type="String" setter="set_success_event" getter="get_success_event" default="&quot;success&quot;">
+			HSM event that will be dispatched when the behavior tree returns [code]SUCCESS[/code].
 		</member>
 	</members>
 	<constants>

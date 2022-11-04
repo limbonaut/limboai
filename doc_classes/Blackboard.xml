@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="Blackboard" inherits="Reference" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		A key/value store to hold data shared by BT tasks.
 	</brief_description>
 	<description>
+		A key/value store to hold data shared by tasks of a behavior tree.
+		Blackboard can serve as a parent scope for another blackboard. In this way, if a value is not found in the active scope, a parent scope Blackboard is asked to return a value. A parent scope Blackboard can have its own parent scope. This structure is called Blackboard scope chain. There is no limit on how many Blackboards can take part in a chain. Blackboard never overwrites parent scope values.
+		A new scope can be created by [BTNewScope] or [BTSubtree] tasks. It is automatically created for any [LimboState] that has a non-empty Blackboard data defined, or for any root [LimboHSM].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -10,11 +14,13 @@
 		<method name="get_data" qualifiers="const">
 			<return type="Dictionary" />
 			<description>
+				Returns [Blackboard] data as a [Dictionary].
 			</description>
 		</method>
 		<method name="get_parent_scope" qualifiers="const">
 			<return type="Blackboard" />
 			<description>
+				Returns a [Blackboard] that serves as a parent scope for this instance.
 			</description>
 		</method>
 		<method name="get_var" qualifiers="const">
@@ -22,30 +28,35 @@
 			<argument index="0" name="p_key" type="Variant" />
 			<argument index="1" name="p_default" type="Variant" default="null" />
 			<description>
+				Returns variable value.
 			</description>
 		</method>
 		<method name="has_var" qualifiers="const">
 			<return type="bool" />
 			<argument index="0" name="p_key" type="Variant" />
 			<description>
+				Returns [code]true[/code] if Blackboard contains [code]p_key[/code] variable. Parent scope included.
 			</description>
 		</method>
 		<method name="prefetch_nodepath_vars">
 			<return type="void" />
 			<argument index="0" name="p_node" type="Node" />
 			<description>
+				Replaces NodePath variables in the [Blackboard] with references that are retrieved by calling [method Node.get_node] on a [code]p_node[/code] argument.
 			</description>
 		</method>
 		<method name="set_data">
 			<return type="void" />
 			<argument index="0" name="p_data" type="Dictionary" />
 			<description>
+				Overrides Blackboard data, discarding anything that was stored at this scope. Use with caution.
 			</description>
 		</method>
 		<method name="set_parent_scope">
 			<return type="void" />
 			<argument index="0" name="p_blackboard" type="Blackboard" />
 			<description>
+				Sets the parent scope. If a value is not found in the Blackboard's active scope, the parent scope Blackboard will be asked to retrieve it.
 			</description>
 		</method>
 		<method name="set_var">
@@ -53,6 +64,7 @@
 			<argument index="0" name="p_key" type="Variant" />
 			<argument index="1" name="p_value" type="Variant" />
 			<description>
+				Sets value of blackboard variable.
 			</description>
 		</method>
 	</methods>

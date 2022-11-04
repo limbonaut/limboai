@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTRepeatUntilFailure" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		BT decorator that repeats child until [code]FAILURE[/code].
 	</brief_description>
 	<description>
+		BT decorator that repeats the child until [code]FAILURE[/code] status is returned.
+		Returns [code]RUNNING[/code] when the child returns [code]RUNNING[/code] or [code]SUCCESS[/code].
+		Returns [code]SUCCESS[/code] when the child returns [code]FAILURE[/code].
 	</description>
 	<tutorials>
 	</tutorials>
