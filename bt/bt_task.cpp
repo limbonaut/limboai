@@ -249,13 +249,13 @@ Ref<BTTask> BTTask::next_sibling() const {
 }
 
 String BTTask::get_configuration_warning() const {
-	return String();
+	String warning = "";
+	if (get_script_instance() &&
+			get_script_instance()->has_method(LimboStringNames::get_singleton()->_get_configuration_warning)) {
+		warning = get_script_instance()->call(LimboStringNames::get_singleton()->_get_configuration_warning);
+	}
+	return warning;
 }
-
-// Ref<Texture> BTTask::get_icon() const {
-// 	// FIXME: Potential problem if tools are not built.
-// 	return EditorNode::get_singleton()->get_class_icon(get_class(), "Object");
-// }
 
 void BTTask::print_tree(int p_initial_tabs) const {
 	String tabs = "--";

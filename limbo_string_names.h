@@ -35,6 +35,7 @@ public:
 	StringName updated;
 	StringName _update;
 	StringName state_changed;
+	StringName _get_configuration_warning;
 };
 
 #endif // LIMBO_STRING_NAMES_H

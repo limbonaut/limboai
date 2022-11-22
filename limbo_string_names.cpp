@@ -18,4 +18,5 @@ LimboStringNames::LimboStringNames() {
 	updated = StaticCString::create("updated");
 	_update = StaticCString::create("_update");
 	state_changed = StaticCString::create("state_changed");
+	_get_configuration_warning = StaticCString::create("_get_configuration_warning");
 }
