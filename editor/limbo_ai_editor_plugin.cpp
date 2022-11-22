@@ -525,7 +525,7 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	task_tree->update_tree();
 }
 
-void LimboAIEditor::_update_header() {
+void LimboAIEditor::_update_header() const {
 	String text = task_tree->get_bt()->get_path();
 	if (text.empty()) {
 		text = TTR("New Behavior Tree");
@@ -731,6 +731,7 @@ void LimboAIEditor::_on_visibility_changed() const {
 }
 
 void LimboAIEditor::_on_header_pressed() const {
+	_update_header();
 	task_tree->deselect();
 	editor->edit_resource(task_tree->get_bt());
 }
