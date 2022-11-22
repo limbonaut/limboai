@@ -19,6 +19,7 @@
 #include "core/os/memory.h"
 #include "core/print_string.h"
 #include "core/project_settings.h"
+#include "core/resource.h"
 #include "core/script_language.h"
 #include "core/string_name.h"
 #include "core/typedefs.h"
@@ -568,10 +569,10 @@ void LimboAIEditor::_load_bt(String p_path) {
 	editor->edit_resource(bt);
 }
 
-void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree) {
+void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "p_behavior_tree is null");
 
-	if (task_tree->get_bt() == p_behavior_tree) {
+	if (!p_force_refresh && task_tree->get_bt() == p_behavior_tree) {
 		return;
 	}
 
@@ -778,6 +779,67 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 	}
 }
 
+void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
+	for (int i = 0; i < p_resources.size(); i++) {
+		if (!ResourceCache::has(p_resources[i])) {
+			continue;
+		}
+
+		String res_type = ResourceLoader::get_resource_type(p_resources[i]);
+		if (res_type == "BehaviorTree") {
+			for (int j = 0; j < history.size(); j++) {
+				if (history.get(j)->get_path() == p_resources[i]) {
+					disk_changed_files.insert(p_resources[i]);
+				}
+			}
+		}
+	}
+
+	if (disk_changed_files.size() > 0) {
+		disk_changed_list->clear();
+		disk_changed_list->set_hide_root(true);
+		disk_changed_list->create_item();
+		for (Set<String>::Element *E = disk_changed_files.front(); E; E = E->next()) {
+			// for (int i = 0; i < disk_changed_files.size(); i++) {
+			TreeItem *ti = disk_changed_list->create_item();
+			ti->set_text(0, E->get());
+		}
+
+		if (!is_visible()) {
+			EditorNode::get_singleton()->select_editor_by_name("LimboAI");
+		}
+		disk_changed->call_deferred("popup_centered_ratio", 0.5);
+	}
+}
+
+void LimboAIEditor::_reload_modified() {
+	for (Set<String>::Element *E = disk_changed_files.front(); E; E = E->next()) {
+		for (int j = 0; j < history.size(); j++) {
+			if (history.get(j)->get_path() == E->get()) {
+				dirty.erase(history.get(j));
+				history.get(j)->get_root_task()->clear_internal_resource_paths();
+				history.get(j)->reload_from_file();
+				if (j == idx_history) {
+					edit_bt(history.get(j), true);
+				}
+			}
+		}
+	}
+	disk_changed_files.clear();
+}
+
+void LimboAIEditor::_resave_modified(String _str) {
+	for (Set<String>::Element *E = disk_changed_files.front(); E; E = E->next()) {
+		for (int j = 0; j < history.size(); j++) {
+			if (history.get(j)->get_path() == E->get()) {
+				ResourceSaver::save(history.get(j)->get_path(), history.get(j));
+			}
+		}
+	}
+	disk_changed->hide();
+	disk_changed_files.clear();
+}
+
 void LimboAIEditor::apply_changes() {
 	for (int i = 0; i < history.size(); i++) {
 		Ref<BehaviorTree> bt = history.get(i);
@@ -853,7 +915,10 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
-	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree"), &LimboAIEditor::edit_bt);
+	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree", "p_force_refresh"), &LimboAIEditor::edit_bt, Variant(false));
+	ClassDB::bind_method(D_METHOD("_on_resources_reload"), &LimboAIEditor::_on_resources_reload);
+	ClassDB::bind_method(D_METHOD("_reload_modified"), &LimboAIEditor::_reload_modified);
+	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
 }
 
 LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
@@ -1011,6 +1076,28 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	menu->connect("id_pressed", this, "_on_action_selected");
 	menu->set_hide_on_window_lose_focus(true);
 
+	disk_changed = memnew(ConfirmationDialog);
+	{
+		VBoxContainer *vbc = memnew(VBoxContainer);
+		disk_changed->add_child(vbc);
+
+		Label *dl = memnew(Label);
+		dl->set_text(TTR("The following BehaviorTree resources are newer on disk.\nWhat action should be taken?"));
+		vbc->add_child(dl);
+
+		disk_changed_list = memnew(Tree);
+		vbc->add_child(disk_changed_list);
+		disk_changed_list->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+
+		disk_changed->get_ok()->set_text(TTR("Reload"));
+		disk_changed->connect("confirmed", this, "_reload_modified");
+
+		disk_changed->add_button(TTR("Resave"), !OS::get_singleton()->get_swap_ok_cancel(), "resave");
+		disk_changed->connect("custom_action", this, "_resave_modified");
+	}
+	editor->get_gui_base()->add_child(disk_changed);
+	// disk_changed->hide();
+
 	GLOBAL_DEF("limbo_ai/behavior_tree/behavior_tree_default_dir", "res://ai/trees");
 	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/behavior_tree_default_dir",
 			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR));
@@ -1028,6 +1115,8 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	load_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
 	new_script_btn->connect("pressed", ScriptEditor::get_singleton(), "open_script_create_dialog",
 			varray("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).plus_file("new_task")));
+
+	EditorFileSystem::get_singleton()->connect("resources_reload", this, "_on_resources_reload");
 }
 
 LimboAIEditor::~LimboAIEditor() {

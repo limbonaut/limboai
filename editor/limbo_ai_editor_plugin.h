@@ -51,6 +51,8 @@ public:
 	Ref<BTTask> get_selected() const;
 	void deselect();
 
+	virtual bool editor_can_reload_from_file() { return false; }
+
 	TaskTree();
 	~TaskTree();
 };
@@ -128,6 +130,10 @@ private:
 	Button *history_forward;
 	TaskPanel *task_panel;
 
+	ConfirmationDialog *disk_changed;
+	Tree *disk_changed_list;
+	Set<String> disk_changed_files;
+
 	void _add_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header();
@@ -136,6 +142,9 @@ private:
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
+
+	void _reload_modified();
+	void _resave_modified(String _str = "");
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
@@ -147,6 +156,7 @@ private:
 	void _on_history_back();
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
+	void _on_resources_reload(const Vector<String> &p_resources);
 
 protected:
 	static void _bind_methods();
@@ -156,7 +166,7 @@ protected:
 public:
 	static Ref<Texture> get_task_icon(String p_script_path_or_class);
 
-	void edit_bt(Ref<BehaviorTree> p_behavior_tree);
+	void edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh = false);
 
 	void apply_changes();
 
