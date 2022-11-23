@@ -6,6 +6,14 @@
 #include "scene/main/node.h"
 #include <cstddef>
 
+Ref<Blackboard> Blackboard::top() const {
+	Ref<Blackboard> bb(this);
+	while (bb->get_parent_scope().is_valid()) {
+		bb = bb->get_parent_scope();
+	}
+	return bb;
+}
+
 Variant Blackboard::get_var(const Variant &p_key, const Variant &p_default) const {
 	if (data.has(p_key)) {
 		return data.get_valid(p_key);
@@ -46,4 +54,5 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_parent_scope", "p_blackboard"), &Blackboard::set_parent_scope);
 	ClassDB::bind_method(D_METHOD("get_parent_scope"), &Blackboard::get_parent_scope);
 	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "p_node"), &Blackboard::prefetch_nodepath_vars);
+	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
 }

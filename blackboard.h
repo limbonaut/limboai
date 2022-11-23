@@ -25,6 +25,8 @@ public:
 	void set_parent_scope(const Ref<Blackboard> &p_blackboard) { parent = p_blackboard; }
 	Ref<Blackboard> get_parent_scope() const { return parent; }
 
+	Ref<Blackboard> top() const;
+
 	Variant get_var(const Variant &p_key, const Variant &p_default) const;
 	void set_var(const Variant &p_key, const Variant &p_value);
 	bool has_var(const Variant &p_key) const;
