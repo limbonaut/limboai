@@ -1168,6 +1168,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 
 		rename_edit = memnew(LineEdit);
 		vbc->add_child(rename_edit);
+		rename_edit->set_placeholder("Custom Name");
 		rename_edit->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		rename_edit->set_custom_minimum_size(Size2(350.0, 0.0));
 		rename_edit->connect("text_entered", this, "_rename_task");
