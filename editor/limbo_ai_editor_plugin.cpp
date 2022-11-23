@@ -15,6 +15,7 @@
 #include "core/io/resource_saver.h"
 #include "core/list.h"
 #include "core/math/math_defs.h"
+#include "core/math/vector2.h"
 #include "core/object.h"
 #include "core/os/dir_access.h"
 #include "core/os/memory.h"
@@ -141,6 +142,10 @@ void TaskTree::_on_item_selected() {
 	emit_signal("task_selected", last_selected);
 }
 
+void TaskTree::_on_item_double_clicked() {
+	emit_signal("task_double_clicked");
+}
+
 void TaskTree::_on_task_changed() {
 	_update_item(tree->get_selected());
 }
@@ -231,6 +236,7 @@ void TaskTree::drop_data_fw(const Point2 &p_point, const Variant &p_data, Contro
 void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_item_rmb_selected"), &TaskTree::_on_item_rmb_selected);
 	ClassDB::bind_method(D_METHOD("_on_item_selected"), &TaskTree::_on_item_selected);
+	ClassDB::bind_method(D_METHOD("_on_item_double_clicked"), &TaskTree::_on_item_double_clicked);
 	ClassDB::bind_method(D_METHOD("_on_task_changed"), &TaskTree::_on_task_changed);
 	ClassDB::bind_method(D_METHOD("load_bt", "p_behavior_tree"), &TaskTree::load_bt);
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
@@ -245,6 +251,7 @@ void TaskTree::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("rmb_pressed"));
 	ADD_SIGNAL(MethodInfo("task_selected"));
+	ADD_SIGNAL(MethodInfo("task_double_clicked"));
 	ADD_SIGNAL(MethodInfo("task_dragged",
 			PropertyInfo(Variant::OBJECT, "p_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
 			PropertyInfo(Variant::OBJECT, "p_to_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
@@ -265,6 +272,7 @@ TaskTree::TaskTree() {
 	tree->set_allow_rmb_select(true);
 	tree->connect("item_rmb_selected", this, "_on_item_rmb_selected");
 	tree->connect("item_selected", this, "_on_item_selected");
+	tree->connect("item_activated", this, "_on_item_double_clicked");
 	tree->set_drag_forwarding(this);
 }
 
@@ -746,6 +754,17 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) const {
 	editor->edit_resource(p_task);
 }
 
+void LimboAIEditor::_on_tree_task_double_clicked() {
+	if (!task_tree->get_selected().is_valid()) {
+		return;
+	}
+
+	rename_dialog->popup_centered();
+	rename_edit->set_text(task_tree->get_selected()->get_custom_name());
+	rename_edit->select_all();
+	rename_edit->grab_focus();
+}
+
 void LimboAIEditor::_on_panel_task_selected(String p_task) {
 	if (p_task.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_task, "Script");
@@ -894,6 +913,13 @@ void LimboAIEditor::_resave_modified(String _str) {
 	disk_changed_files.clear();
 }
 
+void LimboAIEditor::_rename_task(String _str) {
+	ERR_FAIL_COND(!task_tree->get_selected().is_valid());
+	task_tree->get_selected()->set_custom_name(rename_edit->get_text());
+	rename_dialog->hide();
+	editor->edit_resource(task_tree->get_selected());
+}
+
 void LimboAIEditor::apply_changes() {
 	for (int i = 0; i < history.size(); i++) {
 		Ref<BehaviorTree> bt = history.get(i);
@@ -966,6 +992,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_history_back"), &LimboAIEditor::_on_history_back);
 	ClassDB::bind_method(D_METHOD("_on_history_forward"), &LimboAIEditor::_on_history_forward);
 	ClassDB::bind_method(D_METHOD("_on_task_dragged", "p_task", "p_to_task", "p_type"), &LimboAIEditor::_on_task_dragged);
+	ClassDB::bind_method(D_METHOD("_on_tree_task_double_clicked"), &LimboAIEditor::_on_tree_task_double_clicked);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
@@ -973,6 +1000,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_resources_reload"), &LimboAIEditor::_on_resources_reload);
 	ClassDB::bind_method(D_METHOD("_reload_modified"), &LimboAIEditor::_reload_modified);
 	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
+	ClassDB::bind_method(D_METHOD("_rename_task"), &LimboAIEditor::_rename_task, String());
 }
 
 LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
@@ -1105,6 +1133,7 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	task_tree->connect("task_selected", this, "_on_tree_task_selected");
 	task_tree->connect("visibility_changed", this, "_on_visibility_changed");
 	task_tree->connect("task_dragged", this, "_on_task_dragged");
+	task_tree->connect("task_double_clicked", this, "_on_tree_task_double_clicked");
 	task_tree->hide();
 
 	usage_hint = memnew(Panel);
@@ -1130,6 +1159,24 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 	menu->connect("id_pressed", this, "_on_action_selected");
 	menu->set_hide_on_window_lose_focus(true);
 
+	rename_dialog = memnew(ConfirmationDialog);
+	{
+		rename_dialog->set_title("Rename Task");
+
+		VBoxContainer *vbc = memnew(VBoxContainer);
+		rename_dialog->add_child(vbc);
+
+		rename_edit = memnew(LineEdit);
+		vbc->add_child(rename_edit);
+		rename_edit->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+		rename_edit->set_custom_minimum_size(Size2(350.0, 0.0));
+		rename_edit->connect("text_entered", this, "_rename_task");
+
+		rename_dialog->get_ok()->set_text(TTR("Rename"));
+		rename_dialog->connect("confirmed", this, "_rename_task");
+	}
+	add_child(rename_dialog);
+
 	disk_changed = memnew(ConfirmationDialog);
 	{
 		VBoxContainer *vbc = memnew(VBoxContainer);
@@ -1150,7 +1197,6 @@ LimboAIEditor::LimboAIEditor(EditorNode *p_editor) {
 		disk_changed->connect("custom_action", this, "_resave_modified");
 	}
 	editor->get_gui_base()->add_child(disk_changed);
-	// disk_changed->hide();
 
 	GLOBAL_DEF("limbo_ai/behavior_tree/behavior_tree_default_dir", "res://ai/trees");
 	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/behavior_tree_default_dir",

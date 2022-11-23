@@ -33,6 +33,7 @@ private:
 	TreeItem *_find_item(const Ref<BTTask> &p_task) const;
 
 	void _on_item_selected();
+	void _on_item_double_clicked();
 	void _on_item_rmb_selected(const Vector2 &p_pos);
 	void _on_task_changed();
 
@@ -137,6 +138,9 @@ private:
 	Button *history_forward;
 	TaskPanel *task_panel;
 
+	ConfirmationDialog *rename_dialog;
+	LineEdit *rename_edit;
+
 	ConfirmationDialog *disk_changed;
 	Tree *disk_changed_list;
 	Set<String> disk_changed_files;
@@ -153,9 +157,12 @@ private:
 	void _reload_modified();
 	void _resave_modified(String _str = "");
 
+	void _rename_task(String _str = "");
+
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
 	void _on_tree_task_selected(const Ref<BTTask> &p_task) const;
+	void _on_tree_task_double_clicked();
 	void _on_visibility_changed() const;
 	void _on_header_pressed() const;
 	void _on_save_pressed();
