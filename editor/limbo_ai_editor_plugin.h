@@ -74,6 +74,11 @@ public:
 	void set_filter(String p_filter);
 	void add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta);
 
+	void set_collapsed(bool p_collapsed);
+	bool is_collapsed() const;
+
+	String get_category_name() const { return section_header->get_text(); }
+
 	TaskSection(String p_category_name, EditorNode *p_editor);
 	~TaskSection();
 };
@@ -94,6 +99,8 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	void refresh();

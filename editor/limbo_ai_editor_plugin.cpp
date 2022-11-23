@@ -4,6 +4,7 @@
 
 #include "limbo_ai_editor_plugin.h"
 
+#include "core/array.h"
 #include "core/class_db.h"
 #include "core/dictionary.h"
 #include "core/error_list.h"
@@ -311,6 +312,15 @@ void TaskSection::add_task_button(String p_name, const Ref<Texture> &icon, Varia
 	tasks_container->add_child(btn);
 }
 
+void TaskSection::set_collapsed(bool p_collapsed) {
+	tasks_container->set_visible(!p_collapsed);
+	section_header->set_icon(p_collapsed ? get_icon("GuiTreeArrowRight", "EditorIcons") : get_icon("GuiTreeArrowDown", "EditorIcons"));
+}
+
+bool TaskSection::is_collapsed() const {
+	return !tasks_container->is_visible();
+}
+
 void TaskSection::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_on_task_button_pressed", "p_class"), &TaskSection::_on_task_button_pressed);
 	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &TaskSection::_on_header_pressed);
@@ -351,8 +361,30 @@ void TaskPanel::_on_filter_text_changed(String p_text) {
 void TaskPanel::refresh() {
 	filter_edit->set_right_icon(get_icon("Search", "EditorIcons"));
 
-	for (int i = 0; i < sections->get_child_count(); i++) {
-		sections->get_child(i)->queue_delete();
+	Set<String> collapsed_sections;
+	if (sections->get_child_count() == 0) {
+		// Restore collapsed state from config.
+		ConfigFile conf;
+		String conf_path = EditorSettings::get_singleton()->get_project_settings_dir().plus_file("limbo_ai.cfg");
+		if (conf.load(conf_path) == OK) {
+			Variant value = conf.get_value("bt_editor", "collapsed_sections", Array());
+			if (value.is_array()) {
+				Array arr = value;
+				for (int i = 0; i < arr.size(); i++) {
+					if (arr[i].get_type() == Variant::STRING) {
+						collapsed_sections.insert(arr[i]);
+					}
+				}
+			}
+		}
+	} else {
+		for (int i = 0; i < sections->get_child_count(); i++) {
+			TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
+			if (sec->is_collapsed()) {
+				collapsed_sections.insert(sec->get_category_name());
+			}
+			sections->get_child(i)->queue_delete();
+		}
 	}
 
 	HashMap<String, List<String>> categories;
@@ -403,6 +435,7 @@ void TaskPanel::refresh() {
 		sec->set_filter("");
 		sec->connect("task_button_pressed", this, "_on_task_button_pressed");
 		sections->add_child(sec);
+		sec->set_collapsed(collapsed_sections.has(cat));
 	}
 }
 
@@ -470,6 +503,26 @@ void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p
 		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
 	}
 	memdelete(dir);
+}
+
+void TaskPanel::_notification(int p_what) {
+	if (p_what == NOTIFICATION_EXIT_TREE) {
+		if (sections->get_child_count() == 0) {
+			return;
+		}
+		Array collapsed_sections;
+		for (int i = 0; i < sections->get_child_count(); i++) {
+			TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
+			if (sec->is_collapsed()) {
+				collapsed_sections.push_back(sec->get_category_name());
+			}
+		}
+		ConfigFile conf;
+		String conf_path = EditorSettings::get_singleton()->get_project_settings_dir().plus_file("limbo_ai.cfg");
+		conf.load(conf_path);
+		conf.set_value("bt_editor", "collapsed_sections", collapsed_sections);
+		conf.save(conf_path);
+	}
 }
 
 void TaskPanel::_bind_methods() {
