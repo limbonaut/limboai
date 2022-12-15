@@ -133,7 +133,7 @@ TreeItem *TaskTree::_find_item(const Ref<BTTask> &p_task) const {
 
 void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, int p_button_index) {
 	if (p_button_index == 2) {
-		emit_signal("rmb_pressed", get_screen_position() + p_pos);
+		emit_signal(SNAME("rmb_pressed"), get_screen_position() + p_pos);
 	}
 }
 
@@ -146,11 +146,11 @@ void TaskTree::_on_item_selected() {
 	}
 	last_selected = get_selected();
 	last_selected->connect("changed", callable_mp(this, &TaskTree::_on_task_changed));
-	emit_signal("task_selected", last_selected);
+	emit_signal(SNAME("task_selected"), last_selected);
 }
 
 void TaskTree::_on_item_double_clicked() {
-	emit_signal("task_double_clicked");
+	emit_signal(SNAME("task_double_clicked"));
 }
 
 void TaskTree::_on_task_changed() {
@@ -236,15 +236,11 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data, Contr
 	TreeItem *item = tree->get_item_at_position(p_point);
 	if (item && d.has("task")) {
 		Ref<BTTask> task = d["task"];
-		emit_signal("task_dragged", task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+		emit_signal(SNAME("task_dragged"), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
 	}
 }
 
 void TaskTree::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_item_mouse_selected"), &TaskTree::_on_item_mouse_selected);
-	ClassDB::bind_method(D_METHOD("_on_item_selected"), &TaskTree::_on_item_selected);
-	ClassDB::bind_method(D_METHOD("_on_item_double_clicked"), &TaskTree::_on_item_double_clicked);
-	ClassDB::bind_method(D_METHOD("_on_task_changed"), &TaskTree::_on_task_changed);
 	ClassDB::bind_method(D_METHOD("load_bt", "p_behavior_tree"), &TaskTree::load_bt);
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
 	ClassDB::bind_method(D_METHOD("update_tree"), &TaskTree::update_tree);
@@ -295,7 +291,7 @@ TaskTree::~TaskTree() {
 ////////////////////////////// TaskSection  ////////////////////////////////////
 
 void TaskSection::_on_task_button_pressed(const StringName &p_task) {
-	emit_signal("task_button_pressed", p_task);
+	emit_signal(SNAME("task_button_pressed"), p_task);
 }
 
 void TaskSection::_on_header_pressed() {
@@ -338,9 +334,6 @@ bool TaskSection::is_collapsed() const {
 }
 
 void TaskSection::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("_on_task_button_pressed", "p_class"), &TaskSection::_on_task_button_pressed);
-	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &TaskSection::_on_header_pressed);
-
 	ADD_SIGNAL(MethodInfo("task_button_pressed"));
 }
 
@@ -350,6 +343,7 @@ TaskSection::TaskSection(String p_category_name) {
 	section_header->set_text(p_category_name);
 	section_header->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")));
 	section_header->set_focus_mode(FOCUS_NONE);
+	section_header->add_theme_font_override(SNAME("font"), get_theme_font(SNAME("bold"), SNAME("EditorFonts")));
 	section_header->connect("pressed", callable_mp(this, &TaskSection::_on_header_pressed));
 
 	tasks_container = memnew(HFlowContainer);
@@ -364,7 +358,7 @@ TaskSection::~TaskSection() {
 //////////////////////////////  TaskPanel  /////////////////////////////////////
 
 void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
-	emit_signal("task_selected", p_task);
+	emit_signal(SNAME("task_selected"), p_task);
 }
 
 void TaskPanel::_on_filter_text_changed(String p_text) {
@@ -543,8 +537,6 @@ void TaskPanel::_notification(int p_what) {
 
 void TaskPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("refresh"), &TaskPanel::refresh);
-	ClassDB::bind_method(D_METHOD("_on_task_button_pressed"), &TaskPanel::_on_task_button_pressed);
-	ClassDB::bind_method(D_METHOD("_on_filter_text_changed"), &TaskPanel::_on_filter_text_changed);
 
 	ADD_SIGNAL(MethodInfo("task_selected"));
 }
@@ -987,22 +979,10 @@ void LimboAIEditor::_notification(int p_what) {
 void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
 	ClassDB::bind_method(D_METHOD("_add_task_with_prototype", "p_prototype"), &LimboAIEditor::_add_task_with_prototype);
-	ClassDB::bind_method(D_METHOD("_on_tree_rmb"), &LimboAIEditor::_on_tree_rmb);
-	ClassDB::bind_method(D_METHOD("_on_action_selected", "p_id"), &LimboAIEditor::_on_action_selected);
-	ClassDB::bind_method(D_METHOD("_on_tree_task_selected", "p_task"), &LimboAIEditor::_on_tree_task_selected);
-	ClassDB::bind_method(D_METHOD("_on_panel_task_selected", "p_task"), &LimboAIEditor::_on_panel_task_selected);
-	ClassDB::bind_method(D_METHOD("_on_visibility_changed"), &LimboAIEditor::_on_visibility_changed);
-	ClassDB::bind_method(D_METHOD("_on_header_pressed"), &LimboAIEditor::_on_header_pressed);
-	ClassDB::bind_method(D_METHOD("_on_save_pressed"), &LimboAIEditor::_on_save_pressed);
-	ClassDB::bind_method(D_METHOD("_on_history_back"), &LimboAIEditor::_on_history_back);
-	ClassDB::bind_method(D_METHOD("_on_history_forward"), &LimboAIEditor::_on_history_forward);
-	ClassDB::bind_method(D_METHOD("_on_task_dragged", "p_task", "p_to_task", "p_type"), &LimboAIEditor::_on_task_dragged);
-	ClassDB::bind_method(D_METHOD("_on_tree_task_double_clicked"), &LimboAIEditor::_on_tree_task_double_clicked);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "p_path"), &LimboAIEditor::_load_bt);
 	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree", "p_force_refresh"), &LimboAIEditor::edit_bt, Variant(false));
-	ClassDB::bind_method(D_METHOD("_on_resources_reload"), &LimboAIEditor::_on_resources_reload);
 	ClassDB::bind_method(D_METHOD("_reload_modified"), &LimboAIEditor::_reload_modified);
 	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
 	ClassDB::bind_method(D_METHOD("_rename_task"), &LimboAIEditor::_rename_task, String());
@@ -1162,7 +1142,6 @@ LimboAIEditor::LimboAIEditor() {
 	menu = memnew(PopupMenu);
 	add_child(menu);
 	menu->connect("id_pressed", callable_mp(this, &LimboAIEditor::_on_action_selected));
-	// menu->set_hide_on_window_lose_focus(true);
 
 	rename_dialog = memnew(ConfirmationDialog);
 	{
@@ -1257,7 +1236,7 @@ bool LimboAIEditorPlugin::handles(Object *p_object) const {
 	if (Object::cast_to<BehaviorTree>(p_object)) {
 		return true;
 	}
-	return p_object->is_class("BehaviorTree");
+	return false;
 }
 
 LimboAIEditorPlugin::LimboAIEditorPlugin() {
