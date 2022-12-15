@@ -1,12 +1,12 @@
 /* bb_variant.cpp */
 
 #include "bb_variant.h"
-#include "core/object.h"
-#include "core/variant.h"
+#include "core/object/object.h"
+#include "core/variant/variant.h"
 
 void BBVariant::set_type(Variant::Type p_type) {
 	type = p_type;
-	property_list_changed_notify();
+	notify_property_list_changed();
 	emit_changed();
 }
 

@@ -1,7 +1,7 @@
 /* bt_probability.cpp */
 
 #include "bt_probability.h"
-#include "core/object.h"
+#include "core/object/object.h"
 
 String BTProbability::_generate_name() const {
 	return vformat("Probability %.1f%%", run_chance);
@@ -18,5 +18,5 @@ int BTProbability::_tick(float p_delta) {
 void BTProbability::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_run_chance", "p_value"), &BTProbability::set_run_chance);
 	ClassDB::bind_method(D_METHOD("get_run_chance"), &BTProbability::get_run_chance);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "run_chance", PROPERTY_HINT_RANGE, "0.0,1.0"), "set_run_chance", "get_run_chance");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "run_chance", PROPERTY_HINT_RANGE, "0.0,1.0"), "set_run_chance", "get_run_chance");
 }

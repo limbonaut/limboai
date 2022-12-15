@@ -12,7 +12,7 @@ private:
 	int last_running_idx = 0;
 
 protected:
-	virtual void _enter();
-	virtual int _tick(float p_delta);
+	virtual void _enter() override;
+	virtual int _tick(float p_delta) override;
 };
 #endif // BT_SELECTOR_H

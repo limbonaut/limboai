@@ -3,13 +3,13 @@
 #ifndef BTTASK_H
 #define BTTASK_H
 
-#include "core/array.h"
-#include "core/dictionary.h"
-#include "core/object.h"
-#include "core/reference.h"
-#include "core/resource.h"
-#include "core/ustring.h"
-#include "core/vector.h"
+#include "core/io/resource.h"
+#include "core/object/object.h"
+#include "core/object/ref_counted.h"
+#include "core/string/ustring.h"
+#include "core/templates/vector.h"
+#include "core/variant/array.h"
+#include "core/variant/dictionary.h"
 #include "modules/limboai/blackboard.h"
 #include "scene/resources/texture.h"
 
@@ -46,6 +46,13 @@ protected:
 	virtual void _exit() {}
 	virtual int _tick(float p_delta) { return FAILURE; }
 
+	GDVIRTUAL0RC(String, _generate_name);
+	GDVIRTUAL0(_setup);
+	GDVIRTUAL0(_enter);
+	GDVIRTUAL0(_exit);
+	GDVIRTUAL1R(int, _tick, float);
+	GDVIRTUAL0RC(String, _get_configuration_warning);
+
 public:
 	Object *get_agent() const { return agent; }
 	void set_agent(Object *p_agent) { agent = p_agent; }
@@ -60,6 +67,7 @@ public:
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
+
 	int execute(float p_delta);
 	void cancel();
 	Ref<BTTask> get_child(int p_idx) const;

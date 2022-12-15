@@ -4,7 +4,7 @@
 #define BT_RUN_LIMIT_H
 
 #include "bt_decorator.h"
-#include "core/object.h"
+#include "core/object/object.h"
 
 class BTRunLimit : public BTDecorator {
 	GDCLASS(BTRunLimit, BTDecorator);
@@ -16,8 +16,8 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const;
-	virtual int _tick(float p_delta);
+	virtual String _generate_name() const override;
+	virtual int _tick(float p_delta) override;
 
 public:
 	void set_run_limit(int p_value) {

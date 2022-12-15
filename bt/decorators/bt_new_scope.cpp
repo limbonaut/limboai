@@ -1,9 +1,9 @@
 /* bt_new_scope.cpp */
 
 #include "bt_new_scope.h"
-#include "core/error_macros.h"
+#include "core/error/error_macros.h"
 #include "core/os/memory.h"
-#include "core/ustring.h"
+#include "core/string/ustring.h"
 #include "modules/limboai/blackboard.h"
 
 void BTNewScope::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {

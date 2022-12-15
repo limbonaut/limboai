@@ -2,7 +2,7 @@
 
 #include "limbo_utility.h"
 #include "bt/bt_task.h"
-#include "core/variant.h"
+#include "core/variant/variant.h"
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -12,7 +12,7 @@ LimboUtility *LimboUtility::get_singleton() {
 
 String LimboUtility::decorate_var(String p_variable) const {
 	String var = p_variable.trim_prefix("$").trim_prefix("\"").trim_suffix("\"");
-	if (var.find(" ") == -1 and not var.empty()) {
+	if (var.find(" ") == -1 and not var.is_empty()) {
 		return vformat("$%s", var);
 	} else {
 		return vformat("$\"%s\"", var);

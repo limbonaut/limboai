@@ -4,7 +4,7 @@
 
 String BTAction::get_configuration_warning() const {
 	String warning = BTTask::get_configuration_warning();
-	if (!warning.empty()) {
+	if (!warning.is_empty()) {
 		warning += "\n";
 	}
 	if (get_child_count() != 0) {

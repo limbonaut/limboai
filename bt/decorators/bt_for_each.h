@@ -4,7 +4,7 @@
 #define BT_FOR_EACH_H
 
 #include "bt_decorator.h"
-#include "core/object.h"
+#include "core/object/object.h"
 
 class BTForEach : public BTDecorator {
 	GDCLASS(BTForEach, BTDecorator);
@@ -18,9 +18,9 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const;
-	virtual void _enter();
-	virtual int _tick(float p_delta);
+	virtual String _generate_name() const override;
+	virtual void _enter() override;
+	virtual int _tick(float p_delta) override;
 
 public:
 	void set_array_var(String p_value) {

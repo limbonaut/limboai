@@ -3,7 +3,8 @@
 #ifndef LIMBO_HSM_H
 #define LIMBO_HSM_H
 
-#include "core/object.h"
+#include "core/object/object.h"
+#include "core/templates/hash_map.h"
 #include "limbo_state.h"
 
 class LimboHSM : public LimboState {
@@ -20,7 +21,7 @@ private:
 	UpdateMode update_mode;
 	LimboState *initial_state;
 	LimboState *active_state;
-	Map<uint64_t, LimboState *> transitions;
+	HashMap<uint64_t, LimboState *> transitions;
 
 	_FORCE_INLINE_ uint64_t _get_transition_key(Node *p_from_state, const String &p_event) {
 		uint64_t key = hash_djb2_one_64(Variant::OBJECT);
@@ -34,10 +35,10 @@ protected:
 
 	void _notification(int p_what);
 
-	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
-	virtual void _enter();
-	virtual void _exit();
-	virtual void _update(float p_delta);
+	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) override;
+	virtual void _enter() override;
+	virtual void _exit() override;
+	virtual void _update(float p_delta) override;
 
 	void _change_state(LimboState *p_state);
 
@@ -53,7 +54,7 @@ public:
 	LimboState *get_initial_state() const { return initial_state; }
 
 	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_parent_scope = nullptr);
-	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
+	virtual bool dispatch(const String &p_event, const Variant &p_cargo) override;
 
 	void update(float p_delta) { _update(p_delta); }
 	void add_transition(Node *p_from_state, Node *p_to_state, const String &p_event);

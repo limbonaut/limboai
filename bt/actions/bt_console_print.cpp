@@ -1,8 +1,8 @@
 /* bt_console_print.cpp */
 
 #include "bt_console_print.h"
-#include "core/object.h"
-#include "core/print_string.h"
+#include "core/object/object.h"
+#include "core/string/print_string.h"
 #include "modules/limboai/bt/actions/bt_action.h"
 
 String BTConsolePrint::_generate_name() const {
@@ -54,7 +54,7 @@ int BTConsolePrint::_tick(float p_delta) {
 
 String BTConsolePrint::get_configuration_warning() const {
 	String warning = BTAction::get_configuration_warning();
-	if (!warning.empty()) {
+	if (!warning.is_empty()) {
 		warning += "\n";
 	}
 	if (format_var_args.size() > 5) {
@@ -70,5 +70,5 @@ void BTConsolePrint::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_format_var_args"), &BTConsolePrint::get_format_var_args);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "text", PROPERTY_HINT_MULTILINE_TEXT), "set_text", "get_text");
-	ADD_PROPERTY(PropertyInfo(Variant::POOL_STRING_ARRAY, "format_var_args"), "set_format_var_args", "get_format_var_args");
+	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "format_var_args"), "set_format_var_args", "get_format_var_args");
 }

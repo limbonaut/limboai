@@ -5,7 +5,7 @@
 
 #include "behavior_tree.h"
 #include "bt_task.h"
-#include "core/object.h"
+#include "core/object/object.h"
 #include "modules/limboai/blackboard.h"
 #include "scene/main/node.h"
 

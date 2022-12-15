@@ -1,11 +1,11 @@
 /* bt_subtree.cpp */
 
 #include "bt_subtree.h"
-#include "core/engine.h"
-#include "core/error_macros.h"
-#include "core/object.h"
+#include "core/config/engine.h"
+#include "core/error/error_macros.h"
+#include "core/object/object.h"
 #include "core/typedefs.h"
-#include "core/variant.h"
+#include "core/variant/variant.h"
 #include "modules/limboai/blackboard.h"
 #include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/actions/bt_fail.h"
@@ -17,7 +17,7 @@ String BTSubtree::_generate_name() const {
 	String s;
 	if (subtree.is_null()) {
 		s = "(unassigned)";
-	} else if (subtree->get_path().empty()) {
+	} else if (subtree->get_path().is_empty()) {
 		s = "(unsaved)";
 	} else {
 		s = vformat("\"%s\"", subtree->get_path());
@@ -46,7 +46,7 @@ int BTSubtree::_tick(float p_delta) {
 
 String BTSubtree::get_configuration_warning() const {
 	String warning = BTTask::get_configuration_warning(); // BTDecorator skipped intentionally
-	if (!warning.empty()) {
+	if (!warning.is_empty()) {
 		warning += "\n";
 	}
 	if (subtree.is_null()) {

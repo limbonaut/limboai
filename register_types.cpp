@@ -2,7 +2,7 @@
 
 #include "register_types.h"
 
-#include "core/class_db.h"
+#include "core/object/class_db.h"
 
 #include "bb_param/bb_aabb.h"
 #include "bb_param/bb_array.h"
@@ -66,6 +66,7 @@
 #include "bt/decorators/bt_subtree.h"
 #include "bt/decorators/bt_time_limit.h"
 #include "core/os/memory.h"
+#include "core/string/print_string.h"
 #include "limbo_hsm.h"
 #include "limbo_state.h"
 #include "limbo_string_names.h"
@@ -77,92 +78,97 @@
 
 static LimboUtility *_limbo_utility = nullptr;
 
-void register_limboai_types() {
-	ClassDB::register_class<Blackboard>();
+void initialize_limboai_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		ClassDB::register_class<Blackboard>();
 
-	ClassDB::register_class<LimboState>();
-	ClassDB::register_class<LimboHSM>();
+		ClassDB::register_class<LimboState>();
+		ClassDB::register_class<LimboHSM>();
 
-	ClassDB::register_class<BTTask>();
-	ClassDB::register_class<BehaviorTree>();
-	ClassDB::register_class<BTPlayer>();
-	ClassDB::register_class<BTState>();
+		ClassDB::register_class<BTTask>();
+		ClassDB::register_class<BehaviorTree>();
+		ClassDB::register_class<BTPlayer>();
+		ClassDB::register_class<BTState>();
 
-	ClassDB::register_class<BTComposite>();
-	ClassDB::register_class<BTSequence>();
-	ClassDB::register_class<BTDynamicSequence>();
-	ClassDB::register_class<BTDynamicSelector>();
-	ClassDB::register_class<BTSelector>();
-	ClassDB::register_class<BTRandomSelector>();
-	ClassDB::register_class<BTRandomSequence>();
-	ClassDB::register_class<BTSelector>();
-	ClassDB::register_class<BTParallel>();
+		ClassDB::register_class<BTComposite>();
+		ClassDB::register_class<BTSequence>();
+		ClassDB::register_class<BTDynamicSequence>();
+		ClassDB::register_class<BTDynamicSelector>();
+		ClassDB::register_class<BTSelector>();
+		ClassDB::register_class<BTRandomSelector>();
+		ClassDB::register_class<BTRandomSequence>();
+		ClassDB::register_class<BTSelector>();
+		ClassDB::register_class<BTParallel>();
 
-	ClassDB::register_class<BTDecorator>();
-	ClassDB::register_class<BTInvert>();
-	ClassDB::register_class<BTAlwaysFail>();
-	ClassDB::register_class<BTAlwaysSucceed>();
-	ClassDB::register_class<BTDelay>();
-	ClassDB::register_class<BTRepeat>();
-	ClassDB::register_class<BTRepeatUntilFailure>();
-	ClassDB::register_class<BTRepeatUntilSuccess>();
-	ClassDB::register_class<BTRunLimit>();
-	ClassDB::register_class<BTTimeLimit>();
-	ClassDB::register_class<BTCooldown>();
-	ClassDB::register_class<BTProbability>();
-	ClassDB::register_class<BTForEach>();
+		ClassDB::register_class<BTDecorator>();
+		ClassDB::register_class<BTInvert>();
+		ClassDB::register_class<BTAlwaysFail>();
+		ClassDB::register_class<BTAlwaysSucceed>();
+		ClassDB::register_class<BTDelay>();
+		ClassDB::register_class<BTRepeat>();
+		ClassDB::register_class<BTRepeatUntilFailure>();
+		ClassDB::register_class<BTRepeatUntilSuccess>();
+		ClassDB::register_class<BTRunLimit>();
+		ClassDB::register_class<BTTimeLimit>();
+		ClassDB::register_class<BTCooldown>();
+		ClassDB::register_class<BTProbability>();
+		ClassDB::register_class<BTForEach>();
 
-	ClassDB::register_class<BTAction>();
-	ClassDB::register_class<BTFail>();
-	ClassDB::register_class<BTWait>();
-	ClassDB::register_class<BTRandomWait>();
-	ClassDB::register_class<BTWaitTicks>();
-	ClassDB::register_class<BTNewScope>();
-	ClassDB::register_class<BTSubtree>();
-	ClassDB::register_class<BTConsolePrint>();
+		ClassDB::register_class<BTAction>();
+		ClassDB::register_class<BTFail>();
+		ClassDB::register_class<BTWait>();
+		ClassDB::register_class<BTRandomWait>();
+		ClassDB::register_class<BTWaitTicks>();
+		ClassDB::register_class<BTNewScope>();
+		ClassDB::register_class<BTSubtree>();
+		ClassDB::register_class<BTConsolePrint>();
 
-	ClassDB::register_class<BTCondition>();
+		ClassDB::register_class<BTCondition>();
 
-	ClassDB::register_virtual_class<BBParam>();
-	ClassDB::register_class<BBInt>();
-	ClassDB::register_class<BBBool>();
-	ClassDB::register_class<BBFloat>();
-	ClassDB::register_class<BBString>();
-	ClassDB::register_class<BBVector2>();
-	ClassDB::register_class<BBRect2>();
-	ClassDB::register_class<BBVector3>();
-	ClassDB::register_class<BBTransform2D>();
-	ClassDB::register_class<BBPlane>();
-	ClassDB::register_class<BBQuat>();
-	ClassDB::register_class<BBAabb>();
-	ClassDB::register_class<BBBasis>();
-	ClassDB::register_class<BBTransform>();
-	ClassDB::register_class<BBColor>();
-	ClassDB::register_class<BBNode>();
-	ClassDB::register_class<BBDictionary>();
-	ClassDB::register_class<BBArray>();
-	ClassDB::register_class<BBByteArray>();
-	ClassDB::register_class<BBIntArray>();
-	ClassDB::register_class<BBRealArray>();
-	ClassDB::register_class<BBColorArray>();
-	ClassDB::register_class<BBStringArray>();
-	ClassDB::register_class<BBVector2Array>();
-	ClassDB::register_class<BBVector3Array>();
-	ClassDB::register_class<BBVariant>();
+		ClassDB::register_abstract_class<BBParam>();
+		ClassDB::register_class<BBInt>();
+		ClassDB::register_class<BBBool>();
+		ClassDB::register_class<BBFloat>();
+		ClassDB::register_class<BBString>();
+		ClassDB::register_class<BBVector2>();
+		ClassDB::register_class<BBRect2>();
+		ClassDB::register_class<BBVector3>();
+		ClassDB::register_class<BBTransform2D>();
+		ClassDB::register_class<BBPlane>();
+		ClassDB::register_class<BBQuat>();
+		ClassDB::register_class<BBAabb>();
+		ClassDB::register_class<BBBasis>();
+		ClassDB::register_class<BBTransform>();
+		ClassDB::register_class<BBColor>();
+		ClassDB::register_class<BBNode>();
+		ClassDB::register_class<BBDictionary>();
+		ClassDB::register_class<BBArray>();
+		ClassDB::register_class<BBByteArray>();
+		ClassDB::register_class<BBIntArray>();
+		ClassDB::register_class<BBRealArray>();
+		ClassDB::register_class<BBColorArray>();
+		ClassDB::register_class<BBStringArray>();
+		ClassDB::register_class<BBVector2Array>();
+		ClassDB::register_class<BBVector3Array>();
+		ClassDB::register_class<BBVariant>();
 
-	_limbo_utility = memnew(LimboUtility);
-	ClassDB::register_class<LimboUtility>();
+		_limbo_utility = memnew(LimboUtility);
+		ClassDB::register_class<LimboUtility>();
+
+		LimboStringNames::create();
+	}
 
 #ifdef TOOLS_ENABLED
-	Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
-	EditorPlugins::add_by_type<LimboAIEditorPlugin>();
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
+		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
+	}
 #endif
-
-	LimboStringNames::create();
 }
 
-void unregister_limboai_types() {
-	LimboStringNames::free();
-
-	memdelete(_limbo_utility);
+void uninitialize_limboai_module(ModuleInitializationLevel p_level) {
+	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		LimboStringNames::free();
+		memdelete(_limbo_utility);
+	}
 }

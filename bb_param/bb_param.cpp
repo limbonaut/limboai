@@ -1,25 +1,26 @@
 /* bb_param.cpp */
 
 #include "bb_param.h"
-#include "core/class_db.h"
-#include "core/error_macros.h"
-#include "core/object.h"
-#include "core/variant.h"
+#include "core/core_bind.h"
+#include "core/error/error_macros.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
+#include "core/variant/variant.h"
 #include "modules/limboai/limbo_utility.h"
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
 void BBParam::set_value_source(ValueSource p_value) {
 	value_source = p_value;
-	property_list_changed_notify();
+	notify_property_list_changed();
 	_update_name();
 	emit_changed();
 }
 
 Variant BBParam::get_saved_value() {
 	if (saved_value.get_type() != get_type()) {
-		Variant::CallError err;
-		saved_value = Variant::construct(get_type(), nullptr, 0, err);
+		Callable::CallError err;
+		Variant::construct(get_type(), saved_value, nullptr, 0, err);
 	}
 	return saved_value;
 }

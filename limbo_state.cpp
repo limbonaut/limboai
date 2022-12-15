@@ -1,12 +1,12 @@
 /* limbo_state.cpp */
 
 #include "limbo_state.h"
-#include "core/array.h"
-#include "core/class_db.h"
-#include "core/error_macros.h"
-#include "core/object.h"
+#include "core/error/error_macros.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
 #include "core/typedefs.h"
-#include "core/variant.h"
+#include "core/variant/array.h"
+#include "core/variant/variant.h"
 #include "limbo_string_names.h"
 
 const String LimboState::EVENT_FINISHED = "finished";
@@ -67,7 +67,7 @@ void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboar
 	agent = p_agent;
 
 	if (!p_blackboard.is_null()) {
-		if (!blackboard->get_data().empty()) {
+		if (!blackboard->get_data().is_empty()) {
 			blackboard->set_parent_scope(p_blackboard);
 		} else {
 			blackboard = p_blackboard;
@@ -78,7 +78,7 @@ void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboar
 };
 
 bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
-	ERR_FAIL_COND_V(p_event.empty(), false);
+	ERR_FAIL_COND_V(p_event.is_empty(), false);
 	bool result = false;
 	if (handlers.size() > 0 && handlers.has(p_event)) {
 		if (p_cargo.get_type() == Variant::NIL) {
@@ -91,7 +91,7 @@ bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 }
 
 void LimboState::add_event_handler(const String &p_event, const StringName &p_method) {
-	ERR_FAIL_COND(p_event.empty());
+	ERR_FAIL_COND(p_event.is_empty());
 	ERR_FAIL_COND(!has_method(p_method));
 	handlers.insert(p_event, p_method);
 }
@@ -99,21 +99,24 @@ void LimboState::add_event_handler(const String &p_event, const StringName &p_me
 LimboState *LimboState::call_on_enter(Object *p_object, const StringName &p_method) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
 	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	connect(LimboStringNames::get_singleton()->entered, p_object, p_method);
+	ERR_PRINT("NOT IMPLEMENTED");
+	// connect(LimboStringNames::get_singleton()->entered, p_object, p_method);
 	return this;
 }
 
 LimboState *LimboState::call_on_exit(Object *p_object, const StringName &p_method) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
 	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	connect(LimboStringNames::get_singleton()->exited, p_object, p_method);
+	ERR_PRINT("NOT IMPLEMENTED");
+	// connect(LimboStringNames::get_singleton()->exited, p_object, p_method);
 	return this;
 }
 
 LimboState *LimboState::call_on_update(Object *p_object, const StringName &p_method) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
 	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	connect(LimboStringNames::get_singleton()->updated, p_object, p_method);
+	ERR_PRINT("NOT IMPLEMENTED");
+	// connect(LimboStringNames::get_singleton()->updated, p_object, p_method);
 	return this;
 }
 
@@ -166,10 +169,15 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &LimboState::_set_blackboard_data);
 	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &LimboState::_get_blackboard_data);
 
-	BIND_VMETHOD(MethodInfo("_setup"));
-	BIND_VMETHOD(MethodInfo("_enter"));
-	BIND_VMETHOD(MethodInfo("_exit"));
-	BIND_VMETHOD(MethodInfo("_update", PropertyInfo(Variant::REAL, "p_delta")));
+	// BIND_VMETHOD(MethodInfo("_setup"));
+	// BIND_VMETHOD(MethodInfo("_enter"));
+	// BIND_VMETHOD(MethodInfo("_exit"));
+	// BIND_VMETHOD(MethodInfo("_update", PropertyInfo(Variant::REAL, "p_delta")));
+
+	GDVIRTUAL_BIND(_setup);
+	GDVIRTUAL_BIND(_enter);
+	GDVIRTUAL_BIND(_exit);
+	GDVIRTUAL_BIND(_update, "p_delta");
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
@@ -179,7 +187,7 @@ void LimboState::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("setup"));
 	ADD_SIGNAL(MethodInfo("entered"));
 	ADD_SIGNAL(MethodInfo("exited"));
-	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::REAL, "p_delta")));
+	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::FLOAT, "p_delta")));
 };
 
 LimboState::LimboState() {

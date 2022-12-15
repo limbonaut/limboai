@@ -1,10 +1,9 @@
 /* blackboard.cpp */
 
 #include "blackboard.h"
-#include "core/error_macros.h"
-#include "core/variant.h"
+#include "core/error/error_macros.h"
+#include "core/variant/variant.h"
 #include "scene/main/node.h"
-#include <cstddef>
 
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);

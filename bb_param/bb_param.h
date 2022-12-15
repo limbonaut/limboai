@@ -3,10 +3,10 @@
 #ifndef BB_PARAM_H
 #define BB_PARAM_H
 
-#include "core/object.h"
-#include "core/resource.h"
+#include "core/io/resource.h"
+#include "core/object/object.h"
 #include "core/typedefs.h"
-#include "core/variant.h"
+#include "core/variant/variant.h"
 #include "modules/limboai/blackboard.h"
 #include "modules/limboai/limbo_utility.h"
 
@@ -45,7 +45,7 @@ public:
 	void set_variable(const String &p_value);
 	String get_variable() const { return variable; }
 
-	virtual String to_string();
+	virtual String to_string() override;
 
 	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
 

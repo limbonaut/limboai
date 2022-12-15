@@ -4,7 +4,7 @@
 #define BT_PARALLEL_H
 
 #include "bt_composite.h"
-#include "core/object.h"
+#include "core/object/object.h"
 
 class BTParallel : public BTComposite {
 	GDCLASS(BTParallel, BTComposite);
@@ -17,8 +17,8 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual void _enter();
-	virtual int _tick(float p_delta);
+	virtual void _enter() override;
+	virtual int _tick(float p_delta) override;
 
 public:
 	int get_num_successes_required() const { return num_successes_required; }

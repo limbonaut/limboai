@@ -1,8 +1,8 @@
 /* bt_repeat.cpp */
 
 #include "bt_repeat.h"
-#include "core/object.h"
-#include "core/variant.h"
+#include "core/object/object.h"
+#include "core/variant/variant.h"
 
 String BTRepeat::_generate_name() const {
 	return vformat("Repeat x%s", times);

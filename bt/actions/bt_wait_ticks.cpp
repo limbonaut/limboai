@@ -1,9 +1,9 @@
 /* bt_wait_ticks.cpp */
 
 #include "bt_wait_ticks.h"
-#include "core/class_db.h"
-#include "core/object.h"
-#include "core/variant.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
+#include "core/variant/variant.h"
 
 String BTWaitTicks::_generate_name() const {
 	return vformat("WaitTicks x%d", num_ticks);

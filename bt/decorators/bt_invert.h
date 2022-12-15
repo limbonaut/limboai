@@ -4,13 +4,13 @@
 #define BT_INVERT_H
 
 #include "bt_decorator.h"
-#include "core/object.h"
+#include "core/object/object.h"
 
 class BTInvert : public BTDecorator {
 	GDCLASS(BTInvert, BTDecorator);
 
 protected:
-	virtual int _tick(float p_delta);
+	virtual int _tick(float p_delta) override;
 };
 
 #endif // BT_INVERT_H

@@ -1,8 +1,8 @@
 /* bb_node.cpp */
 
 #include "bb_node.h"
-#include "core/error_macros.h"
-#include "core/variant.h"
+#include "core/error/error_macros.h"
+#include "core/variant/variant.h"
 #include "scene/main/node.h"
 
 Variant BBNode::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
@@ -21,7 +21,7 @@ Variant BBNode::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, 
 		ERR_FAIL_COND_V_MSG(agent == nullptr, Variant(), "BBNode: p_agent must be a Node.");
 		return agent->get_node(val);
 	} else {
-		Node *node = val;
+		Node *node = Object::cast_to<Node>(val);
 		if (unlikely(node == nullptr && val.get_type() != Variant::NIL)) {
 			WARN_PRINT("BBNode: Unexpected variant type of a blackboard variable.");
 			return p_default;

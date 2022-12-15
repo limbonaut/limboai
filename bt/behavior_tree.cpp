@@ -1,12 +1,11 @@
 /* behavior_tree.cpp */
 
 #include "behavior_tree.h"
-#include "core/class_db.h"
-#include "core/error_macros.h"
-#include "core/list.h"
-#include "core/object.h"
-#include "core/variant.h"
-#include <cstddef>
+#include "core/error/error_macros.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
+#include "core/templates/list.h"
+#include "core/variant/variant.h"
 
 void BehaviorTree::init() {
 	List<BTTask *> stack;
@@ -17,7 +16,7 @@ void BehaviorTree::init() {
 			stack.push_back(task->get_child(i).ptr());
 		}
 		task = nullptr;
-		if (!stack.empty()) {
+		if (!stack.is_empty()) {
 			task = stack.front()->get();
 			stack.pop_front();
 		}

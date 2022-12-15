@@ -2,12 +2,12 @@
 
 #include "limbo_hsm.h"
 
-#include "core/class_db.h"
-#include "core/engine.h"
-#include "core/error_macros.h"
-#include "core/object.h"
+#include "core/config/engine.h"
+#include "core/error/error_macros.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
 #include "core/typedefs.h"
-#include "core/variant.h"
+#include "core/variant/variant.h"
 #include "modules/limboai/blackboard.h"
 #include "modules/limboai/limbo_state.h"
 #include "modules/limboai/limbo_string_names.h"
@@ -95,7 +95,7 @@ void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String
 	ERR_FAIL_COND(p_to_state == nullptr);
 	ERR_FAIL_COND(p_to_state->get_parent() != this);
 	ERR_FAIL_COND(!p_to_state->is_class("LimboState"));
-	ERR_FAIL_COND(p_event.empty());
+	ERR_FAIL_COND(p_event.is_empty());
 
 	uint64_t key = _get_transition_key(p_from_state, p_event);
 	transitions[key] = Object::cast_to<LimboState>(p_to_state);
@@ -119,7 +119,7 @@ void LimboHSM::set_initial_state(Node *p_state) {
 }
 
 bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
-	ERR_FAIL_COND_V(p_event.empty(), false);
+	ERR_FAIL_COND_V(p_event.is_empty(), false);
 
 	bool event_consumed = false;
 

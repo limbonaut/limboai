@@ -1,8 +1,8 @@
 /* bt_cooldown.cpp */
 
 #include "bt_cooldown.h"
-#include "core/array.h"
-#include "core/class_db.h"
+#include "core/object/class_db.h"
+#include "core/variant/array.h"
 #include "scene/main/scene_tree.h"
 
 String BTCooldown::_generate_name() const {
@@ -10,7 +10,7 @@ String BTCooldown::_generate_name() const {
 }
 
 void BTCooldown::_setup() {
-	if (cooldown_state_var.empty()) {
+	if (cooldown_state_var.is_empty()) {
 		cooldown_state_var = vformat("cooldown_%d", rand());
 	}
 	get_blackboard()->set_var(cooldown_state_var, false);
@@ -37,7 +37,7 @@ void BTCooldown::_chill() {
 		_timer->set_time_left(duration);
 	} else {
 		_timer = SceneTree::get_singleton()->create_timer(duration, process_pause);
-		_timer->connect("timeout", this, "_on_timeout", Vector<Variant>(), CONNECT_ONESHOT);
+		_timer->connect("timeout", callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }
 
@@ -59,7 +59,7 @@ void BTCooldown::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_cooldown_state_var"), &BTCooldown::get_cooldown_state_var);
 	ClassDB::bind_method(D_METHOD("_on_timeout"), &BTCooldown::_on_timeout);
 
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "duration"), "set_duration", "get_duration");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "duration"), "set_duration", "get_duration");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "process_pause"), "set_process_pause", "get_process_pause");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "start_cooled"), "set_start_cooled", "get_start_cooled");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "trigger_on_failure"), "set_trigger_on_failure", "get_trigger_on_failure");

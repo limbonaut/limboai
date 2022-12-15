@@ -24,5 +24,5 @@ int BTTimeLimit::_tick(float p_delta) {
 void BTTimeLimit::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_time_limit", "p_value"), &BTTimeLimit::set_time_limit);
 	ClassDB::bind_method(D_METHOD("get_time_limit"), &BTTimeLimit::get_time_limit);
-	ADD_PROPERTY(PropertyInfo(Variant::REAL, "time_limit"), "set_time_limit", "get_time_limit");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "time_limit"), "set_time_limit", "get_time_limit");
 }

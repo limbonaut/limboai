@@ -3,13 +3,14 @@
 #ifndef BLACKBOARD_H
 #define BLACKBOARD_H
 
-#include "core/dictionary.h"
-#include "core/object.h"
-#include "core/reference.h"
-#include "core/variant.h"
+#include "core/object/object.h"
+#include "core/object/ref_counted.h"
+#include "core/variant/dictionary.h"
+#include "core/variant/variant.h"
+#include "scene/main/node.h"
 
-class Blackboard : public Reference {
-	GDCLASS(Blackboard, Reference);
+class Blackboard : public RefCounted {
+	GDCLASS(Blackboard, RefCounted);
 
 private:
 	Dictionary data;

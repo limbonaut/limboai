@@ -4,11 +4,13 @@
 #define LIMBO_STATE_H
 
 #include "blackboard.h"
-#include "core/class_db.h"
-#include "core/object.h"
-#include "core/string_name.h"
-#include "core/ustring.h"
-#include "core/variant.h"
+#include "core/object/class_db.h"
+#include "core/object/gdvirtual.gen.inc"
+#include "core/object/object.h"
+#include "core/string/string_name.h"
+#include "core/string/ustring.h"
+#include "core/templates/hash_map.h"
+#include "core/variant/variant.h"
 #include "scene/main/node.h"
 
 class LimboHSM;
@@ -25,7 +27,7 @@ private:
 
 	Object *agent;
 	Ref<Blackboard> blackboard;
-	Map<String, StringName> handlers;
+	HashMap<String, StringName> handlers;
 	GuardCallback guard;
 
 protected:
@@ -40,10 +42,16 @@ protected:
 	Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
 
 	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
+
 	virtual void _setup();
 	virtual void _enter();
 	virtual void _exit();
 	virtual void _update(float p_delta);
+
+	GDVIRTUAL0(_setup);
+	GDVIRTUAL0(_enter);
+	GDVIRTUAL0(_exit);
+	GDVIRTUAL1(_update, float);
 
 	void add_event_handler(const String &p_event, const StringName &p_method);
 

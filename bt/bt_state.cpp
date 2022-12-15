@@ -1,8 +1,8 @@
 /* bt_state.cpp */
 
 #include "bt_state.h"
-#include "core/class_db.h"
-#include "core/variant.h"
+#include "core/object/class_db.h"
+#include "core/variant/variant.h"
 #include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/limbo_state.h"
 

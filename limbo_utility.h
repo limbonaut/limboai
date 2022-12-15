@@ -3,7 +3,8 @@
 #ifndef LIMBO_UTILITY_H
 #define LIMBO_UTILITY_H
 
-#include "core/object.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
 
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);

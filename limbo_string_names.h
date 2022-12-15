@@ -3,12 +3,13 @@
 #ifndef LIMBO_STRING_NAMES_H
 #define LIMBO_STRING_NAMES_H
 
-#include "core/string_name.h"
+#include "core/string/string_name.h"
 #include "core/typedefs.h"
+#include "modules/register_module_types.h"
 
 class LimboStringNames {
-	friend void register_limboai_types();
-	friend void unregister_limboai_types();
+	friend void initialize_limboai_module(ModuleInitializationLevel p_level);
+	friend void uninitialize_limboai_module(ModuleInitializationLevel p_level);
 
 	static LimboStringNames *singleton;
 

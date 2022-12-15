@@ -4,7 +4,7 @@
 #define BT_RANDOM_SELECTOR_H
 
 #include "bt_composite.h"
-#include "core/vector.h"
+#include "core/templates/vector.h"
 
 class BTRandomSelector : public BTComposite {
 	GDCLASS(BTRandomSelector, BTComposite);
@@ -14,7 +14,7 @@ private:
 	Array _indicies;
 
 protected:
-	virtual void _enter();
-	virtual int _tick(float p_delta);
+	virtual void _enter() override;
+	virtual int _tick(float p_delta) override;
 };
 #endif // BT_RANDOM_SELECTOR_H

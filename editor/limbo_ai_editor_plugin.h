@@ -4,15 +4,19 @@
 #ifndef LIMBO_AI_EDITOR_PLUGIN_H
 #define LIMBO_AI_EDITOR_PLUGIN_H
 
-#include "core/object.h"
+#include "core/object/class_db.h"
+#include "core/object/object.h"
+#include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
 #include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/bt_task.h"
 #include "scene/gui/box_container.h"
+#include "scene/gui/control.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/panel_container.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
@@ -34,12 +38,12 @@ private:
 
 	void _on_item_selected();
 	void _on_item_double_clicked();
-	void _on_item_rmb_selected(const Vector2 &p_pos);
+	void _on_item_mouse_selected(const Vector2 &p_pos, int p_button_index);
 	void _on_task_changed();
 
-	Variant get_drag_data_fw(const Point2 &p_point, Control *p_from);
-	bool can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
-	void drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
+	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from);
+	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
+	void _drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
 
 protected:
 	static void _bind_methods();
@@ -80,7 +84,7 @@ public:
 
 	String get_category_name() const { return section_header->get_text(); }
 
-	TaskSection(String p_category_name, EditorNode *p_editor);
+	TaskSection(String p_category_name);
 	~TaskSection();
 };
 
@@ -88,7 +92,6 @@ class TaskPanel : public PanelContainer {
 	GDCLASS(TaskPanel, PanelContainer)
 
 private:
-	EditorNode *editor;
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
 
@@ -106,7 +109,7 @@ protected:
 public:
 	void refresh();
 
-	TaskPanel(EditorNode *p_editor);
+	TaskPanel();
 	~TaskPanel();
 };
 
@@ -122,10 +125,9 @@ private:
 		ACTION_MAKE_ROOT,
 	};
 
-	EditorNode *editor;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
-	Set<Ref<BehaviorTree>> dirty;
+	HashSet<Ref<BehaviorTree>> dirty;
 
 	Button *header;
 	HSplitContainer *hsc;
@@ -143,7 +145,7 @@ private:
 
 	ConfirmationDialog *disk_changed;
 	Tree *disk_changed_list;
-	Set<String> disk_changed_files;
+	HashSet<String> disk_changed_files;
 
 	void _add_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
@@ -161,10 +163,10 @@ private:
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
-	void _on_tree_task_selected(const Ref<BTTask> &p_task) const;
+	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_tree_task_double_clicked();
-	void _on_visibility_changed() const;
-	void _on_header_pressed() const;
+	void _on_visibility_changed();
+	void _on_header_pressed();
 	void _on_save_pressed();
 	void _on_panel_task_selected(String p_task);
 	void _on_history_back();
@@ -184,7 +186,7 @@ public:
 
 	void apply_changes();
 
-	LimboAIEditor(EditorNode *p_editor);
+	LimboAIEditor();
 	~LimboAIEditor();
 };
 
@@ -192,22 +194,21 @@ class LimboAIEditorPlugin : public EditorPlugin {
 	GDCLASS(LimboAIEditorPlugin, EditorPlugin);
 
 private:
-	EditorNode *editor;
 	LimboAIEditor *limbo_ai_editor;
 
 protected:
 	void _notification(int p_notification);
 
 public:
-	virtual String get_name() const { return "LimboAI"; }
-	virtual const Ref<Texture> get_icon() const;
-	bool has_main_screen() const { return true; }
-	virtual void make_visible(bool p_visible);
-	virtual void apply_changes();
-	virtual void edit(Object *p_object);
-	virtual bool handles(Object *p_object) const;
+	virtual String get_name() const override { return "LimboAI"; }
+	virtual const Ref<Texture2D> get_icon() const override;
+	bool has_main_screen() const override { return true; }
+	virtual void make_visible(bool p_visible) override;
+	virtual void apply_changes() override;
+	virtual void edit(Object *p_object) override;
+	virtual bool handles(Object *p_object) const override;
 
-	LimboAIEditorPlugin(EditorNode *p_editor);
+	LimboAIEditorPlugin();
 	~LimboAIEditorPlugin();
 };
 
