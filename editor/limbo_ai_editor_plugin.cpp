@@ -133,7 +133,7 @@ TreeItem *TaskTree::_find_item(const Ref<BTTask> &p_task) const {
 
 void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, int p_button_index) {
 	if (p_button_index == 2) {
-		emit_signal("rmb_pressed", tree->get_global_transform().xform(p_pos));
+		emit_signal("rmb_pressed", get_screen_position() + p_pos);
 	}
 }
 
@@ -673,9 +673,6 @@ void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 }
 
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
-	menu->set_size(Size2(1, 1));
-	menu->set_position(p_menu_pos);
-
 	menu->clear();
 	menu->add_icon_item(get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")), TTR("Remove"), ACTION_REMOVE);
 	menu->add_separator();
@@ -684,6 +681,8 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->add_icon_item(get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons")), TTR("Duplicate"), ACTION_DUPLICATE);
 	menu->add_icon_item(get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons")), TTR("Make Root"), ACTION_MAKE_ROOT);
 
+	menu->reset_size();
+	menu->set_position(p_menu_pos);
 	menu->popup();
 }
 
@@ -1254,6 +1253,9 @@ void LimboAIEditorPlugin::edit(Object *p_object) {
 }
 
 bool LimboAIEditorPlugin::handles(Object *p_object) const {
+	if (Object::cast_to<BehaviorTree>(p_object)) {
+		return true;
+	}
 	return p_object->is_class("BehaviorTree");
 }
 
