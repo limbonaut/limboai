@@ -556,6 +556,7 @@ TaskPanel::TaskPanel() {
 	filter_edit = memnew(LineEdit);
 	vb->add_child(filter_edit);
 	filter_edit->set_clear_button_enabled(true);
+	filter_edit->set_placeholder(TTR("Filter tasks"));
 	filter_edit->connect("text_changed", callable_mp(this, &TaskPanel::_on_filter_text_changed));
 
 	ScrollContainer *sc = memnew(ScrollContainer);
