@@ -1,0 +1,33 @@
+[gd_resource type="BehaviorTree" load_steps=9 format=3 uid="uid://c5cp2lpww1qcc"]
+
+[ext_resource type="Script" path="res://ai/tasks/arrive_pos.gd" id="1_6wvrl"]
+[ext_resource type="Script" path="res://ai/tasks/play_animation.gd" id="2_hcuvn"]
+
+[sub_resource type="BTAction" id="BTAction_3xal7"]
+script = ExtResource("1_6wvrl")
+target_position_var = "wp"
+speed_var = "speed"
+tolerance = 50.0
+
+[sub_resource type="BTAction" id="BTAction_yq1vl"]
+script = ExtResource("2_hcuvn")
+animation_name = "bounce"
+player_path = NodePath("AnimationPlayer")
+
+[sub_resource type="BTSequence" id="BTSequence_a2ng0"]
+children = [SubResource("BTAction_3xal7"), SubResource("BTAction_yq1vl")]
+
+[sub_resource type="BTForEach" id="BTForEach_0cp04"]
+children = [SubResource("BTSequence_a2ng0")]
+array_var = "waypoints"
+save_var = "wp"
+
+[sub_resource type="BTRepeat" id="BTRepeat_xljhp"]
+children = [SubResource("BTForEach_0cp04")]
+times = 999
+
+[sub_resource type="BTSelector" id="BTSelector_5dclr"]
+children = [SubResource("BTRepeat_xljhp")]
+
+[resource]
+root_task = SubResource("BTSelector_5dclr")

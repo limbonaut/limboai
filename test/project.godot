@@ -6,22 +6,13 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "BTTask",
-"class": "BTPrintLine",
-"language": "GDScript",
-"path": "res://ai/tasks/BTPrintLine.gd"
-} ]
-_global_script_class_icons={
-"BTPrintLine": ""
-}
+config_version=5
 
 [application]
 
 config/name="LimboAI Test"
 run/main_scene="res://Test.tscn"
+config/features=PackedStringArray("4.0")
 config/icon="res://icon.png"
 
 [gui]

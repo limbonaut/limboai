@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=2]
-
-[ext_resource path="res://Agent.gd" type="Script" id=2]
-
-[node name="Agent" type="KinematicBody2D"]
-script = ExtResource( 2 )
-
-[node name="BTPlayer" type="BTPlayer" parent="."]
-active = true

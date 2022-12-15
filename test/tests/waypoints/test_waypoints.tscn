@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://p5i7fdku3hqs"]
+
+[ext_resource type="PackedScene" uid="uid://c26b8c8dndtop" path="res://tests/waypoints/Agent.tscn" id="1_esee5"]
+[ext_resource type="Script" path="res://tests/waypoints/test_waypoints.gd" id="1_kmjjq"]
+[ext_resource type="Script" path="res://tests/waypoints/waypoint_marker.gd" id="3_1aub7"]
+
+[node name="test_waypoints" type="Node2D"]
+script = ExtResource("1_kmjjq")
+
+[node name="Waypoints" type="Node2D" parent="."]
+
+[node name="WP1" type="Marker2D" parent="Waypoints"]
+position = Vector2(283, 184)
+script = ExtResource("3_1aub7")
+
+[node name="WP2" type="Marker2D" parent="Waypoints"]
+position = Vector2(938, 100)
+script = ExtResource("3_1aub7")
+
+[node name="WP3" type="Marker2D" parent="Waypoints"]
+position = Vector2(838, 490)
+script = ExtResource("3_1aub7")
+
+[node name="WP4" type="Marker2D" parent="Waypoints"]
+position = Vector2(177, 515)
+script = ExtResource("3_1aub7")
+
+[node name="Agent" parent="." instance=ExtResource("1_esee5")]
+position = Vector2(57, 59)
+
+[node name="Agent2" parent="." instance=ExtResource("1_esee5")]
+position = Vector2(316, 590)
