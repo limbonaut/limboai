@@ -45,8 +45,6 @@ script = ExtResource("1_1l3ql")
 
 [node name="BTPlayer" type="BTPlayer" parent="."]
 behavior_tree = ExtResource("2_58ujo")
-update_mode = 1
-active = true
 _blackboard_data = {
 "speed": 500.0
 }

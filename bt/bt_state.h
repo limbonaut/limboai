@@ -13,7 +13,7 @@ class BTState : public LimboState {
 
 private:
 	Ref<BehaviorTree> behavior_tree;
-	Ref<BTTask> root_task;
+	Ref<BTTask> tree_instance;
 	String success_event;
 	String failure_event;
 
@@ -21,7 +21,7 @@ protected:
 	static void _bind_methods();
 
 	virtual void _setup() override;
-	virtual void _enter() override {}
+	// virtual void _enter() override {}
 	virtual void _exit() override;
 	virtual void _update(float p_delta) override;
 

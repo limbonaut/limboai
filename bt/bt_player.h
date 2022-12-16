@@ -21,14 +21,13 @@ public:
 
 private:
 	Ref<BehaviorTree> behavior_tree;
-	UpdateMode update_mode = UpdateMode::IDLE;
-	bool active = false;
-	bool auto_restart = false;
+	UpdateMode update_mode = UpdateMode::PHYSICS;
+	bool active = true;
 	Ref<Blackboard> blackboard;
 	bool prefetch_nodepath_vars = true;
+	int last_status = -1;
 
-	Ref<BehaviorTree> _loaded_tree;
-	Ref<BTTask> _root_task;
+	Ref<BTTask> tree_instance;
 
 	void _load_tree();
 
@@ -50,9 +49,6 @@ public:
 	void set_active(bool p_active);
 	bool get_active() const { return active; }
 
-	void set_auto_restart(bool p_value) { auto_restart = p_value; }
-	bool get_auto_restart() const { return auto_restart; }
-
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	void set_blackboard(const Ref<Blackboard> &p_blackboard) { blackboard = p_blackboard; }
 
@@ -61,6 +57,7 @@ public:
 
 	void update(float p_delta);
 	void restart();
+	int get_last_status() const { return last_status; }
 
 	BTPlayer();
 	~BTPlayer();

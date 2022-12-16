@@ -1,21 +1,25 @@
 /* bt_state.cpp */
 
 #include "bt_state.h"
+#include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/variant/variant.h"
 #include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/limbo_state.h"
 
 void BTState::_setup() {
-	root_task = behavior_tree->instantiate(get_agent(), get_blackboard());
+	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
+	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard());
 }
 
 void BTState::_exit() {
-	root_task->cancel();
+	ERR_FAIL_COND(tree_instance == nullptr);
+	tree_instance->cancel();
 }
 
 void BTState::_update(float p_delta) {
-	int status = root_task->execute(p_delta);
+	ERR_FAIL_COND(tree_instance == nullptr);
+	int status = tree_instance->execute(p_delta);
 	if (status == BTTask::SUCCESS) {
 		get_root()->dispatch(success_event, Variant());
 	} else if (status == BTTask::FAILURE) {
