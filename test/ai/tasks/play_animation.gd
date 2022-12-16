@@ -2,7 +2,7 @@
 extends BTAction
 
 @export var animation_name: String
-@export var player_path: NodePath
+@export var animation_player: NodePath
 
 var _player: AnimationPlayer
 var _finished: bool
@@ -13,7 +13,7 @@ func _generate_name() -> String:
 
 
 func _setup() -> void:
-	_player = agent.get_node(player_path)
+	_player = agent.get_node(animation_player)
 
 
 func _enter() -> void:

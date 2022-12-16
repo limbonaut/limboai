@@ -10,23 +10,21 @@ script = ExtResource("1_kmjjq")
 [node name="Waypoints" type="Node2D" parent="."]
 
 [node name="WP1" type="Marker2D" parent="Waypoints"]
-position = Vector2(283, 184)
+position = Vector2(258, 126)
 script = ExtResource("3_1aub7")
 
 [node name="WP2" type="Marker2D" parent="Waypoints"]
-position = Vector2(938, 100)
+position = Vector2(830, 131)
 script = ExtResource("3_1aub7")
 
 [node name="WP3" type="Marker2D" parent="Waypoints"]
-position = Vector2(838, 490)
-script = ExtResource("3_1aub7")
-
-[node name="WP4" type="Marker2D" parent="Waypoints"]
-position = Vector2(177, 515)
+position = Vector2(534, 492)
 script = ExtResource("3_1aub7")
 
 [node name="Agent" parent="." instance=ExtResource("1_esee5")]
+y_sort_enabled = true
 position = Vector2(57, 59)
 
 [node name="Agent2" parent="." instance=ExtResource("1_esee5")]
+y_sort_enabled = true
 position = Vector2(316, 590)

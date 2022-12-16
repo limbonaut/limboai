@@ -12,7 +12,7 @@ tolerance = 50.0
 [sub_resource type="BTAction" id="BTAction_yq1vl"]
 script = ExtResource("2_hcuvn")
 animation_name = "bounce"
-player_path = NodePath("AnimationPlayer")
+animation_player = NodePath("AnimationPlayer")
 
 [sub_resource type="BTSequence" id="BTSequence_a2ng0"]
 children = [SubResource("BTAction_3xal7"), SubResource("BTAction_yq1vl")]
