@@ -6,6 +6,7 @@
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "core/variant/array.h"
+#include "core/variant/callable.h"
 #include "core/variant/variant.h"
 #include "limbo_string_names.h"
 
@@ -25,19 +26,13 @@ LimboState *LimboState::named(String p_name) {
 };
 
 void LimboState::_setup() {
-	if (get_script_instance() &&
-			get_script_instance()->has_method(LimboStringNames::get_singleton()->_setup)) {
-		get_script_instance()->call(LimboStringNames::get_singleton()->_setup);
-	}
+	GDVIRTUAL_CALL(_setup);
 	emit_signal(LimboStringNames::get_singleton()->setup);
 };
 
 void LimboState::_enter() {
 	active = true;
-	if (get_script_instance() &&
-			get_script_instance()->has_method(LimboStringNames::get_singleton()->_enter)) {
-		get_script_instance()->call(LimboStringNames::get_singleton()->_enter);
-	}
+	GDVIRTUAL_CALL(_enter);
 	emit_signal(LimboStringNames::get_singleton()->entered);
 };
 
@@ -45,23 +40,17 @@ void LimboState::_exit() {
 	if (!active) {
 		return;
 	}
-	if (get_script_instance() &&
-			get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
-		get_script_instance()->call(LimboStringNames::get_singleton()->_exit);
-	}
+	GDVIRTUAL_CALL(_exit);
 	emit_signal(LimboStringNames::get_singleton()->exited);
 	active = false;
 };
 
 void LimboState::_update(float p_delta) {
-	if (get_script_instance() &&
-			get_script_instance()->has_method(LimboStringNames::get_singleton()->_update)) {
-		get_script_instance()->call(LimboStringNames::get_singleton()->_update, p_delta);
-	}
+	GDVIRTUAL_CALL(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 };
 
-void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 
 	agent = p_agent;
@@ -79,60 +68,66 @@ void LimboState::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboar
 
 bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event.is_empty(), false);
-	bool result = false;
 	if (handlers.size() > 0 && handlers.has(p_event)) {
+		Callable::CallError ce;
+		Variant ret;
 		if (p_cargo.get_type() == Variant::NIL) {
-			result = call(handlers[p_event]);
+			handlers[p_event].callp(nullptr, 0, ret, ce);
+			if (ce.error != Callable::CallError::CALL_OK) {
+				ERR_PRINT("Error calling event handler " + Variant::get_callable_error_text(handlers[p_event], nullptr, 0, ce));
+			}
 		} else {
-			result = call(handlers[p_event], p_cargo);
+			const Variant *argptrs[1];
+			argptrs[0] = &p_cargo;
+			handlers[p_event].callp(argptrs, 1, ret, ce);
+			if (ce.error != Callable::CallError::CALL_OK) {
+				ERR_PRINT("Error calling event handler " + Variant::get_callable_error_text(handlers[p_event], argptrs, 1, ce));
+			}
+		}
+
+		if (unlikely(ret.get_type() != Variant::BOOL)) {
+			ERR_PRINT("Event handler returned unexpected type: " + Variant::get_type_name(ret.get_type()));
+		} else {
+			return ret;
 		}
 	}
-	return result;
+	return false;
 }
 
-void LimboState::add_event_handler(const String &p_event, const StringName &p_method) {
+void LimboState::add_event_handler(const String &p_event, const Callable &p_handler) {
 	ERR_FAIL_COND(p_event.is_empty());
-	ERR_FAIL_COND(!has_method(p_method));
-	handlers.insert(p_event, p_method);
+	ERR_FAIL_COND(!p_handler.is_valid());
+	handlers.insert(p_event, p_handler);
 }
 
-LimboState *LimboState::call_on_enter(Object *p_object, const StringName &p_method) {
+LimboState *LimboState::call_on_enter(Object *p_object, const Callable &p_callable) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
-	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	ERR_PRINT("NOT IMPLEMENTED");
-	// connect(LimboStringNames::get_singleton()->entered, p_object, p_method);
+	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
+	connect(LimboStringNames::get_singleton()->entered, p_callable);
 	return this;
 }
 
-LimboState *LimboState::call_on_exit(Object *p_object, const StringName &p_method) {
+LimboState *LimboState::call_on_exit(Object *p_object, const Callable &p_callable) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
-	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	ERR_PRINT("NOT IMPLEMENTED");
-	// connect(LimboStringNames::get_singleton()->exited, p_object, p_method);
+	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
+	connect(LimboStringNames::get_singleton()->exited, p_callable);
 	return this;
 }
 
-LimboState *LimboState::call_on_update(Object *p_object, const StringName &p_method) {
+LimboState *LimboState::call_on_update(Object *p_object, const Callable &p_callable) {
 	ERR_FAIL_COND_V(p_object == nullptr, this);
-	ERR_FAIL_COND_V(!p_object->has_method(p_method), this);
-	ERR_PRINT("NOT IMPLEMENTED");
-	// connect(LimboStringNames::get_singleton()->updated, p_object, p_method);
+	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
+	connect(LimboStringNames::get_singleton()->updated, p_callable);
 	return this;
 }
 
-void LimboState::set_guard_func(Object *p_object, const StringName &p_func, const Array &p_binds) {
-	ERR_FAIL_COND(p_object == nullptr);
-	ERR_FAIL_COND(!p_object->has_method(p_func));
-
-	guard.obj = p_object;
-	guard.func = p_func;
-	guard.binds = p_binds;
+void LimboState::set_guard(const Callable &p_guard_callable) {
+	ERR_FAIL_COND(!p_guard_callable.is_valid());
+	guard_callable = p_guard_callable;
 }
 
-void LimboState::clear_guard_func() {
-	guard.obj = nullptr;
-	guard.func = "";
-	guard.binds.clear();
+void LimboState::clear_guard() {
+	guard_callable = Callable();
 }
 
 void LimboState::_notification(int p_what) {
@@ -158,21 +153,16 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_initialize", "p_agent", "p_blackboard"), &LimboState::_initialize);
 	ClassDB::bind_method(D_METHOD("dispatch", "p_event", "p_cargo"), &LimboState::dispatch, Variant());
 	ClassDB::bind_method(D_METHOD("named", "p_name"), &LimboState::named);
-	ClassDB::bind_method(D_METHOD("add_event_handler", "p_event", "p_method"), &LimboState::add_event_handler);
-	ClassDB::bind_method(D_METHOD("call_on_enter", "p_object", "p_method"), &LimboState::call_on_enter);
-	ClassDB::bind_method(D_METHOD("call_on_exit", "p_object", "p_method"), &LimboState::call_on_exit);
-	ClassDB::bind_method(D_METHOD("call_on_update", "p_object", "p_method"), &LimboState::call_on_update);
-	ClassDB::bind_method(D_METHOD("set_guard_func", "p_object", "p_func", "p_binds"), &LimboState::set_guard_func, Array());
-	ClassDB::bind_method(D_METHOD("clear_guard_func"), &LimboState::clear_guard_func);
+	ClassDB::bind_method(D_METHOD("add_event_handler", "p_event", "p_handler"), &LimboState::add_event_handler);
+	ClassDB::bind_method(D_METHOD("call_on_enter", "p_callable"), &LimboState::call_on_enter);
+	ClassDB::bind_method(D_METHOD("call_on_exit", "p_callable"), &LimboState::call_on_exit);
+	ClassDB::bind_method(D_METHOD("call_on_update", "p_callable"), &LimboState::call_on_update);
+	ClassDB::bind_method(D_METHOD("set_guard", "p_guard_callable"), &LimboState::set_guard);
+	ClassDB::bind_method(D_METHOD("clear_guard"), &LimboState::clear_guard);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &LimboState::get_blackboard);
 
 	ClassDB::bind_method(D_METHOD("_set_blackboard_data", "p_blackboard"), &LimboState::_set_blackboard_data);
 	ClassDB::bind_method(D_METHOD("_get_blackboard_data"), &LimboState::_get_blackboard_data);
-
-	// BIND_VMETHOD(MethodInfo("_setup"));
-	// BIND_VMETHOD(MethodInfo("_enter"));
-	// BIND_VMETHOD(MethodInfo("_exit"));
-	// BIND_VMETHOD(MethodInfo("_update", PropertyInfo(Variant::REAL, "p_delta")));
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
@@ -180,7 +170,7 @@ void LimboState::_bind_methods() {
 	GDVIRTUAL_BIND(_update, "p_delta");
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", 0), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "_blackboard_data", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_blackboard_data", "_get_blackboard_data");
 
@@ -195,7 +185,7 @@ LimboState::LimboState() {
 	active = false;
 	blackboard = Ref<Blackboard>(memnew(Blackboard));
 
-	guard.obj = nullptr;
+	guard_callable = Callable();
 
 	set_process(false);
 	set_physics_process(false);

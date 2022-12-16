@@ -35,7 +35,7 @@ protected:
 
 	void _notification(int p_what);
 
-	virtual void _initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) override;
+	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
 	virtual void _enter() override;
 	virtual void _exit() override;
 	virtual void _update(float p_delta) override;
@@ -53,11 +53,12 @@ public:
 	void set_initial_state(Node *p_state);
 	LimboState *get_initial_state() const { return initial_state; }
 
-	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_parent_scope = nullptr);
+	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope = nullptr);
 	virtual bool dispatch(const String &p_event, const Variant &p_cargo) override;
 
 	void update(float p_delta) { _update(p_delta); }
 	void add_transition(Node *p_from_state, Node *p_to_state, const String &p_event);
+	// void add_transition_from_any_state(Node *p_to_state, const String &p_event);
 	LimboState *anystate() const { return nullptr; };
 
 	LimboHSM();

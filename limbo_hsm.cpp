@@ -7,6 +7,7 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
+#include "core/variant/callable.h"
 #include "core/variant/variant.h"
 #include "modules/limboai/blackboard.h"
 #include "modules/limboai/limbo_state.h"
@@ -56,6 +57,7 @@ void LimboHSM::_change_state(LimboState *p_state) {
 
 	active_state = p_state;
 	active_state->_enter();
+
 	emit_signal(LimboStringNames::get_singleton()->state_changed, active_state);
 }
 
@@ -68,9 +70,10 @@ void LimboHSM::_enter() {
 	if (initial_state == nullptr) {
 		initial_state = Object::cast_to<LimboState>(get_child(0));
 	}
-	if (initial_state) {
-		_change_state(initial_state);
-	}
+
+	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Failed to acquire initial state.");
+
+	_change_state(initial_state);
 }
 
 void LimboHSM::_exit() {
@@ -146,12 +149,17 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		}
 		if (to_state != nullptr) {
 			bool permitted = true;
-			if (to_state->guard.obj != nullptr) {
-				Variant result = to_state->guard.obj->callv(to_state->guard.func, to_state->guard.binds);
-				if (unlikely(result.get_type() != Variant::BOOL)) {
-					ERR_PRINT_ONCE(vformat("State guard func \"%s()\" returned non-boolean value (%s).", to_state->guard.func, to_state));
+			if (to_state->guard_callable.is_valid()) {
+				Callable::CallError ce;
+				Variant ret;
+				to_state->guard_callable.callp(nullptr, 0, ret, ce);
+				if (unlikely(ce.error != Callable::CallError::CALL_OK)) {
+					ERR_PRINT_ONCE("LimboHSM: Error calling substate's guard callable: " + Variant::get_callable_error_text(to_state->guard_callable, nullptr, 0, ce));
+				}
+				if (unlikely(ret.get_type() != Variant::BOOL)) {
+					ERR_PRINT_ONCE(vformat("State guard callable %s returned non-boolean value (%s).", to_state->guard_callable, to_state));
 				} else {
-					permitted = bool(result);
+					permitted = bool(ret);
 				}
 			}
 			if (permitted) {
@@ -168,7 +176,7 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 	return event_consumed;
 }
 
-void LimboHSM::initialize(Object *p_agent, const Ref<Blackboard> &p_parent_scope) {
+void LimboHSM::initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	if (!p_parent_scope.is_null()) {
 		blackboard->set_parent_scope(p_parent_scope);
@@ -176,7 +184,7 @@ void LimboHSM::initialize(Object *p_agent, const Ref<Blackboard> &p_parent_scope
 	_initialize(p_agent, nullptr);
 }
 
-void LimboHSM::_initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void LimboHSM::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND_MSG(agent != nullptr, "LimboAI: HSM already initialized.");
 	ERR_FAIL_COND_MSG(get_child_count() == 0, "Cannot initialize LimboHSM: no candidate for initial substate.");
@@ -203,18 +211,18 @@ void LimboHSM::_notification(int p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
 		} break;
 		case NOTIFICATION_PROCESS: {
-			if (!Engine::get_singleton()->is_editor_hint()) {
-				if (update_mode == UpdateMode::IDLE) {
-					_update(get_process_delta_time());
-				}
-			}
+			// if (!Engine::get_singleton()->is_editor_hint()) {
+			// if (update_mode == UpdateMode::IDLE) {
+			_update(get_process_delta_time());
+			// }
+			// }
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			if (!Engine::get_singleton()->is_editor_hint()) {
-				if (update_mode == UpdateMode::PHYSICS) {
-					_update(get_physics_process_delta_time());
-				}
-			}
+			// if (!Engine::get_singleton()->is_editor_hint()) {
+			// if (update_mode == UpdateMode::PHYSICS) {
+			_update(get_physics_process_delta_time());
+			// }
+			// }
 		} break;
 	}
 }
@@ -240,14 +248,14 @@ void LimboHSM::_bind_methods() {
 	BIND_ENUM_CONSTANT(MANUAL);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle, Physics, Manual"), "set_update_mode", "get_update_mode");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_NONE, "", 0), "", "anystate");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "", "anystate");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "initial_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "set_initial_state", "get_initial_state");
 
-	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_NONE, "", 0, "LimboState")));
+	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0)));
 }
 
 LimboHSM::LimboHSM() {
-	update_mode = UpdateMode::IDLE;
+	update_mode = UpdateMode::PHYSICS;
 	active_state = nullptr;
 	initial_state = nullptr;
 }
