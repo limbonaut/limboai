@@ -7,7 +7,7 @@
 #include "modules/limboai/limbo_state.h"
 
 void BTState::_setup() {
-	root_task = behavior_tree->instance(get_agent(), get_blackboard());
+	root_task = behavior_tree->instantiate(get_agent(), get_blackboard());
 }
 
 void BTState::_exit() {

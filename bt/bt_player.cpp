@@ -24,7 +24,7 @@ void BTPlayer::_load_tree() {
 		// blackboard->prefetch_nodepath_vars(get_owner());
 		blackboard->prefetch_nodepath_vars(this);
 	}
-	_root_task = _loaded_tree->instance(get_owner(), blackboard);
+	_root_task = _loaded_tree->instantiate(get_owner(), blackboard);
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
