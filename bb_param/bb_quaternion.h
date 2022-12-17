@@ -1,16 +1,16 @@
 /* bb_quat.h */
 
-#ifndef BB_QUAT_H
-#define BB_QUAT_H
+#ifndef BB_QUATERNION_H
+#define BB_QUATERNION_H
 
 #include "bb_param.h"
 #include "core/object/object.h"
 
-class BBQuat : public BBParam {
-	GDCLASS(BBQuat, BBParam);
+class BBQuaternion : public BBParam {
+	GDCLASS(BBQuaternion, BBParam);
 
 protected:
 	virtual Variant::Type get_type() const override { return Variant::QUATERNION; }
 };
 
-#endif // BB_QUAT_H
+#endif // BB_QUATERNION_H

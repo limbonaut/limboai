@@ -13,23 +13,29 @@
 #include "bb_param/bb_color_array.h"
 #include "bb_param/bb_dictionary.h"
 #include "bb_param/bb_float.h"
+#include "bb_param/bb_float_array.h"
 #include "bb_param/bb_int.h"
 #include "bb_param/bb_int_array.h"
 #include "bb_param/bb_node.h"
 #include "bb_param/bb_param.h"
 #include "bb_param/bb_plane.h"
-#include "bb_param/bb_quat.h"
-#include "bb_param/bb_real_array.h"
+#include "bb_param/bb_quaternion.h"
 #include "bb_param/bb_rect2.h"
+#include "bb_param/bb_rect2i.h"
 #include "bb_param/bb_string.h"
 #include "bb_param/bb_string_array.h"
-#include "bb_param/bb_transform.h"
+#include "bb_param/bb_string_name.h"
 #include "bb_param/bb_transform2d.h"
+#include "bb_param/bb_transform3d.h"
 #include "bb_param/bb_variant.h"
 #include "bb_param/bb_vector2.h"
 #include "bb_param/bb_vector2_array.h"
+#include "bb_param/bb_vector2i.h"
 #include "bb_param/bb_vector3.h"
 #include "bb_param/bb_vector3_array.h"
+#include "bb_param/bb_vector3i.h"
+#include "bb_param/bb_vector4.h"
+#include "bb_param/bb_vector4i.h"
 #include "blackboard.h"
 #include "bt/actions/bt_action.h"
 #include "bt/actions/bt_console_print.h"
@@ -130,21 +136,28 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBFloat);
 		GDREGISTER_CLASS(BBString);
 		GDREGISTER_CLASS(BBVector2);
+		GDREGISTER_CLASS(BBVector2i);
 		GDREGISTER_CLASS(BBRect2);
+		GDREGISTER_CLASS(BBRect2i);
 		GDREGISTER_CLASS(BBVector3);
+		GDREGISTER_CLASS(BBVector3i);
 		GDREGISTER_CLASS(BBTransform2D);
+		GDREGISTER_CLASS(BBVector4);
+		GDREGISTER_CLASS(BBVector4i);
 		GDREGISTER_CLASS(BBPlane);
-		GDREGISTER_CLASS(BBQuat);
+		GDREGISTER_CLASS(BBQuaternion);
 		GDREGISTER_CLASS(BBAabb);
 		GDREGISTER_CLASS(BBBasis);
-		GDREGISTER_CLASS(BBTransform);
+		GDREGISTER_CLASS(BBTransform3D);
+		GDREGISTER_CLASS(BBColor);
+		GDREGISTER_CLASS(BBStringName);
 		GDREGISTER_CLASS(BBColor);
 		GDREGISTER_CLASS(BBNode);
 		GDREGISTER_CLASS(BBDictionary);
 		GDREGISTER_CLASS(BBArray);
 		GDREGISTER_CLASS(BBByteArray);
 		GDREGISTER_CLASS(BBIntArray);
-		GDREGISTER_CLASS(BBRealArray);
+		GDREGISTER_CLASS(BBFloatArray);
 		GDREGISTER_CLASS(BBColorArray);
 		GDREGISTER_CLASS(BBStringArray);
 		GDREGISTER_CLASS(BBVector2Array);
