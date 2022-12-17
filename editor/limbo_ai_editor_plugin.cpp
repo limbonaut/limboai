@@ -397,52 +397,54 @@ void TaskPanel::refresh() {
 		}
 	}
 
-	HashMap<String, List<String>> categories;
+	HashMap<String, List<String>> categorized_tasks;
 
-	categories["Composites"] = List<String>();
-	_populate_core_tasks_from_class("BTComposite", &categories["Composites"]);
+	categorized_tasks["Composites"] = List<String>();
+	_populate_core_tasks_from_class("BTComposite", &categorized_tasks["Composites"]);
 
-	categories["Actions"] = List<String>();
-	_populate_core_tasks_from_class("BTAction", &categories["Actions"]);
+	categorized_tasks["Actions"] = List<String>();
+	_populate_core_tasks_from_class("BTAction", &categorized_tasks["Actions"]);
 
-	categories["Decorators"] = List<String>();
-	_populate_core_tasks_from_class("BTDecorator", &categories["Decorators"]);
+	categorized_tasks["Decorators"] = List<String>();
+	_populate_core_tasks_from_class("BTDecorator", &categorized_tasks["Decorators"]);
 
-	categories["Conditions"] = List<String>();
-	_populate_core_tasks_from_class("BTCondition", &categories["Conditions"]);
+	categorized_tasks["Conditions"] = List<String>();
+	_populate_core_tasks_from_class("BTCondition", &categorized_tasks["Conditions"]);
 
-	categories["User"] = List<String>();
+	categorized_tasks["User"] = List<String>();
 
 	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
-	_populate_from_user_dir(dir1, &categories);
+	_populate_from_user_dir(dir1, &categorized_tasks);
 
 	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_2");
-	_populate_from_user_dir(dir2, &categories);
+	_populate_from_user_dir(dir2, &categorized_tasks);
 
 	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_3");
-	_populate_from_user_dir(dir3, &categories);
+	_populate_from_user_dir(dir3, &categorized_tasks);
 
-	List<String> keys;
-	for (const KeyValue<String, List<String>> &K : categories) {
-		keys.push_back(K.key);
+	List<String> categories;
+	for (const KeyValue<String, List<String>> &K : categorized_tasks) {
+		categories.push_back(K.key);
 	}
-	keys.sort();
-	for (List<String>::Element *E = keys.front(); E; E = E->next()) {
-		String cat = E->get();
-		List<String> task_list = categories.get(cat);
+	categories.sort();
+	for (String cat : categories) {
+		List<String> tasks = categorized_tasks.get(cat);
 
-		if (task_list.size() == 0) {
+		if (tasks.size() == 0) {
 			continue;
 		}
 
 		TaskSection *sec = memnew(TaskSection(cat));
-		for (List<String>::Element *E = task_list.front(); E; E = E->next()) {
-			String meta = E->get();
+		for (String task_meta : tasks) {
 			String tname;
 			Ref<Texture> icon;
-			icon = LimboAIEditor::get_task_icon(meta);
-			tname = meta.begins_with("res:") ? meta.get_file().get_basename().trim_prefix("BT") : meta.trim_prefix("BT");
-			sec->add_task_button(tname, icon, meta);
+			icon = LimboAIEditor::get_task_icon(task_meta);
+			if (task_meta.begins_with("res:")) {
+				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
+			} else {
+				tname = task_meta.trim_prefix("BT");
+			}
+			sec->add_task_button(tname, icon, task_meta);
 		}
 		sec->set_filter("");
 		sec->connect("task_button_pressed", callable_mp(this, &TaskPanel::_on_task_button_pressed));
@@ -455,8 +457,8 @@ void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, 
 	List<StringName> inheriters;
 	ClassDB::get_inheriters_from_class(p_base_class, &inheriters);
 
-	for (List<StringName>::Element *E = inheriters.front(); E; E = E->next()) {
-		p_task_classes->push_back(E->get());
+	for (StringName cl : inheriters) {
+		p_task_classes->push_back(cl);
 	}
 }
 

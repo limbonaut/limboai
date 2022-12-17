@@ -24,7 +24,7 @@ String BTTask::_generate_name() const {
 		String name = get_script_instance()->get_script()->get_path();
 		if (!name.is_empty()) {
 			// Generate name based on script file
-			name = name.get_basename().get_file().trim_prefix("BT");
+			name = name.get_basename().get_file().trim_prefix("BT").to_pascal_case();
 			return name;
 		}
 	}
