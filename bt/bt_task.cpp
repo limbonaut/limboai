@@ -76,7 +76,7 @@ void BTTask::set_custom_name(const String &p_name) {
 	}
 };
 
-void BTTask::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);
 	agent = p_agent;
@@ -88,12 +88,6 @@ void BTTask::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
 	if (!GDVIRTUAL_CALL(_setup)) {
 		_setup();
 	}
-	// if (get_script_instance() &&
-	// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_setup)) {
-	// 	get_script_instance()->call(LimboStringNames::get_singleton()->_setup);
-	// } else {
-	// 	_setup();
-	// }
 }
 
 Ref<BTTask> BTTask::clone() const {
@@ -141,37 +135,16 @@ int BTTask::execute(float p_delta) {
 		if (!GDVIRTUAL_CALL(_enter)) {
 			_enter();
 		}
-		// if (get_script_instance() &&
-		// 		// get_script_instance()->get_script()->is_valid() &&
-		// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_enter)) {
-		// 	get_script_instance()->call(LimboStringNames::get_singleton()->_enter);
-		// } else {
-		// 	_enter();
-		// }
 	}
 
 	if (!GDVIRTUAL_CALL(_tick, p_delta, status)) {
 		status = _tick(p_delta);
 	}
-	// if (get_script_instance() &&
-	// 		// get_script_instance()->get_script()->is_valid() &&
-	// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_tick)) {
-	// 	status = get_script_instance()->call(LimboStringNames::get_singleton()->_tick, Variant(p_delta));
-	// } else {
-	// 	status = _tick(p_delta);
-	// }
 
 	if (status != RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
 			_exit();
 		}
-		// if (get_script_instance() &&
-		// 		// get_script_instance()->get_script()->is_valid() &&
-		// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
-		// 	get_script_instance()->call(LimboStringNames::get_singleton()->_exit);
-		// } else {
-		// 	_exit();
-		// }
 	}
 	return status;
 }
@@ -184,13 +157,6 @@ void BTTask::cancel() {
 		if (!GDVIRTUAL_CALL(_exit)) {
 			_exit();
 		}
-		// if (get_script_instance() &&
-		// 		// get_script_instance()->get_script()->is_valid() &&
-		// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_exit)) {
-		// 	get_script_instance()->call(LimboStringNames::get_singleton()->_exit);
-		// } else {
-		// 	_exit();
-		// }
 	}
 	status = FRESH;
 }
@@ -270,10 +236,6 @@ String BTTask::get_configuration_warning() const {
 	String warning = "";
 
 	GDVIRTUAL_CALL(_get_configuration_warning, warning);
-	// if (get_script_instance() &&
-	// 		get_script_instance()->has_method(LimboStringNames::get_singleton()->_get_configuration_warning)) {
-	// 	warning = get_script_instance()->call(LimboStringNames::get_singleton()->_get_configuration_warning);
-	// }
 
 	return warning;
 }
@@ -290,43 +252,6 @@ void BTTask::print_tree(int p_initial_tabs) const {
 }
 
 void BTTask::_bind_methods() {
-	// Properties.
-	ClassDB::bind_method(D_METHOD("get_custom_name"), &BTTask::get_custom_name);
-	ClassDB::bind_method(D_METHOD("set_custom_name", "p_name"), &BTTask::set_custom_name);
-
-	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
-	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &BTTask::set_agent);
-
-	ClassDB::bind_method(D_METHOD("_get_children"), &BTTask::_get_children);
-	ClassDB::bind_method(D_METHOD("_set_children", "p_children"), &BTTask::_set_children);
-
-	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
-	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
-	ClassDB::bind_method(D_METHOD("get_status"), &BTTask::get_status);
-
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Object", 0), "set_agent", "get_agent");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", 0), "", "get_status");
-
-	// Virtual methods.
-	// TODO: Remove if unneeded.
-	ClassDB::bind_method(D_METHOD("_setup"), &BTTask::_setup);
-	ClassDB::bind_method(D_METHOD("_enter"), &BTTask::_enter);
-	ClassDB::bind_method(D_METHOD("_exit"), &BTTask::_exit);
-	ClassDB::bind_method(D_METHOD("_tick", "p_delta"), &BTTask::_tick);
-	ClassDB::bind_method(D_METHOD("_generate_name"), &BTTask::_generate_name);
-	ClassDB::bind_method(D_METHOD("_get_configuration_warning"), &BTTask::get_configuration_warning);
-
-	GDVIRTUAL_BIND(_setup);
-	GDVIRTUAL_BIND(_enter);
-	GDVIRTUAL_BIND(_exit);
-	GDVIRTUAL_BIND(_tick, "p_delta");
-	GDVIRTUAL_BIND(_generate_name);
-	GDVIRTUAL_BIND(_get_configuration_warning);
-
 	// Public Methods.
 	ClassDB::bind_method(D_METHOD("is_root"), &BTTask::is_root);
 	ClassDB::bind_method(D_METHOD("get_root"), &BTTask::get_root);
@@ -345,6 +270,33 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("next_sibling"), &BTTask::next_sibling);
 	ClassDB::bind_method(D_METHOD("print_tree", "p_initial_tabs"), &BTTask::print_tree, Variant(0));
 	ClassDB::bind_method(D_METHOD("get_task_name"), &BTTask::get_task_name);
+	ClassDB::bind_method(D_METHOD("get_custom_name"), &BTTask::get_custom_name);
+	ClassDB::bind_method(D_METHOD("set_custom_name", "p_name"), &BTTask::set_custom_name);
+
+	// Properties, setters and getters.
+	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
+	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &BTTask::set_agent);
+
+	ClassDB::bind_method(D_METHOD("_get_children"), &BTTask::_get_children);
+	ClassDB::bind_method(D_METHOD("_set_children", "p_children"), &BTTask::_set_children);
+
+	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
+	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
+	ClassDB::bind_method(D_METHOD("get_status"), &BTTask::get_status);
+
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", 0), "set_agent", "get_agent");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", 0), "", "get_status");
+
+	GDVIRTUAL_BIND(_setup);
+	GDVIRTUAL_BIND(_enter);
+	GDVIRTUAL_BIND(_exit);
+	GDVIRTUAL_BIND(_tick, "p_delta");
+	GDVIRTUAL_BIND(_generate_name);
+	GDVIRTUAL_BIND(_get_configuration_warning);
 
 	// Enums.
 	ClassDB::bind_integer_constant(get_class_static(), "TaskStatus", "FRESH", FRESH);

@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://c26b8c8dndtop"]
 
 [ext_resource type="Script" path="res://tests/waypoints/Agent.gd" id="1_1l3ql"]
-[ext_resource type="BehaviorTree" uid="uid://c5cp2lpww1qcc" path="res://ai/trees/waypoints_agent.tres" id="2_58ujo"]
+[ext_resource type="BehaviorTree" uid="uid://cjkqi41oagagd" path="res://ai/trees/waypoints.tres" id="2_ijwrx"]
 [ext_resource type="Texture2D" uid="uid://d0mht3ntak7e5" path="res://icon.png" id="2_xqtrc"]
 
 [sub_resource type="Animation" id="Animation_5id00"]
@@ -44,7 +44,7 @@ _data = {
 script = ExtResource("1_1l3ql")
 
 [node name="BTPlayer" type="BTPlayer" parent="."]
-behavior_tree = ExtResource("2_58ujo")
+behavior_tree = ExtResource("2_ijwrx")
 _blackboard_data = {
 "speed": 500.0
 }

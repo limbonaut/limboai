@@ -6,7 +6,7 @@
 #include "core/string/ustring.h"
 #include "modules/limboai/blackboard.h"
 
-void BTNewScope::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);
 

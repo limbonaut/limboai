@@ -22,7 +22,7 @@ protected:
 	virtual int _tick(float p_delta) override;
 
 public:
-	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) override;
+	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
 };
 
 #endif // BT_NEW_SCOPE_H

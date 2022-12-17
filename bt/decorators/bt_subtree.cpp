@@ -25,14 +25,10 @@ String BTSubtree::_generate_name() const {
 	return vformat("Subtree %s", s);
 }
 
-void BTSubtree::initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard) {
+void BTSubtree::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND_MSG(!subtree.is_valid(), "Subtree is not assigned.");
 	ERR_FAIL_COND_MSG(!subtree->get_root_task().is_valid(), "Subtree root task is not valid.");
 	ERR_FAIL_COND_MSG(get_child_count() != 0, "Subtree task shouldn't have children during initialization.");
-
-	// while (get_child_count() > 0) {
-	// 	remove_child_at_index(get_child_count() - 1);
-	// }
 
 	add_child(subtree->get_root_task()->clone());
 

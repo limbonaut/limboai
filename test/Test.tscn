@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://pgnoaj17gaew"]
-
-[ext_resource type="PackedScene" uid="uid://c26b8c8dndtop" path="res://tests/waypoints/Agent.tscn" id="1"]
-
-[node name="Test" type="Node2D"]
-
-[node name="Agent" parent="." instance=ExtResource("1")]

@@ -28,7 +28,7 @@ private:
 	friend class BehaviorTree;
 
 	String custom_name;
-	Object *agent;
+	Node *agent;
 	Ref<Blackboard> blackboard;
 	BTTask *parent;
 	Vector<Ref<BTTask>> children;
@@ -54,22 +54,25 @@ protected:
 	GDVIRTUAL0RC(String, _get_configuration_warning);
 
 public:
-	Object *get_agent() const { return agent; }
-	void set_agent(Object *p_agent) { agent = p_agent; }
-	Ref<Blackboard> get_blackboard() const { return blackboard; }
-	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
-	bool is_root() const { return parent == nullptr; }
-	Ref<BTTask> get_root() const;
-	int get_status() const { return status; }
+	Node *get_agent() const { return agent; }
+	void set_agent(Node *p_agent) { agent = p_agent; }
+
 	String get_custom_name() const { return custom_name; }
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
+	Ref<Blackboard> get_blackboard() const { return blackboard; }
+	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
+	Ref<BTTask> get_root() const;
+	bool is_root() const { return parent == nullptr; }
+
 	virtual Ref<BTTask> clone() const;
-	virtual void initialize(Object *p_agent, const Ref<Blackboard> &p_blackboard);
+	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
 
 	int execute(float p_delta);
 	void cancel();
+	int get_status() const { return status; }
+
 	Ref<BTTask> get_child(int p_idx) const;
 	int get_child_count() const;
 	void add_child(Ref<BTTask> p_child);
@@ -80,6 +83,7 @@ public:
 	bool is_descendant_of(const Ref<BTTask> &p_task) const;
 	int get_child_index(const Ref<BTTask> &p_child) const;
 	Ref<BTTask> next_sibling() const;
+
 	virtual String get_configuration_warning() const;
 	void print_tree(int p_initial_tabs = 0) const;
 
