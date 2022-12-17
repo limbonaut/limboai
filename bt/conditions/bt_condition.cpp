@@ -8,7 +8,7 @@ String BTCondition::get_configuration_warning() const {
 		warning += "\n";
 	}
 	if (get_child_count() != 0) {
-		warning += "Condition can't have child tasks.\n";
+		warning += "Condition task can't have child tasks.\n";
 	}
 	return warning;
 }

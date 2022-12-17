@@ -33,17 +33,17 @@ int BTCooldown::_tick(float p_delta) {
 
 void BTCooldown::_chill() {
 	get_blackboard()->set_var(cooldown_state_var, true);
-	if (_timer.is_valid()) {
-		_timer->set_time_left(duration);
+	if (timer.is_valid()) {
+		timer->set_time_left(duration);
 	} else {
-		_timer = SceneTree::get_singleton()->create_timer(duration, process_pause);
-		_timer->connect("timeout", callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
+		timer = SceneTree::get_singleton()->create_timer(duration, process_pause);
+		timer->connect("timeout", callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }
 
 void BTCooldown::_on_timeout() {
 	get_blackboard()->set_var(cooldown_state_var, false);
-	_timer.unref();
+	timer.unref();
 }
 
 void BTCooldown::_bind_methods() {

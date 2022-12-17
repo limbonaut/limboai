@@ -4,19 +4,19 @@
 
 void BTRandomSelector::_enter() {
 	last_running_idx = 0;
-	if (_indicies.size() != get_child_count()) {
-		_indicies.resize(get_child_count());
+	if (indicies.size() != get_child_count()) {
+		indicies.resize(get_child_count());
 		for (int i = 0; i < get_child_count(); i++) {
-			_indicies.set(i, i);
+			indicies.set(i, i);
 		}
 	}
-	_indicies.shuffle();
+	indicies.shuffle();
 }
 
 int BTRandomSelector::_tick(float p_delta) {
 	int status = FAILURE;
 	for (int i = last_running_idx; i < get_child_count(); i++) {
-		status = get_child(_indicies[i])->execute(p_delta);
+		status = get_child(indicies[i])->execute(p_delta);
 		if (status != FAILURE) {
 			last_running_idx = i;
 			break;

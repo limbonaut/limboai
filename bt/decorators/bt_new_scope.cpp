@@ -12,15 +12,6 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 
 	Ref<Blackboard> bb = memnew(Blackboard);
 
-	// if (blackboard_data.empty()) {
-	// 	bb->set_parent_scope(p_blackboard);
-	// } else {
-	// 	Ref<Blackboard> ro = memnew(Blackboard);
-	// 	ro->set_data(blackboard_data);
-	// 	ro->set_parent_scope(p_blackboard);
-	// 	bb->set_parent_scope(ro);
-	// }
-
 	bb->set_data(blackboard_data.duplicate());
 	bb->set_parent_scope(p_blackboard);
 

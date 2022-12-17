@@ -11,7 +11,7 @@ class BTRunLimit : public BTDecorator {
 
 private:
 	int run_limit = 1;
-	int _num_runs = 0;
+	int num_runs = 0;
 
 protected:
 	static void _bind_methods();

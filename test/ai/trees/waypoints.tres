@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=8 format=3 uid="uid://cjkqi41oagagd"]
+[gd_resource type="BehaviorTree" load_steps=9 format=3 uid="uid://cjkqi41oagagd"]
 
 [ext_resource type="Script" path="res://ai/tasks/arrive_pos.gd" id="1_rhs33"]
 [ext_resource type="Script" path="res://ai/tasks/play_animation.gd" id="2_dg0ss"]
@@ -22,8 +22,12 @@ children = [SubResource("BTSequence_a2ng0")]
 array_var = "waypoints"
 save_var = "wp"
 
-[sub_resource type="BTSelector" id="BTSelector_5dclr"]
+[sub_resource type="BTCooldown" id="BTCooldown_gen0l"]
 children = [SubResource("BTForEach_0cp04")]
+duration = 3.0
+
+[sub_resource type="BTSelector" id="BTSelector_5dclr"]
+children = [SubResource("BTCooldown_gen0l")]
 
 [resource]
 root_task = SubResource("BTSelector_5dclr")

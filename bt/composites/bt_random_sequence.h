@@ -11,7 +11,7 @@ class BTRandomSequence : public BTComposite {
 
 private:
 	int last_running_idx = 0;
-	Array _indicies;
+	Array indicies;
 
 protected:
 	virtual void _enter() override;

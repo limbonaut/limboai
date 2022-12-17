@@ -11,7 +11,7 @@ class BTTimeLimit : public BTDecorator {
 
 private:
 	float time_limit = 5.0;
-	float _time_passed = 0.0;
+	float time_passed = 0.0;
 
 protected:
 	static void _bind_methods();

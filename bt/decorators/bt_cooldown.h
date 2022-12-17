@@ -17,7 +17,7 @@ private:
 	bool trigger_on_failure = false;
 	String cooldown_state_var = "";
 
-	Ref<SceneTreeTimer> _timer = nullptr;
+	Ref<SceneTreeTimer> timer = nullptr;
 
 	void _chill();
 	void _on_timeout();

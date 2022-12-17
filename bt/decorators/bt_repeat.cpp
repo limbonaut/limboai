@@ -9,7 +9,7 @@ String BTRepeat::_generate_name() const {
 }
 
 void BTRepeat::_enter() {
-	_cur_iteration = 1;
+	cur_iteration = 1;
 }
 
 int BTRepeat::_tick(float p_delta) {
@@ -19,10 +19,10 @@ int BTRepeat::_tick(float p_delta) {
 		return RUNNING;
 	} else if (status == FAILURE && abort_on_failure) {
 		return FAILURE;
-	} else if (_cur_iteration >= times) {
+	} else if (cur_iteration >= times) {
 		return SUCCESS;
 	} else {
-		_cur_iteration += 1;
+		cur_iteration += 1;
 		return RUNNING;
 	}
 }

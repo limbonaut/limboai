@@ -9,10 +9,10 @@ String BTRunLimit::_generate_name() const {
 int BTRunLimit::_tick(float p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	if (get_child(0)->get_status() != RUNNING) {
-		if (_num_runs >= run_limit) {
+		if (num_runs >= run_limit) {
 			return FAILURE;
 		}
-		_num_runs += 1;
+		num_runs += 1;
 	}
 	return get_child(0)->execute(p_delta);
 }

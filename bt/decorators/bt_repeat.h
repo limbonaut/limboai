@@ -12,7 +12,7 @@ class BTRepeat : public BTDecorator {
 private:
 	int times = 1;
 	bool abort_on_failure = false;
-	int _cur_iteration = 0;
+	int cur_iteration = 0;
 
 protected:
 	static void _bind_methods();
