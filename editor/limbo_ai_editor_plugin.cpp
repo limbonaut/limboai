@@ -910,7 +910,7 @@ void LimboAIEditor::_resave_modified(String _str) {
 	disk_changed_files.clear();
 }
 
-void LimboAIEditor::_rename_task(String _str) {
+void LimboAIEditor::_rename_task_confirmed() {
 	ERR_FAIL_COND(!task_tree->get_selected().is_valid());
 	task_tree->get_selected()->set_custom_name(rename_edit->get_text());
 	rename_dialog->hide();
@@ -985,7 +985,6 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree", "p_force_refresh"), &LimboAIEditor::edit_bt, Variant(false));
 	ClassDB::bind_method(D_METHOD("_reload_modified"), &LimboAIEditor::_reload_modified);
 	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
-	ClassDB::bind_method(D_METHOD("_rename_task"), &LimboAIEditor::_rename_task, String());
 }
 
 LimboAIEditor::LimboAIEditor() {
@@ -1155,10 +1154,10 @@ LimboAIEditor::LimboAIEditor() {
 		rename_edit->set_placeholder("Custom Name");
 		rename_edit->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		rename_edit->set_custom_minimum_size(Size2(350.0, 0.0));
-		rename_edit->connect("text_changed", callable_mp(this, &LimboAIEditor::_rename_task));
 
+		rename_dialog->register_text_enter(rename_edit);
 		rename_dialog->get_ok_button()->set_text(TTR("Rename"));
-		rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task));
+		rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task_confirmed));
 	}
 	add_child(rename_dialog);
 

@@ -159,7 +159,7 @@ private:
 	void _reload_modified();
 	void _resave_modified(String _str = "");
 
-	void _rename_task(String _str = "");
+	void _rename_task_confirmed();
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _on_action_selected(int p_id);
