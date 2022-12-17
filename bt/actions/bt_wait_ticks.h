@@ -12,7 +12,7 @@ class BTWaitTicks : public BTAction {
 private:
 	int num_ticks = 1;
 
-	int _num_passed = 0;
+	int num_passed = 0;
 
 protected:
 	static void _bind_methods();

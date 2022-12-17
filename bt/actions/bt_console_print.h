@@ -12,7 +12,7 @@ class BTConsolePrint : public BTAction {
 
 private:
 	String text;
-	PackedStringArray format_var_args;
+	PackedStringArray bb_format_parameters;
 
 protected:
 	static void _bind_methods();
@@ -27,11 +27,11 @@ public:
 	}
 	String get_text() const { return text; }
 
-	void set_format_var_args(const PackedStringArray &p_value) {
-		format_var_args = p_value;
+	void set_bb_format_parameters(const PackedStringArray &p_value) {
+		bb_format_parameters = p_value;
 		emit_changed();
 	}
-	PackedStringArray get_format_var_args() const { return format_var_args; }
+	PackedStringArray get_bb_format_parameters() const { return bb_format_parameters; }
 
 	virtual String get_configuration_warning() const override;
 };

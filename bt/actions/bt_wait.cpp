@@ -10,12 +10,12 @@ String BTWait::_generate_name() const {
 }
 
 void BTWait::_enter() {
-	_time_passed = 0.0;
+	time_passed = 0.0;
 }
 
 int BTWait::_tick(float p_delta) {
-	_time_passed += p_delta;
-	if (_time_passed < duration) {
+	time_passed += p_delta;
+	if (time_passed < duration) {
 		return RUNNING;
 	} else {
 		return SUCCESS;

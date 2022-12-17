@@ -7,13 +7,13 @@ String BTRandomWait::_generate_name() const {
 }
 
 void BTRandomWait::_enter() {
-	_time_passed = 0.0;
-	_duration = Math::random(duration_min_max.x, duration_min_max.y);
+	time_passed = 0.0;
+	duration = Math::random(duration_min_max.x, duration_min_max.y);
 }
 
 int BTRandomWait::_tick(float p_delta) {
-	_time_passed += p_delta;
-	if (_time_passed < _duration) {
+	time_passed += p_delta;
+	if (time_passed < duration) {
 		return RUNNING;
 	} else {
 		return SUCCESS;

@@ -12,8 +12,8 @@ class BTRandomWait : public BTAction {
 private:
 	Vector2 duration_min_max = Vector2(1.0, 2.0);
 
-	float _time_passed = 0.0;
-	float _duration = 0.0;
+	float time_passed = 0.0;
+	float duration = 0.0;
 
 protected:
 	static void _bind_methods();

@@ -12,7 +12,7 @@ class BTWait : public BTAction {
 private:
 	float duration = 1.0;
 
-	float _time_passed = 0.0;
+	float time_passed = 0.0;
 
 protected:
 	static void _bind_methods();
