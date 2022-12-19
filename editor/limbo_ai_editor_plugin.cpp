@@ -27,6 +27,7 @@
 #include "core/templates/vector.h"
 #include "core/typedefs.h"
 #include "core/variant/array.h"
+#include "core/variant/callable.h"
 #include "core/variant/dictionary.h"
 #include "core/variant/variant.h"
 #include "editor/editor_file_system.h"
@@ -138,14 +139,15 @@ void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, int p_button_index)
 }
 
 void TaskTree::_on_item_selected() {
+	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
 	if (last_selected.is_valid()) {
 		update_task(last_selected);
-		if (last_selected->is_connected("changed", callable_mp(this, &TaskTree::_on_task_changed))) {
-			last_selected->disconnect("changed", callable_mp(this, &TaskTree::_on_task_changed));
+		if (last_selected->is_connected("changed", on_task_changed)) {
+			last_selected->disconnect("changed", on_task_changed);
 		}
 	}
 	last_selected = get_selected();
-	last_selected->connect("changed", callable_mp(this, &TaskTree::_on_task_changed));
+	last_selected->connect("changed", on_task_changed);
 	emit_signal(SNAME("task_selected"), last_selected);
 }
 
@@ -160,8 +162,9 @@ void TaskTree::_on_task_changed() {
 void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "Tried to load a null tree.");
 
-	if (last_selected.is_valid() and last_selected->is_connected("changed", callable_mp(this, &TaskTree::_on_task_changed))) {
-		last_selected->disconnect("changed", callable_mp(this, &TaskTree::_on_task_changed));
+	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
+	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+		last_selected->disconnect("changed", on_task_changed);
 	}
 
 	bt = p_behavior_tree;
@@ -172,6 +175,11 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 }
 
 void TaskTree::unload() {
+	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
+	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+		last_selected->disconnect("changed", on_task_changed);
+	}
+
 	bt->unreference();
 	tree->clear();
 }
@@ -286,8 +294,9 @@ TaskTree::TaskTree() {
 }
 
 TaskTree::~TaskTree() {
-	if (last_selected.is_valid() and last_selected->is_connected("changed", callable_mp(this, &TaskTree::_on_task_changed))) {
-		last_selected->disconnect("changed", callable_mp(this, &TaskTree::_on_task_changed));
+	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
+	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+		last_selected->disconnect("changed", on_task_changed);
 	}
 }
 
@@ -300,8 +309,7 @@ void TaskSection::_on_task_button_pressed(const StringName &p_task) {
 }
 
 void TaskSection::_on_header_pressed() {
-	tasks_container->set_visible(!tasks_container->is_visible());
-	section_header->set_icon(tasks_container->is_visible() ? get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")) : get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons")));
+	set_collapsed(!is_collapsed());
 }
 
 void TaskSection::set_filter(String p_filter_text) {
@@ -369,6 +377,7 @@ void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
 void TaskPanel::_on_filter_text_changed(String p_text) {
 	for (int i = 0; i < sections->get_child_count(); i++) {
 		TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
+		ERR_FAIL_COND(sec == nullptr);
 		sec->set_filter(p_text);
 	}
 }
@@ -428,7 +437,8 @@ void TaskPanel::refresh() {
 	_populate_from_user_dir(dir3, &categorized_tasks);
 
 	List<String> categories;
-	for (const KeyValue<String, List<String>> &K : categorized_tasks) {
+	for (KeyValue<String, List<String>> &K : categorized_tasks) {
+		K.value.sort();
 		categories.push_back(K.key);
 	}
 	categories.sort();
@@ -441,9 +451,8 @@ void TaskPanel::refresh() {
 
 		TaskSection *sec = memnew(TaskSection(cat));
 		for (String task_meta : tasks) {
+			Ref<Texture> icon = LimboAIEditor::get_task_icon(task_meta);
 			String tname;
-			Ref<Texture> icon;
-			icon = LimboAIEditor::get_task_icon(task_meta);
 			if (task_meta.begins_with("res:")) {
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
 			} else {
@@ -627,6 +636,7 @@ void LimboAIEditor::_save_bt(String p_path) {
 void LimboAIEditor::_load_bt(String p_path) {
 	ERR_FAIL_COND_MSG(p_path.is_empty(), "Empty p_path");
 	Ref<BehaviorTree> bt = ResourceLoader::load(p_path, "BehaviorTree");
+	ERR_FAIL_COND(!bt.is_valid());
 
 	if (history.find(bt) != -1) {
 		history.erase(bt);
@@ -858,14 +868,21 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 }
 
 void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
-	for (const String &res : p_resources) {
-		if (!ResourceCache::has(res)) {
+	for (const String &res_path : p_resources) {
+		if (!ResourceCache::has(res_path)) {
 			continue;
 		}
 
-		String res_type = ResourceLoader::get_resource_type(res);
+		String res_type = ResourceLoader::get_resource_type(res_path);
 		if (res_type == "BehaviorTree") {
-			disk_changed_files.insert(res);
+			Ref<Resource> res = ResourceCache::get_ref(res_path);
+			if (res.is_valid()) {
+				if (history.has(res)) {
+					disk_changed_files.insert(res_path);
+				} else {
+					res->reload_from_file();
+				}
+			}
 		}
 	}
 
@@ -901,10 +918,10 @@ void LimboAIEditor::_reload_modified() {
 
 void LimboAIEditor::_resave_modified(String _str) {
 	for (const String &fn : disk_changed_files) {
-		for (int j = 0; j < history.size(); j++) {
-			if (history.get(j)->get_path() == fn) {
-				ResourceSaver::save(history.get(j), history.get(j)->get_path());
-			}
+		Ref<Resource> res = ResourceCache::get_ref(fn);
+		if (res.is_valid()) {
+			ERR_FAIL_COND(!res->is_class("BehaviorTree"));
+			ResourceSaver::save(res, res->get_path());
 		}
 	}
 	disk_changed->hide();
@@ -931,7 +948,6 @@ void LimboAIEditor::apply_changes() {
 }
 
 Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
-	// TODO: Implement caching.
 	String base_type = p_script_path_or_class;
 	if (p_script_path_or_class.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_script_path_or_class, "Script");
