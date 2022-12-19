@@ -171,6 +171,11 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	}
 }
 
+void TaskTree::unload() {
+	bt->unreference();
+	tree->clear();
+}
+
 void TaskTree::update_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	TreeItem *item = _find_item(p_task);
@@ -853,18 +858,14 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 }
 
 void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
-	for (int i = 0; i < p_resources.size(); i++) {
-		if (!ResourceCache::has(p_resources[i])) {
+	for (const String &res : p_resources) {
+		if (!ResourceCache::has(res)) {
 			continue;
 		}
 
-		String res_type = ResourceLoader::get_resource_type(p_resources[i]);
+		String res_type = ResourceLoader::get_resource_type(res);
 		if (res_type == "BehaviorTree") {
-			for (int j = 0; j < history.size(); j++) {
-				if (history.get(j)->get_path() == p_resources[i]) {
-					disk_changed_files.insert(p_resources[i]);
-				}
-			}
+			disk_changed_files.insert(res);
 		}
 	}
 
@@ -886,14 +887,12 @@ void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
 
 void LimboAIEditor::_reload_modified() {
 	for (const String &fn : disk_changed_files) {
-		for (int j = 0; j < history.size(); j++) {
-			if (history.get(j)->get_path() == fn) {
-				dirty.erase(history.get(j));
-				history.get(j)->get_root_task()->clear_internal_resource_paths();
-				history.get(j)->reload_from_file();
-				if (j == idx_history) {
-					edit_bt(history.get(j), true);
-				}
+		Ref<Resource> res = ResourceCache::get_ref(fn);
+		if (res.is_valid()) {
+			ERR_FAIL_COND(!res->is_class("BehaviorTree"));
+			res->reload_from_file();
+			if (idx_history >= 0 && history.get(idx_history) == res) {
+				edit_bt(res, true);
 			}
 		}
 	}
@@ -1220,7 +1219,6 @@ void LimboAIEditorPlugin::apply_changes() {
 }
 
 void LimboAIEditorPlugin::_notification(int p_notification) {
-	// print_line(vformat("NOTIFICATION: %d", p_notification));
 }
 
 void LimboAIEditorPlugin::make_visible(bool p_visible) {

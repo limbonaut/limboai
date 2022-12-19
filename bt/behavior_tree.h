@@ -19,6 +19,8 @@ protected:
 	static void _bind_methods();
 
 public:
+	virtual bool editor_can_reload_from_file() override { return false; }
+
 	void set_description(String p_value) {
 		description = p_value;
 		emit_changed();

@@ -54,6 +54,8 @@ protected:
 	GDVIRTUAL0RC(String, _get_configuration_warning);
 
 public:
+	virtual bool editor_can_reload_from_file() override { return false; }
+
 	Node *get_agent() const { return agent; }
 	void set_agent(Node *p_agent) { agent = p_agent; }
 
@@ -68,6 +70,7 @@ public:
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
+	virtual String get_configuration_warning() const;
 
 	int execute(float p_delta);
 	void cancel();
@@ -84,7 +87,6 @@ public:
 	int get_child_index(const Ref<BTTask> &p_child) const;
 	Ref<BTTask> next_sibling() const;
 
-	virtual String get_configuration_warning() const;
 	void print_tree(int p_initial_tabs = 0) const;
 
 	BTTask();
