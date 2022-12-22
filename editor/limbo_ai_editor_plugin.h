@@ -149,6 +149,7 @@ private:
 	HashSet<String> disk_changed_files;
 
 	void _add_task(const Ref<BTTask> &p_task);
+	void _remove_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header() const;
 	void _update_history_buttons();

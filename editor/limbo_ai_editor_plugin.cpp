@@ -19,6 +19,7 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/object/script_language.h"
+#include "core/object/undo_redo.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
 #include "core/string/string_name.h"
@@ -37,6 +38,7 @@
 #include "editor/editor_plugin.h"
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
+#include "editor/editor_undo_redo_manager.h"
 #include "editor/inspector_dock.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "modules/limboai/bt/actions/bt_action.h"
@@ -74,7 +76,9 @@ TreeItem *TaskTree::_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, 
 }
 
 void TaskTree::_update_item(TreeItem *p_item) {
-	ERR_FAIL_COND_MSG(p_item == nullptr, "Argument \"p_item\" is null.");
+	if (p_item == nullptr) {
+		return;
+	}
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
@@ -588,17 +592,41 @@ TaskPanel::~TaskPanel() {
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(task_tree->get_bt().is_null());
+	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	undo_redo->create_action(TTR("Add BT Task"));
 	Ref<BTTask> parent = task_tree->get_selected();
 	if (parent.is_null()) {
 		parent = task_tree->get_bt()->get_root_task();
 	}
 	if (parent.is_null()) {
-		task_tree->get_bt()->set_root_task(p_task);
+		undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), p_task);
+		undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 	} else {
-		parent->add_child(p_task);
+		undo_redo->add_do_method(parent.ptr(), SNAME("add_child"), p_task);
+		undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), p_task);
 	}
+	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+	undo_redo->commit_action();
 	_mark_as_dirty(true);
-	task_tree->update_tree();
+}
+
+void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	ERR_FAIL_COND(task_tree->get_bt().is_null());
+	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	undo_redo->create_action(TTR("Remove BT Task"));
+	if (p_task->get_parent() == nullptr) {
+		ERR_FAIL_COND(task_tree->get_bt()->get_root_task() != p_task);
+		undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), Variant());
+		undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
+	} else {
+		undo_redo->add_do_method(p_task->get_parent().ptr(), SNAME("remove_child"), p_task);
+		undo_redo->add_undo_method(p_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_task->get_parent()->get_child_index(p_task));
+	}
+	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+	undo_redo->commit_action();
 }
 
 void LimboAIEditor::_update_header() const {
@@ -697,17 +725,23 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 }
 
 void LimboAIEditor::_on_action_selected(int p_id) {
+	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
 	switch (p_id) {
 		case ACTION_REMOVE: {
 			Ref<BTTask> sel = task_tree->get_selected();
 			if (sel.is_valid()) {
+				undo_redo->create_action(TTR("Remove BT Task"));
 				if (sel->get_parent().is_null()) {
-					task_tree->get_bt()->set_root_task(nullptr);
+					undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), Variant());
+					undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 				} else {
-					sel->get_parent()->remove_child(sel);
+					undo_redo->add_do_method(sel->get_parent().ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_undo_method(sel->get_parent().ptr(), SNAME("add_child_at_index"), sel, sel->get_parent()->get_child_index(sel));
 				}
-				task_tree->update_tree();
-				EditorNode::get_singleton()->edit_node(nullptr);
+				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+				undo_redo->commit_action();
+				EditorNode::get_singleton()->edit_resource(task_tree->get_selected());
 				_mark_as_dirty(true);
 			}
 		} break;
@@ -717,9 +751,14 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				Ref<BTTask> parent = sel->get_parent();
 				int idx = parent->get_child_index(sel);
 				if (idx > 0 && idx < parent->get_child_count()) {
-					parent->remove_child(sel);
-					parent->add_child_at_index(sel, idx - 1);
-					task_tree->update_tree();
+					undo_redo->create_action(TTR("Move BT Task"));
+					undo_redo->add_do_method(parent.ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), sel, idx - 1);
+					undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_undo_method(parent.ptr(), SNAME("add_child_at_index"), sel, idx);
+					undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+					undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+					undo_redo->commit_action();
 					_mark_as_dirty(true);
 				}
 			}
@@ -730,9 +769,14 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				Ref<BTTask> parent = sel->get_parent();
 				int idx = parent->get_child_index(sel);
 				if (idx >= 0 && idx < (parent->get_child_count() - 1)) {
-					parent->remove_child(sel);
-					parent->add_child_at_index(sel, idx + 1);
-					task_tree->update_tree();
+					undo_redo->create_action(TTR("Move BT Task"));
+					undo_redo->add_do_method(parent.ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), sel, idx + 1);
+					undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_undo_method(parent.ptr(), SNAME("add_child_at_index"), sel, idx);
+					undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+					undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+					undo_redo->commit_action();
 					_mark_as_dirty(true);
 				}
 			}
@@ -740,12 +784,17 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 		case ACTION_DUPLICATE: {
 			Ref<BTTask> sel = task_tree->get_selected();
 			if (sel.is_valid()) {
+				undo_redo->create_action(TTR("Duplicate BT Task"));
 				Ref<BTTask> parent = sel->get_parent();
 				if (parent.is_null()) {
 					parent = sel;
 				}
-				parent->add_child_at_index(sel->clone(), parent->get_child_index(sel) + 1);
-				task_tree->update_tree();
+				const Ref<BTTask> &sel_dup = sel->clone();
+				undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), sel_dup, parent->get_child_index(sel) + 1);
+				undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), sel_dup);
+				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+				undo_redo->commit_action();
 				_mark_as_dirty(true);
 			}
 		} break;
@@ -754,11 +803,17 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 			if (sel.is_valid() && task_tree->get_bt()->get_root_task() != sel) {
 				Ref<BTTask> parent = sel->get_parent();
 				ERR_FAIL_COND(parent.is_null());
-				parent->remove_child(sel);
+				undo_redo->create_action(TTR("Make Root"));
+				undo_redo->add_do_method(parent.ptr(), SNAME("remove_child"), sel);
 				Ref<BTTask> old_root = task_tree->get_bt()->get_root_task();
-				task_tree->get_bt()->set_root_task(sel);
-				sel->add_child(old_root);
-				task_tree->update_tree();
+				undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), sel);
+				undo_redo->add_do_method(sel.ptr(), SNAME("add_child"), old_root);
+				undo_redo->add_undo_method(sel.ptr(), SNAME("remove_child"), old_root);
+				undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), old_root);
+				undo_redo->add_undo_method(parent.ptr(), SNAME("add_child_at_index"), sel, parent->get_child_index(sel));
+				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+				undo_redo->commit_action();
 				_mark_as_dirty(true);
 			}
 		} break;
@@ -781,6 +836,8 @@ void LimboAIEditor::_on_tree_task_double_clicked() {
 }
 
 void LimboAIEditor::_on_panel_task_selected(String p_task) {
+	Ref<BTTask> task;
+
 	if (p_task.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_task, "Script");
 		ERR_FAIL_COND_MSG(script.is_null() || !script->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
@@ -797,11 +854,12 @@ void LimboAIEditor::_on_panel_task_selected(String p_task) {
 
 		if (inst && script.is_valid()) {
 			((Object *)inst)->set_script(script);
-			_add_task(Variant(inst));
+			task = inst;
 		}
 	} else {
-		_add_task(Ref<BTTask>(ClassDB::instantiate(p_task)));
+		task = ClassDB::instantiate(p_task);
 	}
+	_add_task(task);
 }
 
 void LimboAIEditor::_on_visibility_changed() {
@@ -846,25 +904,33 @@ void LimboAIEditor::_on_history_forward() {
 }
 
 void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type) {
+	ERR_FAIL_COND(p_type < -1 || p_type > 1);
 	if (p_task == p_to_task) {
 		return;
 	}
+
+	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	undo_redo->create_action(TTR("Drag BT Task"));
+	undo_redo->add_do_method(p_task->get_parent().ptr(), SNAME("remove_child"), p_task);
+
 	if (p_type == 0) {
-		p_task->get_parent()->remove_child(p_task);
-		p_to_task->add_child(p_task);
-		task_tree->update_tree();
-		_mark_as_dirty(true);
+		undo_redo->add_do_method(p_to_task.ptr(), SNAME("add_child"), p_task);
+		undo_redo->add_undo_method(p_to_task.ptr(), SNAME("remove_child"), p_task);
 	} else if (p_type == -1 && p_to_task->get_parent().is_valid()) {
-		p_task->get_parent()->remove_child(p_task);
-		p_to_task->get_parent()->add_child_at_index(p_task, p_to_task->get_parent()->get_child_index(p_to_task));
-		task_tree->update_tree();
-		_mark_as_dirty(true);
+		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task));
+		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
 	} else if (p_type == 1 && p_to_task->get_parent().is_valid()) {
-		p_task->get_parent()->remove_child(p_task);
-		p_to_task->get_parent()->add_child_at_index(p_task, p_to_task->get_parent()->get_child_index(p_to_task) + 1);
-		task_tree->update_tree();
-		_mark_as_dirty(true);
+		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task) + 1);
+		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
 	}
+
+	undo_redo->add_undo_method(p_task->get_parent().ptr(), "add_child_at_index", p_task, p_task->get_parent()->get_child_index(p_task));
+
+	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+
+	undo_redo->commit_action();
+	_mark_as_dirty(true);
 }
 
 void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
@@ -930,9 +996,15 @@ void LimboAIEditor::_resave_modified(String _str) {
 
 void LimboAIEditor::_rename_task_confirmed() {
 	ERR_FAIL_COND(!task_tree->get_selected().is_valid());
-	task_tree->get_selected()->set_custom_name(rename_edit->get_text());
 	rename_dialog->hide();
-	EditorNode::get_singleton()->edit_resource(task_tree->get_selected());
+
+	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	undo_redo->create_action(TTR("Set Custom Name"));
+	undo_redo->add_do_method(task_tree->get_selected().ptr(), SNAME("set_custom_name"), rename_edit->get_text());
+	undo_redo->add_undo_method(task_tree->get_selected().ptr(), SNAME("set_custom_name"), task_tree->get_selected()->get_custom_name());
+	undo_redo->add_do_method(task_tree, SNAME("update_task"), task_tree->get_selected());
+	undo_redo->add_undo_method(task_tree, SNAME("update_task"), task_tree->get_selected());
+	undo_redo->commit_action();
 }
 
 void LimboAIEditor::apply_changes() {
@@ -995,6 +1067,7 @@ void LimboAIEditor::_notification(int p_what) {
 
 void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_add_task", "p_task"), &LimboAIEditor::_add_task);
+	ClassDB::bind_method(D_METHOD("_remove_task", "p_task"), &LimboAIEditor::_remove_task);
 	ClassDB::bind_method(D_METHOD("_add_task_with_prototype", "p_prototype"), &LimboAIEditor::_add_task_with_prototype);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
 	ClassDB::bind_method(D_METHOD("_save_bt", "p_path"), &LimboAIEditor::_save_bt);
