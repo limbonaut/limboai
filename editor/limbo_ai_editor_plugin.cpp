@@ -294,7 +294,7 @@ TaskTree::TaskTree() {
 	tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected));
 	tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_double_clicked));
 
-	tree->set_drag_forwarding(this);
+	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
 }
 
 TaskTree::~TaskTree() {
@@ -592,7 +592,7 @@ TaskPanel::~TaskPanel() {
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(task_tree->get_bt().is_null());
-	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Add BT Task"));
 	Ref<BTTask> parent = task_tree->get_selected();
 	if (parent.is_null()) {
@@ -614,7 +614,7 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(task_tree->get_bt().is_null());
-	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Remove BT Task"));
 	if (p_task->get_parent() == nullptr) {
 		ERR_FAIL_COND(task_tree->get_bt()->get_root_task() != p_task);
@@ -725,7 +725,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 }
 
 void LimboAIEditor::_on_action_selected(int p_id) {
-	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	switch (p_id) {
 		case ACTION_REMOVE: {
 			Ref<BTTask> sel = task_tree->get_selected();
@@ -909,7 +909,7 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 		return;
 	}
 
-	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Drag BT Task"));
 	undo_redo->add_do_method(p_task->get_parent().ptr(), SNAME("remove_child"), p_task);
 
@@ -998,7 +998,7 @@ void LimboAIEditor::_rename_task_confirmed() {
 	ERR_FAIL_COND(!task_tree->get_selected().is_valid());
 	rename_dialog->hide();
 
-	Ref<EditorUndoRedoManager> &undo_redo = EditorNode::get_undo_redo();
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Set Custom Name"));
 	undo_redo->add_do_method(task_tree->get_selected().ptr(), SNAME("set_custom_name"), rename_edit->get_text());
 	undo_redo->add_undo_method(task_tree->get_selected().ptr(), SNAME("set_custom_name"), task_tree->get_selected()->get_custom_name());
@@ -1272,18 +1272,10 @@ LimboAIEditor::LimboAIEditor() {
 	}
 	EditorNode::get_singleton()->get_gui_base()->add_child(disk_changed);
 
-	GLOBAL_DEF("limbo_ai/behavior_tree/behavior_tree_default_dir", "res://ai/trees");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/behavior_tree_default_dir",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR));
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_1", "res://ai/tasks");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_1",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_1", PROPERTY_HINT_DIR));
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_2", "");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_2",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR));
-	GLOBAL_DEF("limbo_ai/behavior_tree/user_task_dir_3", "");
-	ProjectSettings::get_singleton()->set_custom_property_info("limbo_ai/behavior_tree/user_task_dir_3",
-			PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR));
+	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR), "res://ai/trees");
+	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_1", PROPERTY_HINT_DIR), "res://ai/tasks");
+	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR), "");
+	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR), "");
 
 	save_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
 	load_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));

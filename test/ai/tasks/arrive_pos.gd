@@ -1,6 +1,6 @@
 @tool
-extends BTAction
 @icon("res://icon.png")
+extends BTAction
 
 @export var target_position_var := "target_position"
 @export var speed_var := "speed"
