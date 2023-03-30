@@ -100,22 +100,19 @@ void LimboState::add_event_handler(const String &p_event, const Callable &p_hand
 	handlers.insert(p_event, p_handler);
 }
 
-LimboState *LimboState::call_on_enter(Object *p_object, const Callable &p_callable) {
-	ERR_FAIL_COND_V(p_object == nullptr, this);
+LimboState *LimboState::call_on_enter(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
 	connect(LimboStringNames::get_singleton()->entered, p_callable);
 	return this;
 }
 
-LimboState *LimboState::call_on_exit(Object *p_object, const Callable &p_callable) {
-	ERR_FAIL_COND_V(p_object == nullptr, this);
+LimboState *LimboState::call_on_exit(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
 	connect(LimboStringNames::get_singleton()->exited, p_callable);
 	return this;
 }
 
-LimboState *LimboState::call_on_update(Object *p_object, const Callable &p_callable) {
-	ERR_FAIL_COND_V(p_object == nullptr, this);
+LimboState *LimboState::call_on_update(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
 	connect(LimboStringNames::get_singleton()->updated, p_callable);
 	return this;

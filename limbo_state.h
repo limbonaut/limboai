@@ -62,9 +62,9 @@ public:
 	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
 
 	LimboState *named(String p_name);
-	LimboState *call_on_enter(Object *p_object, const Callable &p_callable);
-	LimboState *call_on_exit(Object *p_object, const Callable &p_callable);
-	LimboState *call_on_update(Object *p_object, const Callable &p_callable);
+	LimboState *call_on_enter(const Callable &p_callable);
+	LimboState *call_on_exit(const Callable &p_callable);
+	LimboState *call_on_update(const Callable &p_callable);
 
 	_FORCE_INLINE_ String event_finished() const { return EVENT_FINISHED; }
 	LimboState *get_root() const;
