@@ -146,10 +146,6 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &LimboState::set_agent);
 	ClassDB::bind_method(D_METHOD("event_finished"), &LimboState::event_finished);
 	ClassDB::bind_method(D_METHOD("is_active"), &LimboState::is_active);
-	ClassDB::bind_method(D_METHOD("_setup"), &LimboState::_setup);
-	ClassDB::bind_method(D_METHOD("_enter"), &LimboState::_enter);
-	ClassDB::bind_method(D_METHOD("_exit"), &LimboState::_exit);
-	ClassDB::bind_method(D_METHOD("_update", "p_delta"), &LimboState::_update);
 	ClassDB::bind_method(D_METHOD("_initialize", "p_agent", "p_blackboard"), &LimboState::_initialize);
 	ClassDB::bind_method(D_METHOD("dispatch", "p_event", "p_cargo"), &LimboState::dispatch, Variant());
 	ClassDB::bind_method(D_METHOD("named", "p_name"), &LimboState::named);
