@@ -167,12 +167,12 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		_limbo_utility = memnew(LimboUtility);
 		GDREGISTER_CLASS(LimboUtility);
 
+		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 		LimboStringNames::create();
 	}
 
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
-		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
 	}
 #endif
