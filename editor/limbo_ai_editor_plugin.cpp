@@ -210,7 +210,7 @@ void TaskTree::deselect() {
 	}
 }
 
-Variant TaskTree::_get_drag_data_fw(const Point2 &p_point, Control *p_from) {
+Variant TaskTree::_get_drag_data_fw(const Point2 &p_point) {
 	if (editable && tree->get_item_at_position(p_point)) {
 		Dictionary drag_data;
 		drag_data["type"] = "task";
@@ -221,7 +221,7 @@ Variant TaskTree::_get_drag_data_fw(const Point2 &p_point, Control *p_from) {
 	return Variant();
 }
 
-bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const {
+bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const {
 	if (!editable) {
 		return false;
 	}
@@ -248,7 +248,7 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data, C
 	return false;
 }
 
-void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) {
+void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	Dictionary d = p_data;
 	TreeItem *item = tree->get_item_at_position(p_point);
 	if (item && d.has("task")) {

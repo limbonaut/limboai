@@ -41,9 +41,9 @@ private:
 	void _on_item_mouse_selected(const Vector2 &p_pos, int p_button_index);
 	void _on_task_changed();
 
-	Variant _get_drag_data_fw(const Point2 &p_point, Control *p_from);
-	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from) const;
-	void _drop_data_fw(const Point2 &p_point, const Variant &p_data, Control *p_from);
+	Variant _get_drag_data_fw(const Point2 &p_point);
+	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;
+	void _drop_data_fw(const Point2 &p_point, const Variant &p_data);
 
 protected:
 	static void _bind_methods();
