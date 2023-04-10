@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BBString" inherits="BBParam" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BBString" inherits="BBParam" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		String-type parameter to be used with BT tasks. See [BBParam].
 	</brief_description>
@@ -7,11 +7,7 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" overrides="BBParam" default="&quot;&quot;" />
 	</members>
-	<constants>
-	</constants>
 </class>

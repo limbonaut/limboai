@@ -1020,6 +1020,8 @@ void LimboAIEditor::apply_changes() {
 }
 
 Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
+	ERR_FAIL_COND_V_MSG(p_script_path_or_class.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
+
 	String base_type = p_script_path_or_class;
 	if (p_script_path_or_class.begins_with("res:")) {
 		Ref<Script> script = ResourceLoader::load(p_script_path_or_class, "Script");

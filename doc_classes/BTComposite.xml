@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTComposite" inherits="BTTask" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTComposite" inherits="BTTask" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Base class for BT composite tasks.
 	</brief_description>
 	<description>
 		Base class for all behavior tree composite tasks. Extend [code]BTComposite[/code] to create your own.
-		Composite tasks can have one or more child tasks. A composite task will execute its child tasks in a certain order. Depending on the status returned by a child task, execution either continues to the next task in order or stops and a status is returned to the parent task.
+		Composite is a control task in a [BehaviorTree] that contains one or more child tasks. It defines the structure and flow of the [BehaviorTree] by specifying how child tasks are executed. It can be used to group related tasks into a single unit, making it easier to manage and maintain the [BehaviorTree]. Examples of [BehaviorTree] composites include [BTSelector], [BTSequence], and [BTParallel].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
-	<constants>
-	</constants>
 </class>

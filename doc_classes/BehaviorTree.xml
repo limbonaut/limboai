@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BehaviorTree" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BehaviorTree" inherits="Resource" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Contains behavior tree data.
+		Contains Behavior Tree data.
 	</brief_description>
 	<description>
+		[BehaviorTree] is a hierarchical structure used to model and control the behavior of agents in a game. It is composed of tasks that represent specific actions or decision-making rules. The [BehaviorTree] is executed from the root task down to the leaf tasks, which represent the actual actions or behaviors that the agent should perform. 
+		See also [BTTask] class.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -14,18 +16,25 @@
 				Makes a copy of behavior tree.
 			</description>
 		</method>
-		<method name="init">
-			<return type="void" />
+		<method name="get_root_task" qualifiers="const">
+			<return type="BTTask" />
 			<description>
-				Initializes a loaded behavior tree, making sure tasks are properly linked.
+				Returns root task of the [BehaviorTree] resource.
 			</description>
 		</method>
-		<method name="instance" qualifiers="const">
+		<method name="instantiate" qualifiers="const">
 			<return type="BTTask" />
-			<argument index="0" name="p_agent" type="Object" />
-			<argument index="1" name="p_blackboard" type="Blackboard" />
+			<param index="0" name="p_agent" type="Node" />
+			<param index="1" name="p_blackboard" type="Blackboard" />
 			<description>
 				Instantiates behavior tree and returns the root [BTTask].
+			</description>
+		</method>
+		<method name="set_root_task">
+			<return type="void" />
+			<param index="0" name="p_value" type="BTTask" />
+			<description>
+				Assign new root task to [BehaviorTree] resource.
 			</description>
 		</method>
 	</methods>
@@ -33,10 +42,5 @@
 		<member name="description" type="String" setter="set_description" getter="get_description" default="&quot;&quot;">
 			User-provided description of BehaviorTree.
 		</member>
-		<member name="root_task" type="BTTask" setter="set_root_task" getter="get_root_task">
-			Stores root task.
-		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

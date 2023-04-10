@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="LimboHSM" inherits="LimboState" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="LimboHSM" inherits="LimboState" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Event-based Hierarchical State Machine (HSM).
 	</brief_description>
@@ -12,9 +12,9 @@
 	<methods>
 		<method name="add_transition">
 			<return type="void" />
-			<argument index="0" name="p_from_state" type="Node" />
-			<argument index="1" name="p_to_state" type="Node" />
-			<argument index="2" name="p_event" type="String" />
+			<param index="0" name="p_from_state" type="Node" />
+			<param index="1" name="p_to_state" type="Node" />
+			<param index="2" name="p_event" type="String" />
 			<description>
 				Adds a transition from one state to another when [code]p_event[/code] is dispatched.
 			</description>
@@ -33,22 +33,22 @@
 		</method>
 		<method name="initialize">
 			<return type="void" />
-			<argument index="0" name="p_agent" type="Object" />
-			<argument index="1" name="p_parent_scope" type="Blackboard" default="null" />
+			<param index="0" name="p_agent" type="Node" />
+			<param index="1" name="p_parent_scope" type="Blackboard" default="null" />
 			<description>
 				Initializes state and calls [code]_setup[/code] for itself and every substate.
 			</description>
 		</method>
 		<method name="set_active">
 			<return type="void" />
-			<argument index="0" name="p_active" type="bool" />
+			<param index="0" name="p_active" type="bool" />
 			<description>
 				If [code]true[/code], changes state to [member initial_state] and enables state processing depending on [member update_mode].
 			</description>
 		</method>
 		<method name="update">
 			<return type="void" />
-			<argument index="0" name="p_delta" type="float" />
+			<param index="0" name="p_delta" type="float" />
 			<description>
 				Calls [member LimboState._update] on itself and on the active substate. Call propagates down to the leaf state.
 				It is called automatically, if [member update_mode] is not set to [constant MANUAL].
@@ -62,13 +62,13 @@
 		<member name="initial_state" type="LimboState" setter="set_initial_state" getter="get_initial_state">
 			A state that becomes active when state machine is activated by [method set_active] method.
 		</member>
-		<member name="update_mode" type="int" setter="set_update_mode" getter="get_update_mode" enum="LimboHSM.UpdateMode" default="0">
+		<member name="update_mode" type="int" setter="set_update_mode" getter="get_update_mode" enum="LimboHSM.UpdateMode" default="1">
 			Determines when state machine is updated. See [enum UpdateMode].
 		</member>
 	</members>
 	<signals>
 		<signal name="state_changed">
-			<argument index="0" name="p_state" type="LimboState" />
+			<param index="0" name="p_state" type="LimboState" />
 			<description>
 				Emitted when state is changed.
 			</description>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTSubtree" inherits="BTNewScope" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTSubtree" inherits="BTNewScope" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		BT decorator that instantiates a subtree.
 	</brief_description>
@@ -9,14 +9,9 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
-		<member name="_blackboard_data" type="Dictionary" setter="_set_blackboard_data" getter="_get_blackboard_data" overrides="BTNewScope" default="{}" />
 		<member name="subtree" type="BehaviorTree" setter="set_subtree" getter="get_subtree">
 			A [BehaviorTree] resource that will be instantiated as a subtree.
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

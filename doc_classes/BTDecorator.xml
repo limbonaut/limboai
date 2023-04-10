@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTDecorator" inherits="BTTask" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTDecorator" inherits="BTTask" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Base class for BT decorators.
 	</brief_description>
 	<description>
 		Base class for all behavior tree decorators. Extend [code]BTDecorator[/code] to create your own decorators.
-		Decorator alters the behavior of its child task in some way. Decorators can only have one child.
+		Decorator is a task in a [BehaviorTree] that alters the behavior of its child task. Can only have a single child.
+		It can be used to add conditions, limits, or other constraints to the execution of a task. Examples of [BehaviorTree] decorators include [BTInvert], [BTRepeat], and [BTCooldown]. The use of [BehaviorTree] decorators can help to simplify the design and implementation of complex behaviors by adding additional logic to existing tasks.
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
-	<constants>
-	</constants>
 </class>

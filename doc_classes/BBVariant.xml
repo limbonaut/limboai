@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BBVariant" inherits="BBParam" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BBVariant" inherits="BBParam" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Variant-type parameter to be used with BT tasks. See [BBParam].
 	</brief_description>
@@ -7,13 +7,9 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" overrides="BBParam" default="null" />
 		<member name="type" type="int" setter="set_type" getter="get_type" enum="Variant.Type" default="0">
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

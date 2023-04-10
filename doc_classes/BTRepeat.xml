@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTRepeat" inherits="BTDecorator" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTRepeat" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		BT decorator that repeats its child specified number of [member times].
 	</brief_description>
@@ -11,8 +11,6 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="abort_on_failure" type="bool" setter="set_abort_on_failure" getter="get_abort_on_failure" default="false">
 			If [code]false[/code], [code]FAILURE[/code] status returned by the child is also considered a successfully finished execution.
@@ -21,6 +19,4 @@
 			A number of times to repeat an execution of the child task.
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTConsolePrint" inherits="BTAction" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTConsolePrint" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		BT action task that prints text to console.
 	</brief_description>
@@ -8,16 +8,11 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
-		<member name="format_var_args" type="PoolStringArray" setter="set_format_var_args" getter="get_format_var_args" default="PoolStringArray(  )">
-			An array with blackboard variables, values of which will serve as format arguments.
+		<member name="bb_format_parameters" type="PackedStringArray" setter="set_bb_format_parameters" getter="get_bb_format_parameters" default="PackedStringArray()">
 		</member>
 		<member name="text" type="String" setter="set_text" getter="get_text" default="&quot;&quot;">
 			Text to print. Can contain multiple placeholders to be replaced with format arguments. Same as GDScript's % operator, placeholders start with '%' followed by a format specifier. For example: %s - string, %d - integer, %f - real.
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

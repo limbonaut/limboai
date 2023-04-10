@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTState" inherits="LimboState" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTState" inherits="LimboState" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		A state node for [LimboHSM] that hosts a [BehaviorTree].
 	</brief_description>
 	<description>
-		This state node instantiates an instance of [BehaviorTree] and dispatches events, when the tree returns [code]SUCCESS[/code] or [code]FAILURE[/code].
-		When the tree returns [code]SUCCESS[/code], this state dispatches [member success_event].
-		When the tree returns [code]FAILURE[/code], this state dispatches [member failure_event].
+		This state node instantiates and executes a [BehaviorTree] resource. Dispatches state machine event, when the task tree returns [code]SUCCESS[/code] or [code]FAILURE[/code]. Event names can be specified by [member success_event] and [member failure_event].
+		For more information about state machine events see [method LimboState.dispatch].
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="behavior_tree" type="BehaviorTree" setter="set_behavior_tree" getter="get_behavior_tree">
 			A [BehaviorTree] resource that contains state behavior.
@@ -23,6 +20,4 @@
 			HSM event that will be dispatched when the behavior tree returns [code]SUCCESS[/code].
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

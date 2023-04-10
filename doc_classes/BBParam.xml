@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BBParam" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BBParam" inherits="Resource" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		A base class for typed parameters to be used with BT tasks.
 	</brief_description>
@@ -19,16 +19,16 @@
 		</method>
 		<method name="get_value">
 			<return type="Variant" />
-			<argument index="0" name="p_agent" type="Object" />
-			<argument index="1" name="p_blackboard" type="Blackboard" />
-			<argument index="2" name="p_default" type="Variant" default="null" />
+			<param index="0" name="p_agent" type="Object" />
+			<param index="1" name="p_blackboard" type="Blackboard" />
+			<param index="2" name="p_default" type="Variant" default="null" />
 			<description>
 				Returns value of the parameter.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" default="PoolColorArray(  )">
+		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" default="0">
 			A value that is saved with BBParam resource. The type of value is defined by [method get_type]. Provides the parameter's value, if [member value_source] is [constant SAVED_VALUE].
 		</member>
 		<member name="value_source" type="int" setter="set_value_source" getter="get_value_source" enum="BBParam.ValueSource" default="0">

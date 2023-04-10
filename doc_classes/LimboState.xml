@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="LimboState" inherits="Node" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="LimboState" inherits="Node" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		A State node for Hierarchical State Machine (HSM).
 	</brief_description>
@@ -28,56 +28,53 @@
 		</method>
 		<method name="_update" qualifiers="virtual">
 			<return type="void" />
-			<argument index="0" name="p_delta" type="float" />
+			<param index="0" name="p_delta" type="float" />
 			<description>
 				Called during update.
 			</description>
 		</method>
 		<method name="add_event_handler">
 			<return type="void" />
-			<argument index="0" name="p_event" type="String" />
-			<argument index="1" name="p_method" type="String" />
+			<param index="0" name="p_event" type="String" />
+			<param index="1" name="p_handler" type="Callable" />
 			<description>
 				Register [code]p_method[/code] that will be called when [code]p_event[/code] happens. Method must belong to the state.
 			</description>
 		</method>
 		<method name="call_on_enter">
 			<return type="LimboState" />
-			<argument index="0" name="p_object" type="Object" />
-			<argument index="1" name="p_method" type="String" />
+			<param index="0" name="p_callable" type="Callable" />
 			<description>
 				A chained method that connects [signal entered] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
 		<method name="call_on_exit">
 			<return type="LimboState" />
-			<argument index="0" name="p_object" type="Object" />
-			<argument index="1" name="p_method" type="String" />
+			<param index="0" name="p_callable" type="Callable" />
 			<description>
 				A chained method that connects [signal exited] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
 		<method name="call_on_update">
 			<return type="LimboState" />
-			<argument index="0" name="p_object" type="Object" />
-			<argument index="1" name="p_method" type="String" />
+			<param index="0" name="p_callable" type="Callable" />
 			<description>
 				A chained method that connects [signal updated] signal to a [code]p_method[/code] on a [p_object].
 			</description>
 		</method>
-		<method name="clear_guard_func">
+		<method name="clear_guard">
 			<return type="void" />
 			<description>
-				Removes the guard function that was set by [method set_guard_func].
+				Removes state's guard function that was set by [method set_guard].
 			</description>
 		</method>
 		<method name="dispatch">
 			<return type="bool" />
-			<argument index="0" name="p_event" type="String" />
-			<argument index="1" name="p_cargo" type="Variant" default="null" />
+			<param index="0" name="p_event" type="String" />
+			<param index="1" name="p_cargo" type="Variant" default="null" />
 			<description>
 				Dispatches recursively a state machine event named [code]p_event[/code] with an optional argument [code]p_cargo[/code]. Returns [code]true[/code] if event was consumed.
-				Events propagate from the leaf state to the root. Propagation stops as soon as some state consumes the event.
+				Events propagate from the leaf state to the root. Propagation stops as soon as some state consumes the event. States will consume event if they have a transition associated with it, or an event handler. See also [method add_event_handler].
 			</description>
 		</method>
 		<method name="get_root" qualifiers="const">
@@ -94,18 +91,16 @@
 		</method>
 		<method name="named">
 			<return type="LimboState" />
-			<argument index="0" name="p_name" type="String" />
+			<param index="0" name="p_name" type="String" />
 			<description>
 				A chained method that sets the name of this state.
 			</description>
 		</method>
-		<method name="set_guard_func">
+		<method name="set_guard">
 			<return type="void" />
-			<argument index="0" name="p_object" type="Object" />
-			<argument index="1" name="p_func" type="String" />
-			<argument index="2" name="p_binds" type="Array" default="[  ]" />
+			<param index="0" name="p_guard_callable" type="Callable" />
 			<description>
-				Sets the guard function. It is a function that will be called each time a transition to this state should happen. If that function returns [code]false[/code], that transition will not be allowed.
+				Sets the guard function. It is a function that will be called each time a transition to this state should happen. If that function returns [code]false[/code], the transition will not be allowed.
 			</description>
 		</method>
 	</methods>
@@ -113,7 +108,7 @@
 		<member name="EVENT_FINISHED" type="String" setter="" getter="event_finished">
 			A commonly used event that signifies that the state has finished work.
 		</member>
-		<member name="agent" type="Object" setter="set_agent" getter="get_agent">
+		<member name="agent" type="Node" setter="set_agent" getter="get_agent">
 			An agent that is associated with the state. Assinged by initialization.
 		</member>
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
@@ -137,12 +132,10 @@
 			</description>
 		</signal>
 		<signal name="updated">
-			<argument index="0" name="p_delta" type="float" />
+			<param index="0" name="p_delta" type="float" />
 			<description>
 				Emitted when the state is updated.
 			</description>
 		</signal>
 	</signals>
-	<constants>
-	</constants>
 </class>

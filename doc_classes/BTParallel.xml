@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTParallel" inherits="BTComposite" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTParallel" inherits="BTComposite" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		BT composite that executes tasks simultaneously.
 	</brief_description>
@@ -12,8 +12,6 @@
 	</description>
 	<tutorials>
 	</tutorials>
-	<methods>
-	</methods>
 	<members>
 		<member name="num_failures_required" type="int" setter="set_num_failures_required" getter="get_num_failures_required" default="1">
 		</member>
@@ -22,6 +20,4 @@
 		<member name="repeat" type="bool" setter="set_repeat" getter="get_repeat" default="false">
 		</member>
 	</members>
-	<constants>
-	</constants>
 </class>

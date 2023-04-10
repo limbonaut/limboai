@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTTask" inherits="Resource" version="3.5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTTask" inherits="Resource" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Base class for BT tasks.
+		Base class for [BehaviorTree] tasks.
 	</brief_description>
 	<description>
-		Base class for all behavior tree tasks. Tasks are arranged in a tree-like structure called behavior tree (BT).
+		Base class for all [BehaviorTree] tasks. A task is a building block in a [BehaviorTree] that represents a specific behavior or control flow. It is the basic unit of the Behavior Tree (BT) and is used to create complex behaviors by combining and nesting tasks in a hierarchy.
 		Tasks perform work and return their status with [method _tick]. See [enum TaskStatus]. 
-		There are several types of tasks: actions, conditions, decorators, and composites. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
-		[b]Note:[/b] Do not inherint [BTTask] directly for your own tasks, instead inherit one of the subtypes above.
+		A Task can be an action, a condition, a composite, or a decorator. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
+		[b]Note:[/b] Do not extend [code]BTTask[/code] directly for your own tasks, instead extend one of the subtypes above.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -25,13 +25,13 @@
 				Called when task is "exited", i.e. after [method _tick] returns [constant SUCCESS] or [constant FAILURE] status.
 			</description>
 		</method>
-		<method name="_generate_name" qualifiers="virtual">
+		<method name="_generate_name" qualifiers="virtual const">
 			<return type="String" />
 			<description>
 				When [member custom_name] is empty, the string returned by this method is used to display the task by the editor. See [method get_task_name].
 			</description>
 		</method>
-		<method name="_get_configuration_warning" qualifiers="virtual">
+		<method name="_get_configuration_warning" qualifiers="virtual const">
 			<return type="String" />
 			<description>
 				The string returned by this method is displayed as a warning in the BT editor if the script that overrides it is a [code]tool[/code] script.
@@ -45,7 +45,7 @@
 		</method>
 		<method name="_tick" qualifiers="virtual">
 			<return type="int" />
-			<argument index="0" name="p_delta" type="float" />
+			<param index="0" name="p_delta" type="float" />
 			<description>
 				Called when task is "ticked", i.e. executed by [BTPlayer] or [BTState] during update.
 				Returns [member TaskStatus].
@@ -54,15 +54,15 @@
 		</method>
 		<method name="add_child">
 			<return type="void" />
-			<argument index="0" name="p_child" type="BTTask" />
+			<param index="0" name="p_child" type="BTTask" />
 			<description>
 				Adds a child task. The [code]p_child[/code] is placed at the end of the children list.
 			</description>
 		</method>
 		<method name="add_child_at_index">
 			<return type="void" />
-			<argument index="0" name="p_child" type="BTTask" />
-			<argument index="1" name="p_idx" type="int" />
+			<param index="0" name="p_child" type="BTTask" />
+			<param index="1" name="p_idx" type="int" />
 			<description>
 				Adds a child task. The [code]p_child[/code] is placed at [code]p_idx[/code] position in the children list.
 			</description>
@@ -75,14 +75,14 @@
 		</method>
 		<method name="execute">
 			<return type="int" />
-			<argument index="0" name="p_delta" type="float" />
+			<param index="0" name="p_delta" type="float" />
 			<description>
 				Performs task's execution. During execution [method _enter] is called first, unless current task [member status] is [code]RUNNING[/code]. [method _tick] is called next to perform task's main function. If [constant SUCCESS] or [constant FAILURE] status is returned by [method _tick], [method _exit] will be called next.
 			</description>
 		</method>
 		<method name="get_child" qualifiers="const">
 			<return type="BTTask" />
-			<argument index="0" name="p_idx" type="int" />
+			<param index="0" name="p_idx" type="int" />
 			<description>
 				Returns a child task by its index.
 			</description>
@@ -95,9 +95,15 @@
 		</method>
 		<method name="get_child_index" qualifiers="const">
 			<return type="int" />
-			<argument index="0" name="p_child" type="BTTask" />
+			<param index="0" name="p_child" type="BTTask" />
 			<description>
 				Returns the child task's index. If [code]p_child[/code] is not a child of the task, [code]-1[/code] is returned instead.
+			</description>
+		</method>
+		<method name="get_parent" qualifiers="const">
+			<return type="BTTask" />
+			<description>
+				Returns task's parent.
 			</description>
 		</method>
 		<method name="get_root" qualifiers="const">
@@ -115,15 +121,15 @@
 		</method>
 		<method name="has_child" qualifiers="const">
 			<return type="bool" />
-			<argument index="0" name="p_child" type="BTTask" />
+			<param index="0" name="p_child" type="BTTask" />
 			<description>
 				Returns [code]true[/code] if [code]p_child[/code] is a child of this task.
 			</description>
 		</method>
 		<method name="initialize">
 			<return type="void" />
-			<argument index="0" name="p_agent" type="Object" />
-			<argument index="1" name="p_blackboard" type="Blackboard" />
+			<param index="0" name="p_agent" type="Node" />
+			<param index="1" name="p_blackboard" type="Blackboard" />
 			<description>
 				Initilizes the task. Assigns [member agent] and [member blackboard], and calls [method _setup] for the task and its children. 
 				The method is called recursively for each child task.
@@ -131,7 +137,7 @@
 		</method>
 		<method name="is_descendant_of" qualifiers="const">
 			<return type="bool" />
-			<argument index="0" name="p_task" type="BTTask" />
+			<param index="0" name="p_task" type="BTTask" />
 			<description>
 				Returns [code]true[/code] if this task is descendant of [code]p_task[/code]. I.e. this task must be a child of [code]p_task[/code] or one of its children or grandchildren.
 			</description>
@@ -151,29 +157,29 @@
 		</method>
 		<method name="print_tree" qualifiers="const">
 			<return type="void" />
-			<argument index="0" name="p_initial_tabs" type="int" default="0" />
+			<param index="0" name="p_initial_tabs" type="int" default="0" />
 			<description>
 				Prints the subtree that starts with this task to console.
 			</description>
 		</method>
 		<method name="remove_child">
 			<return type="void" />
-			<argument index="0" name="p_child" type="BTTask" />
+			<param index="0" name="p_child" type="BTTask" />
 			<description>
 				Removes [code]p_child[/code] task from children.
 			</description>
 		</method>
 		<method name="remove_child_at_index">
 			<return type="void" />
-			<argument index="0" name="p_idx" type="int" />
+			<param index="0" name="p_idx" type="int" />
 			<description>
 				Removes a child task by index.
 			</description>
 		</method>
 	</methods>
 	<members>
-		<member name="agent" type="Object" setter="set_agent" getter="get_agent">
-			The agent is a contextual object for the task's behavior tree instance. Usually, the agent is an owner of the node with the behavior tree instance.
+		<member name="agent" type="Node" setter="set_agent" getter="get_agent">
+			The agent is a contextual object for the task's behavior tree instance. Usually, agent is the owner of a node with the [BehaviorTree] resource.
 		</member>
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
 			Provides access to the blackboard for this task and behavior tree. Blackboard is used to share data among tasks of the associated behavior tree.
@@ -181,9 +187,6 @@
 		</member>
 		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
 			User provided name for the task. If not empty, [code]custom_name[/code] is used by the editor to display the task. See [method get_task_name].
-		</member>
-		<member name="parent" type="BTTask" setter="" getter="get_parent">
-			The task's parent.
 		</member>
 		<member name="status" type="int" setter="" getter="get_status">
 			Last execution [enum TaskStatus] returned by [method _tick].

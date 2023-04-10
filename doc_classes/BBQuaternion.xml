@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BBQuaternion" inherits="BBParam" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" overrides="BBParam" default="Quaternion(0, 0, 0, 1)" />
+	</members>
+</class>
