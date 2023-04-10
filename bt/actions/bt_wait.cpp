@@ -1,12 +1,13 @@
 /* bt_wait.cpp */
 
 #include "bt_wait.h"
+#include "core/math/math_funcs.h"
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/variant/variant.h"
 
 String BTWait::_generate_name() const {
-	return vformat("Wait %ss", duration);
+	return vformat("Wait %s sec", Math::snapped(duration, 0.001));
 }
 
 void BTWait::_enter() {

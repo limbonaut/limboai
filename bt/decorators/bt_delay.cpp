@@ -2,13 +2,14 @@
 
 #include "bt_delay.h"
 #include "core/error/error_macros.h"
+#include "core/math/math_funcs.h"
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/variant/array.h"
 #include "core/variant/variant.h"
 
 String BTDelay::_generate_name() const {
-	return vformat("Delay %ss", seconds);
+	return vformat("Delay %s sec", Math::snapped(seconds, 0.001));
 }
 
 void BTDelay::_enter() {

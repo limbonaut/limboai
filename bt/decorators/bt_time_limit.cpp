@@ -1,9 +1,10 @@
 /* bt_time_limit.cpp */
 
 #include "bt_time_limit.h"
+#include "core/math/math_funcs.h"
 
 String BTTimeLimit::_generate_name() const {
-	return vformat("TimeLimit %ss", time_limit);
+	return vformat("TimeLimit %s sec", Math::snapped(time_limit, 0.001));
 }
 
 void BTTimeLimit::_enter() {

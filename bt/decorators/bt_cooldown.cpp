@@ -1,12 +1,13 @@
 /* bt_cooldown.cpp */
 
 #include "bt_cooldown.h"
+#include "core/math/math_funcs.h"
 #include "core/object/class_db.h"
 #include "core/variant/array.h"
 #include "scene/main/scene_tree.h"
 
 String BTCooldown::_generate_name() const {
-	return vformat("Cooldown %ss", duration);
+	return vformat("Cooldown %s sec", Math::snapped(duration, 0.001));
 }
 
 void BTCooldown::_setup() {
