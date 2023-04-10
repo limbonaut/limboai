@@ -10,24 +10,25 @@ class BTRandomWait : public BTAction {
 	GDCLASS(BTRandomWait, BTAction);
 
 private:
-	Vector2 duration_min_max = Vector2(1.0, 2.0);
+	double min_duration = 1.0;
+	double max_duration = 2.0;
 
-	float time_passed = 0.0;
-	float duration = 0.0;
+	double time_passed = 0.0;
+	double duration = 0.0;
 
 protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
 	virtual void _enter() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 
 public:
-	void set_duration_min_max(Vector2 p_value) {
-		duration_min_max = p_value;
-		emit_changed();
-	}
-	Vector2 get_duration_min_max() const { return duration_min_max; }
+	void set_min_duration(double p_max_duration);
+	double get_min_duration() const { return min_duration; }
+
+	void set_max_duration(double p_max_duration);
+	double get_max_duration() const { return max_duration; }
 };
 
 #endif // BT_RANDOM_WAIT_H

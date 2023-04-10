@@ -6,7 +6,7 @@ void BTDynamicSelector::_enter() {
 	last_running_idx = 0;
 }
 
-int BTDynamicSelector::_tick(float p_delta) {
+int BTDynamicSelector::_tick(double p_delta) {
 	int status = SUCCESS;
 	int i;
 	for (i = 0; i < get_child_count(); i++) {

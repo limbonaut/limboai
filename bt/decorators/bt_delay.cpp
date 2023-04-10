@@ -16,7 +16,7 @@ void BTDelay::_enter() {
 	time_passed = 0.0;
 }
 
-int BTDelay::_tick(float p_delta) {
+int BTDelay::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	time_passed += p_delta;
 	if (time_passed <= seconds) {

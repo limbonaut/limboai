@@ -17,7 +17,7 @@ String BTConsolePrint::_generate_name() const {
 	return vformat("ConsolePrint \"%s\"", tx);
 }
 
-int BTConsolePrint::_tick(float p_delta) {
+int BTConsolePrint::_tick(double p_delta) {
 	switch (bb_format_parameters.size()) {
 		case 0: {
 			print_line(text);

@@ -20,7 +20,7 @@ protected:
 
 	virtual String _generate_name() const override;
 	virtual void _enter() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 
 public:
 	void set_array_var(String p_value) {

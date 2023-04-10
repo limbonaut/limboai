@@ -10,22 +10,22 @@ class BTDelay : public BTDecorator {
 	GDCLASS(BTDelay, BTDecorator);
 
 private:
-	float seconds = 1.0;
-	float time_passed = 0.0;
+	double seconds = 1.0;
+	double time_passed = 0.0;
 
 protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
 	virtual void _enter() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 
 public:
-	void set_seconds(float p_value) {
+	void set_seconds(double p_value) {
 		seconds = p_value;
 		emit_changed();
 	}
-	float get_seconds() const { return seconds; }
+	double get_seconds() const { return seconds; }
 };
 
 #endif // BT_DELAY_H

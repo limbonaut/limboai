@@ -5,16 +5,16 @@
 
 String BTRandomWait::_generate_name() const {
 	return vformat("Wait %s to %s sec",
-			Math::snapped(duration_min_max.x, 0.001),
-			Math::snapped(duration_min_max.y, 0.001));
+			Math::snapped(min_duration, 0.001),
+			Math::snapped(max_duration, 0.001));
 }
 
 void BTRandomWait::_enter() {
 	time_passed = 0.0;
-	duration = Math::random(duration_min_max.x, duration_min_max.y);
+	duration = Math::random(min_duration, max_duration);
 }
 
-int BTRandomWait::_tick(float p_delta) {
+int BTRandomWait::_tick(double p_delta) {
 	time_passed += p_delta;
 	if (time_passed < duration) {
 		return RUNNING;
@@ -23,9 +23,28 @@ int BTRandomWait::_tick(float p_delta) {
 	}
 }
 
-void BTRandomWait::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_duration_min_max", "p_value"), &BTRandomWait::set_duration_min_max);
-	ClassDB::bind_method(D_METHOD("get_duration_min_max"), &BTRandomWait::get_duration_min_max);
+void BTRandomWait::set_min_duration(double p_max_duration) {
+	min_duration = p_max_duration;
+	if (max_duration < min_duration) {
+		set_max_duration(min_duration);
+	}
+	emit_changed();
+}
 
-	ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "duration_min_max"), "set_duration_min_max", "get_duration_min_max");
+void BTRandomWait::set_max_duration(double p_max_duration) {
+	max_duration = p_max_duration;
+	if (min_duration > max_duration) {
+		set_min_duration(max_duration);
+	}
+	emit_changed();
+}
+
+void BTRandomWait::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("set_min_duration"), &BTRandomWait::set_min_duration);
+	ClassDB::bind_method(D_METHOD("get_min_duration"), &BTRandomWait::get_min_duration);
+	ClassDB::bind_method(D_METHOD("set_max_duration"), &BTRandomWait::set_max_duration);
+	ClassDB::bind_method(D_METHOD("get_max_duration"), &BTRandomWait::get_max_duration);
+
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_duration"), "set_min_duration", "get_min_duration");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_duration"), "set_max_duration", "get_max_duration");
 }

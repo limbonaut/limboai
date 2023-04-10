@@ -42,12 +42,12 @@ protected:
 	virtual void _setup();
 	virtual void _enter();
 	virtual void _exit();
-	virtual void _update(float p_delta);
+	virtual void _update(double p_delta);
 
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
-	GDVIRTUAL1(_update, float);
+	GDVIRTUAL1(_update, double);
 
 	void add_event_handler(const String &p_event, const Callable &p_handler);
 

@@ -11,7 +11,7 @@ class BTCooldown : public BTDecorator {
 	GDCLASS(BTCooldown, BTDecorator);
 
 private:
-	float duration = 10.0;
+	double duration = 10.0;
 	bool process_pause = false;
 	bool start_cooled = false;
 	bool trigger_on_failure = false;
@@ -27,14 +27,14 @@ protected:
 
 	virtual String _generate_name() const override;
 	virtual void _setup() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 
 public:
-	void set_duration(float p_value) {
+	void set_duration(double p_value) {
 		duration = p_value;
 		emit_changed();
 	}
-	float get_duration() const { return duration; }
+	double get_duration() const { return duration; }
 	void set_process_pause(bool p_value) {
 		process_pause = p_value;
 		emit_changed();

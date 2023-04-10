@@ -6,7 +6,7 @@ void BTDynamicSequence::_enter() {
 	last_running_idx = 0;
 }
 
-int BTDynamicSequence::_tick(float p_delta) {
+int BTDynamicSequence::_tick(double p_delta) {
 	int status = SUCCESS;
 	int i;
 	for (i = 0; i < get_child_count(); i++) {

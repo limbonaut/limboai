@@ -55,7 +55,7 @@ public:
 	void set_prefetch_nodepath_vars(bool p_value) { prefetch_nodepath_vars = p_value; }
 	bool get_prefetch_nodepath_vars() const { return prefetch_nodepath_vars; }
 
-	void update(float p_delta);
+	void update(double p_delta);
 	void restart();
 	int get_last_status() const { return last_status; }
 

@@ -15,6 +15,6 @@ private:
 
 protected:
 	virtual void _enter() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 };
 #endif // BT_RANDOM_SELECTOR_H

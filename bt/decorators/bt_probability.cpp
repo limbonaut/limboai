@@ -7,7 +7,7 @@ String BTProbability::_generate_name() const {
 	return vformat("Probability %.1f%%", run_chance);
 }
 
-int BTProbability::_tick(float p_delta) {
+int BTProbability::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	if (get_child(0)->get_status() == RUNNING or Math::randf() <= run_chance) {
 		return get_child(0)->execute(p_delta);

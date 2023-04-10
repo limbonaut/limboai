@@ -14,7 +14,7 @@ void BTWait::_enter() {
 	time_passed = 0.0;
 }
 
-int BTWait::_tick(float p_delta) {
+int BTWait::_tick(double p_delta) {
 	time_passed += p_delta;
 	if (time_passed < duration) {
 		return RUNNING;

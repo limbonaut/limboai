@@ -45,7 +45,7 @@ void LimboState::_exit() {
 	active = false;
 };
 
-void LimboState::_update(float p_delta) {
+void LimboState::_update(double p_delta) {
 	GDVIRTUAL_CALL(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 };

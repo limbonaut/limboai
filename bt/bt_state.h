@@ -23,7 +23,7 @@ protected:
 	virtual void _setup() override;
 	// virtual void _enter() override {}
 	virtual void _exit() override;
-	virtual void _update(float p_delta) override;
+	virtual void _update(double p_delta) override;
 
 public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_value) { behavior_tree = p_value; }

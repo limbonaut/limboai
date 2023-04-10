@@ -9,7 +9,7 @@ void BTParallel::_enter() {
 	}
 }
 
-int BTParallel::_tick(float p_delta) {
+int BTParallel::_tick(double p_delta) {
 	int num_succeeded = 0;
 	int num_failed = 0;
 	int return_status = RUNNING;

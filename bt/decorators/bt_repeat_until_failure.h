@@ -10,7 +10,7 @@ class BTRepeatUntilFailure : public BTDecorator {
 	GDCLASS(BTRepeatUntilFailure, BTDecorator);
 
 protected:
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 };
 
 #endif // BT_REPEAT_UNTIL_FAILURE_H

@@ -10,7 +10,7 @@ class BTFail : public BTAction {
 	GDCLASS(BTFail, BTAction);
 
 protected:
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 };
 
 #endif // BT_FAIL_H

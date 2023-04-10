@@ -13,7 +13,7 @@ void BTWaitTicks::_enter() {
 	num_passed = 0;
 }
 
-int BTWaitTicks::_tick(float p_delta) {
+int BTWaitTicks::_tick(double p_delta) {
 	num_passed += 1;
 	if (num_passed < num_ticks) {
 		return RUNNING;

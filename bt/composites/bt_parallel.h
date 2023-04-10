@@ -18,7 +18,7 @@ protected:
 	static void _bind_methods();
 
 	virtual void _enter() override;
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 
 public:
 	int get_num_successes_required() const { return num_successes_required; }

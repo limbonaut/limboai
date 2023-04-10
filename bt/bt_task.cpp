@@ -130,7 +130,7 @@ Ref<BTTask> BTTask::clone() const {
 	return inst;
 }
 
-int BTTask::execute(float p_delta) {
+int BTTask::execute(double p_delta) {
 	if (status != RUNNING) {
 		if (!GDVIRTUAL_CALL(_enter)) {
 			_enter();

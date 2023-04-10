@@ -17,7 +17,7 @@ void BTState::_exit() {
 	tree_instance->cancel();
 }
 
-void BTState::_update(float p_delta) {
+void BTState::_update(double p_delta) {
 	ERR_FAIL_COND(tree_instance == nullptr);
 	int status = tree_instance->execute(p_delta);
 	if (status == BTTask::SUCCESS) {

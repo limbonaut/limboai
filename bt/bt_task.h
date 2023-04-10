@@ -44,13 +44,13 @@ protected:
 	virtual void _setup() {}
 	virtual void _enter() {}
 	virtual void _exit() {}
-	virtual int _tick(float p_delta) { return FAILURE; }
+	virtual int _tick(double p_delta) { return FAILURE; }
 
 	GDVIRTUAL0RC(String, _generate_name);
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
-	GDVIRTUAL1R(int, _tick, float);
+	GDVIRTUAL1R(int, _tick, double);
 	GDVIRTUAL0RC(String, _get_configuration_warning);
 
 public:
@@ -72,7 +72,7 @@ public:
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual String get_configuration_warning() const;
 
-	int execute(float p_delta);
+	int execute(double p_delta);
 	void cancel();
 	int get_status() const { return status; }
 

@@ -45,7 +45,7 @@ void BTPlayer::set_active(bool p_active) {
 	set_process_input(active && is_not_editor);
 }
 
-void BTPlayer::update(float p_delta) {
+void BTPlayer::update(double p_delta) {
 	if (!tree_instance.is_valid()) {
 		ERR_PRINT_ONCE(vformat("BTPlayer doesn't have a behavior tree with a valid root task to execute (owner: %s)", get_owner()));
 		return;

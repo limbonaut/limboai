@@ -83,7 +83,7 @@ void LimboHSM::_exit() {
 	LimboState::_exit();
 }
 
-void LimboHSM::_update(float p_delta) {
+void LimboHSM::_update(double p_delta) {
 	if (active) {
 		ERR_FAIL_COND(active_state == nullptr);
 		LimboState::_update(p_delta);
@@ -211,18 +211,10 @@ void LimboHSM::_notification(int p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
 		} break;
 		case NOTIFICATION_PROCESS: {
-			// if (!Engine::get_singleton()->is_editor_hint()) {
-			// if (update_mode == UpdateMode::IDLE) {
 			_update(get_process_delta_time());
-			// }
-			// }
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			// if (!Engine::get_singleton()->is_editor_hint()) {
-			// if (update_mode == UpdateMode::PHYSICS) {
 			_update(get_physics_process_delta_time());
-			// }
-			// }
 		} break;
 	}
 }

@@ -10,7 +10,7 @@ class BTAlwaysSucceed : public BTDecorator {
 	GDCLASS(BTAlwaysSucceed, BTDecorator);
 
 protected:
-	virtual int _tick(float p_delta) override;
+	virtual int _tick(double p_delta) override;
 };
 
 #endif // BT_ALWAYS_SUCCEED_H
