@@ -77,6 +77,7 @@
 #include "limbo_state.h"
 #include "limbo_string_names.h"
 #include "limbo_utility.h"
+#include "modules/limboai/debugger/limbo_debugger.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/limbo_ai_editor_plugin.h"
@@ -86,6 +87,8 @@ static LimboUtility *_limbo_utility = nullptr;
 
 void initialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		LimboDebugger::initialize();
+
 		GDREGISTER_CLASS(Blackboard);
 
 		GDREGISTER_CLASS(LimboState);
@@ -180,6 +183,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 void uninitialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		LimboDebugger::deinitialize();
 		LimboStringNames::free();
 		memdelete(_limbo_utility);
 	}

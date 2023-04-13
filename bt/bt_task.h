@@ -33,6 +33,7 @@ private:
 	BTTask *parent;
 	Vector<Ref<BTTask>> children;
 	int status;
+	int last_tick_usec;
 
 	Array _get_children() const;
 	void _set_children(Array children);
@@ -75,6 +76,7 @@ public:
 	int execute(double p_delta);
 	void cancel();
 	int get_status() const { return status; }
+	int get_last_tick_usec() const { return last_tick_usec; }
 
 	Ref<BTTask> get_child(int p_idx) const;
 	int get_child_count() const;

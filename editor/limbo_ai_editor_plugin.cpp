@@ -47,6 +47,8 @@
 #include "modules/limboai/bt/composites/bt_parallel.h"
 #include "modules/limboai/bt/composites/bt_selector.h"
 #include "modules/limboai/bt/composites/bt_sequence.h"
+#include "modules/limboai/debugger/limbo_debugger_plugin.h"
+#include "modules/limboai/limbo_utility.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/control.h"
@@ -82,11 +84,13 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
+	String type_arg;
 	if (task->get_script_instance() && !task->get_script_instance()->get_script()->get_path().is_empty()) {
-		p_item->set_icon(0, LimboAIEditor::get_task_icon(task->get_script_instance()->get_script()->get_path()));
+		type_arg = task->get_script_instance()->get_script()->get_path();
 	} else {
-		p_item->set_icon(0, LimboAIEditor::get_task_icon(task->get_class()));
+		type_arg = task->get_class();
 	}
+	p_item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(type_arg));
 	p_item->set_editable(0, false);
 
 	for (int i = 0; i < p_item->get_button_count(0); i++) {
@@ -455,7 +459,7 @@ void TaskPanel::refresh() {
 
 		TaskSection *sec = memnew(TaskSection(cat));
 		for (String task_meta : tasks) {
-			Ref<Texture> icon = LimboAIEditor::get_task_icon(task_meta);
+			Ref<Texture> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
 			String tname;
 			if (task_meta.begins_with("res:")) {
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
@@ -1019,35 +1023,6 @@ void LimboAIEditor::apply_changes() {
 	}
 }
 
-Ref<Texture> LimboAIEditor::get_task_icon(String p_script_path_or_class) {
-	ERR_FAIL_COND_V_MSG(p_script_path_or_class.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
-
-	String base_type = p_script_path_or_class;
-	if (p_script_path_or_class.begins_with("res:")) {
-		Ref<Script> script = ResourceLoader::load(p_script_path_or_class, "Script");
-		Ref<Script> base_script = script;
-		while (base_script.is_valid()) {
-			StringName name = EditorNode::get_editor_data().script_class_get_name(base_script->get_path());
-			String icon_path = EditorNode::get_editor_data().script_class_get_icon_path(name);
-			if (!icon_path.is_empty()) {
-				Ref<Image> img = memnew(Image);
-				Error err = ImageLoader::load_image(icon_path, img);
-				if (err == OK) {
-					Ref<ImageTexture> icon = memnew(ImageTexture);
-					img->resize(16 * EDSCALE, 16 * EDSCALE, Image::INTERPOLATE_LANCZOS);
-					icon->create_from_image(img);
-					return icon;
-				}
-			}
-			base_script = base_script->get_base_script();
-		}
-		base_type = script->get_instance_base_type();
-	}
-
-	// TODO: Walk inheritance tree until icon is found.
-	return EditorNode::get_singleton()->get_class_icon(base_type, "BTTask");
-}
-
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -1326,6 +1301,7 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
 	EditorNode::get_singleton()->get_main_screen_control()->add_child(limbo_ai_editor);
 	limbo_ai_editor->hide();
+	add_debugger_plugin(memnew(LimboDebuggerPlugin));
 }
 
 LimboAIEditorPlugin::~LimboAIEditorPlugin() {

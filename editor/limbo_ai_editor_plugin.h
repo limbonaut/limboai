@@ -182,8 +182,6 @@ protected:
 	void _notification(int p_what);
 
 public:
-	static Ref<Texture> get_task_icon(String p_script_path_or_class);
-
 	void edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh = false);
 
 	void apply_changes();

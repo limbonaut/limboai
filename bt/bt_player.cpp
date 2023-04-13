@@ -12,10 +12,16 @@
 #include "core/os/memory.h"
 #include "core/variant/variant.h"
 #include "modules/limboai/blackboard.h"
+#include "modules/limboai/debugger/limbo_debugger.h"
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
 void BTPlayer::_load_tree() {
+#ifdef DEBUG_ENABLED
+	if (tree_instance.is_valid()) {
+		LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+	}
+#endif
 	tree_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Behavior tree has no valid root task.");
@@ -23,6 +29,9 @@ void BTPlayer::_load_tree() {
 		blackboard->prefetch_nodepath_vars(this);
 	}
 	tree_instance = behavior_tree->instantiate(get_owner(), blackboard);
+#ifdef DEBUG_ENABLED
+	LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+#endif
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
@@ -52,6 +61,7 @@ void BTPlayer::update(double p_delta) {
 	}
 	if (active) {
 		last_status = tree_instance->execute(p_delta);
+		emit_signal(LimboStringNames::get_singleton()->updated, last_status);
 		if (last_status == BTTask::SUCCESS || last_status == BTTask::FAILURE) {
 			emit_signal(LimboStringNames::get_singleton()->behavior_tree_finished, last_status);
 		}
@@ -81,6 +91,13 @@ void BTPlayer::_notification(int p_notification) {
 				set_active(active);
 			}
 		} break;
+#ifdef DEBUG_ENABLED
+		case NOTIFICATION_EXIT_TREE: {
+			if (tree_instance.is_valid()) {
+				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+			}
+		} break;
+#endif
 	}
 }
 
@@ -115,6 +132,7 @@ void BTPlayer::_bind_methods() {
 	BIND_ENUM_CONSTANT(MANUAL);
 
 	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "p_status")));
+	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::INT, "p_status")));
 }
 
 BTPlayer::BTPlayer() {

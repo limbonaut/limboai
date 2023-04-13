@@ -36,6 +36,12 @@ public:
 	String get_failure_event() const { return failure_event; }
 
 	BTState();
+
+#ifdef DEBUG_ENABLED
+protected:
+	void _notification(int p_notification);
+
+#endif
 };
 
 #endif // BT_STATE_H

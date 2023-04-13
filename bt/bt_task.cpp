@@ -140,6 +140,7 @@ int BTTask::execute(double p_delta) {
 	if (!GDVIRTUAL_CALL(_tick, p_delta, status)) {
 		status = _tick(p_delta);
 	}
+	last_tick_usec = Engine::get_singleton()->get_frame_ticks();
 
 	if (status != RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
@@ -311,6 +312,7 @@ BTTask::BTTask() {
 	parent = nullptr;
 	children = Vector<Ref<BTTask>>();
 	status = FRESH;
+	last_tick_usec = 0;
 }
 
 BTTask::~BTTask() {
