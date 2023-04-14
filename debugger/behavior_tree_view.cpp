@@ -108,6 +108,28 @@ void BehaviorTreeView::_notification(int p_notification) {
 		icon_running = get_theme_icon(SNAME("LimboExtraClock"), SNAME("EditorIcons"));
 		icon_success = get_theme_icon(SNAME("BTAlwaysSucceed"), SNAME("EditorIcons"));
 		icon_failure = get_theme_icon(SNAME("BTAlwaysFail"), SNAME("EditorIcons"));
+
+		Color running_border = Color::html("#fea900");
+		Color running_fill = Color(running_border, 0.1);
+		Color success_border = Color::html("#2fa139");
+		Color success_fill = Color(success_border, 0.1);
+		Color failure_border = Color::html("#cd3838");
+		Color failure_fill = Color(failure_border, 0.1);
+
+		sbf_running.set_border_color(running_border);
+		sbf_running.set_bg_color(running_fill);
+		sbf_running.set_border_width(SIDE_LEFT, 4.0);
+		sbf_running.set_border_width(SIDE_RIGHT, 4.0);
+
+		sbf_success.set_border_color(success_border);
+		sbf_success.set_bg_color(success_fill);
+		sbf_success.set_border_width(SIDE_LEFT, 4.0);
+		sbf_success.set_border_width(SIDE_RIGHT, 4.0);
+
+		sbf_failure.set_border_color(failure_border);
+		sbf_failure.set_bg_color(failure_fill);
+		sbf_failure.set_border_width(SIDE_LEFT, 4.0);
+		sbf_failure.set_border_width(SIDE_RIGHT, 4.0);
 	}
 }
 
@@ -129,21 +151,6 @@ BehaviorTreeView::BehaviorTreeView() {
 	tree->set_column_custom_minimum_width(2, 40.0 * EDSCALE);
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
-
-	sbf_running.set_border_color(Color(1.0, 1.0, 0.0));
-	sbf_running.set_bg_color(Color(1.0, 1.0, 0, 0.1));
-	sbf_running.set_border_width(SIDE_LEFT, 4.0);
-	sbf_running.set_border_width(SIDE_RIGHT, 4.0);
-
-	sbf_success.set_border_color(Color(0.0, 0.8, 0.0));
-	sbf_success.set_bg_color(Color(0.0, 0.8, 0.0, 0.1));
-	sbf_success.set_border_width(SIDE_LEFT, 4.0);
-	sbf_success.set_border_width(SIDE_RIGHT, 4.0);
-
-	sbf_failure.set_border_color(Color(1.0, 0.0, 0.0));
-	sbf_failure.set_bg_color(Color(1.0, 0.0, 0.0, 0.1));
-	sbf_failure.set_border_width(SIDE_LEFT, 4.0);
-	sbf_failure.set_border_width(SIDE_RIGHT, 4.0);
 
 	tree->connect(SNAME("item_collapsed"), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 }
