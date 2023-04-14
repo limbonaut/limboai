@@ -105,7 +105,7 @@ void BehaviorTreeView::clear() {
 
 void BehaviorTreeView::_notification(int p_notification) {
 	if (p_notification == NOTIFICATION_THEME_CHANGED) {
-		icon_running = get_theme_icon(SNAME("BTClock"), SNAME("EditorIcons"));
+		icon_running = get_theme_icon(SNAME("LimboExtraClock"), SNAME("EditorIcons"));
 		icon_success = get_theme_icon(SNAME("BTAlwaysSucceed"), SNAME("EditorIcons"));
 		icon_failure = get_theme_icon(SNAME("BTAlwaysFail"), SNAME("EditorIcons"));
 	}
