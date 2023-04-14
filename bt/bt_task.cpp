@@ -132,20 +132,28 @@ Ref<BTTask> BTTask::clone() const {
 
 int BTTask::execute(double p_delta) {
 	if (status != RUNNING) {
+		// Reset children status.
+		if (status != FRESH) {
+			for (int i = 0; i < get_child_count(); i++) {
+				children.get(i)->cancel();
+			}
+		}
 		if (!GDVIRTUAL_CALL(_enter)) {
 			_enter();
 		}
+	} else {
+		elapsed += p_delta;
 	}
 
 	if (!GDVIRTUAL_CALL(_tick, p_delta, status)) {
 		status = _tick(p_delta);
 	}
-	last_tick_usec = Engine::get_singleton()->get_frame_ticks();
 
 	if (status != RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
 			_exit();
 		}
+		elapsed = 0.0;
 	}
 	return status;
 }
@@ -160,6 +168,7 @@ void BTTask::cancel() {
 		}
 	}
 	status = FRESH;
+	elapsed = 0.0;
 }
 
 Ref<BTTask> BTTask::get_child(int p_idx) const {
@@ -277,13 +286,12 @@ void BTTask::_bind_methods() {
 	// Properties, setters and getters.
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
 	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &BTTask::set_agent);
-
 	ClassDB::bind_method(D_METHOD("_get_children"), &BTTask::_get_children);
 	ClassDB::bind_method(D_METHOD("_set_children", "p_children"), &BTTask::_set_children);
-
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
 	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
 	ClassDB::bind_method(D_METHOD("get_status"), &BTTask::get_status);
+	ClassDB::bind_method(D_METHOD("get_elapsed_time"), &BTTask::get_elapsed_time);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", 0), "set_agent", "get_agent");
@@ -291,6 +299,7 @@ void BTTask::_bind_methods() {
 	// ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", 0), "", "get_status");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time"), "", "get_elapsed_time");
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
@@ -312,7 +321,7 @@ BTTask::BTTask() {
 	parent = nullptr;
 	children = Vector<Ref<BTTask>>();
 	status = FRESH;
-	last_tick_usec = 0;
+	elapsed = 0.0;
 }
 
 BTTask::~BTTask() {

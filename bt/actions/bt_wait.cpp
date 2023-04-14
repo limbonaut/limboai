@@ -10,13 +10,8 @@ String BTWait::_generate_name() const {
 	return vformat("Wait %s sec", Math::snapped(duration, 0.001));
 }
 
-void BTWait::_enter() {
-	time_passed = 0.0;
-}
-
 int BTWait::_tick(double p_delta) {
-	time_passed += p_delta;
-	if (time_passed < duration) {
+	if (get_elapsed_time() < duration) {
 		return RUNNING;
 	} else {
 		return SUCCESS;

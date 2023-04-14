@@ -11,13 +11,11 @@ class BTTimeLimit : public BTDecorator {
 
 private:
 	double time_limit = 5.0;
-	double time_passed = 0.0;
 
 protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
-	virtual void _enter() override;
 	virtual int _tick(double p_delta) override;
 
 public:

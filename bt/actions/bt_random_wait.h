@@ -13,7 +13,6 @@ private:
 	double min_duration = 1.0;
 	double max_duration = 2.0;
 
-	double time_passed = 0.0;
 	double duration = 0.0;
 
 protected:

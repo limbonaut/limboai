@@ -9,20 +9,21 @@
 class BehaviorTreeData {
 public:
 	struct TaskData {
+		int id = 0;
 		String name;
-		// ObjectID object_id;
 		int num_children = 0;
 		int status = 0;
-		int last_tick_usec = 0;
+		double elapsed_time = 0.0;
 		String type_name;
 		// String script_path;
 		// String resource_path;
 
-		TaskData(const String &p_name, int p_num_children, int p_status, int p_last_tick_usec, const String &p_type_name) {
+		TaskData(int p_id, const String &p_name, int p_num_children, int p_status, double p_elapsed_time, const String &p_type_name) {
+			id = p_id;
 			name = p_name;
 			num_children = p_num_children;
 			status = p_status;
-			last_tick_usec = p_last_tick_usec;
+			elapsed_time = p_elapsed_time;
 			type_name = p_type_name;
 		}
 

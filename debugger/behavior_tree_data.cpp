@@ -9,6 +9,7 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance) {
 	// Flatten tree into list depth first
 	List<Ref<BTTask>> stack;
 	stack.push_back(p_instance);
+	int id = 0;
 	while (stack.size()) {
 		Ref<BTTask> task = stack[0];
 		stack.pop_front();
@@ -19,20 +20,23 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance) {
 		}
 
 		tasks.push_back(TaskData(
+				id,
 				task->get_task_name(),
 				num_children,
 				task->get_status(),
-				task->get_last_tick_usec(),
+				task->get_elapsed_time(),
 				task->get_class()));
+		id += 1;
 	}
 }
 
 void BehaviorTreeData::serialize(Array &p_arr) {
 	for (const TaskData &td : tasks) {
+		p_arr.push_back(td.id);
 		p_arr.push_back(td.name);
 		p_arr.push_back(td.num_children);
 		p_arr.push_back(td.status);
-		p_arr.push_back(td.last_tick_usec);
+		p_arr.push_back(td.elapsed_time);
 		p_arr.push_back(td.type_name);
 	}
 }
@@ -42,13 +46,14 @@ void BehaviorTreeData::deserialize(const Array &p_arr) {
 
 	int idx = 0;
 	while (p_arr.size() > idx) {
-		ERR_FAIL_COND(p_arr.size() < 5);
-		ERR_FAIL_COND(p_arr[idx].get_type() != Variant::STRING);
-		ERR_FAIL_COND(p_arr[idx + 1].get_type() != Variant::INT);
+		ERR_FAIL_COND(p_arr.size() < 6);
+		ERR_FAIL_COND(p_arr[idx].get_type() != Variant::INT);
+		ERR_FAIL_COND(p_arr[idx + 1].get_type() != Variant::STRING);
 		ERR_FAIL_COND(p_arr[idx + 2].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 3].get_type() != Variant::INT);
-		ERR_FAIL_COND(p_arr[idx + 4].get_type() != Variant::STRING);
-		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4]));
-		idx += 5;
+		ERR_FAIL_COND(p_arr[idx + 4].get_type() != Variant::FLOAT);
+		ERR_FAIL_COND(p_arr[idx + 5].get_type() != Variant::STRING);
+		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4], p_arr[idx + 5]));
+		idx += 6;
 	}
 }

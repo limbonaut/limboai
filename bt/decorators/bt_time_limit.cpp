@@ -7,15 +7,10 @@ String BTTimeLimit::_generate_name() const {
 	return vformat("TimeLimit %s sec", Math::snapped(time_limit, 0.001));
 }
 
-void BTTimeLimit::_enter() {
-	time_passed = 0.0;
-}
-
 int BTTimeLimit::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
-	time_passed += p_delta;
 	int status = get_child(0)->execute(p_delta);
-	if (status == RUNNING and time_passed >= time_limit) {
+	if (status == RUNNING and get_elapsed_time() >= time_limit) {
 		get_child(0)->cancel();
 		return FAILURE;
 	}

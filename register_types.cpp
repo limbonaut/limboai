@@ -73,6 +73,7 @@
 #include "bt/decorators/bt_time_limit.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
+#include "debugger/behavior_tree_view.h"
 #include "limbo_hsm.h"
 #include "limbo_state.h"
 #include "limbo_string_names.h"
@@ -166,6 +167,8 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBVector2Array);
 		GDREGISTER_CLASS(BBVector3Array);
 		GDREGISTER_CLASS(BBVariant);
+
+		GDREGISTER_CLASS(BehaviorTreeView);
 
 		_limbo_utility = memnew(LimboUtility);
 		GDREGISTER_CLASS(LimboUtility);
