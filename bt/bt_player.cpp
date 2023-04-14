@@ -80,7 +80,7 @@ void BTPlayer::_notification(int p_notification) {
 			update(time);
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			Variant time = get_process_delta_time();
+			Variant time = get_physics_process_delta_time();
 			update(time);
 		} break;
 		case NOTIFICATION_READY: {
