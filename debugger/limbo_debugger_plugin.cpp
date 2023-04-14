@@ -36,7 +36,7 @@ void LimboDebuggerTab::stop_session() {
 	session->send_message("limboai:stop_session", Array());
 }
 
-void LimboDebuggerTab::update_bt_list(const Array &p_items) {
+void LimboDebuggerTab::update_bt_list(const Array &p_node_paths) {
 	// Remember selected item.
 	String selected_bt = "";
 	if (bt_list->is_anything_selected()) {
@@ -45,9 +45,11 @@ void LimboDebuggerTab::update_bt_list(const Array &p_items) {
 
 	bt_list->clear();
 	int select_idx = -1;
-	for (int i = 0; i < p_items.size(); i++) {
-		bt_list->add_item(p_items[i]);
-		if (p_items[i] == selected_bt) {
+	for (int i = 0; i < p_node_paths.size(); i++) {
+		bt_list->add_item(p_node_paths[i]);
+		// Make item text shortened from the left, e.g ".../Agent/BTPlayer".
+		bt_list->set_item_text_direction(i, TEXT_DIRECTION_RTL);
+		if (p_node_paths[i] == selected_bt) {
 			select_idx = i;
 		}
 	}
@@ -83,7 +85,7 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session) {
 
 	bt_list = memnew(ItemList);
 	hsc->add_child(bt_list);
-	bt_list->set_custom_minimum_size(Size2(280.0 * EDSCALE, 0.0));
+	bt_list->set_custom_minimum_size(Size2(240.0 * EDSCALE, 0.0));
 	bt_list->connect(SNAME("item_selected"), callable_mp(this, &LimboDebuggerTab::_bt_selected));
 
 	view_box = memnew(VBoxContainer);

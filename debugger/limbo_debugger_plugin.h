@@ -34,7 +34,7 @@ private:
 public:
 	void start_session();
 	void stop_session();
-	void update_bt_list(const Array &p_items);
+	void update_bt_list(const Array &p_node_paths);
 	BehaviorTreeView *get_behavior_tree_view() const { return bt_view; }
 
 	LimboDebuggerTab(Ref<EditorDebuggerSession> p_session);

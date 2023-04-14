@@ -9,6 +9,7 @@
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/style_box.h"
+#include "scene/resources/texture.h"
 
 class BehaviorTreeView : public Control {
 	GDCLASS(BehaviorTreeView, Control);
@@ -20,6 +21,10 @@ private:
 	StyleBoxFlat sbf_failure;
 	Vector<int> collapsed_ids;
 
+	Ref<Texture2D> icon_running;
+	Ref<Texture2D> icon_success;
+	Ref<Texture2D> icon_failure;
+
 	void _draw_success_status(Object *p_obj, Rect2 p_rect);
 	void _draw_running_status(Object *p_obj, Rect2 p_rect);
 	void _draw_failure_status(Object *p_obj, Rect2 p_rect);
@@ -27,6 +32,8 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_notification);
 
 public:
 	void update_tree(const BehaviorTreeData &p_data);

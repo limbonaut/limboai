@@ -65,18 +65,22 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 		TreeItem *item = tree->create_item(parent);
 		// Do this first because it resets properties of the cell...
 		item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
+		item->set_cell_mode(1, TreeItem::CELL_MODE_ICON);
 
 		item->set_metadata(0, task_data.id);
 		item->set_text(0, task_data.name);
 		item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(task_data.type_name));
-		item->set_text(1, rtos(Math::snapped(task_data.elapsed_time, 0.01)));
+		item->set_text(2, rtos(Math::snapped(task_data.elapsed_time, 0.01)));
 
 		if (task_data.status == BTTask::SUCCESS) {
 			item->set_custom_draw(0, this, SNAME("_draw_success_status"));
+			item->set_icon(1, icon_success);
 		} else if (task_data.status == BTTask::FAILURE) {
 			item->set_custom_draw(0, this, SNAME("_draw_failure_status"));
+			item->set_icon(1, icon_failure);
 		} else if (task_data.status == BTTask::RUNNING) {
 			item->set_custom_draw(0, this, SNAME("_draw_running_status"));
+			item->set_icon(1, icon_running);
 		}
 
 		if (task_data.id == selected_id) {
@@ -99,6 +103,14 @@ void BehaviorTreeView::clear() {
 	collapsed_ids.clear();
 }
 
+void BehaviorTreeView::_notification(int p_notification) {
+	if (p_notification == NOTIFICATION_THEME_CHANGED) {
+		icon_running = get_theme_icon(SNAME("BTClock"), SNAME("EditorIcons"));
+		icon_success = get_theme_icon(SNAME("BTAlwaysSucceed"), SNAME("EditorIcons"));
+		icon_failure = get_theme_icon(SNAME("BTAlwaysFail"), SNAME("EditorIcons"));
+	}
+}
+
 void BehaviorTreeView::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_draw_running_status"), &BehaviorTreeView::_draw_running_status);
 	ClassDB::bind_method(D_METHOD("_draw_success_status"), &BehaviorTreeView::_draw_success_status);
@@ -109,10 +121,12 @@ void BehaviorTreeView::_bind_methods() {
 BehaviorTreeView::BehaviorTreeView() {
 	tree = memnew(Tree);
 	add_child(tree);
-	tree->set_columns(2);
+	tree->set_columns(3);
 	tree->set_column_expand(0, true);
 	tree->set_column_expand(1, false);
-	tree->set_column_custom_minimum_width(1, 40.0 * EDSCALE);
+	tree->set_column_expand(2, false);
+	tree->set_column_custom_minimum_width(1, 18.0 * EDSCALE);
+	tree->set_column_custom_minimum_width(2, 40.0 * EDSCALE);
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 
