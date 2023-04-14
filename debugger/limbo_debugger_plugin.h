@@ -28,17 +28,14 @@ private:
 	TextureRect *info_icon;
 	Label *info_message;
 
-	_FORCE_INLINE_ void _set_info_message(const String &p_message);
+	void _set_info_message(const String &p_message);
 	void _bt_selected(int p_idx);
-
-protected:
-	// void _notification(int p_notification);
 
 public:
 	void start_session();
 	void stop_session();
 	void update_bt_list(const Array &p_items);
-	BehaviorTreeView *get_behavior_tree_view() { return bt_view; }
+	BehaviorTreeView *get_behavior_tree_view() const { return bt_view; }
 
 	LimboDebuggerTab(Ref<EditorDebuggerSession> p_session);
 };

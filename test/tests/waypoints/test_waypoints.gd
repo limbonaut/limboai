@@ -6,10 +6,10 @@ extends Node2D
 
 func _ready() -> void:
 	var waypoints: Array[Node] = $Waypoints.get_children()
-	
+
 	for wp in waypoints:
 		agent.add_waypoint(wp.global_position)
-	
+
 	waypoints.reverse()
 	for wp in waypoints:
 		agent_2.add_waypoint(wp.global_position)

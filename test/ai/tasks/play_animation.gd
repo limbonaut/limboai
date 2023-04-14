@@ -9,7 +9,7 @@ var _finished: bool
 
 
 func _generate_name() -> String:
-	return "PlayAnimation \"%s\"" % animation_name 
+	return "PlayAnimation \"%s\"" % animation_name
 
 
 func _setup() -> void:

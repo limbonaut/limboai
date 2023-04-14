@@ -8,7 +8,7 @@ var _player: AnimationPlayer
 
 
 func _generate_name() -> String:
-	return "StartAnimation \"%s\"" % animation_name 
+	return "StartAnimation \"%s\"" % animation_name
 
 
 func _setup() -> void:

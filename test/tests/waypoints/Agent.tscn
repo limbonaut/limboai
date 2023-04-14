@@ -46,7 +46,7 @@ script = ExtResource("1_1l3ql")
 [node name="BTPlayer" type="BTPlayer" parent="."]
 behavior_tree = ExtResource("2_ijwrx")
 _blackboard_data = {
-"speed": 500.0
+"speed": 200.0
 }
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
