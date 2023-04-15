@@ -10,7 +10,9 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/os/memory.h"
+#include "core/string/string_name.h"
 #include "core/variant/variant.h"
+#include "main/performance.h"
 #include "modules/limboai/blackboard.h"
 #include "modules/limboai/debugger/limbo_debugger.h"
 
@@ -59,6 +61,11 @@ void BTPlayer::update(double p_delta) {
 		ERR_PRINT_ONCE(vformat("BTPlayer doesn't have a behavior tree with a valid root task to execute (owner: %s)", get_owner()));
 		return;
 	}
+
+#ifdef DEBUG_ENABLED
+	double start = OS::get_singleton()->get_ticks_usec();
+#endif
+
 	if (active) {
 		last_status = tree_instance->execute(p_delta);
 		emit_signal(LimboStringNames::get_singleton()->updated, last_status);
@@ -66,12 +73,53 @@ void BTPlayer::update(double p_delta) {
 			emit_signal(LimboStringNames::get_singleton()->behavior_tree_finished, last_status);
 		}
 	}
+
+#ifdef DEBUG_ENABLED
+	double end = OS::get_singleton()->get_ticks_usec();
+	update_time_acc += (end - start);
+	update_time_n += 1.0;
+#endif
 }
 
 void BTPlayer::restart() {
 	tree_instance->cancel();
 	set_active(true);
 }
+
+#ifdef DEBUG_ENABLED
+
+void BTPlayer::_set_monitor_performance(bool p_monitor_performance) {
+	monitor_performance = p_monitor_performance;
+
+	if (!get_owner()) {
+		return;
+	}
+
+	Performance *perf = Performance::get_singleton();
+	if (monitor_performance) {
+		if (monitor_id == StringName()) {
+			monitor_id = vformat("limboai/update_ms|%s_%s_%s", get_owner()->get_name(), get_name(),
+					String(itos(get_instance_id())).md5_text().substr(0, 4));
+		}
+		if (!perf->has_custom_monitor(monitor_id)) {
+			perf->add_custom_monitor(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec), Vector<Variant>());
+		}
+	} else if (monitor_id != StringName() && perf->has_custom_monitor(monitor_id)) {
+		perf->remove_custom_monitor(monitor_id);
+	}
+}
+
+double BTPlayer::_get_mean_update_time_msec() {
+	if (update_time_n) {
+		double mean_time_msec = (update_time_acc * 0.001) / update_time_n;
+		update_time_acc = 0.0;
+		update_time_n = 0.0;
+		return mean_time_msec;
+	}
+	return 0.0;
+}
+
+#endif // DEBUG_ENABLED
 
 void BTPlayer::_notification(int p_notification) {
 	switch (p_notification) {
@@ -89,6 +137,9 @@ void BTPlayer::_notification(int p_notification) {
 					_load_tree();
 				}
 				set_active(active);
+#ifdef DEBUG_ENABLED
+				_set_monitor_performance(monitor_performance);
+#endif
 			}
 		} break;
 #ifdef DEBUG_ENABLED
@@ -133,6 +184,13 @@ void BTPlayer::_bind_methods() {
 
 	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "p_status")));
 	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::INT, "p_status")));
+
+#ifdef DEBUG_ENABLED
+	ClassDB::bind_method(D_METHOD("_set_monitor_performance"), &BTPlayer::_set_monitor_performance);
+	ClassDB::bind_method(D_METHOD("_get_monitor_performance"), &BTPlayer::_get_monitor_performance);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "_set_monitor_performance", "_get_monitor_performance");
+	ADD_PROPERTY_DEFAULT("monitor_performance", false);
+#endif // DEBUG_ENABLED
 }
 
 BTPlayer::BTPlayer() {

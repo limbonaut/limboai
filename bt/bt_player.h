@@ -61,6 +61,20 @@ public:
 
 	BTPlayer();
 	~BTPlayer();
+
+#ifdef DEBUG_ENABLED
+	// Performace monitoring.
+private:
+	bool monitor_performance = false;
+	StringName monitor_id;
+	double update_time_acc = 0.0;
+	double update_time_n = 0.0;
+
+	void _set_monitor_performance(bool p_monitor_performance);
+	bool _get_monitor_performance() const { return monitor_performance; }
+	double _get_mean_update_time_msec();
+
+#endif // DEBUG_ENABLED
 };
 
 #endif // BT_PLAYER_H
