@@ -31,11 +31,12 @@ public:
 	};
 
 	List<TaskData> tasks;
+	NodePath bt_player_path;
 
 	void serialize(Array &p_arr);
 	void deserialize(const Array &p_arr);
 
-	BehaviorTreeData(const Ref<BTTask> &p_instance);
+	BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath &p_player_path);
 	BehaviorTreeData() {}
 };
 

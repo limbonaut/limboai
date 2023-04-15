@@ -7,6 +7,7 @@
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "editor/plugins/editor_debugger_plugin.h"
+#include "modules/limboai/debugger/behavior_tree_data.h"
 #include "modules/limboai/debugger/behavior_tree_view.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
@@ -18,24 +19,30 @@ class LimboDebuggerTab : public PanelContainer {
 	GDCLASS(LimboDebuggerTab, PanelContainer);
 
 private:
+	List<String> active_bt_players;
 	Ref<EditorDebuggerSession> session;
 	HSplitContainer *hsc;
-	Label *message;
-	ItemList *bt_list;
+	Label *info_message;
+	ItemList *bt_player_list;
 	BehaviorTreeView *bt_view;
 	VBoxContainer *view_box;
-	HBoxContainer *info_box;
-	TextureRect *info_icon;
-	Label *info_message;
+	HBoxContainer *alert_box;
+	TextureRect *alert_icon;
+	Label *alert_message;
+	LineEdit *filter_players;
 
-	void _set_info_message(const String &p_message);
+	void _show_alert(const String &p_message);
+	void _update_bt_player_list(const List<String> &p_node_paths, const String &p_filter);
 	void _bt_selected(int p_idx);
+	void _filter_changed(String p_text);
 
 public:
 	void start_session();
 	void stop_session();
-	void update_bt_list(const Array &p_node_paths);
+	void update_active_bt_players(const Array &p_node_paths);
 	BehaviorTreeView *get_behavior_tree_view() const { return bt_view; }
+	String get_selected_bt_player();
+	void update_behavior_tree(const BehaviorTreeData &p_data);
 
 	LimboDebuggerTab(Ref<EditorDebuggerSession> p_session);
 };

@@ -5,7 +5,9 @@
 
 //// BehaviorTreeData
 
-BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance) {
+BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath &p_player_path) {
+	bt_player_path = p_player_path;
+
 	// Flatten tree into list depth first
 	List<Ref<BTTask>> stack;
 	stack.push_back(p_instance);
@@ -31,6 +33,7 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance) {
 }
 
 void BehaviorTreeData::serialize(Array &p_arr) {
+	p_arr.push_back(bt_player_path);
 	for (const TaskData &td : tasks) {
 		p_arr.push_back(td.id);
 		p_arr.push_back(td.name);
@@ -43,10 +46,12 @@ void BehaviorTreeData::serialize(Array &p_arr) {
 
 void BehaviorTreeData::deserialize(const Array &p_arr) {
 	ERR_FAIL_COND(tasks.size() != 0);
-
-	int idx = 0;
-	while (p_arr.size() > idx) {
-		ERR_FAIL_COND(p_arr.size() < 6);
+	ERR_FAIL_COND(p_arr.size() < 1);
+	ERR_FAIL_COND(p_arr[0].get_type() != Variant::NODE_PATH);
+	bt_player_path = p_arr[0];
+	int idx = 1;
+	while (p_arr.size() > idx + 1) {
+		ERR_FAIL_COND(p_arr.size() < idx + 6);
 		ERR_FAIL_COND(p_arr[idx].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 1].get_type() != Variant::STRING);
 		ERR_FAIL_COND(p_arr[idx + 2].get_type() != Variant::INT);

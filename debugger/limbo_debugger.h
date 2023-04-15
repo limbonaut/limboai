@@ -31,7 +31,7 @@ private:
 
 	void _track_tree(NodePath p_path);
 	void _untrack_tree();
-	void _send_active_behavior_trees();
+	void _send_active_bt_players();
 
 	void _on_bt_updated(int status, NodePath p_path);
 	void _on_state_updated(float _delta, NodePath p_path);

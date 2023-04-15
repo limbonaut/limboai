@@ -42,13 +42,13 @@ void LimboDebugger::deinitialize() {
 #ifdef DEBUG_ENABLED
 Error LimboDebugger::parse_message(void *p_user, const String &p_msg, const Array &p_args, bool &r_captured) {
 	r_captured = true;
-	if (p_msg == "track_bt_updates") {
+	if (p_msg == "track_bt_player") {
 		singleton->_track_tree(p_args[0]);
-	} else if (p_msg == "untrack_bt_updates") {
-		// unregister bt for updates
+	} else if (p_msg == "untrack_bt_player") {
+		singleton->_untrack_tree();
 	} else if (p_msg == "start_session") {
 		singleton->session_active = true;
-		singleton->_send_active_behavior_trees();
+		singleton->_send_active_bt_players();
 	} else if (p_msg == "stop_session") {
 		singleton->session_active = false;
 	} else {
@@ -62,11 +62,12 @@ void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_path
 
 	active_trees.insert(p_path, p_instance);
 	if (session_active) {
-		_send_active_behavior_trees();
+		_send_active_bt_players();
 	}
 }
 
 void LimboDebugger::unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_path) {
+	ERR_FAIL_COND(p_path.is_empty());
 	ERR_FAIL_COND(!active_trees.has(p_path));
 
 	if (tracked_tree == p_path) {
@@ -75,7 +76,7 @@ void LimboDebugger::unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_pa
 	active_trees.erase(p_path);
 
 	if (session_active) {
-		_send_active_behavior_trees();
+		_send_active_bt_players();
 	}
 }
 
@@ -115,12 +116,12 @@ void LimboDebugger::_untrack_tree() {
 	}
 }
 
-void LimboDebugger::_send_active_behavior_trees() {
+void LimboDebugger::_send_active_bt_players() {
 	Array arr;
 	for (KeyValue<NodePath, Ref<BTTask>> kv : active_trees) {
 		arr.append(kv.key);
 	}
-	EngineDebugger::get_singleton()->send_message("limboai:active_behavior_trees", arr);
+	EngineDebugger::get_singleton()->send_message("limboai:active_bt_players", arr);
 }
 
 void LimboDebugger::_on_bt_updated(int _status, NodePath p_path) {
@@ -128,7 +129,7 @@ void LimboDebugger::_on_bt_updated(int _status, NodePath p_path) {
 		return;
 	}
 	Array arr;
-	BehaviorTreeData(active_trees.get(tracked_tree)).serialize(arr);
+	BehaviorTreeData(active_trees.get(tracked_tree), tracked_tree).serialize(arr);
 	EngineDebugger::get_singleton()->send_message("limboai:bt_update", arr);
 }
 
@@ -137,7 +138,7 @@ void LimboDebugger::_on_state_updated(float _delta, NodePath p_path) {
 		return;
 	}
 	Array arr;
-	BehaviorTreeData(active_trees.get(tracked_tree)).serialize(arr);
+	BehaviorTreeData(active_trees.get(tracked_tree), tracked_tree).serialize(arr);
 	EngineDebugger::get_singleton()->send_message("limboai:bt_update", arr);
 }
 
