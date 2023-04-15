@@ -39,9 +39,9 @@ private:
 public:
 	static Error parse_message(void *p_user, const String &p_msg, const Array &p_args, bool &r_captured);
 
-	void register_bt_instance(Ref<BTTask> p_instance, NodePath p_path);
+	void register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
+	void unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
 
-	void unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_path);
 #endif // DEBUG_ENABLED
 };
 #endif // LIMBO_DEBUGGER

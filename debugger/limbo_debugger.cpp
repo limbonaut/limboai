@@ -57,23 +57,23 @@ Error LimboDebugger::parse_message(void *p_user, const String &p_msg, const Arra
 	return OK;
 }
 
-void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_path) {
-	ERR_FAIL_COND(active_trees.has(p_path));
+void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
+	ERR_FAIL_COND(active_trees.has(p_player_path));
 
-	active_trees.insert(p_path, p_instance);
+	active_trees.insert(p_player_path, p_instance);
 	if (session_active) {
 		_send_active_bt_players();
 	}
 }
 
-void LimboDebugger::unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_path) {
-	ERR_FAIL_COND(p_path.is_empty());
-	ERR_FAIL_COND(!active_trees.has(p_path));
+void LimboDebugger::unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
+	ERR_FAIL_COND(p_player_path.is_empty());
+	ERR_FAIL_COND(!active_trees.has(p_player_path));
 
-	if (tracked_tree == p_path) {
+	if (tracked_tree == p_player_path) {
 		_untrack_tree();
 	}
-	active_trees.erase(p_path);
+	active_trees.erase(p_player_path);
 
 	if (session_active) {
 		_send_active_bt_players();

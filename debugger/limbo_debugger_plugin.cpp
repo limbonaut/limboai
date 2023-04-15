@@ -62,7 +62,8 @@ void LimboDebuggerTab::update_behavior_tree(const BehaviorTreeData &p_data) {
 
 void LimboDebuggerTab::_show_alert(const String &p_message) {
 	alert_message->set_text(p_message);
-	alert_icon->set_texture(get_theme_icon(SNAME("NodeInfo"), SNAME("EditorIcons")));
+	// alert_icon->set_texture(get_theme_icon(SNAME("NodeInfo"), SNAME("EditorIcons")));
+	alert_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
 	alert_box->set_visible(!p_message.is_empty());
 }
 

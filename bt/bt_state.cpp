@@ -38,7 +38,9 @@ void BTState::_update(double p_delta) {
 void BTState::_notification(int p_notification) {
 	switch (p_notification) {
 		case NOTIFICATION_EXIT_TREE: {
-			LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+			if (tree_instance.is_valid()) {
+				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+			}
 		} break;
 	}
 }
