@@ -6,6 +6,7 @@
 #include "core/object/callable_method_pointer.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
+#include "core/string/ustring.h"
 #include "core/variant/array.h"
 #include "editor/editor_scale.h"
 #include "editor/plugins/editor_debugger_plugin.h"
