@@ -212,6 +212,6 @@ public:
 	~LimboAIEditorPlugin();
 };
 
-#endif // TOOLS_ENABLED
-
 #endif // LIMBO_AI_EDITOR_PLUGIN_H
+
+#endif // TOOLS_ENABLED

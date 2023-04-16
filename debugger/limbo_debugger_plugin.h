@@ -1,5 +1,7 @@
 /* limbo_debugger_plugin.h */
 
+#ifdef TOOLS_ENABLED
+
 #ifndef LIMBO_DEBUGGER_PLUGIN_H
 #define LIMBO_DEBUGGER_PLUGIN_H
 
@@ -62,3 +64,5 @@ public:
 };
 
 #endif // LIMBO_DEBUGGER_PLUGIN
+
+#endif // TOOLS_ENABLED

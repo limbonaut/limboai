@@ -1,5 +1,7 @@
 /* limbo_debugger_view.h */
 
+#ifdef TOOLS_ENABLED
+
 #include "limbo_debugger_plugin.h"
 #include "core/debugger/engine_debugger.h"
 #include "core/math/math_defs.h"
@@ -207,3 +209,5 @@ bool LimboDebuggerPlugin::has_capture(const String &p_capture) const {
 LimboDebuggerPlugin::LimboDebuggerPlugin() {
 	tab = nullptr;
 }
+
+#endif // TOOLS_ENABLED
