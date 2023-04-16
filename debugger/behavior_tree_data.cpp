@@ -21,13 +21,20 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath
 			stack.push_front(task->get_child(num_children - 1 - i));
 		}
 
+		String script_path;
+		if (task->get_script()) {
+			Ref<Script> script = task->get_script();
+			script_path = script->get_path();
+		}
+
 		tasks.push_back(TaskData(
 				id,
 				task->get_task_name(),
 				num_children,
 				task->get_status(),
 				task->get_elapsed_time(),
-				task->get_class()));
+				task->get_class(),
+				script_path));
 		id += 1;
 	}
 }
@@ -41,24 +48,28 @@ void BehaviorTreeData::serialize(Array &p_arr) {
 		p_arr.push_back(td.status);
 		p_arr.push_back(td.elapsed_time);
 		p_arr.push_back(td.type_name);
+		p_arr.push_back(td.script_path);
 	}
 }
 
 void BehaviorTreeData::deserialize(const Array &p_arr) {
 	ERR_FAIL_COND(tasks.size() != 0);
 	ERR_FAIL_COND(p_arr.size() < 1);
+
 	ERR_FAIL_COND(p_arr[0].get_type() != Variant::NODE_PATH);
 	bt_player_path = p_arr[0];
+
 	int idx = 1;
 	while (p_arr.size() > idx + 1) {
-		ERR_FAIL_COND(p_arr.size() < idx + 6);
+		ERR_FAIL_COND(p_arr.size() < idx + 7);
 		ERR_FAIL_COND(p_arr[idx].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 1].get_type() != Variant::STRING);
 		ERR_FAIL_COND(p_arr[idx + 2].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 3].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 4].get_type() != Variant::FLOAT);
 		ERR_FAIL_COND(p_arr[idx + 5].get_type() != Variant::STRING);
-		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4], p_arr[idx + 5]));
-		idx += 6;
+		ERR_FAIL_COND(p_arr[idx + 6].get_type() != Variant::STRING);
+		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4], p_arr[idx + 5], p_arr[idx + 6]));
+		idx += 7;
 	}
 }

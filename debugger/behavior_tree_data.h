@@ -15,16 +15,16 @@ public:
 		int status = 0;
 		double elapsed_time = 0.0;
 		String type_name;
-		// String script_path;
-		// String resource_path;
+		String script_path;
 
-		TaskData(int p_id, const String &p_name, int p_num_children, int p_status, double p_elapsed_time, const String &p_type_name) {
+		TaskData(int p_id, const String &p_name, int p_num_children, int p_status, double p_elapsed_time, const String &p_type_name, const String &p_script_path) {
 			id = p_id;
 			name = p_name;
 			num_children = p_num_children;
 			status = p_status;
 			elapsed_time = p_elapsed_time;
 			type_name = p_type_name;
+			script_path = p_script_path;
 		}
 
 		TaskData() {}

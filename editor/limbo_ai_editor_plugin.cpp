@@ -91,6 +91,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 		type_arg = task->get_class();
 	}
 	p_item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(type_arg));
+	p_item->set_icon_max_width(0, 16 * EDSCALE);
 	p_item->set_editable(0, false);
 
 	for (int i = 0; i < p_item->get_button_count(0); i++) {
@@ -341,6 +342,7 @@ void TaskSection::add_task_button(String p_name, const Ref<Texture> &icon, Varia
 	Button *btn = memnew(Button);
 	btn->set_text(p_name);
 	btn->set_icon(icon);
+	btn->add_theme_constant_override(SNAME("icon_max_width"), 16 * EDSCALE); // Force user icons to  be of the proper size.
 	btn->connect("pressed", callable_mp(this, &TaskSection::_on_task_button_pressed).bind(p_meta));
 	tasks_container->add_child(btn);
 }
@@ -459,7 +461,7 @@ void TaskPanel::refresh() {
 
 		TaskSection *sec = memnew(TaskSection(cat));
 		for (String task_meta : tasks) {
-			Ref<Texture> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
+			Ref<Texture2D> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
 			String tname;
 			if (task_meta.begins_with("res:")) {
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();

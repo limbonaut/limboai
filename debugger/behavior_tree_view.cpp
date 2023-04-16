@@ -69,8 +69,11 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 
 		item->set_metadata(0, task_data.id);
 		item->set_text(0, task_data.name);
-		item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(task_data.type_name));
 		item->set_text(2, rtos(Math::snapped(task_data.elapsed_time, 0.01)).pad_decimals(2));
+
+		String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
+		item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(cors));
+		item->set_icon_max_width(0, 16 * EDSCALE); // Force user icon size.
 
 		if (task_data.status == BTTask::SUCCESS) {
 			item->set_custom_draw(0, this, SNAME("_draw_success_status"));
