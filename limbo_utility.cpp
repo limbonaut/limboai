@@ -3,8 +3,11 @@
 #include "limbo_utility.h"
 #include "bt/bt_task.h"
 #include "core/variant/variant.h"
-#include "editor/editor_node.h"
 #include "scene/resources/texture.h"
+
+#ifdef TOOLS_ENABLED
+#include "editor/editor_node.h"
+#endif // TOOLS_ENABLED
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -37,6 +40,7 @@ String LimboUtility::get_status_name(int p_status) const {
 }
 
 Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const {
+#ifdef TOOLS_ENABLED
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
 	if (p_class_or_script_path.begins_with("res:")) {
@@ -45,6 +49,9 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	}
 	// TODO: Walk inheritance tree until icon is found.
 	return EditorNode::get_singleton()->get_class_icon(p_class_or_script_path, "BTTask");
+#endif // TOOLS_ENABLED
+	// Note: class icons are not available at runtime as they are part of the editor theme.
+	return nullptr;
 }
 
 void LimboUtility::_bind_methods() {
