@@ -168,8 +168,6 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBVector3Array);
 		GDREGISTER_CLASS(BBVariant);
 
-		GDREGISTER_CLASS(BehaviorTreeView);
-
 		_limbo_utility = memnew(LimboUtility);
 		GDREGISTER_CLASS(LimboUtility);
 
@@ -180,7 +178,10 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
+	} else if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+		GDREGISTER_CLASS(BehaviorTreeView);
 	}
+
 #endif
 }
 

@@ -1,5 +1,7 @@
 /* behavior_tree_view.cpp */
 
+#ifdef TOOLS_ENABLED
+
 #include "behavior_tree_view.h"
 #include "behavior_tree_data.h"
 #include "core/math/color.h"
@@ -157,3 +159,5 @@ BehaviorTreeView::BehaviorTreeView() {
 
 	tree->connect(SNAME("item_collapsed"), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 }
+
+#endif // TOOLS_ENABLED

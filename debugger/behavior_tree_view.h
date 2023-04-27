@@ -1,5 +1,7 @@
 /* behavior_tree_view.h */
 
+#ifdef TOOLS_ENABLED
+
 #ifndef BEHAVIOR_TREE_VIEW_H
 #define BEHAVIOR_TREE_VIEW_H
 
@@ -43,3 +45,5 @@ public:
 };
 
 #endif // BEHAVIOR_TREE_VIEW
+
+#endif // TOOLS_ENABLED
