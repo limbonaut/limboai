@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		Base class for all [BehaviorTree] tasks. A task is a building block in a [BehaviorTree] that represents a specific behavior or control flow. It is the basic unit of the Behavior Tree (BT) and is used to create complex behaviors by combining and nesting tasks in a hierarchy.
-		Tasks perform work and return their status with [method _tick]. See [enum TaskStatus]. 
+		Tasks perform work and return their status with [method _tick]. See [enum TaskStatus].
 		A Task can be an action, a condition, a composite, or a decorator. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
 		[b]Note:[/b] Do not extend [code]BTTask[/code] directly for your own tasks, instead extend one of the subtypes above.
 	</description>
@@ -131,7 +131,7 @@
 			<param index="0" name="p_agent" type="Node" />
 			<param index="1" name="p_blackboard" type="Blackboard" />
 			<description>
-				Initilizes the task. Assigns [member agent] and [member blackboard], and calls [method _setup] for the task and its children. 
+				Initilizes the task. Assigns [member agent] and [member blackboard], and calls [method _setup] for the task and its children.
 				The method is called recursively for each child task.
 			</description>
 		</method>
@@ -151,7 +151,7 @@
 		<method name="next_sibling" qualifiers="const">
 			<return type="BTTask" />
 			<description>
-				Returns the next task after this task in the children list of the [member parent]. 
+				Returns the next task after this task in the children list of the [member parent].
 				Returns [code]null[/code] if this task has no parent or it is the last child in the parent's children list.
 			</description>
 		</method>
@@ -187,6 +187,10 @@
 		</member>
 		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
 			User provided name for the task. If not empty, [code]custom_name[/code] is used by the editor to display the task. See [method get_task_name].
+		</member>
+		<member name="elapsed_time" type="float" setter="" getter="get_elapsed_time" default="0.0">
+			Elapsed time since the task was entered.
+			Returns 0 when task is not [code]RUNNING[/code].
 		</member>
 		<member name="status" type="int" setter="" getter="get_status">
 			Last execution [enum TaskStatus] returned by [method _tick].

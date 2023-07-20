@@ -46,6 +46,9 @@
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
 			[Blackboard] instance that contains data shared by the tasks in [BehaviorTree].
 		</member>
+		<member name="monitor_performance" type="bool" setter="_set_monitor_performance" getter="_get_monitor_performance" default="false">
+			Add a performance monitor to "Debugger-&gt;Monitors" for each instance of this [BTPlayer].
+		</member>
 		<member name="prefetch_nodepath_vars" type="bool" setter="set_prefetch_nodepath_vars" getter="get_prefetch_nodepath_vars" default="true">
 			If [code]true[/code], any NodePath variables in the [Blackboard] are replaced with references during tree instantiation. References are retrieved by calling [method Node.get_node] of BTPlayer.
 		</member>
@@ -59,6 +62,12 @@
 			<description>
 				Notifies when behavior tree finishes executing and returns [code]SUCCESS[/code] or [code]FAILURE[/code].
 				Argument [code]p_status[/code] holds the status returned by the behavior tree.
+			</description>
+		</signal>
+		<signal name="updated">
+			<param index="0" name="p_status" type="int" />
+			<description>
+				Emitted when BTPlayer has finished updating/ticking the tree.
 			</description>
 		</signal>
 	</signals>

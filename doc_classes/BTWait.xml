@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTWait" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT action that waits for a [member duration] to pass and returns [code]SUCCESS[/code].
+		BT action that waits for a [member duration] to pass and then returns [code]SUCCESS[/code].
 	</brief_description>
 	<description>
 	</description>

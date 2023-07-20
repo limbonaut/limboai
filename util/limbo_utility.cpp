@@ -59,7 +59,7 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 void LimboUtility::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decorate_var", "p_variable"), &LimboUtility::decorate_var);
 	ClassDB::bind_method(D_METHOD("get_status_name", "p_status"), &LimboUtility::get_status_name);
-	ClassDB::bind_method(D_METHOD("get_task_icon"), &LimboUtility::get_task_icon);
+	ClassDB::bind_method(D_METHOD("get_task_icon", "p_class_or_script_path"), &LimboUtility::get_task_icon);
 }
 
 LimboUtility::LimboUtility() {

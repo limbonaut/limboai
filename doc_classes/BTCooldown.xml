@@ -27,7 +27,8 @@
 			Start on a cooldown, as if the child was executed before the first BT tick.
 		</member>
 		<member name="trigger_on_failure" type="bool" setter="set_trigger_on_failure" getter="get_trigger_on_failure" default="false">
-			Trigger cooldown, if the child returns [code]FAILURE[/code].
+			Trigger cooldown, if the child also returns [code]FAILURE[/code].
+			Otherwise, cooldown will only be triggered when the child returns [code]SUCCESS[/code]
 		</member>
 	</members>
 </class>

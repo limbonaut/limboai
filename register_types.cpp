@@ -178,9 +178,9 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
-	} else if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-		GDREGISTER_CLASS(BehaviorTreeView);
-	}
+	} // else if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+	  // GDREGISTER_CLASS(BehaviorTreeView);
+	// }
 
 #endif
 }
