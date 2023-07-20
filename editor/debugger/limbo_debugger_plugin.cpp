@@ -115,9 +115,9 @@ void LimboDebuggerTab::_bt_selected(int p_idx) {
 	info_message->set_text(TTR("Waiting for behavior tree update."));
 	info_message->show();
 	NodePath path = bt_player_list->get_item_text(p_idx);
-	Array data;
-	data.push_back(path);
-	session->send_message("limboai:track_bt_player", data);
+	Array msg_data;
+	msg_data.push_back(path);
+	session->send_message("limboai:track_bt_player", msg_data);
 }
 
 void LimboDebuggerTab::_filter_changed(String p_text) {

@@ -46,8 +46,8 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
 	if (p_class_or_script_path.begins_with("res:")) {
-		Ref<Script> script = ResourceLoader::load(p_class_or_script_path, "Script");
-		return EditorNode::get_singleton()->get_object_icon(script.ptr(), "BTTask");
+		Ref<Script> s = ResourceLoader::load(p_class_or_script_path, "Script");
+		return EditorNode::get_singleton()->get_object_icon(s.ptr(), "BTTask");
 	}
 	// TODO: Walk inheritance tree until icon is found.
 	return EditorNode::get_singleton()->get_class_icon(p_class_or_script_path, "BTTask");

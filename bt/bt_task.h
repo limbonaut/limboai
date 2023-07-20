@@ -28,13 +28,16 @@ public:
 private:
 	friend class BehaviorTree;
 
-	String custom_name;
-	Node *agent;
-	Ref<Blackboard> blackboard;
-	BTTask *parent;
-	Vector<Ref<BTTask>> children;
-	int status;
-	double elapsed;
+	// Avoid namespace pollution in derived classes.
+	struct Data {
+		String custom_name;
+		Node *agent;
+		Ref<Blackboard> blackboard;
+		BTTask *parent;
+		Vector<Ref<BTTask>> children;
+		int status;
+		double elapsed;
+	} data;
 
 	Array _get_children() const;
 	void _set_children(Array children);
@@ -58,17 +61,17 @@ protected:
 public:
 	virtual bool editor_can_reload_from_file() override { return false; }
 
-	Node *get_agent() const { return agent; }
-	void set_agent(Node *p_agent) { agent = p_agent; }
+	Node *get_agent() const { return data.agent; }
+	void set_agent(Node *p_agent) { data.agent = p_agent; }
 
-	String get_custom_name() const { return custom_name; }
+	String get_custom_name() const { return data.custom_name; }
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
-	Ref<Blackboard> get_blackboard() const { return blackboard; }
-	Ref<BTTask> get_parent() const { return Ref<BTTask>(parent); }
+	Ref<Blackboard> get_blackboard() const { return data.blackboard; }
+	Ref<BTTask> get_parent() const { return Ref<BTTask>(data.parent); }
 	Ref<BTTask> get_root() const;
-	bool is_root() const { return parent == nullptr; }
+	bool is_root() const { return data.parent == nullptr; }
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
@@ -76,8 +79,8 @@ public:
 
 	int execute(double p_delta);
 	void cancel();
-	int get_status() const { return status; }
-	double get_elapsed_time() const { return elapsed; };
+	int get_status() const { return data.status; }
+	double get_elapsed_time() const { return data.elapsed; };
 
 	Ref<BTTask> get_child(int p_idx) const;
 	int get_child_count() const;

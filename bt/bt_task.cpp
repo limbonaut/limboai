@@ -22,11 +22,10 @@ String BTTask::_generate_name() const {
 			ERR_FAIL_COND_V_MSG(!get_script_instance()->get_script()->is_tool(), "ERROR: not a tool script", "Task script should be a \"tool\" script!");
 			return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
 		}
-		String name = get_script_instance()->get_script()->get_path();
-		if (!name.is_empty()) {
+		String script_path = get_script_instance()->get_script()->get_path();
+		if (!script_path.is_empty()) {
 			// Generate name based on script file
-			name = name.get_basename().get_file().trim_prefix("BT").to_pascal_case();
-			return name;
+			return script_path.get_basename().get_file().trim_prefix("BT").to_pascal_case();
 		}
 	}
 	return get_class().trim_prefix("BT");
@@ -44,35 +43,35 @@ Array BTTask::_get_children() const {
 }
 
 void BTTask::_set_children(Array p_children) {
-	children.clear();
+	data.children.clear();
 	const int num_children = p_children.size();
-	children.resize(num_children);
+	data.children.resize(num_children);
 	for (int i = 0; i < num_children; i++) {
 		Variant task_var = p_children[i];
 		Ref<BTTask> task_ref = task_var;
-		task_ref->parent = this;
-		children.set(i, task_var);
+		task_ref->data.parent = this;
+		data.children.set(i, task_var);
 	}
 }
 
 String BTTask::get_task_name() const {
-	if (custom_name.is_empty()) {
+	if (data.custom_name.is_empty()) {
 		return _generate_name();
 	}
-	return custom_name;
+	return data.custom_name;
 }
 
 Ref<BTTask> BTTask::get_root() const {
 	const BTTask *task = this;
 	while (!task->is_root()) {
-		task = task->parent;
+		task = task->data.parent;
 	}
 	return Ref<BTTask>(task);
 }
 
 void BTTask::set_custom_name(const String &p_name) {
-	if (custom_name != p_name) {
-		custom_name = p_name;
+	if (data.custom_name != p_name) {
+		data.custom_name = p_name;
 		emit_changed();
 	}
 };
@@ -80,9 +79,9 @@ void BTTask::set_custom_name(const String &p_name) {
 void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);
-	agent = p_agent;
-	blackboard = p_blackboard;
-	for (int i = 0; i < children.size(); i++) {
+	data.agent = p_agent;
+	data.blackboard = p_blackboard;
+	for (int i = 0; i < data.children.size(); i++) {
 		get_child(i)->initialize(p_agent, p_blackboard);
 	}
 
@@ -93,13 +92,13 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 
 Ref<BTTask> BTTask::clone() const {
 	Ref<BTTask> inst = duplicate(false);
-	inst->parent = nullptr;
-	inst->agent = nullptr;
-	inst->blackboard.unref();
-	for (int i = 0; i < children.size(); i++) {
+	inst->data.parent = nullptr;
+	inst->data.agent = nullptr;
+	inst->data.blackboard.unref();
+	for (int i = 0; i < data.children.size(); i++) {
 		Ref<BTTask> c = get_child(i)->clone();
-		c->parent = inst.ptr();
-		inst->children.set(i, c);
+		c->data.parent = inst.ptr();
+		inst->data.children.set(i, c);
 	}
 
 	// Make BBParam properties unique.
@@ -132,96 +131,96 @@ Ref<BTTask> BTTask::clone() const {
 }
 
 int BTTask::execute(double p_delta) {
-	if (status != RUNNING) {
+	if (data.status != RUNNING) {
 		// Reset children status.
-		if (status != FRESH) {
+		if (data.status != FRESH) {
 			for (int i = 0; i < get_child_count(); i++) {
-				children.get(i)->cancel();
+				data.children.get(i)->cancel();
 			}
 		}
 		if (!GDVIRTUAL_CALL(_enter)) {
 			_enter();
 		}
 	} else {
-		elapsed += p_delta;
+		data.elapsed += p_delta;
 	}
 
-	if (!GDVIRTUAL_CALL(_tick, p_delta, status)) {
-		status = _tick(p_delta);
+	if (!GDVIRTUAL_CALL(_tick, p_delta, data.status)) {
+		data.status = _tick(p_delta);
 	}
 
-	if (status != RUNNING) {
+	if (data.status != RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
 			_exit();
 		}
-		elapsed = 0.0;
+		data.elapsed = 0.0;
 	}
-	return status;
+	return data.status;
 }
 
 void BTTask::cancel() {
-	for (int i = 0; i < children.size(); i++) {
+	for (int i = 0; i < data.children.size(); i++) {
 		get_child(i)->cancel();
 	}
-	if (status == RUNNING) {
+	if (data.status == RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
 			_exit();
 		}
 	}
-	status = FRESH;
-	elapsed = 0.0;
+	data.status = FRESH;
+	data.elapsed = 0.0;
 }
 
 Ref<BTTask> BTTask::get_child(int p_idx) const {
-	ERR_FAIL_INDEX_V(p_idx, children.size(), nullptr);
-	return children.get(p_idx);
+	ERR_FAIL_INDEX_V(p_idx, data.children.size(), nullptr);
+	return data.children.get(p_idx);
 }
 
 int BTTask::get_child_count() const {
-	return children.size();
+	return data.children.size();
 }
 
 void BTTask::add_child(Ref<BTTask> p_child) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
-	p_child->parent = this;
-	children.push_back(p_child);
+	p_child->data.parent = this;
+	data.children.push_back(p_child);
 	emit_changed();
 }
 
 void BTTask::add_child_at_index(Ref<BTTask> p_child, int p_idx) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
-	if (p_idx < 0 || p_idx > children.size()) {
-		p_idx = children.size();
+	if (p_idx < 0 || p_idx > data.children.size()) {
+		p_idx = data.children.size();
 	}
-	children.insert(p_idx, p_child);
-	p_child->parent = this;
+	data.children.insert(p_idx, p_child);
+	p_child->data.parent = this;
 	emit_changed();
 }
 
 void BTTask::remove_child(Ref<BTTask> p_child) {
-	int idx = children.find(p_child);
+	int idx = data.children.find(p_child);
 	if (idx == -1) {
 		ERR_FAIL_MSG("p_child not found!");
 	} else {
-		children.remove_at(idx);
-		p_child->parent = nullptr;
+		data.children.remove_at(idx);
+		p_child->data.parent = nullptr;
 		emit_changed();
 	}
 }
 
 void BTTask::remove_child_at_index(int p_idx) {
 	ERR_FAIL_INDEX(p_idx, get_child_count());
-	children.remove_at(p_idx);
+	data.children.remove_at(p_idx);
 }
 
 bool BTTask::has_child(const Ref<BTTask> &p_child) const {
-	return children.find(p_child) != -1;
+	return data.children.find(p_child) != -1;
 }
 
 bool BTTask::is_descendant_of(const Ref<BTTask> &p_task) const {
 	const BTTask *task = this;
 	while (task != nullptr) {
-		task = task->parent;
+		task = task->data.parent;
 		if (task == p_task.ptr()) {
 			return true;
 		}
@@ -230,14 +229,14 @@ bool BTTask::is_descendant_of(const Ref<BTTask> &p_task) const {
 }
 
 int BTTask::get_child_index(const Ref<BTTask> &p_child) const {
-	return children.find(p_child);
+	return data.children.find(p_child);
 }
 
 Ref<BTTask> BTTask::next_sibling() const {
-	if (parent != nullptr) {
-		int idx = parent->get_child_index(Ref<BTTask>(this));
-		if (idx != -1 && parent->get_child_count() > (idx + 1)) {
-			return parent->get_child(idx + 1);
+	if (data.parent != nullptr) {
+		int idx = data.parent->get_child_index(Ref<BTTask>(this));
+		if (idx != -1 && data.parent->get_child_count() > (idx + 1)) {
+			return data.parent->get_child(idx + 1);
 		}
 	}
 	return Ref<BTTask>();
@@ -317,18 +316,18 @@ void BTTask::_bind_methods() {
 }
 
 BTTask::BTTask() {
-	custom_name = String();
-	agent = nullptr;
-	parent = nullptr;
-	children = Vector<Ref<BTTask>>();
-	status = FRESH;
-	elapsed = 0.0;
+	data.custom_name = String();
+	data.agent = nullptr;
+	data.parent = nullptr;
+	data.children = Vector<Ref<BTTask>>();
+	data.status = FRESH;
+	data.elapsed = 0.0;
 }
 
 BTTask::~BTTask() {
 	for (int i = 0; i < get_child_count(); i++) {
 		ERR_FAIL_COND(!get_child(i).is_valid());
-		get_child(i)->parent = nullptr;
+		get_child(i)->data.parent = nullptr;
 		get_child(i).unref();
 	}
 }

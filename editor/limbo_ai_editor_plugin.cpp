@@ -846,10 +846,10 @@ void LimboAIEditor::_on_panel_task_selected(String p_task) {
 	Ref<BTTask> task;
 
 	if (p_task.begins_with("res:")) {
-		Ref<Script> script = ResourceLoader::load(p_task, "Script");
-		ERR_FAIL_COND_MSG(script.is_null() || !script->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
-		Variant inst = ClassDB::instantiate(script->get_instance_base_type());
-		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instance base type \"%s\".", script->get_instance_base_type()));
+		Ref<Script> s = ResourceLoader::load(p_task, "Script");
+		ERR_FAIL_COND_MSG(s.is_null() || !s->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
+		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
+		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instance base type \"%s\".", s->get_instance_base_type()));
 
 		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
 			if (!inst.is_ref_counted()) {
@@ -859,8 +859,8 @@ void LimboAIEditor::_on_panel_task_selected(String p_task) {
 			return;
 		}
 
-		if (inst && script.is_valid()) {
-			((Object *)inst)->set_script(script);
+		if (inst && s.is_valid()) {
+			((Object *)inst)->set_script(s);
 			task = inst;
 		}
 	} else {
