@@ -4,6 +4,7 @@
 #define BT_CONSOLE_PRINT_H
 
 #include "bt_action.h"
+
 #include "core/object/object.h"
 #include "core/variant/variant.h"
 

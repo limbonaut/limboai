@@ -3,12 +3,13 @@
 #ifndef BB_PARAM_H
 #define BB_PARAM_H
 
+#include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/util/limbo_utility.h"
+
 #include "core/io/resource.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "core/variant/variant.h"
-#include "modules/limboai/blackboard.h"
-#include "modules/limboai/limbo_utility.h"
 
 class BBParam : public Resource {
 	GDCLASS(BBParam, Resource);

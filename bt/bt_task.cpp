@@ -2,6 +2,10 @@
 
 #include "bt_task.h"
 
+#include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/util/limbo_string_names.h"
+#include "modules/limboai/util/limbo_utility.h"
+
 #include "core/error/error_macros.h"
 #include "core/io/resource.h"
 #include "core/object/class_db.h"
@@ -11,9 +15,6 @@
 #include "core/string/ustring.h"
 #include "core/templates/hash_map.h"
 #include "core/variant/variant.h"
-#include "modules/limboai/blackboard.h"
-#include "modules/limboai/limbo_string_names.h"
-#include "modules/limboai/limbo_utility.h"
 
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {

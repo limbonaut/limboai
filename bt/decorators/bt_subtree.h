@@ -4,8 +4,9 @@
 #define BT_SUBTREE_H
 
 #include "bt_new_scope.h"
-#include "core/object/object.h"
 #include "modules/limboai/bt/behavior_tree.h"
+
+#include "core/object/object.h"
 
 class BTSubtree : public BTNewScope {
 	GDCLASS(BTSubtree, BTNewScope);

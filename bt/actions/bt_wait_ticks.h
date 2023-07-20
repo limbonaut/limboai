@@ -4,6 +4,7 @@
 #define BT_WAIT_TICKS_H
 
 #include "bt_action.h"
+
 #include "core/object/object.h"
 
 class BTWaitTicks : public BTAction {

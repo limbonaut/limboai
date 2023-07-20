@@ -4,6 +4,7 @@
 #define BT_INVERT_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTInvert : public BTDecorator {

@@ -2,6 +2,10 @@
 
 #include "limbo_hsm.h"
 
+#include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/hsm/limbo_state.h"
+#include "modules/limboai/util/limbo_string_names.h"
+
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -9,9 +13,6 @@
 #include "core/typedefs.h"
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
-#include "modules/limboai/blackboard.h"
-#include "modules/limboai/limbo_state.h"
-#include "modules/limboai/limbo_string_names.h"
 
 VARIANT_ENUM_CAST(LimboHSM::UpdateMode);
 

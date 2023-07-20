@@ -4,6 +4,7 @@
 #define BT_PROBABILITY_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTProbability : public BTDecorator {

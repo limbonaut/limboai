@@ -1,9 +1,11 @@
 /* bt_console_print.cpp */
 
 #include "bt_console_print.h"
+
+#include "modules/limboai/bt/actions/bt_action.h"
+
 #include "core/object/object.h"
 #include "core/string/print_string.h"
-#include "modules/limboai/bt/actions/bt_action.h"
 
 String BTConsolePrint::_generate_name() const {
 	String tx = text;

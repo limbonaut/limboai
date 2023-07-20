@@ -1,11 +1,13 @@
 /* limbo_debugger.cpp */
 
 #include "limbo_debugger.h"
+
 #include "behavior_tree_data.h"
+#include "modules/limboai/bt/bt_task.h"
+
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/string/node_path.h"
-#include "modules/limboai/bt/bt_task.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/window.h"
 

@@ -6,6 +6,7 @@
 #define BEHAVIOR_TREE_VIEW_H
 
 #include "behavior_tree_data.h"
+
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "scene/gui/control.h"

@@ -4,6 +4,7 @@
 #define BT_COMPOSITE_H
 
 #include "../bt_task.h"
+
 #include "core/object/object.h"
 
 class BTComposite : public BTTask {

@@ -4,6 +4,7 @@
 #define BT_RANDOM_SEQUENCE_H
 
 #include "bt_composite.h"
+
 #include "core/templates/vector.h"
 
 class BTRandomSequence : public BTComposite {

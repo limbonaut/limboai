@@ -4,6 +4,7 @@
 #define BT_ACTION_H
 
 #include "../bt_task.h"
+
 #include "core/object/object.h"
 
 class BTAction : public BTTask {

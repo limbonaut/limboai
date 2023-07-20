@@ -1,6 +1,7 @@
 /* bt_probability.cpp */
 
 #include "bt_probability.h"
+
 #include "core/object/object.h"
 
 String BTProbability::_generate_name() const {

@@ -4,6 +4,7 @@
 #define BT_ALWAYS_FAIL_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTAlwaysFail : public BTDecorator {

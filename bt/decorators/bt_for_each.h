@@ -4,6 +4,7 @@
 #define BT_FOR_EACH_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTForEach : public BTDecorator {

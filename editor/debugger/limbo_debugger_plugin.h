@@ -5,12 +5,13 @@
 #ifndef LIMBO_DEBUGGER_PLUGIN_H
 #define LIMBO_DEBUGGER_PLUGIN_H
 
+#include "modules/limboai/editor/debugger/behavior_tree_data.h"
+#include "modules/limboai/editor/debugger/behavior_tree_view.h"
+
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "editor/plugins/editor_debugger_plugin.h"
-#include "modules/limboai/debugger/behavior_tree_data.h"
-#include "modules/limboai/debugger/behavior_tree_view.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/panel_container.h"

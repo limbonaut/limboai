@@ -4,6 +4,7 @@
 #define BT_ALWAYS_SUCCEED_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTAlwaysSucceed : public BTDecorator {

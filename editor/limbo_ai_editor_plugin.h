@@ -4,13 +4,14 @@
 #ifndef LIMBO_AI_EDITOR_PLUGIN_H
 #define LIMBO_AI_EDITOR_PLUGIN_H
 
+#include "modules/limboai/bt/behavior_tree.h"
+#include "modules/limboai/bt/bt_task.h"
+
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
-#include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/bt_task.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
 #include "scene/gui/file_dialog.h"

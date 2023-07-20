@@ -4,6 +4,7 @@
 #define BT_PARALLEL_H
 
 #include "bt_composite.h"
+
 #include "core/object/object.h"
 
 class BTParallel : public BTComposite {

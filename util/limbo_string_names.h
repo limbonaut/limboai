@@ -3,9 +3,10 @@
 #ifndef LIMBO_STRING_NAMES_H
 #define LIMBO_STRING_NAMES_H
 
+#include "modules/register_module_types.h"
+
 #include "core/string/string_name.h"
 #include "core/typedefs.h"
-#include "modules/register_module_types.h"
 
 class LimboStringNames {
 	friend void initialize_limboai_module(ModuleInitializationLevel p_level);

@@ -4,6 +4,7 @@
 #define BT_DYNAMIC_SEQUENCE_H
 
 #include "bt_composite.h"
+
 #include "core/object/object.h"
 
 class BTDynamicSequence : public BTComposite {

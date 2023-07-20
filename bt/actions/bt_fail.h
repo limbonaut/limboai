@@ -4,6 +4,7 @@
 #define BT_FAIL_H
 
 #include "bt_action.h"
+
 #include "core/object/object.h"
 
 class BTFail : public BTAction {

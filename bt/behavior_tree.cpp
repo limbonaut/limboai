@@ -1,27 +1,12 @@
 /* behavior_tree.cpp */
 
 #include "behavior_tree.h"
+
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/templates/list.h"
 #include "core/variant/variant.h"
-
-// void BehaviorTree::init() {
-// 	List<BTTask *> stack;
-// 	BTTask *task = root_task.ptr();
-// 	while (task != nullptr) {
-// 		for (int i = 0; i < task->get_child_count(); i++) {
-// 			task->get_child(i)->parent = task;
-// 			stack.push_back(task->get_child(i).ptr());
-// 		}
-// 		task = nullptr;
-// 		if (!stack.is_empty()) {
-// 			task = stack.front()->get();
-// 			stack.pop_front();
-// 		}
-// 	}
-// }
 
 Ref<BehaviorTree> BehaviorTree::clone() const {
 	Ref<BehaviorTree> copy = duplicate(false);

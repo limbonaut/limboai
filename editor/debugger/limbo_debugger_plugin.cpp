@@ -3,6 +3,11 @@
 #ifdef TOOLS_ENABLED
 
 #include "limbo_debugger_plugin.h"
+
+#include "limbo_debugger.h"
+#include "modules/limboai/editor/debugger/behavior_tree_data.h"
+#include "modules/limboai/editor/debugger/behavior_tree_view.h"
+
 #include "core/debugger/engine_debugger.h"
 #include "core/math/math_defs.h"
 #include "core/object/callable_method_pointer.h"
@@ -12,9 +17,6 @@
 #include "core/variant/array.h"
 #include "editor/editor_scale.h"
 #include "editor/plugins/editor_debugger_plugin.h"
-#include "limbo_debugger.h"
-#include "modules/limboai/debugger/behavior_tree_data.h"
-#include "modules/limboai/debugger/behavior_tree_view.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
 #include "scene/gui/item_list.h"

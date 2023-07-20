@@ -3,9 +3,10 @@
 #ifndef LIMBO_HSM_H
 #define LIMBO_HSM_H
 
+#include "limbo_state.h"
+
 #include "core/object/object.h"
 #include "core/templates/hash_map.h"
-#include "limbo_state.h"
 
 class LimboHSM : public LimboState {
 	GDCLASS(LimboHSM, LimboState);

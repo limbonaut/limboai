@@ -1,6 +1,7 @@
 /* bt_cooldown.cpp */
 
 #include "bt_cooldown.h"
+
 #include "core/math/math_funcs.h"
 #include "core/object/class_db.h"
 #include "core/variant/array.h"

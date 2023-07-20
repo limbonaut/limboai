@@ -4,6 +4,7 @@
 #define BT_DELAY_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTDelay : public BTDecorator {

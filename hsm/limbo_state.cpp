@@ -1,6 +1,9 @@
 /* limbo_state.cpp */
 
 #include "limbo_state.h"
+
+#include "modules/limboai/util/limbo_string_names.h"
+
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/object/object.h"
@@ -8,7 +11,6 @@
 #include "core/variant/array.h"
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
-#include "limbo_string_names.h"
 
 const String LimboState::EVENT_FINISHED = "finished";
 

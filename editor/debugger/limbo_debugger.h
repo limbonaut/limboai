@@ -3,10 +3,11 @@
 #ifndef LIMBO_DEBUGGER_H
 #define LIMBO_DEBUGGER_H
 
+#include "modules/limboai/bt/bt_task.h"
+
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/string/node_path.h"
-#include "modules/limboai/bt/bt_task.h"
 
 class LimboDebugger : public Object {
 	GDCLASS(LimboDebugger, Object);

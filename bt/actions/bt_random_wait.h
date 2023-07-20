@@ -4,6 +4,7 @@
 #define BT_RANDOM_WAIT_H
 
 #include "bt_action.h"
+
 #include "core/object/object.h"
 
 class BTRandomWait : public BTAction {

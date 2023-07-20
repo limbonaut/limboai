@@ -4,6 +4,7 @@
 #define BT_CONDITION_H
 
 #include "../bt_task.h"
+
 #include "core/object/object.h"
 
 class BTCondition : public BTTask {

@@ -2,8 +2,11 @@
 
 #include "bt_player.h"
 
-#include "../limbo_string_names.h"
 #include "bt_task.h"
+#include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/editor/debugger/limbo_debugger.h"
+#include "modules/limboai/util/limbo_string_names.h"
+
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
 #include "core/io/resource_loader.h"
@@ -13,8 +16,6 @@
 #include "core/string/string_name.h"
 #include "core/variant/variant.h"
 #include "main/performance.h"
-#include "modules/limboai/blackboard.h"
-#include "modules/limboai/debugger/limbo_debugger.h"
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 

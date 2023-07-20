@@ -1,6 +1,7 @@
 /* behavior_tree_data.cpp */
 
 #include "behavior_tree_data.h"
+
 #include "core/templates/list.h"
 
 //// BehaviorTreeData

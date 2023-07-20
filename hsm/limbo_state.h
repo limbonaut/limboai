@@ -3,7 +3,8 @@
 #ifndef LIMBO_STATE_H
 #define LIMBO_STATE_H
 
-#include "blackboard.h"
+#include "modules/limboai/blackboard/blackboard.h"
+
 #include "core/object/class_db.h"
 #include "core/object/gdvirtual.gen.inc"
 #include "core/object/object.h"

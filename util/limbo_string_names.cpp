@@ -1,6 +1,7 @@
 /* limbo_string_names.cpp */
 
 #include "limbo_string_names.h"
+
 #include "core/string/string_name.h"
 
 LimboStringNames *LimboStringNames::singleton = nullptr;

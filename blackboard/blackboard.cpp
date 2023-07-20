@@ -1,6 +1,7 @@
 /* blackboard.cpp */
 
 #include "blackboard.h"
+
 #include "core/error/error_macros.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"

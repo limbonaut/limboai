@@ -4,6 +4,7 @@
 #define BT_DYNAMIC_SELECTOR_H
 
 #include "bt_composite.h"
+
 #include "core/object/object.h"
 
 class BTDynamicSelector : public BTComposite {

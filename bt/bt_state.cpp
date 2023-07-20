@@ -1,13 +1,15 @@
 /* bt_state.cpp */
 
 #include "bt_state.h"
+
+#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/editor/debugger/limbo_debugger.h"
+#include "modules/limboai/hsm/limbo_state.h"
+#include "modules/limboai/util/limbo_string_names.h"
+
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/variant/variant.h"
-#include "modules/limboai/bt/bt_task.h"
-#include "modules/limboai/debugger/limbo_debugger.h"
-#include "modules/limboai/limbo_state.h"
-#include "modules/limboai/limbo_string_names.h"
 
 void BTState::_setup() {
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");

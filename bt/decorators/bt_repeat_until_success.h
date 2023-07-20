@@ -4,6 +4,7 @@
 #define BT_REPEAT_UNTIL_SUCCESS_H
 
 #include "bt_decorator.h"
+
 #include "core/object/object.h"
 
 class BTRepeatUntilSuccess : public BTDecorator {

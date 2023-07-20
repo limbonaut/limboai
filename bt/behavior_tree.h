@@ -4,9 +4,11 @@
 #define BEHAVIOR_TREE_H
 
 #include "bt_task.h"
+
+#include "modules/limboai/blackboard/blackboard.h"
+
 #include "core/io/resource.h"
 #include "core/object/object.h"
-#include "modules/limboai/blackboard.h"
 
 class BehaviorTree : public Resource {
 	GDCLASS(BehaviorTree, Resource);

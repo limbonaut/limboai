@@ -3,6 +3,8 @@
 #ifndef BTTASK_H
 #define BTTASK_H
 
+#include "modules/limboai/blackboard/blackboard.h"
+
 #include "core/io/resource.h"
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
@@ -10,7 +12,6 @@
 #include "core/templates/vector.h"
 #include "core/variant/array.h"
 #include "core/variant/dictionary.h"
-#include "modules/limboai/blackboard.h"
 #include "scene/resources/texture.h"
 
 class BTTask : public Resource {

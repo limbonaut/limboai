@@ -1,17 +1,19 @@
 /* bt_subtree.cpp */
 
 #include "bt_subtree.h"
-#include "core/config/engine.h"
-#include "core/error/error_macros.h"
-#include "core/object/object.h"
-#include "core/typedefs.h"
-#include "core/variant/variant.h"
-#include "modules/limboai/blackboard.h"
+
+#include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/actions/bt_fail.h"
 #include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/bt/decorators/bt_decorator.h"
 #include "modules/limboai/bt/decorators/bt_new_scope.h"
+
+#include "core/config/engine.h"
+#include "core/error/error_macros.h"
+#include "core/object/object.h"
+#include "core/typedefs.h"
+#include "core/variant/variant.h"
 
 String BTSubtree::_generate_name() const {
 	String s;

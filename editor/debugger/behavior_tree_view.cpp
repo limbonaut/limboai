@@ -4,13 +4,14 @@
 
 #include "behavior_tree_view.h"
 #include "behavior_tree_data.h"
+#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/util/limbo_utility.h"
+
 #include "core/math/color.h"
 #include "core/math/math_defs.h"
 #include "core/object/callable_method_pointer.h"
 #include "core/typedefs.h"
 #include "editor/editor_scale.h"
-#include "modules/limboai/bt/bt_task.h"
-#include "modules/limboai/limbo_utility.h"
 #include "scene/resources/style_box.h"
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
