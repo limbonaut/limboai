@@ -1,4 +1,13 @@
-/* bt_for_each.h */
+/**
+ * bt_for_each.h
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
 
 #ifndef BT_FOR_EACH_H
 #define BT_FOR_EACH_H

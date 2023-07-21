@@ -1,4 +1,13 @@
-/* limbo_ai_editor_plugin.h */
+/**
+ * limbo_ai_editor_plugin.h
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
 
 #ifdef TOOLS_ENABLED
 #ifndef LIMBO_AI_EDITOR_PLUGIN_H

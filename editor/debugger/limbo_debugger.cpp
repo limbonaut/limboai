@@ -1,4 +1,13 @@
-/* limbo_debugger.cpp */
+/**
+ * limbo_debugger.cpp
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
 
 #include "limbo_debugger.h"
 

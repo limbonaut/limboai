@@ -1,4 +1,13 @@
-/* bb_variant.h */
+/**
+ * bb_variant.h
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
 
 #ifndef BB_VARIANT_H
 #define BB_VARIANT_H

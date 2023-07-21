@@ -1,4 +1,13 @@
-/* behavior_tree_data.h */
+/**
+ * behavior_tree_data.h
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
 
 #ifndef BEHAVIOR_TREE_DATA_H
 #define BEHAVIOR_TREE_DATA_H
