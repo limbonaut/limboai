@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="LimboAI Test"
-run/main_scene="res://tests/waypoints/test_waypoints.tscn"
+run/main_scene="res://examples/waypoints/example_waypoints.tscn"
 config/features=PackedStringArray("4.1")
 config/icon="res://icon.png"
 

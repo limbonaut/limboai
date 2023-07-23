@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=9 format=3 uid="uid://cjkqi41oagagd"]
+[gd_resource type="BehaviorTree" load_steps=10 format=3 uid="uid://cjkqi41oagagd"]
 
 [ext_resource type="Script" path="res://ai/tasks/arrive_pos.gd" id="1_rhs33"]
 [ext_resource type="Script" path="res://ai/tasks/play_animation.gd" id="2_dg0ss"]
@@ -14,8 +14,11 @@ script = ExtResource("2_dg0ss")
 animation_name = "bounce"
 animation_player = NodePath("AnimationPlayer")
 
+[sub_resource type="BTWait" id="BTWait_qs55a"]
+duration = 0.1
+
 [sub_resource type="BTSequence" id="BTSequence_a2ng0"]
-children = [SubResource("BTAction_3xal7"), SubResource("BTAction_yq1vl")]
+children = [SubResource("BTAction_3xal7"), SubResource("BTAction_yq1vl"), SubResource("BTWait_qs55a")]
 
 [sub_resource type="BTForEach" id="BTForEach_0cp04"]
 children = [SubResource("BTSequence_a2ng0")]
