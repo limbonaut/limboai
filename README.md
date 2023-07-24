@@ -35,7 +35,7 @@ LimboAI is a C++ module for Godot 4 that provides an implementation of Behavior 
 
 ## Compiling
 
-> 🛈 Compiled releases are a WIP
+> 🛈 Precompiled builds are a WIP
 
 To incorporate this module, you'll need to build Godot Engine from source with LimboAI module included.
 
@@ -53,7 +53,7 @@ All contributions are welcome! Feel free to open issues with bug reports and fea
 
 Features and improvements that may be implemented in the future:
 
-- Providing compiled builds for download.
+- Providing precompiled builds for download.
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of Behavior Trees in the Visual Debugger.
 - Tests and CI.
