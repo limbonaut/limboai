@@ -126,7 +126,7 @@ LimboState *LimboHSM::get_leaf_state() const {
 	}
 }
 
-void LimboHSM::set_initial_state(Node *p_state) {
+void LimboHSM::set_initial_state(LimboState *p_state) {
 	ERR_FAIL_COND(p_state == nullptr || !p_state->is_class("LimboState"));
 	initial_state = Object::cast_to<LimboState>(p_state);
 }
