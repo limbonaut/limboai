@@ -141,13 +141,13 @@ jobs:
 
       # .NET glue
       - name: Generate C# glue
-        if: ${{ matrix.build-mono }}
+        if: ${{ matrix.build-mono }} && ${{ matrix.target }} == 'editor'
         run: |
           ${{ matrix.bin }} --headless --generate-mono-glue ./modules/mono/glue || true
 
       # .NET solutions
       - name: Build .NET solutions
-        if: ${{ matrix.build-mono }}
+        if: ${{ matrix.build-mono }} && ${{ matrix.target }} == 'editor'
         run: |
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=linuxbsd
 
@@ -156,4 +156,5 @@ jobs:
         with:
           name: ${{matrix.bin}}
           path: bin/*
+
 
