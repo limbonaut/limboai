@@ -7,6 +7,10 @@ on:
 
 # Global Settings
 env:
+  GODOT_TREEISH: 4.1.1-stable
+  LIMBOAI_TREEISH: v0.4.1-stable
+  VERSION_STRING: 4.1.1-limboai+v0.4.1
+
   SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
   DOTNET_NOLOGO: true
@@ -20,31 +24,55 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Editor (Godot v4.1.1-stable)
+          - name: Editor
             target: editor
             production: yes
             build-mono: false
-            godot-treeish: 4.1.1-stable
             executable-file: godot.linuxbsd.editor.x86_64
 
-          # - name: Template (Godot v4.1.1-stable)
+          - name: Template release
+            target: template_release
+            production: yes
+            build-mono: false
+            executable-file: godot.linuxbsd.template_release.x86_64
+
+          - name: Template debug
+            target: template_debug
+            production: yes
+            build-mono: false
+            executable-file: godot.linuxbsd.template_debug.x86_64
+
+          # - name: Editor w/ Mono
+          #   target: editor
+          #   production: yes
+          #   build-mono: true
+          #   executable-file: ???
+
+          # - name: Template release w/ Mono
           #   target: template_release
           #   production: yes
-          #   build-mono: false
-          #   godot-treeish: v4.1.1-stable
+          #   build-mono: true
           #   executable-file: ???
+
+          # - name: Template debug w/ Mono
+          #   target: template_debug
+          #   production: yes
+          #   build-mono: true
+          #   executable-file: ???
+
 
     steps:
       # Clone godot
       - uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ matrix.godot-treeish }}
+          ref: ${{ env.GODOT_TREEISH }}
 
       # Clone limboai module
       - uses: actions/checkout@v3
         with:
           path: modules/limboai
+          ref: ${{ env.LIMBOAI_TREEISH }}
 
       # Setup buildroot
       - name: Setup buildroot

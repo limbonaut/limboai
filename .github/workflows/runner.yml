@@ -1,10 +1,13 @@
 name: 🔗 GHA
 on:
-  push:
-    tags:
-      - v0.**
-    branches:
-      - github-workflows
+  # push:
+    # tags:
+    #   - v0.**
+
+    # branches: [ github-workflows ]
+
+  workflow_dispatch:
+
 
 jobs:
   # android-build:
