@@ -26,7 +26,7 @@ int BTParallel::_tick(double p_delta) {
 	for (int i = 0; i < get_child_count(); i++) {
 		int status = 0;
 		Ref<BTTask> child = get_child(i);
-		if (!repeat && (child->get_status() == FAILURE or child->get_status() == SUCCESS)) {
+		if (!repeat && (child->get_status() == FAILURE || child->get_status() == SUCCESS)) {
 			status = child->get_status();
 		} else {
 			status = child->execute(p_delta);
