@@ -28,37 +28,37 @@ jobs:
             target: editor
             production: yes
             build-mono: false
-            executable-file: godot.linuxbsd.editor.x86_64
+            bin: godot.linuxbsd.editor.x86_64
 
           - name: Template release
             target: template_release
             production: yes
             build-mono: false
-            executable-file: godot.linuxbsd.template_release.x86_64
+            bin: godot.linuxbsd.template_release.x86_64
 
           - name: Template debug
             target: template_debug
             production: yes
             build-mono: false
-            executable-file: godot.linuxbsd.template_debug.x86_64
+            bin: godot.linuxbsd.template_debug.x86_64
 
-          # - name: Editor w/ Mono
-          #   target: editor
-          #   production: yes
-          #   build-mono: true
-          #   executable-file: ???
+          - name: Editor w/ Mono
+            target: editor
+            production: yes
+            build-mono: true
+            bin: godot.linuxbsd.editor.x86_64.mono
 
-          # - name: Template release w/ Mono
-          #   target: template_release
-          #   production: yes
-          #   build-mono: true
-          #   executable-file: ???
+          - name: Template release w/ Mono
+            target: template_release
+            production: yes
+            build-mono: true
+            bin: godot.linuxbsd.template_release.x86_64.mono
 
-          # - name: Template debug w/ Mono
-          #   target: template_debug
-          #   production: yes
-          #   build-mono: true
-          #   executable-file: ???
+          - name: Template debug w/ Mono
+            target: template_debug
+            production: yes
+            build-mono: true
+            bin: godot.linuxbsd.template_debug.x86_64.mono
 
 
     steps:
@@ -85,16 +85,26 @@ jobs:
           cd ..
 
       # Build step
-      - name: Build step
+      - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/x86_64-godot-linux-gnu_sdk-buildroot/bin:$PATH
-          scons -j2 platform=linuxbsd tests=no target=${{matrix.target}} production=${{matrix.production}}
+          scons -j2 platform=linuxbsd tests=no target=${{matrix.target}} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
+
+      - name: Generate C# glue
+        if: ${{ matrix.build-mono }}
+        run: |
+          ${{ matrix.bin }} --headless --generate-mono-glue ./modules/mono/glue || true
+
+      - name: Build .NET solutions
+        if: ${{ matrix.build-mono }}
+        run: |
+          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=linuxbsd
 
       # Make build available
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{matrix.executable-file}}
-          path: bin/${{matrix.executable-file}}
+          name: ${{matrix.bin}}
+          path: bin/*
 

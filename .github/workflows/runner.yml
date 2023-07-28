@@ -1,12 +1,9 @@
 name: 🔗 GHA
 on:
-  # push:
-    # tags:
-    #   - v0.**
-
-    # branches: [ github-workflows ]
-
   workflow_dispatch:
+
+  push:
+    branches: [ github-workflows ]
 
 
 jobs:
