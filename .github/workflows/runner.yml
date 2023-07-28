@@ -1,0 +1,32 @@
+name: 🔗 GHA
+on:
+  push:
+    tags:
+      - v0.**
+    branches:
+      - github-workflows
+
+jobs:
+  # android-build:
+  #   name: 🤖 Android
+  #   uses: ./.github/workflows/android.yml
+
+  # ios-build:
+  #   name: 🍏 iOS
+  #   uses: ./.github/workflows/ios.yml
+
+  linux-build:
+    name: 🐧 Linux
+    uses: ./.github/workflows/linux.yml
+
+  # macos-build:
+  #   name: 🍎 macOS
+  #   uses: ./.github/workflows/macos.yml
+
+  # windows-build:
+  #   name: 🏁 Windows
+  #   uses: ./.github/workflows/windows.yml
+
+  # web-build:
+  #   name: 🌐 Web
+  #   uses: ./.github/workflows/web.yml
