@@ -1,27 +1,30 @@
-name: 🐧 Linux Builds
+name: 🪟 Windows builds
 on:
   workflow_call:
 
   workflow_dispatch:
 
+  push:
+    branches: [ github-workflows ]
+
 
 # Global Settings
 env:
   GODOT_TREEISH: 4.1.1-stable
-  LIMBOAI_TREEISH: v0.4.1-stable
-  VERSION_STRING: 4.1.1-limboai+v0.4.1
+  LIMBOAI_TREEISH: vs-fix
+  VERSION_STRING: 4.1.1-limboai+dev
 
+  SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  linux-builds:
-    runs-on: "ubuntu-20.04"
+  windows-builds:
+    runs-on: "windows-latest"
     name: ${{ matrix.name }}
     strategy:
-      fail-fast: false
       matrix:
         include:
           - name: Editor (64bit, release)
@@ -29,84 +32,84 @@ jobs:
             production: yes
             arch: x86_64
             build-mono: false
-            bin: godot.linuxbsd.editor.x86_64
+            bin: godot.windows.editor.x86_64
 
           - name: Template (64bit, release)
             target: template_release
             production: yes
             arch: x86_64
             build-mono: false
-            bin: godot.linuxbsd.template_release.x86_64
+            bin: godot.windows.template_release.x86_64
 
           - name: Template (64bit, debug)
             target: template_debug
             production: yes
             build-mono: false
             arch: x86_64
-            bin: godot.linuxbsd.template_debug.x86_64
+            bin: godot.windows.template_debug.x86_64
 
           # - name: Editor (32bit, release)
           #   target: editor
           #   production: yes
           #   arch: x86_32
           #   build-mono: false
-          #   bin: godot.linuxbsd.editor.x86_32
+          #   bin: godot.windows.editor.x86_32
 
           - name: Template (32bit, release)
             target: template_release
             production: yes
-            build-mono: false
             arch: x86_32
-            bin: godot.linuxbsd.template_release.x86_32
+            build-mono: false
+            bin: godot.windows.template_release.x86_32
 
           - name: Template (32bit, debug)
             target: template_debug
             production: yes
             build-mono: false
             arch: x86_32
-            bin: godot.linuxbsd.template_debug.x86_32
+            bin: godot.windows.template_debug.x86_32
 
           - name: Editor .NET (64bit, release)
             target: editor
             production: yes
             arch: x86_64
             build-mono: true
-            bin: godot.linuxbsd.editor.x86_64.mono
+            bin: godot.windows.editor.x86_64.mono
 
           - name: Template .NET (64bit, release)
             target: template_release
             production: yes
             arch: x86_64
             build-mono: true
-            bin: godot.linuxbsd.template_release.x86_64.mono
+            bin: godot.windows.template_release.x86_64.mono
 
           - name: Template .NET (64bit, debug)
             target: template_debug
             production: yes
-            arch: x86_64
             build-mono: true
-            bin: godot.linuxbsd.template_debug.x86_64.mono
+            arch: x86_64
+            bin: godot.windows.template_debug.x86_64.mono
 
           # - name: Editor .NET (32bit, release)
           #   target: editor
           #   production: yes
           #   arch: x86_32
           #   build-mono: true
-          #   bin: godot.linuxbsd.editor.x86_32.mono
+          #   bin: godot.windows.editor.x86_32.mono
 
           - name: Template .NET (32bit, release)
             target: template_release
             production: yes
-            arch: x86_32
+            arch: x86_64
             build-mono: true
-            bin: godot.linuxbsd.template_release.x86_32.mono
+            bin: godot.windows.template_release.x86_32.mono
 
           - name: Template .NET (32bit, debug)
             target: template_debug
             production: yes
-            arch: x86_32
             build-mono: true
-            bin: godot.linuxbsd.template_debug.x86_32.mono
+            arch: x86_32
+            bin: godot.windows.template_debug.x86_32.mono
 
     steps:
       # Clone Godot
@@ -115,40 +118,36 @@ jobs:
           repository: godotengine/godot
           ref: ${{ env.GODOT_TREEISH }}
 
-      # Clone limboai module
+      # Clone LimboAI module
       - uses: actions/checkout@v3
         with:
           path: modules/limboai
           ref: ${{ env.LIMBOAI_TREEISH }}
 
-      # About sed see: https://github.com/godotengine/buildroot/issues/6
-      - name: Setup buildroot x86_64
-        if: matrix.arch == 'x86_64'
-        run: |
-          wget https://download.tuxfamily.org/godotengine/toolchains/linux/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
-          tar -xjf x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
-          mv x86_64-godot-linux-gnu_sdk-buildroot buildroot
-          cd buildroot
-          sed -i x86_64-godot-linux-gnu/sysroot/usr/lib/pkgconfig/dbus-1.pc -e "s@/lib@/lib64@g"
-          ./relocate-sdk.sh
-          cd ..
+      # Use python 3.x release (works cross platform)
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          # Semantic version range syntax or exact version of a Python version
+          python-version: ${{ inputs.python-version }}
+          # Optional - x64 or x86 architecture, defaults to x64
+          architecture: ${{ inputs.python-arch }}
 
-      - name: Setup buildroot x86_32
-        if: matrix.arch == 'x86_32'
+      - name: Setup scons
+        shell: bash
         run: |
-          wget https://download.tuxfamily.org/godotengine/toolchains/linux/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
-          tar -xjf i686-godot-linux-gnu_sdk-buildroot.tar.bz2
-          mv i686-godot-linux-gnu_sdk-buildroot buildroot
-          cd buildroot
-          ./relocate-sdk.sh
-          cd ..
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons==4.4.0
+          scons --version
+
+      - name: Setup MSVC problem matcher
+        uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons -j2 platform=linuxbsd tests=no target=${{matrix.target}} arch=${{ matrix.arch }} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
+          scons -j2 platform=windows tests=no target=${{matrix.target}} arch=${{ matrix.arch }} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
@@ -162,13 +161,10 @@ jobs:
 
       - name: Prepare artifact
         run: |
-          strip ./bin/godot.*
-          chmod +x ./bin/godot.*
+          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.bin }}
           path: bin/*
-
-

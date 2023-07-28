@@ -2,8 +2,8 @@ name: 🔗 GHA
 on:
   workflow_dispatch:
 
-  push:
-    branches: [ github-workflows ]
+  # push:
+  #   branches: [ github-workflows ]
 
 
 jobs:
@@ -23,9 +23,9 @@ jobs:
   #   name: 🍎 macOS
   #   uses: ./.github/workflows/macos.yml
 
-  # windows-build:
-  #   name: 🏁 Windows
-  #   uses: ./.github/workflows/windows.yml
+  windows-build:
+    name: 🪟 Windows
+    uses: ./.github/workflows/windows.yml
 
   # web-build:
   #   name: 🌐 Web
