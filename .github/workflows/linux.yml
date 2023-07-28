@@ -24,42 +24,89 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Editor
+          - name: Editor (64bit, release)
             target: editor
             production: yes
+            arch: x86_64
             build-mono: false
             bin: godot.linuxbsd.editor.x86_64
 
-          - name: Template release
+          - name: Template (64bit, release)
             target: template_release
             production: yes
+            arch: x86_64
             build-mono: false
             bin: godot.linuxbsd.template_release.x86_64
 
-          - name: Template debug
+          - name: Template (64bit, debug)
             target: template_debug
             production: yes
             build-mono: false
+            arch: x86_64
             bin: godot.linuxbsd.template_debug.x86_64
 
-          - name: Editor w/ Mono
+          # - name: Editor (32bit, release)
+          #   target: editor
+          #   production: yes
+          #   arch: x86_32
+          #   build-mono: false
+          #   bin: godot.linuxbsd.editor.x86_32
+
+          -name: Template (32bit, release)
+            target: template_release
+            production: yes
+            build-mono: false
+            arch: x86_32
+            bin: godot.linuxbsd.template_release.x86_32
+
+          -name: Template (32bit, debug)
+            target: template_debug
+            production: yes
+            build-mono: false
+            arch: x86_32
+            bin: godot.linuxbsd.template_debug.x86_32
+
+          - name: Editor w/ Mono (64bit, release)
             target: editor
             production: yes
+            arch: x86_64
             build-mono: true
             bin: godot.linuxbsd.editor.x86_64.mono
 
-          - name: Template release w/ Mono
+          - name: Template w/ Mono (64bit, release)
             target: template_release
             production: yes
+            arch: x86_64
             build-mono: true
             bin: godot.linuxbsd.template_release.x86_64.mono
 
-          - name: Template debug w/ Mono
+          - name: Template w/ Mono (64bit, debug)
             target: template_debug
             production: yes
+            arch: x86_64
             build-mono: true
             bin: godot.linuxbsd.template_debug.x86_64.mono
 
+          # - name: Editor w/ Mono (32bit, release)
+          #   target: editor
+          #   production: yes
+          #   arch: x86_32
+          #   build-mono: true
+          #   bin: godot.linuxbsd.editor.x86_32.mono
+
+          - name: Template w/ Mono (32bit, release)
+            target: template_release
+            production: yes
+            arch: x86_32
+            build-mono: true
+            bin: godot.linuxbsd.template_release.x86_32.mono
+
+          - name: Template w/ Mono (32bit, debug)
+            target: template_debug
+            production: yes
+            arch: x86_32
+            build-mono: true
+            bin: godot.linuxbsd.template_debug.x86_32.mono
 
     steps:
       # Clone godot
@@ -84,19 +131,21 @@ jobs:
           ./relocate-sdk.sh
           cd ..
 
-      # Build step
+      # Compilation
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/x86_64-godot-linux-gnu_sdk-buildroot/bin:$PATH
-          scons -j2 platform=linuxbsd tests=no target=${{matrix.target}} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
+          scons -j2 platform=linuxbsd tests=no target=${{matrix.target}} arch=${{ matrix.arch }} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
 
+      # .NET glue
       - name: Generate C# glue
         if: ${{ matrix.build-mono }}
         run: |
           ${{ matrix.bin }} --headless --generate-mono-glue ./modules/mono/glue || true
 
+      # .NET solutions
       - name: Build .NET solutions
         if: ${{ matrix.build-mono }}
         run: |
