@@ -182,7 +182,7 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "Tried to load a null tree.");
 
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
 		last_selected->disconnect("changed", on_task_changed);
 	}
 
@@ -195,7 +195,7 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 
 void TaskTree::unload() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
 		last_selected->disconnect("changed", on_task_changed);
 	}
 
@@ -314,7 +314,7 @@ TaskTree::TaskTree() {
 
 TaskTree::~TaskTree() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() and last_selected->is_connected("changed", on_task_changed)) {
+	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
 		last_selected->disconnect("changed", on_task_changed);
 	}
 }
