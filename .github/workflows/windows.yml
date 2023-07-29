@@ -156,5 +156,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.${{matrix.target}}.windows.${{matrix.arch}}
+          name: godot.limboai.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
           path: bin/*
