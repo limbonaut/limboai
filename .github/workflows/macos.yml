@@ -1,18 +1,30 @@
 name: 🍎 macOS
 on:
   workflow_call:
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
 
   workflow_dispatch:
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
 
-  # push:
-  #   branches: [ github-workflows ]
 
 # Global Settings
 env:
-  GODOT_TREEISH: 4.1.1-stable
-  LIMBOAI_TREEISH: master
-  VERSION_STRING: 4.1.1-limboai+dev
-
   SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
@@ -20,6 +32,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
+
   macos-builds:
     runs-on: "macos-latest"
     name: ${{ matrix.name }}
@@ -64,6 +77,8 @@ jobs:
             build-mono: false
             artifact-name: macos-templates
 
+          # ! Disabled for now: .NET version fail to build
+
           # - name: .NET Editor (x86_64, release)
           #   target: editor
           #   arch: x86_64
@@ -102,29 +117,20 @@ jobs:
 
     env:
       BIN: godot.macos.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-      # BIN2: godot.macos.${{ matrix.target }}.arm64${{  matrix.build-mono == true && '.mono' || ''  }}
-      # UNIBIN: godot.macos.${{ matrix.target }}.universal${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
-
-      # ! DELETE_ME:
-      - name: Dump environment
-        env:
-          ENVI: ${{ toJson(env) }}
-        run: |
-          echo "$ENVI"
 
       # Clone Godot
       - uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ env.GODOT_TREEISH }}
+          ref: ${{ inputs.godot_treeish }}
 
       # Clone LimboAI module
       - uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ env.LIMBOAI_TREEISH }}
+          ref: ${{ inputs.limboai_treeish }}
 
       # Use python 3.x release (works cross platform)
       - name: Set up Python 3.x
@@ -156,6 +162,8 @@ jobs:
         run: |
           scons -j2 platform=macos target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
 
+      # ! Disabled for now: .NET version fail to build
+
       # - name: Generate C# glue
       #   if: matrix.build-mono && matrix.target == 'editor'
       #   run: |
@@ -176,3 +184,74 @@ jobs:
         with:
           name: ${{ matrix.artifact-name }}
           path: bin/*
+
+  make-macos-bundle:
+    runs-on: "macos-latest"
+    name: Make macOS Bundles
+    needs: macos-builds
+
+    steps:
+
+      # ! REMOVE ME
+      - name: Test
+        run: |
+          ls -l
+
+      - name: Clone Godot
+        uses: actions/checkout@v3
+        with:
+          repository: godotengine/godot
+          ref: ${{ inputs.godot_treeish }}
+
+      - name: Fetch editor artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-editor
+          path: bin/
+
+      - name: Make editor bundle
+        run: |
+          ls bin/
+          lipo -create bin/godot.macos.editor.x86_64 bin/godot.macos.editor.arm64 -output bin/godot.macos.editor.universal
+          strip bin/godot.macos.editor.universal
+          rm bin/godot.macos.editor.{x86_64,arm64}
+          mkdir -p out/editor/
+          cp -r misc/dist/macos_tools.app out/editor/Godot.app
+          mkdir -p out/editor/Godot.app/Contents/MacOS
+          cp bin/godot.macos.editor.universal out/editor/Godot.app/Contents/MacOS/Godot
+          chmod +x out/editor/Godot.app/Contents/MacOS/Godot
+
+      - name: Upload editor bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: godot.limboai.editor.macos.universal
+          path: out/editor/*
+
+      - name: Fetch templates artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-templates
+          path: bin/
+
+      - name: Make templates bundle
+        run: |
+          ls bin/
+          lipo -create bin/godot.macos.template_release.x86_64 bin/godot.macos.template_release.arm64 -output bin/godot.macos.template_release.universal
+          lipo -create bin/godot.macos.template_debug.x86_64 bin/godot.macos.template_debug.arm64 -output bin/godot.macos.template_debug.universal
+          rm bin/godot.macos.template_{debug,release}.{x86_64,arm64}
+          strip bin/godot.*
+          cp -r misc/dist/macos_template.app macos_template.app
+          mkdir -p macos_template.app/Contents/MacOS
+          cp bin/godot.macos.template_debug.universal macos_template.app/Contents/MacOS/godot_macos_debug.universal
+          cp bin/godot.macos.template_release.universal macos_template.app/Contents/MacOS/godot_macos_release.universal
+          chmod +x macos_template.app/Contents/MacOS/godot_macos_{release,debug}.universal
+          zip -r macos.zip macos_template.app
+          rm bin/*
+          mkdir -p out/templates/
+          mv macos.zip out/templates/macos.zip
+
+      - name: Upload templates bundle
+        uses: actions/upload-artifact@v3
+        with:
+          name: godot.limboai.templates.macos.universal
+          path: out/templates/*
