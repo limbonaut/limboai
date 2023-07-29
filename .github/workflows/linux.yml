@@ -38,62 +38,62 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Editor (64bit, release)
+          - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: false
 
-          - name: Template (64bit, release)
+          - name: Template (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: false
 
-          - name: Template (64bit, debug)
+          - name: Template (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: false
 
-          # - name: Editor (32bit, release)
+          # - name: Editor (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: false
 
-          - name: Template (32bit, release)
+          - name: Template (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: false
 
-          - name: Template (32bit, debug)
+          - name: Template (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: false
 
-          - name: Editor .NET (64bit, release)
+          - name: Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: true
 
-          - name: Template .NET (64bit, release)
+          - name: Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: true
 
-          - name: Template .NET (64bit, debug)
+          - name: Template .NET (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: true
 
-          # - name: Editor .NET (32bit, release)
+          # - name: Editor .NET (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: true
 
-          - name: Template .NET (32bit, release)
+          - name: Template .NET (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: true
 
-          - name: Template .NET (32bit, debug)
+          - name: Template .NET (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: true
