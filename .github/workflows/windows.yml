@@ -4,9 +4,8 @@ on:
 
   workflow_dispatch:
 
-  push:
-    branches: [ github-workflows ]
-
+  # push:
+  #   branches: [ github-workflows ]
 
 # Global Settings
 env:
@@ -16,7 +15,7 @@ env:
 
   SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
+  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -25,91 +24,71 @@ jobs:
     runs-on: "windows-latest"
     name: ${{ matrix.name }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - name: Editor (64bit, release)
             target: editor
-            production: yes
             arch: x86_64
             build-mono: false
-            bin: godot.windows.editor.x86_64
 
           - name: Template (64bit, release)
             target: template_release
-            production: yes
             arch: x86_64
             build-mono: false
-            bin: godot.windows.template_release.x86_64
 
           - name: Template (64bit, debug)
             target: template_debug
-            production: yes
-            build-mono: false
             arch: x86_64
-            bin: godot.windows.template_debug.x86_64
+            build-mono: false
 
           # - name: Editor (32bit, release)
           #   target: editor
-          #   production: yes
           #   arch: x86_32
           #   build-mono: false
-          #   bin: godot.windows.editor.x86_32
 
           - name: Template (32bit, release)
             target: template_release
-            production: yes
             arch: x86_32
             build-mono: false
-            bin: godot.windows.template_release.x86_32
 
           - name: Template (32bit, debug)
             target: template_debug
-            production: yes
-            build-mono: false
             arch: x86_32
-            bin: godot.windows.template_debug.x86_32
+            build-mono: false
 
           - name: Editor .NET (64bit, release)
             target: editor
-            production: yes
             arch: x86_64
             build-mono: true
-            bin: godot.windows.editor.x86_64.mono
 
           - name: Template .NET (64bit, release)
             target: template_release
-            production: yes
             arch: x86_64
             build-mono: true
-            bin: godot.windows.template_release.x86_64.mono
 
           - name: Template .NET (64bit, debug)
             target: template_debug
-            production: yes
-            build-mono: true
             arch: x86_64
-            bin: godot.windows.template_debug.x86_64.mono
+            build-mono: true
 
           # - name: Editor .NET (32bit, release)
           #   target: editor
-          #   production: yes
           #   arch: x86_32
           #   build-mono: true
-          #   bin: godot.windows.editor.x86_32.mono
 
           - name: Template .NET (32bit, release)
             target: template_release
-            production: yes
             arch: x86_64
             build-mono: true
-            bin: godot.windows.template_release.x86_32.mono
 
           - name: Template .NET (32bit, debug)
             target: template_debug
-            production: yes
-            build-mono: true
             arch: x86_32
-            bin: godot.windows.template_debug.x86_32.mono
+            build-mono: true
+
+    env:
+      BIN: godot.windows.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
       # Clone Godot
@@ -129,15 +108,15 @@ jobs:
         uses: actions/setup-python@v4
         with:
           # Semantic version range syntax or exact version of a Python version
-          python-version: ${{ inputs.python-version }}
+          python-version: '3.x'
           # Optional - x64 or x86 architecture, defaults to x64
-          architecture: ${{ inputs.python-arch }}
+          architecture: 'x64'
 
       - name: Setup scons
-        shell: bash
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
+          python --version
           scons --version
 
       - name: Setup MSVC problem matcher
@@ -147,12 +126,12 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=windows tests=no target=${{matrix.target}} arch=${{ matrix.arch }} production=${{matrix.production}} module_mono_enabled=${{ matrix.build-mono }}
+          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
         run: |
-          ./bin/${{ matrix.bin }} --headless --generate-mono-glue ./modules/mono/glue || true
+          ./bin/$BIN --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
         if: matrix.build-mono && matrix.target == 'editor'
@@ -166,5 +145,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.bin }}
+          name: ${{ env.BIN }}
           path: bin/*
