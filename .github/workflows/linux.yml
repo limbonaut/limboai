@@ -1,21 +1,32 @@
-name: 🐧 Linux Builds
+name: 🐧 Linux builds
 on:
   workflow_call:
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
 
   workflow_dispatch:
-
-  # push:
-  #   branches: [ github-workflows ]
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
 
 
 # Global Settings
 env:
-  GODOT_TREEISH: 4.1.1-stable
-  LIMBOAI_TREEISH: v0.4.1-stable
-  VERSION_STRING: 4.1.1-limboai+v0.4.1
-
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
+  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -95,13 +106,13 @@ jobs:
       - uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ env.GODOT_TREEISH }}
+          ref: ${{ inputs.godot_treeish }}
 
       # Clone limboai module
       - uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ env.LIMBOAI_TREEISH }}
+          ref: ${{ inputs.limboai_treeish }}
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Setup buildroot x86_64
@@ -150,7 +161,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.BIN }}
+          name: godot.limboai.${{matrix.target}}.linux.${{matrix.arch}}
           path: bin/*
 
 

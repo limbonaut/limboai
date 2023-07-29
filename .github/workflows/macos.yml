@@ -1,4 +1,4 @@
-name: 🍎 macOS
+name: 🍎 macOS builds
 on:
   workflow_call:
     inputs:
@@ -25,9 +25,8 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes module_text_server_fb_enabled=yes
+  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -192,11 +191,6 @@ jobs:
 
     steps:
 
-      # ! REMOVE ME
-      - name: Test
-        run: |
-          ls -l
-
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
@@ -220,6 +214,7 @@ jobs:
           mkdir -p out/editor/Godot.app/Contents/MacOS
           cp bin/godot.macos.editor.universal out/editor/Godot.app/Contents/MacOS/Godot
           chmod +x out/editor/Godot.app/Contents/MacOS/Godot
+          ls out/editor/
 
       - name: Upload editor bundle
         uses: actions/upload-artifact@v3
@@ -249,6 +244,7 @@ jobs:
           rm bin/*
           mkdir -p out/templates/
           mv macos.zip out/templates/macos.zip
+          ls out/templates/
 
       - name: Upload templates bundle
         uses: actions/upload-artifact@v3

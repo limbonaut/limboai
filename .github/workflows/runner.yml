@@ -1,10 +1,15 @@
 name: 🔗 GHA
 on:
   workflow_dispatch:
-
-  # push:
-  #   branches: [ github-workflows ]
-
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
 
 jobs:
   # android-build:
@@ -18,14 +23,23 @@ jobs:
   linux-build:
     name: 🐧 Linux
     uses: ./.github/workflows/linux.yml
+    with:
+      godot_treeish: ${{ inputs.godot_treeish }}
+      limboai_treeish: ${{ inputs.limboai_treeish }}
 
   macos-build:
     name: 🍎 macOS
     uses: ./.github/workflows/macos.yml
+    with:
+      godot_treeish: ${{ inputs.godot_treeish }}
+      limboai_treeish: ${{ inputs.limboai_treeish }}
 
   windows-build:
     name: 🪟 Windows
     uses: ./.github/workflows/windows.yml
+    with:
+      godot_treeish: ${{ inputs.godot_treeish }}
+      limboai_treeish: ${{ inputs.limboai_treeish }}
 
   # web-build:
   #   name: 🌐 Web
