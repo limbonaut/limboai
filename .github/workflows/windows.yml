@@ -11,7 +11,7 @@ on:
 # Global Settings
 env:
   GODOT_TREEISH: 4.1.1-stable
-  LIMBOAI_TREEISH: vs-fix
+  LIMBOAI_TREEISH: master
   VERSION_STRING: 4.1.1-limboai+dev
 
   SCONS_CACHE_MSVC_CONFIG: true
@@ -157,7 +157,7 @@ jobs:
       - name: Build .NET solutions
         if: matrix.build-mono && matrix.target == 'editor'
         run: |
-          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=linuxbsd
+          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
       - name: Prepare artifact
         run: |
