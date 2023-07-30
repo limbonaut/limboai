@@ -246,6 +246,12 @@ jobs:
           mv macos.zip out/templates/macos.zip
           ls out/templates/
 
+      - uses: geekyeggo/delete-artifact@v2
+        with:
+            name: macos-*
+            useGlob: true
+            failOnError: false
+
       - name: Upload templates bundle
         uses: actions/upload-artifact@v3
         with:
