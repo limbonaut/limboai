@@ -142,7 +142,7 @@ jobs:
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
         run: |
-          ./bin/$BIN --headless --generate-mono-glue ./modules/mono/glue || true
+          ./bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
         if: matrix.build-mono && matrix.target == 'editor'
