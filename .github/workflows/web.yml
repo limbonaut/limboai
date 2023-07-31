@@ -22,10 +22,6 @@ on:
         type: string
         default: master
 
-  push:
-    branches: [github-workflows]
-
-
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096

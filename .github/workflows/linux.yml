@@ -136,6 +136,17 @@ jobs:
           ./relocate-sdk.sh
           cd ..
 
+      # Upload cache on completion and check it out now
+      - name: Load .scons_cache directory
+        uses: actions/cache@v3
+        with:
+          path: ${{github.workspace}}/.scons_cache/
+          key: ${{matrix.cache-name}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          restore-keys: |
+            ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+            ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
+            ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}
+
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
@@ -163,5 +174,3 @@ jobs:
         with:
           name: godot.limboai.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
           path: bin/*
-
-
