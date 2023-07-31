@@ -1,0 +1,124 @@
+name: 🌐 Web builds
+on:
+  workflow_call:
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
+
+  workflow_dispatch:
+    inputs:
+      godot_treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai_treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
+
+  push:
+    branches: [github-workflows]
+
+
+# Global Settings
+env:
+  SCONS_CACHE_LIMIT: 4096
+  # With `lto=full` VM seems to run out of ram and build fails
+  SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra werror=yes tests=no
+  EM_VERSION: 3.1.18
+  EM_CACHE_FOLDER: "emsdk-cache"
+
+jobs:
+  web-builds:
+    runs-on: "ubuntu-20.04"
+    name: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Template (release)
+            target: template_release
+            dlink_enabled: no
+
+          - name: Template (release, dlink_enabled=true)
+            target: template_release
+            dlink_enabled: yes
+
+          - name: Template (debug)
+            target: template_debug
+            dlink_enabled: no
+
+          - name: Template (debug, dlink_enabled=true)
+            target: template_debug
+            dlink_enabled: yes
+
+    env:
+      CACHE_NAME: godot.web.${{matrix.target}}${{  matrix.dlink_enabled == true && '.dlink' || ''  }}
+
+    steps:
+      - name: Clone Godot
+        uses: actions/checkout@v3
+        with:
+          repository: godotengine/godot
+          ref: ${{ inputs.godot_treeish }}
+
+      - name: Clone LimboAI module
+        uses: actions/checkout@v3
+        with:
+          path: modules/limboai
+          ref: ${{ inputs.limboai_treeish }}
+
+      - name: Set up Emscripten latest
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+
+      - name: Verify Emscripten setup
+        run: |
+          emcc -v
+
+      - name: Setup scons
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons==4.4.0
+          python --version
+          scons --version
+
+      # Upload cache on completion and check it out now
+      - name: Load .scons_cache directory
+        uses: actions/cache@v3
+        with:
+          path: ${{github.workspace}}/.scons_cache/
+          key: ${{matrix.cache-name}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          restore-keys: |
+            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
+            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}
+
+      - name: Compilation
+        env:
+          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+        run: |
+          scons platform=web target=${{matrix.target}} dlink_enabled=${{matrix.dlink_enabled}} ${{env.SCONSFLAGS}}
+
+      - name: Prepare artifacts
+        run: |
+          mkdir -p out/templates/
+          mv bin/godot.web.template_release.wasm32.zip out/templates/web_release.zip || true
+          mv bin/godot.web.template_release.wasm32.dlink.zip out/templates/web_dlink_release.zip || true
+          mv bin/godot.web.template_debug.wasm32.zip out/templates/web_debug.zip || true
+          mv bin/godot.web.template_debug.wasm32.dlink.zip out/templates/web_dlink_debug.zip || true
+          rm -rf bin/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: godot.limboai.${{matrix.target}}.web
+          path: out/templates/*
