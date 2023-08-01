@@ -2,22 +2,22 @@ name: 🤖 Android builds
 on:
   workflow_call:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
   workflow_dispatch:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
@@ -77,13 +77,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai_treeish }}
+          ref: ${{ inputs.limboai-treeish }}
 
       - name: Set up Java 11
         uses: actions/setup-java@v3
@@ -127,12 +127,15 @@ jobs:
     name: Make Android package
     needs: android-builds
 
+    env:
+      NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
+
     steps:
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Download Android template builds
         uses: actions/download-artifact@v3
@@ -179,11 +182,11 @@ jobs:
       - name: Upload Android libs
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.android-lib
+          name: ${{env.NAME_PREFIX}}.android-lib
           path: bin/godot-lib.*
 
       - name: Upload Android templates
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.export-templates
+          name: ${{env.NAME_PREFIX}}.export-templates
           path: out/*

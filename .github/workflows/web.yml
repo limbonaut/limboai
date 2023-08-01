@@ -2,22 +2,22 @@ name: 🌐 Web builds
 on:
   workflow_call:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
   workflow_dispatch:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
@@ -56,19 +56,20 @@ jobs:
 
     env:
       CACHE_NAME: godot.web.${{matrix.target}}${{  matrix.dlink_enabled == true && '.dlink' || ''  }}
+      NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
     steps:
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai_treeish }}
+          ref: ${{ inputs.limboai-treeish }}
 
       - name: Set up Emscripten latest
         uses: mymindstorm/setup-emsdk@v12
@@ -115,5 +116,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.export-templates
+          name: ${{env.NAME_PREFIX}}.export-templates
           path: out/*

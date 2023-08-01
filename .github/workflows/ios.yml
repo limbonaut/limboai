@@ -2,22 +2,22 @@ name: 🍏 iOS builds
 on:
   workflow_call:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
   workflow_dispatch:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
@@ -79,13 +79,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai_treeish }}
+          ref: ${{ inputs.limboai-treeish }}
 
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
@@ -135,13 +135,16 @@ jobs:
     name: Package iOS templates
     needs: ios-builds
 
+    env:
+      NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
+
     steps:
 
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Set up Vulkan SDK
         run: |
@@ -179,7 +182,7 @@ jobs:
       - name: Upload template bundle
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.export-templates
+          name: ${{env.NAME_PREFIX}}.export-templates
           path: out/*
 
       - name: Delete templates artifact

@@ -2,26 +2,25 @@ name: 🐧 Linux builds
 on:
   workflow_call:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
   workflow_dispatch:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
-
 
 # Global Settings
 env:
@@ -102,17 +101,23 @@ jobs:
       BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
+      - name: Dump environment
+        env:
+          ENVI: ${{ toJson(env) }}
+        run: |
+          echo "$ENVI"
+
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai_treeish }}
+          ref: ${{ inputs.limboai-treeish }}
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Set up buildroot x86_64
@@ -175,7 +180,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          BUILD_NAME: godot.limboai.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates
         with:
-          name: ${{ startsWith(matrix.target, 'template') && 'godot.limboai.export_templates' || env.BUILD_NAME  }}
+          name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*

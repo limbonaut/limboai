@@ -2,22 +2,22 @@ name: 🪟 Windows builds
 on:
   workflow_call:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
   workflow_dispatch:
     inputs:
-      godot_treeish:
+      godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai_treeish:
+      limboai-treeish:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
@@ -106,13 +106,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: godotengine/godot
-          ref: ${{ inputs.godot_treeish }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v3
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai_treeish }}
+          ref: ${{ inputs.limboai-treeish }}
 
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
@@ -166,7 +166,9 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          BUILD_NAME: godot.limboai.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates
         with:
-          name: ${{ startsWith(matrix.target, 'template') && 'godot.limboai.export_templates' || env.BUILD_NAME  }}
+          name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*
