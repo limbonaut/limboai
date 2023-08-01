@@ -12,13 +12,19 @@ on:
         default: master
 
 jobs:
-  # android-build:
-  #   name: 🤖 Android
-  #   uses: ./.github/workflows/android.yml
+  android-build:
+    name: 🤖 Android
+    uses: ./.github/workflows/android.yml
+    with:
+      godot_treeish: ${{ inputs.godot_treeish }}
+      limboai_treeish: ${{ inputs.limboai_treeish }}
 
-  # ios-build:
-  #   name: 🍏 iOS
-  #   uses: ./.github/workflows/ios.yml
+  ios-build:
+    name: 🍏 iOS
+    uses: ./.github/workflows/ios.yml
+    with:
+      godot_treeish: ${{ inputs.godot_treeish }}
+      limboai_treeish: ${{ inputs.limboai_treeish }}
 
   linux-build:
     name: 🐧 Linux
