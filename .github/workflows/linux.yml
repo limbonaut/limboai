@@ -102,20 +102,20 @@ jobs:
       BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
-      # Clone Godot
-      - uses: actions/checkout@v3
+      - name: Clone Godot
+        uses: actions/checkout@v3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot_treeish }}
 
-      # Clone limboai module
-      - uses: actions/checkout@v3
+      - name: Clone LimboAI module
+        uses: actions/checkout@v3
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai_treeish }}
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
-      - name: Setup buildroot x86_64
+      - name: Set up buildroot x86_64
         if: matrix.arch == 'x86_64'
         run: |
           wget https://download.tuxfamily.org/godotengine/toolchains/linux/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
@@ -126,7 +126,7 @@ jobs:
           ./relocate-sdk.sh
           cd ..
 
-      - name: Setup buildroot x86_32
+      - name: Set up buildroot x86_32
         if: matrix.arch == 'x86_32'
         run: |
           wget https://download.tuxfamily.org/godotengine/toolchains/linux/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
@@ -152,7 +152,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons -j2 platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
