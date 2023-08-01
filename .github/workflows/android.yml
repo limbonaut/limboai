@@ -134,7 +134,7 @@ jobs:
           repository: godotengine/godot
           ref: ${{ inputs.godot_treeish }}
 
-      - name: Fetch editor artifact
+      - name: Download Android template builds
         uses: actions/download-artifact@v3
         with:
           name: android-templates
@@ -175,13 +175,13 @@ jobs:
             name: android-templates
             failOnError: false
 
-      - name: Upload Android lib
+      - name: Upload Android libs
         uses: actions/upload-artifact@v3
         with:
           name: godot.limboai.android-lib
           path: bin/godot-lib.*
 
-      - name: Upload templates
+      - name: Upload Android templates
         uses: actions/upload-artifact@v3
         with:
           name: godot.limboai.export-templates
