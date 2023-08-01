@@ -78,7 +78,6 @@
 #include "bt/decorators/bt_run_limit.h"
 #include "bt/decorators/bt_subtree.h"
 #include "bt/decorators/bt_time_limit.h"
-#include "editor/debugger/behavior_tree_view.h"
 #include "editor/debugger/limbo_debugger.h"
 #include "hsm/limbo_hsm.h"
 #include "hsm/limbo_state.h"
@@ -86,6 +85,7 @@
 #include "util/limbo_utility.h"
 
 #ifdef TOOLS_ENABLED
+#include "editor/debugger/behavior_tree_view.h"
 #include "editor/limbo_ai_editor_plugin.h"
 #endif
 
