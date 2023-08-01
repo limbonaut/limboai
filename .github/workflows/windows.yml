@@ -157,11 +157,13 @@ jobs:
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
       - name: Prepare artifact
+        shell: bash
         env:
           OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
         run: |
-          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
-          Move-Item -Path bin/* -Destination ${{env.OUTDIR}}
+          rm -f bin/*.{exp,lib,pdb}
+          mkdir -p out/templates/
+          mv bin/* ${{env.OUTDIR}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
