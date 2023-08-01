@@ -91,7 +91,14 @@ jobs:
           distribution: temurin
           java-version: 11
 
-      - name: Set up cache
+      - name: Set up scons
+        run: |
+          python -c "import sys; print(sys.version)"
+          python -m pip install scons==4.4.0
+          python --version
+          scons --version
+
+      - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -100,13 +107,6 @@ jobs:
             ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
             ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
             ${{env.BIN}}-${{env.GODOT_BASE_BRANCH}}
-
-      - name: Set up scons
-        run: |
-          python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
-          python --version
-          scons --version
 
       - name: Compilation
         env:
@@ -152,7 +152,7 @@ jobs:
           python-version: 3.x
           architecture: x64
 
-      - name: Setup scons
+      - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
@@ -170,7 +170,8 @@ jobs:
           mv bin/android_* out/templates/
           ls -l out/*
 
-      - uses: geekyeggo/delete-artifact@v2
+      - name: Delete Android template builds
+        uses: geekyeggo/delete-artifact@v2
         with:
             name: android-templates
             failOnError: false

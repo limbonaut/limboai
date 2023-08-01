@@ -121,28 +121,25 @@ jobs:
 
     steps:
 
-      # Clone Godot
-      - uses: actions/checkout@v3
+      - name: Clone Godot
+        uses: actions/checkout@v3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot_treeish }}
 
-      # Clone LimboAI module
-      - uses: actions/checkout@v3
+      - name: Clone LimboAI module
+        uses: actions/checkout@v3
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai_treeish }}
 
-      # Use python 3.x release (works cross platform)
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
-          # Semantic version range syntax or exact version of a Python version
           python-version: '3.x'
-          # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
 
-      - name: Setup scons
+      - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
@@ -153,12 +150,11 @@ jobs:
           scons --version
           dotnet --info
 
-      - name: Setup Vulkan SDK
+      - name: Set up Vulkan SDK
         run: |
           sh misc/scripts/install_vulkan_sdk_macos.sh
 
-      # Upload cache on completion and check it out now
-      - name: Load .scons_cache directory
+      - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -210,7 +206,7 @@ jobs:
           repository: godotengine/godot
           ref: ${{ inputs.godot_treeish }}
 
-      - name: Fetch editor artifact
+      - name: Download editor artifact
         uses: actions/download-artifact@v3
         with:
           name: macos-editor
@@ -235,7 +231,7 @@ jobs:
           name: godot.limboai.editor.macos.universal
           path: out/editor/*
 
-      - name: Fetch templates artifact
+      - name: Download templates artifact
         uses: actions/download-artifact@v3
         with:
           name: macos-templates
@@ -243,6 +239,7 @@ jobs:
 
       - name: Make templates bundle
         run: |
+          rm -rf out/
           ls bin/
           lipo -create bin/godot.macos.template_release.x86_64 bin/godot.macos.template_release.arm64 -output bin/godot.macos.template_release.universal
           lipo -create bin/godot.macos.template_debug.x86_64 bin/godot.macos.template_debug.arm64 -output bin/godot.macos.template_debug.universal
@@ -268,5 +265,5 @@ jobs:
       - name: Upload templates bundle
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.templates.macos.universal
-          path: out/templates/*
+          name: godot.limboai.export-templates
+          path: out/*

@@ -102,39 +102,35 @@ jobs:
       BIN: godot.windows.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
-      # Clone Godot
-      - uses: actions/checkout@v3
+      - name: Clone Godot
+        uses: actions/checkout@v3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot_treeish }}
 
-      # Clone LimboAI module
-      - uses: actions/checkout@v3
+      - name: Clone LimboAI module
+        uses: actions/checkout@v3
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai_treeish }}
 
-      # Use python 3.x release (works cross platform)
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
-          # Semantic version range syntax or exact version of a Python version
           python-version: '3.x'
-          # Optional - x64 or x86 architecture, defaults to x64
           architecture: 'x64'
 
-      - name: Setup scons
+      - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
           python --version
           scons --version
 
-      - name: Setup MSVC problem matcher
+      - name: Set up MSVC problem matcher
         uses: ammaraskar/msvc-problem-matcher@master
 
-      # Upload cache on completion and check it out now
-      - name: Load .scons_cache directory
+      - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -161,11 +157,16 @@ jobs:
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
       - name: Prepare artifact
+        env:
+          OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+          Move-Item -Path bin/* -Destination ${{env.OUTDIR}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
+        env:
+          BUILD_NAME: godot.limboai.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
         with:
-          name: godot.limboai.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-          path: bin/*
+          name: ${{ startsWith(matrix.target, 'template') && 'godot.limboai.export_templates' || env.BUILD_NAME  }}
+          path: out/*

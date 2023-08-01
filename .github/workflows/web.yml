@@ -80,15 +80,14 @@ jobs:
         run: |
           emcc -v
 
-      - name: Setup scons
+      - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
           python --version
           scons --version
 
-      # Upload cache on completion and check it out now
-      - name: Load .scons_cache directory
+      - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -116,5 +115,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: godot.limboai.${{matrix.target}}.web
-          path: out/templates/*
+          name: godot.limboai.export-templates
+          path: out/*

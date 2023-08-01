@@ -136,8 +136,7 @@ jobs:
           ./relocate-sdk.sh
           cd ..
 
-      # Upload cache on completion and check it out now
-      - name: Load .scons_cache directory
+      - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -165,12 +164,18 @@ jobs:
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=linuxbsd
 
       - name: Prepare artifact
+        env:
+          OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           strip ./bin/godot.*
           chmod +x ./bin/godot.*
+          mkdir -p ${{env.OUTDIR}}
+          mv ./bin/godot.* ${{env.OUTDIR}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
+        env:
+          BUILD_NAME: godot.limboai.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
         with:
-          name: godot.limboai.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-          path: bin/*
+          name: ${{ startsWith(matrix.target, 'template') && 'godot.limboai.export_templates' || env.BUILD_NAME  }}
+          path: out/*
