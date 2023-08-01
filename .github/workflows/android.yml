@@ -28,6 +28,7 @@ env:
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
 jobs:
   android-builds:
@@ -126,9 +127,6 @@ jobs:
     runs-on: "ubuntu-20.04"
     name: Make Android package
     needs: android-builds
-
-    env:
-      NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
     steps:
       - name: Clone Godot

@@ -29,6 +29,7 @@ env:
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
 jobs:
   windows-builds:
@@ -168,7 +169,6 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
           NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
           NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates
         with:

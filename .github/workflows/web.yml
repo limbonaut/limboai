@@ -29,6 +29,7 @@ env:
   SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra werror=yes tests=no
   EM_VERSION: 3.1.18
   EM_CACHE_FOLDER: "emsdk-cache"
+  NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
 jobs:
   web-builds:
@@ -56,7 +57,6 @@ jobs:
 
     env:
       CACHE_NAME: godot.web.${{matrix.target}}${{  matrix.dlink_enabled == true && '.dlink' || ''  }}
-      NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
     steps:
       - name: Clone Godot
