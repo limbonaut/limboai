@@ -28,7 +28,6 @@ env:
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
 jobs:
   linux-builds:
@@ -102,12 +101,6 @@ jobs:
       BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
 
     steps:
-      - name: Dump environment
-        env:
-          ENVI: ${{ toJson(env) }}
-        run: |
-          echo "$ENVI"
-
       - name: Clone Godot
         uses: actions/checkout@v3
         with:
@@ -119,6 +112,9 @@ jobs:
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
+
+      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Set up buildroot x86_64
