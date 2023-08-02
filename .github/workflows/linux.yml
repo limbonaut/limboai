@@ -182,7 +182,7 @@ jobs:
         uses: actions/upload-artifact@v3
         env:
           NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates
+          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.build-mono == true && '.mono' || ''  }}
         with:
           name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*
