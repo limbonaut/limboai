@@ -1,0 +1,55 @@
+name: 🔗 All Builds
+on:
+  workflow_dispatch:
+    inputs:
+      godot-treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: master
+      limboai-treeish:
+        description: A tag, branch or commit hash in the LimboAI repository.
+        type: string
+        default: master
+
+jobs:
+  android-build:
+    name: 🤖 Android
+    uses: ./.github/workflows/android.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
+
+  ios-build:
+    name: 🍏 iOS
+    uses: ./.github/workflows/ios.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
+
+  linux-build:
+    name: 🐧 Linux
+    uses: ./.github/workflows/linux.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
+
+  macos-build:
+    name: 🍎 macOS
+    uses: ./.github/workflows/macos.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
+
+  windows-build:
+    name: 🪟 Windows
+    uses: ./.github/workflows/windows.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
+
+  web-build:
+    name: 🌐 Web
+    uses: ./.github/workflows/web.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ inputs.limboai-treeish }}
