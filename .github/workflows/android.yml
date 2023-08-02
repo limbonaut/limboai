@@ -85,6 +85,9 @@ jobs:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
 
+      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
+
       - name: Set up Java 11
         uses: actions/setup-java@v3
         with:

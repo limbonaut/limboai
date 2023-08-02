@@ -132,6 +132,9 @@ jobs:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
 
+      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
+
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:

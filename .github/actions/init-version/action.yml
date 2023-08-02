@@ -13,3 +13,9 @@ runs:
     - name: Set NAME_PREFIX
       shell: bash
       run: echo "NAME_PREFIX=godot-${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" >> "$GITHUB_ENV"
+
+    - name: Set GODOT_VERSION_STATUS & BUILD_NAME
+      shell: bash
+      run: |
+        echo "GODOT_VERSION_STATUS=limboai+${LIMBOAI_VERSION}" >> "$GITHUB_ENV"
+        echo "BUILD_NAME=gha" >> "$GITHUB_ENV"
