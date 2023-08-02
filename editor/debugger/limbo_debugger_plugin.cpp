@@ -133,14 +133,37 @@ void LimboDebuggerTab::_filter_changed(String p_text) {
 	_update_bt_player_list(active_bt_players, p_text);
 }
 
-LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session) {
+void LimboDebuggerTab::_window_visibility_changed(bool p_visible) {
+	make_floating->set_visible(!p_visible);
+}
+
+LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowWrapper *p_wrapper) {
 	session = p_session;
+	window_wrapper = p_wrapper;
+
+	root_vb = memnew(VBoxContainer);
+	add_child(root_vb);
+
+	toolbar = memnew(HBoxContainer);
+	root_vb->add_child(toolbar);
 
 	hsc = memnew(HSplitContainer);
-	add_child(hsc);
+	hsc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	hsc->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	root_vb->add_child(hsc);
 
 	VBoxContainer *list_box = memnew(VBoxContainer);
 	hsc->add_child(list_box);
+
+	if (p_wrapper->is_window_available()) {
+		make_floating = memnew(ScreenSelect);
+		make_floating->set_flat(true);
+		make_floating->set_h_size_flags(Control::SIZE_EXPAND | Control::SIZE_SHRINK_END);
+		make_floating->set_tooltip_text(TTR("Make the LimboAI Debugger floating."));
+		make_floating->connect(SNAME("request_open_in_screen"), callable_mp(window_wrapper, &WindowWrapper::enable_window_on_screen).bind(true));
+		toolbar->add_child(make_floating);
+		p_wrapper->connect(SNAME("window_visibility_changed"), callable_mp(this, &LimboDebuggerTab::_window_visibility_changed));
+	}
 
 	filter_players = memnew(LineEdit);
 	filter_players->set_placeholder(TTR("Filter Players"));
@@ -188,13 +211,32 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session) {
 
 //////////////////////// LimboDebuggerPlugin
 
+void LimboDebuggerPlugin::_window_visibility_changed(bool p_visible) {
+}
+
 void LimboDebuggerPlugin::setup_session(int p_idx) {
 	Ref<EditorDebuggerSession> session = get_session(p_idx);
-	tab = memnew(LimboDebuggerTab(session));
+
+	if (tab != nullptr) {
+		tab->queue_free();
+		window_wrapper->queue_free();
+	}
+
+	window_wrapper = memnew(WindowWrapper);
+	window_wrapper->set_window_title(vformat(TTR("%s - Godot Engine"), TTR("LimboAI Debugger")));
+	window_wrapper->set_margins_enabled(true);
+	window_wrapper->set_name("LimboAI");
+
+	tab = memnew(LimboDebuggerTab(session, window_wrapper));
 	tab->set_name("LimboAI");
+	window_wrapper->set_wrapped_control(tab);
+
+	window_wrapper->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	window_wrapper->connect(SNAME("window_visibility_changed"), callable_mp(this, &LimboDebuggerPlugin::_window_visibility_changed));
+
 	session->connect(SNAME("started"), callable_mp(tab, &LimboDebuggerTab::start_session));
 	session->connect(SNAME("stopped"), callable_mp(tab, &LimboDebuggerTab::stop_session));
-	session->add_session_tab(tab);
+	session->add_session_tab(window_wrapper);
 }
 
 bool LimboDebuggerPlugin::capture(const String &p_message, const Array &p_data, int p_session) {

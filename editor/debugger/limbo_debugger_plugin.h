@@ -21,6 +21,7 @@
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "editor/plugins/editor_debugger_plugin.h"
+#include "editor/window_wrapper.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/panel_container.h"
@@ -33,20 +34,26 @@ class LimboDebuggerTab : public PanelContainer {
 private:
 	List<String> active_bt_players;
 	Ref<EditorDebuggerSession> session;
-	HSplitContainer *hsc;
-	Label *info_message;
-	ItemList *bt_player_list;
-	BehaviorTreeView *bt_view;
-	VBoxContainer *view_box;
-	HBoxContainer *alert_box;
-	TextureRect *alert_icon;
-	Label *alert_message;
-	LineEdit *filter_players;
+	VBoxContainer *root_vb = nullptr;
+	HBoxContainer *toolbar = nullptr;
+	HSplitContainer *hsc = nullptr;
+	Label *info_message = nullptr;
+	ItemList *bt_player_list = nullptr;
+	BehaviorTreeView *bt_view = nullptr;
+	VBoxContainer *view_box = nullptr;
+	HBoxContainer *alert_box = nullptr;
+	TextureRect *alert_icon = nullptr;
+	Label *alert_message = nullptr;
+	LineEdit *filter_players = nullptr;
+
+	Button *make_floating = nullptr;
+	WindowWrapper *window_wrapper = nullptr;
 
 	void _show_alert(const String &p_message);
 	void _update_bt_player_list(const List<String> &p_node_paths, const String &p_filter);
 	void _bt_selected(int p_idx);
 	void _filter_changed(String p_text);
+	void _window_visibility_changed(bool p_visible);
 
 public:
 	void start_session();
@@ -56,14 +63,17 @@ public:
 	String get_selected_bt_player();
 	void update_behavior_tree(const BehaviorTreeData &p_data);
 
-	LimboDebuggerTab(Ref<EditorDebuggerSession> p_session);
+	LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowWrapper *p_wrapper);
 };
 
 class LimboDebuggerPlugin : public EditorDebuggerPlugin {
 	GDCLASS(LimboDebuggerPlugin, EditorDebuggerPlugin);
 
 private:
-	LimboDebuggerTab *tab;
+	LimboDebuggerTab *tab = nullptr;
+	WindowWrapper *window_wrapper = nullptr;
+
+	void _window_visibility_changed(bool p_visible);
 
 public:
 	void setup_session(int p_idx) override;
