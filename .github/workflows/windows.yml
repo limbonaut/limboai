@@ -151,11 +151,15 @@ jobs:
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
+        env:
+          GODOT_VERSION_STATUS: limboai
         run: |
           ./bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
         if: matrix.build-mono && matrix.target == 'editor'
+        env:
+          GODOT_VERSION_STATUS: limboai
         run: |
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
