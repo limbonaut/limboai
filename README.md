@@ -1,4 +1,4 @@
-LimboAI - Behavior Trees and Hierarchical State Machines for Godot 4
+LimboAI - Behavior Trees and State Machines for Godot 4
 ---
 LimboAI is a C++ module for Godot Engine 4 that provides an implementation of Behavior Trees and State Machines, which can be used together to create complex AI behaviors.
 
@@ -35,9 +35,16 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - Delegation: Instead of extending `LimboState`, utilize vanilla `LimboState` and delegate implementation to provided callback functions. Perfect for game jams and quick prototyping.
     - 🛈 Note: Currently, state machine transition setup and initialization must be done through code as there is no GUI editor for state machines.
 
+## How to Get Started
+
+You have two options to start using this module:
+
+1. Download precompiled builds by going to "Actions → All Builds."
+2. Compile the module on your own (see next section).
+
 ## Compiling
 
-> 🛈 Precompiled builds are a WIP
+> 🛈 Precompiled builds are available in "Actions → All Builds"
 
 To incorporate this module, you'll need to build Godot Engine from source with LimboAI module included.
 
