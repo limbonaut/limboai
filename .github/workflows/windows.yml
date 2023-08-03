@@ -161,7 +161,7 @@ jobs:
         env:
           GODOT_VERSION_STATUS: limboai
         run: |
-          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
+          python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
       - name: Prepare artifact
         shell: bash
