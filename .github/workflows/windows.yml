@@ -29,7 +29,6 @@ env:
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  NAME_PREFIX: godot.${{inputs.godot-treeish}}.limboai+${{inputs.limboai-treeish}}
 
 jobs:
   windows-builds:
@@ -115,6 +114,9 @@ jobs:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
 
+      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
+
       - name: Set up Python 3.x
         uses: actions/setup-python@v4
         with:
@@ -149,13 +151,17 @@ jobs:
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
+        env:
+          GODOT_VERSION_STATUS: limboai
         run: |
           ./bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
         if: matrix.build-mono && matrix.target == 'editor'
+        env:
+          GODOT_VERSION_STATUS: limboai
         run: |
-          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
+          python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
 
       - name: Prepare artifact
         shell: bash
