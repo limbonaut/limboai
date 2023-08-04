@@ -39,12 +39,12 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 You have two options to start using this module:
 
-1. Download precompiled builds by going to "Actions → All Builds."
-2. Compile the module on your own (see next section).
+1. Download precompiled builds: Navigate to "Actions → All Builds" and scroll down until you find the "Artifacts" section.
+2. Compile the module on your own (refer to the next section).
 
 ## Compiling
 
-> 🛈 Precompiled builds are available in "Actions → All Builds"
+> 🛈 Precompiled builds are available in "Actions → All Builds".
 
 To incorporate this module, you'll need to build Godot Engine from source with LimboAI module included.
 
@@ -61,8 +61,7 @@ All contributions are welcome! Feel free to open issues with bug reports and fea
 ## Roadmap
 
 Features and improvements that may be implemented in the future:
-
-- Providing precompiled builds for download.
+- ~~Providing precompiled builds for download.~~ 🗸
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of Behavior Trees in the Visual Debugger.
 - Tests and CI.
