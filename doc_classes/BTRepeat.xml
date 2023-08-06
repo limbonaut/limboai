@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		BT decorator that repeats execution of the child task specified number of [member times].
-		Returns [code]RUNNING[/code] if the child returns [code]RUNNING[/code].
+		Returns [code]RUNNING[/code] if the child returns [code]RUNNING[/code]. If [member forever] is [code]true[/code], BTRepeat will always return [code]RUNNING[/code].
 		Returns [code]SUCCESS[/code] when specified number of successfully finished executions is reached. When [member abort_on_failure] is [code]false[/code], [code]FAILURE[/code] status returned by the child is also considered a successfully finished execution.
 		Returns [code]FAILURE[/code] when [member abort_on_failure] is set and the child returns [code]FAILURE[/code].
 	</description>
@@ -14,6 +14,9 @@
 	<members>
 		<member name="abort_on_failure" type="bool" setter="set_abort_on_failure" getter="get_abort_on_failure" default="false">
 			If [code]false[/code], [code]FAILURE[/code] status returned by the child is also considered a successfully finished execution.
+		</member>
+		<member name="forever" type="bool" setter="set_forever" getter="get_forever" default="false">
+		    If [code]true[/code], the child's execution will be repeated indefinitely, always returning [code]RUNNING[/code].
 		</member>
 		<member name="times" type="int" setter="set_times" getter="get_times" default="1">
 			A number of times to repeat an execution of the child task.

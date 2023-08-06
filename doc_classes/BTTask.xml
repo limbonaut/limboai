@@ -188,7 +188,7 @@
 		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
 			User provided name for the task. If not empty, [code]custom_name[/code] is used by the editor to display the task. See [method get_task_name].
 		</member>
-		<member name="elapsed_time" type="float" setter="" getter="get_elapsed_time" default="0.0">
+		<member name="elapsed_time" type="float" setter="" getter="get_elapsed_time">
 			Elapsed time since the task was entered.
 			Returns 0 when task is not [code]RUNNING[/code].
 		</member>
