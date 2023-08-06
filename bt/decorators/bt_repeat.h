@@ -20,6 +20,7 @@ class BTRepeat : public BTDecorator {
 	GDCLASS(BTRepeat, BTDecorator);
 
 private:
+	bool forever = false;
 	int times = 1;
 	bool abort_on_failure = false;
 	int cur_iteration = 0;
@@ -27,20 +28,20 @@ private:
 protected:
 	static void _bind_methods();
 
+	void _get_property_list(List<PropertyInfo> *p_list) const;
+
 	virtual String _generate_name() const override;
 	virtual void _enter() override;
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_times(int p_value) {
-		times = p_value;
-		emit_changed();
-	}
+	void set_forever(bool p_forever);
+	bool get_forever() const { return forever; }
+
+	void set_times(int p_value);
 	int get_times() const { return times; }
-	void set_abort_on_failure(bool p_value) {
-		abort_on_failure = p_value;
-		emit_changed();
-	}
+
+	void set_abort_on_failure(bool p_value);
 	bool get_abort_on_failure() const { return abort_on_failure; }
 };
 
