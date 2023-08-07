@@ -16,7 +16,7 @@
 			If [code]false[/code], [code]FAILURE[/code] status returned by the child is also considered a successfully finished execution.
 		</member>
 		<member name="forever" type="bool" setter="set_forever" getter="get_forever" default="false">
-		    If [code]true[/code], the child's execution will be repeated indefinitely, always returning [code]RUNNING[/code].
+			If [code]true[/code], the child's execution will be repeated indefinitely, always returning [code]RUNNING[/code].
 		</member>
 		<member name="times" type="int" setter="set_times" getter="get_times" default="1">
 			A number of times to repeat an execution of the child task.

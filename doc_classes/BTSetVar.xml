@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTSetVar" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BT action that assigns [member value] to the [member variable] and then returns [code]SUCCESS[/code].
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="value" type="BBVariant" setter="set_value" getter="get_value">
+			Parameter that specifies the value to be assigned to the variable.
+		</member>
+		<member name="variable" type="String" setter="set_variable" getter="get_variable" default="&quot;&quot;">
+			Variable name whose value is to be assigned.
+		</member>
+	</members>
+</class>

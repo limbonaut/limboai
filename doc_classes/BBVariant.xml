@@ -8,7 +8,6 @@
 	<tutorials>
 	</tutorials>
 	<members>
-		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" overrides="BBParam" default="null" />
 		<member name="type" type="int" setter="set_type" getter="get_type" enum="Variant.Type" default="0">
 		</member>
 	</members>
