@@ -84,6 +84,7 @@ def get_doc_classes():
         "BTRunLimit",
         "BTSelector",
         "BTSequence",
+        "BTSetVar",
         "BTState",
         "BTSubtree",
         "BTTask",
