@@ -1,0 +1,23 @@
+[gd_resource type="BehaviorTree" load_steps=6 format=3 uid="uid://cvm3gqes75f53"]
+
+[sub_resource type="BBVariant" id="BBVariant_cu1uc"]
+resource_name = "Hello, World!"
+saved_value = "Hello, World!"
+type = 4
+
+[sub_resource type="BTSetVar" id="BTSetVar_2e0uw"]
+variable = "message"
+value = SubResource("BBVariant_cu1uc")
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_533ui"]
+text = "Message is: %s"
+bb_format_parameters = PackedStringArray("message")
+
+[sub_resource type="BTSequence" id="BTSequence_bhar3"]
+children = [SubResource("BTSetVar_2e0uw"), SubResource("BTConsolePrint_533ui")]
+
+[sub_resource type="BTRunLimit" id="BTRunLimit_hv3vu"]
+children = [SubResource("BTSequence_bhar3")]
+
+[resource]
+root_task = SubResource("BTRunLimit_hv3vu")
