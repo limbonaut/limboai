@@ -29,10 +29,6 @@ void BBParam::set_value_source(ValueSource p_value) {
 }
 
 Variant BBParam::get_saved_value() {
-	if (saved_value.get_type() != get_type()) {
-		Callable::CallError err;
-		Variant::construct(get_type(), saved_value, nullptr, 0, err);
-	}
 	return saved_value;
 }
 
@@ -50,7 +46,21 @@ void BBParam::set_variable(const String &p_value) {
 
 String BBParam::to_string() {
 	if (value_source == SAVED_VALUE) {
-		return String(saved_value);
+		String s = saved_value.stringify();
+		switch (get_type()) {
+			case Variant::STRING: {
+				s = s.c_escape().quote();
+			} break;
+			case Variant::STRING_NAME: {
+				s = "&" + s.c_escape().quote();
+			} break;
+			case Variant::NODE_PATH: {
+				s = "^" + s.c_escape().quote();
+			} break;
+			default: {
+			} break;
+		}
+		return s;
 	} else {
 		return LimboUtility::get_singleton()->decorate_var(variable);
 	}
@@ -95,5 +105,6 @@ void BBParam::_bind_methods() {
 BBParam::BBParam() {
 	value_source = SAVED_VALUE;
 	variable = "";
-	saved_value = Variant();
+
+	_assign_default_value();
 }
