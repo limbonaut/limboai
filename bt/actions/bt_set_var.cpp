@@ -19,7 +19,7 @@ String BTSetVar::_generate_name() const {
 	if (variable.is_empty()) {
 		return "SetVar ???";
 	}
-	return vformat("SetVar %s = %s", LimboUtility::get_singleton()->decorate_var(variable),
+	return vformat("Set %s = %s", LimboUtility::get_singleton()->decorate_var(variable),
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
