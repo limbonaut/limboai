@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTCheckVar" inherits="BTCondition" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BT condition that checks [member variable] against [member value] and returns [code]SUCCESS[/code] or [code]FAILURE[/code] based on the [member check_type].
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="check_type" type="int" setter="set_check_type" getter="get_check_type" enum="BTCheckVar.CheckType" default="0">
+			Type of check to perform.
+		</member>
+		<member name="value" type="BBVariant" setter="set_value" getter="get_value">
+			Parameter that specifies the value to which the [member variable] will be compared.
+		</member>
+		<member name="variable" type="String" setter="set_variable" getter="get_variable" default="&quot;&quot;">
+			Variable name to check its value.
+		</member>
+	</members>
+	<constants>
+		<constant name="CHECK_EQUAL" value="0" enum="CheckType">
+		</constant>
+		<constant name="CHECK_LESS_THAN" value="1" enum="CheckType">
+		</constant>
+		<constant name="CHECK_LESS_THAN_OR_EQUAL" value="2" enum="CheckType">
+		</constant>
+		<constant name="CHECK_GREATER_THAN" value="3" enum="CheckType">
+		</constant>
+		<constant name="CHECK_GREATER_THAN_OR_EQUAL" value="4" enum="CheckType">
+		</constant>
+		<constant name="CHECK_NOT_EQUAL" value="5" enum="CheckType">
+		</constant>
+	</constants>
+</class>
