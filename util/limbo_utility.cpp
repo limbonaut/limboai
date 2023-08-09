@@ -58,10 +58,25 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 		Ref<Script> s = ResourceLoader::load(p_class_or_script_path, "Script");
 		return EditorNode::get_singleton()->get_object_icon(s.ptr(), "BTTask");
 	}
-	// TODO: Walk inheritance tree until icon is found.
-	return EditorNode::get_singleton()->get_class_icon(p_class_or_script_path, "BTTask");
+
+	Control *gui_base = EditorNode::get_singleton()->get_gui_base();
+	if (gui_base->has_theme_icon(p_class_or_script_path, SNAME("EditorIcons"))) {
+		return gui_base->get_theme_icon(p_class_or_script_path, SNAME("EditorIcons"));
+	}
+
+	// Use an icon of one of the base classes: look up max 3 parents.
+	StringName class_name = p_class_or_script_path;
+	for (int i = 0; i < 3; i++) {
+		class_name = ClassDB::get_parent_class(class_name);
+		if (gui_base->has_theme_icon(class_name, SNAME("EditorIcons"))) {
+			return gui_base->get_theme_icon(class_name, SNAME("EditorIcons"));
+		}
+	}
+	// Return generic resource icon as a fallback.
+	return gui_base->get_theme_icon(SNAME("Resource"), SNAME("EditorIcons"));
 #endif // TOOLS_ENABLED
-	// Note: class icons are not available at runtime as they are part of the editor theme.
+
+	// * Class icons are not available at runtime as they are part of the editor theme.
 	return nullptr;
 }
 
