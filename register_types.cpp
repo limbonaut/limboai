@@ -63,6 +63,7 @@
 #include "bt/composites/bt_random_sequence.h"
 #include "bt/composites/bt_selector.h"
 #include "bt/composites/bt_sequence.h"
+#include "bt/conditions/bt_check_trigger.h"
 #include "bt/conditions/bt_check_var.h"
 #include "bt/conditions/bt_condition.h"
 #include "bt/decorators/bt_always_fail.h"
@@ -145,6 +146,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTWaitTicks);
 
 		GDREGISTER_CLASS(BTCondition);
+		GDREGISTER_CLASS(BTCheckTrigger);
 		GDREGISTER_CLASS(BTCheckVar);
 
 		GDREGISTER_ABSTRACT_CLASS(BBParam);

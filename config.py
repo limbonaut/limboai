@@ -60,6 +60,7 @@ def get_doc_classes():
         "BTAction",
         "BTAlwaysFail",
         "BTAlwaysSucceed",
+        "BTCheckTrigger",
         "BTCheckVar",
         "BTComposite",
         "BTCondition",
