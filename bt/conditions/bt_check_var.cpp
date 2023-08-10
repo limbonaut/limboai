@@ -15,14 +15,12 @@
 
 #include "core/variant/callable.h"
 
-VARIANT_ENUM_CAST(BTCheckVar::CheckType);
-
 void BTCheckVar::set_variable(String p_variable) {
 	variable = p_variable;
 	emit_changed();
 }
 
-void BTCheckVar::set_check_type(CheckType p_check_type) {
+void BTCheckVar::set_check_type(LimboUtility::CheckType p_check_type) {
 	check_type = p_check_type;
 	emit_changed();
 }
@@ -54,64 +52,21 @@ String BTCheckVar::_generate_name() const {
 		return "CheckVar ???";
 	}
 
-	String check_str = "?";
-	switch (check_type) {
-		case CheckType::CHECK_EQUAL: {
-			check_str = "==";
-		} break;
-		case CheckType::CHECK_LESS_THAN: {
-			check_str = "<";
-		} break;
-		case CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			check_str = "<=";
-		} break;
-		case CheckType::CHECK_GREATER_THAN: {
-			check_str = ">";
-		} break;
-		case CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			check_str = ">=";
-		} break;
-		case CheckType::CHECK_NOT_EQUAL: {
-			check_str = "!=";
-		} break;
-	}
-
-	return vformat("Check if %s %s %s", LimboUtility::get_singleton()->decorate_var(variable), check_str,
+	return vformat("Check if: %s %s %s", LimboUtility::get_singleton()->decorate_var(variable),
+			LimboUtility::get_singleton()->get_check_operator_string(check_type),
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
 int BTCheckVar::_tick(double p_delta) {
-	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BBCheckVar: `variable` is not set.");
-	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BBCheckVar: `value` is not set.");
+	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTCheckVar: `variable` is not set.");
+	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTCheckVar: `value` is not set.");
 
-	ERR_FAIL_COND_V_MSG(!get_blackboard()->has_var(variable), FAILURE, vformat("BBCheckVar: Blackboard variable doesn't exist: \"%s\". Returning FAILURE.", variable));
+	ERR_FAIL_COND_V_MSG(!get_blackboard()->has_var(variable), FAILURE, vformat("BTCheckVar: Blackboard variable doesn't exist: \"%s\". Returning FAILURE.", variable));
 
 	Variant left_value = get_blackboard()->get_var(variable, Variant());
 	Variant right_value = value->get_value(get_agent(), get_blackboard());
 
-	switch (check_type) {
-		case CheckType::CHECK_EQUAL: {
-			return Variant::evaluate(Variant::OP_EQUAL, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		case CheckType::CHECK_LESS_THAN: {
-			return Variant::evaluate(Variant::OP_LESS, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		case CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		case CheckType::CHECK_GREATER_THAN: {
-			return Variant::evaluate(Variant::OP_GREATER, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		case CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		case CheckType::CHECK_NOT_EQUAL: {
-			return Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value) ? SUCCESS : FAILURE;
-		} break;
-		default: {
-			return FAILURE;
-		} break;
-	}
+	return LimboUtility::get_singleton()->perform_check(check_type, left_value, right_value) ? SUCCESS : FAILURE;
 }
 
 void BTCheckVar::_bind_methods() {
@@ -125,11 +80,4 @@ void BTCheckVar::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable"), "set_variable", "get_variable");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "check_type", PROPERTY_HINT_ENUM, "Equal,Less Than,Less Than Or Equal,Greater Than,Greater Than Or Equal,Not Equal"), "set_check_type", "get_check_type");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "value", PROPERTY_HINT_RESOURCE_TYPE, "BBVariant"), "set_value", "get_value");
-
-	BIND_ENUM_CONSTANT(CHECK_EQUAL);
-	BIND_ENUM_CONSTANT(CHECK_LESS_THAN);
-	BIND_ENUM_CONSTANT(CHECK_LESS_THAN_OR_EQUAL);
-	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN);
-	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN_OR_EQUAL);
-	BIND_ENUM_CONSTANT(CHECK_NOT_EQUAL);
 }

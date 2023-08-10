@@ -15,6 +15,7 @@
 #include "bt_condition.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
+#include "modules/limboai/util/limbo_utility.h"
 
 #include "core/object/class_db.h"
 #include "core/object/object.h"
@@ -22,19 +23,9 @@
 class BTCheckVar : public BTCondition {
 	GDCLASS(BTCheckVar, BTCondition);
 
-public:
-	enum CheckType : unsigned int {
-		CHECK_EQUAL,
-		CHECK_LESS_THAN,
-		CHECK_LESS_THAN_OR_EQUAL,
-		CHECK_GREATER_THAN,
-		CHECK_GREATER_THAN_OR_EQUAL,
-		CHECK_NOT_EQUAL
-	};
-
 private:
 	String variable;
-	CheckType check_type = CheckType::CHECK_EQUAL;
+	LimboUtility::CheckType check_type = LimboUtility::CheckType::CHECK_EQUAL;
 	Ref<BBVariant> value;
 
 protected:
@@ -49,8 +40,8 @@ public:
 	void set_variable(String p_variable);
 	String get_variable() const { return variable; }
 
-	void set_check_type(CheckType p_check_type);
-	CheckType get_check_type() const { return check_type; }
+	void set_check_type(LimboUtility::CheckType p_check_type);
+	LimboUtility::CheckType get_check_type() const { return check_type; }
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
