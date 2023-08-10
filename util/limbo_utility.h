@@ -14,10 +14,21 @@
 
 #include "core/object/class_db.h"
 #include "core/object/object.h"
+#include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
+
+public:
+	enum CheckType : unsigned int {
+		CHECK_EQUAL,
+		CHECK_LESS_THAN,
+		CHECK_LESS_THAN_OR_EQUAL,
+		CHECK_GREATER_THAN,
+		CHECK_GREATER_THAN_OR_EQUAL,
+		CHECK_NOT_EQUAL
+	};
 
 protected:
 	static LimboUtility *singleton;
@@ -30,8 +41,13 @@ public:
 	String get_status_name(int p_status) const;
 	Ref<Texture2D> get_task_icon(String p_class_or_script_path) const;
 
+	String get_check_operator_string(CheckType p_check_type);
+	bool perform_check(CheckType p_check_type, const Variant &left_value, const Variant &right_value);
+
 	LimboUtility();
 	~LimboUtility();
 };
+
+VARIANT_ENUM_CAST(LimboUtility::CheckType);
 
 #endif // LIMBO_UTILITY_H

@@ -63,6 +63,7 @@
 #include "bt/composites/bt_random_sequence.h"
 #include "bt/composites/bt_selector.h"
 #include "bt/composites/bt_sequence.h"
+#include "bt/conditions/bt_check_agent_property.h"
 #include "bt/conditions/bt_check_trigger.h"
 #include "bt/conditions/bt_check_var.h"
 #include "bt/conditions/bt_condition.h"
@@ -102,6 +103,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		LimboDebugger::initialize();
 
+		GDREGISTER_CLASS(LimboUtility);
 		GDREGISTER_CLASS(Blackboard);
 
 		GDREGISTER_CLASS(LimboState);
@@ -146,6 +148,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTWaitTicks);
 
 		GDREGISTER_CLASS(BTCondition);
+		GDREGISTER_CLASS(BTCheckAgentProperty);
 		GDREGISTER_CLASS(BTCheckTrigger);
 		GDREGISTER_CLASS(BTCheckVar);
 
@@ -184,7 +187,6 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBVariant);
 
 		_limbo_utility = memnew(LimboUtility);
-		GDREGISTER_CLASS(LimboUtility);
 
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 		LimboStringNames::create();

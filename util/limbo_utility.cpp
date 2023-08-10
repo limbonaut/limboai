@@ -80,10 +80,69 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	return nullptr;
 }
 
+String LimboUtility::get_check_operator_string(CheckType p_check_type) {
+	switch (p_check_type) {
+		case LimboUtility::CheckType::CHECK_EQUAL: {
+			return "==";
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN: {
+			return "<";
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
+			return "<=";
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
+			return ">";
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
+			return ">=";
+		} break;
+		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
+			return "!=";
+		} break;
+		default: {
+			return "?";
+		} break;
+	}
+}
+
+bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_value, const Variant &right_value) {
+	switch (p_check_type) {
+		case LimboUtility::CheckType::CHECK_EQUAL: {
+			return Variant::evaluate(Variant::OP_EQUAL, left_value, right_value);
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN: {
+			return Variant::evaluate(Variant::OP_LESS, left_value, right_value);
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
+			return Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value);
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
+			return Variant::evaluate(Variant::OP_GREATER, left_value, right_value);
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
+			return Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value);
+		} break;
+		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
+			return Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value);
+		} break;
+		default: {
+			return false;
+		} break;
+	}
+}
+
 void LimboUtility::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decorate_var", "p_variable"), &LimboUtility::decorate_var);
 	ClassDB::bind_method(D_METHOD("get_status_name", "p_status"), &LimboUtility::get_status_name);
 	ClassDB::bind_method(D_METHOD("get_task_icon", "p_class_or_script_path"), &LimboUtility::get_task_icon);
+
+	BIND_ENUM_CONSTANT(CHECK_EQUAL);
+	BIND_ENUM_CONSTANT(CHECK_LESS_THAN);
+	BIND_ENUM_CONSTANT(CHECK_LESS_THAN_OR_EQUAL);
+	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN);
+	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN_OR_EQUAL);
+	BIND_ENUM_CONSTANT(CHECK_NOT_EQUAL);
 }
 
 LimboUtility::LimboUtility() {
