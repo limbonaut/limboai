@@ -30,4 +30,18 @@
 			</description>
 		</method>
 	</methods>
+	<constants>
+		<constant name="CHECK_EQUAL" value="0" enum="CheckType">
+		</constant>
+		<constant name="CHECK_LESS_THAN" value="1" enum="CheckType">
+		</constant>
+		<constant name="CHECK_LESS_THAN_OR_EQUAL" value="2" enum="CheckType">
+		</constant>
+		<constant name="CHECK_GREATER_THAN" value="3" enum="CheckType">
+		</constant>
+		<constant name="CHECK_GREATER_THAN_OR_EQUAL" value="4" enum="CheckType">
+		</constant>
+		<constant name="CHECK_NOT_EQUAL" value="5" enum="CheckType">
+		</constant>
+	</constants>
 </class>
