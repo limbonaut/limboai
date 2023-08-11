@@ -23,7 +23,7 @@ class BTSetAgentProperty : public BTAction {
 	GDCLASS(BTSetAgentProperty, BTAction);
 
 private:
-	StringName property_name;
+	StringName property;
 	Ref<BBVariant> value;
 
 protected:
@@ -35,8 +35,8 @@ protected:
 public:
 	virtual String get_configuration_warning() const override;
 
-	void set_property_name(StringName p_prop);
-	StringName get_property_name() const { return property_name; }
+	void set_property(StringName p_prop);
+	StringName get_property() const { return property; }
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }

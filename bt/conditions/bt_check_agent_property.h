@@ -24,7 +24,7 @@ class BTCheckAgentProperty : public BTCondition {
 	GDCLASS(BTCheckAgentProperty, BTCondition);
 
 private:
-	StringName property_name;
+	StringName property;
 	LimboUtility::CheckType check_type = LimboUtility::CheckType::CHECK_EQUAL;
 	Ref<BBVariant> value;
 
@@ -37,8 +37,8 @@ protected:
 public:
 	virtual String get_configuration_warning() const override;
 
-	void set_property_name(StringName p_prop);
-	StringName get_property_name() const { return property_name; }
+	void set_property(StringName p_prop);
+	StringName get_property() const { return property; }
 
 	void set_check_type(LimboUtility::CheckType p_check_type);
 	LimboUtility::CheckType get_check_type() const { return check_type; }
