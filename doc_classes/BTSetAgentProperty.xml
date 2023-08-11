@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTSetAgentProperty" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BT action that assigns a value to agent's property.
+	</brief_description>
+	<description>
+		BTSetAgentProperty assigns the specified [member value] to the agent's property identified by the [member property_name] and returns [code]SUCCESS[/code].
+		Returns [code]FAILURE[/code] if it fails to set the property.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="property_name" type="StringName" setter="set_property_name" getter="get_property_name" default="&amp;&quot;&quot;">
+			Parameter that specifies the agent's property name.
+		</member>
+		<member name="value" type="BBVariant" setter="set_value" getter="get_value">
+			Parameter that specifies the value that will be assigned to agent's property.
+		</member>
+	</members>
+</class>
