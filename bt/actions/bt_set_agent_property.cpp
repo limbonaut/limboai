@@ -11,8 +11,8 @@
 
 #include "bt_set_agent_property.h"
 
-void BTSetAgentProperty::set_property_name(StringName p_prop) {
-	property_name = p_prop;
+void BTSetAgentProperty::set_property(StringName p_prop) {
+	property = p_prop;
 	emit_changed();
 }
 
@@ -29,8 +29,8 @@ String BTSetAgentProperty::get_configuration_warning() const {
 	if (!warning.is_empty()) {
 		warning += "\n";
 	}
-	if (property_name == StringName()) {
-		warning += "`property_name` should be assigned.\n";
+	if (property == StringName()) {
+		warning += "`property` should be assigned.\n";
 	}
 	if (!value.is_valid()) {
 		warning += "`value` should be assigned.\n";
@@ -39,30 +39,30 @@ String BTSetAgentProperty::get_configuration_warning() const {
 }
 
 String BTSetAgentProperty::_generate_name() const {
-	if (property_name == StringName()) {
+	if (property == StringName()) {
 		return "SetAgentProperty ???";
 	}
 
-	return vformat("Set agent.%s = %s", property_name,
+	return vformat("Set agent.%s = %s", property,
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
 int BTSetAgentProperty::_tick(double p_delta) {
-	ERR_FAIL_COND_V_MSG(property_name == StringName(), FAILURE, "BTSetAgentProperty: `property_name` is not set.");
+	ERR_FAIL_COND_V_MSG(property == StringName(), FAILURE, "BTSetAgentProperty: `property` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 
 	bool r_valid;
-	get_agent()->set(property_name, value->get_value(get_agent(), get_blackboard()), &r_valid);
-	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Agent doesn't have property named \"%s\"", property_name));
+	get_agent()->set(property, value->get_value(get_agent(), get_blackboard()), &r_valid);
+	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Agent doesn't have property named \"%s\"", property));
 	return SUCCESS;
 }
 
 void BTSetAgentProperty::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_property_name", "p_property_name"), &BTSetAgentProperty::set_property_name);
-	ClassDB::bind_method(D_METHOD("get_property_name"), &BTSetAgentProperty::get_property_name);
+	ClassDB::bind_method(D_METHOD("set_property", "p_property"), &BTSetAgentProperty::set_property);
+	ClassDB::bind_method(D_METHOD("get_property"), &BTSetAgentProperty::get_property);
 	ClassDB::bind_method(D_METHOD("set_value", "p_value"), &BTSetAgentProperty::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &BTSetAgentProperty::get_value);
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "property_name"), "set_property_name", "get_property_name");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "property"), "set_property", "get_property");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "value", PROPERTY_HINT_RESOURCE_TYPE, "BBVariant"), "set_value", "get_value");
 }

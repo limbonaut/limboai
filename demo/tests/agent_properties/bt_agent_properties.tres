@@ -6,7 +6,7 @@ saved_value = 200.0
 type = 3
 
 [sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_0nprx"]
-property_name = &"speed"
+property = &"speed"
 value = SubResource("BBVariant_5o8fh")
 
 [sub_resource type="BTConsolePrint" id="BTConsolePrint_dlmwi"]
@@ -28,7 +28,7 @@ saved_value = 300.0
 type = 3
 
 [sub_resource type="BTSetAgentProperty" id="BTSetAgentProperty_lh1xy"]
-property_name = &"speed"
+property = &"speed"
 value = SubResource("BBVariant_r2elk")
 
 [sub_resource type="BBVariant" id="BBVariant_jhcxn"]
@@ -37,7 +37,7 @@ saved_value = 200.0
 type = 3
 
 [sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_p20lt"]
-property_name = &"speed"
+property = &"speed"
 check_type = 3
 value = SubResource("BBVariant_jhcxn")
 
@@ -60,7 +60,7 @@ saved_value = 400.0
 type = 3
 
 [sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_avnfr"]
-property_name = &"speed"
+property = &"speed"
 check_type = 1
 value = SubResource("BBVariant_2aotu")
 
@@ -83,7 +83,7 @@ saved_value = 300.0
 type = 3
 
 [sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_sayma"]
-property_name = &"speed"
+property = &"speed"
 value = SubResource("BBVariant_28e2y")
 
 [sub_resource type="BTConsolePrint" id="BTConsolePrint_xugph"]
