@@ -20,12 +20,12 @@ class BBVariant : public BBParam {
 	GDCLASS(BBVariant, BBParam);
 
 private:
-	Variant::Type type;
+	Variant::Type type = Variant::NIL;
 
 protected:
 	static void _bind_methods();
 
-	virtual Variant::Type get_type() const override { return type; }
+	virtual Variant::Type get_type() const override;
 	void set_type(Variant::Type p_type);
 
 public:

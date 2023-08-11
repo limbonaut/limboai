@@ -28,7 +28,7 @@
 		</method>
 	</methods>
 	<members>
-		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" default="0">
+		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" default="null">
 			A value that is saved with BBParam resource. The type of value is defined by [method get_type]. Provides the parameter's value, if [member value_source] is [constant SAVED_VALUE].
 		</member>
 		<member name="value_source" type="int" setter="set_value_source" getter="get_value_source" enum="BBParam.ValueSource" default="0">

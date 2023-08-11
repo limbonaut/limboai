@@ -29,10 +29,6 @@ void BBParam::set_value_source(ValueSource p_value) {
 }
 
 Variant BBParam::get_saved_value() {
-	if (saved_value.get_type() != get_type()) {
-		Callable::CallError err;
-		Variant::construct(get_type(), saved_value, nullptr, 0, err);
-	}
 	return saved_value;
 }
 
@@ -50,7 +46,21 @@ void BBParam::set_variable(const String &p_value) {
 
 String BBParam::to_string() {
 	if (value_source == SAVED_VALUE) {
-		return String(saved_value);
+		String s = saved_value.stringify();
+		switch (get_type()) {
+			case Variant::STRING: {
+				s = s.c_escape().quote();
+			} break;
+			case Variant::STRING_NAME: {
+				s = "&" + s.c_escape().quote();
+			} break;
+			case Variant::NODE_PATH: {
+				s = "^" + s.c_escape().quote();
+			} break;
+			default: {
+			} break;
+		}
+		return s;
 	} else {
 		return LimboUtility::get_singleton()->decorate_var(variable);
 	}
@@ -62,6 +72,7 @@ Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard,
 	if (value_source == SAVED_VALUE) {
 		return saved_value;
 	} else {
+		ERR_FAIL_COND_V_MSG(!p_blackboard->has_var(variable), Variant(), vformat("BBParam: Blackboard variable doesn't exist: \"%s\".", p_default));
 		return p_blackboard->get_var(variable, p_default);
 	}
 }
@@ -84,7 +95,7 @@ void BBParam::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_type"), &BBParam::get_type);
 	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
 
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value, Blackboard Var"), "set_value_source", "get_value_source");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value,Blackboard Var"), "set_value_source", "get_value_source");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "saved_value", PROPERTY_HINT_NONE, "", 0), "set_saved_value", "get_saved_value");
 
@@ -95,5 +106,6 @@ void BBParam::_bind_methods() {
 BBParam::BBParam() {
 	value_source = SAVED_VALUE;
 	variable = "";
-	saved_value = Variant();
+
+	_assign_default_value();
 }

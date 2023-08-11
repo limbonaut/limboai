@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTCheckTrigger" inherits="BTCondition" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BT condition that checks a trigger (a boolean variable).
+	</brief_description>
+	<description>
+		BTCheckTrigger verifies whether the [member variable] is set to [code]true[/code]. If it is, the task changes it to [code]false[/code] and returns [code]SUCCESS[/code]. Otherwise, it returns [code]FAILURE[/code].
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="variable" type="String" setter="set_variable" getter="get_variable" default="&quot;&quot;">
+			A boolean variable on the blackboard that is used as a trigger.
+			When it is set to [code]true[/code], BTCheckTrigger will flip it to [code]false[/code] and return [code]SUCCESS[/code]. Otherwise, it will return [code]FAILURE[/code].
+		</member>
+	</members>
+</class>

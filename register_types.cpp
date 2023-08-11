@@ -48,6 +48,8 @@
 #include "bt/actions/bt_console_print.h"
 #include "bt/actions/bt_fail.h"
 #include "bt/actions/bt_random_wait.h"
+#include "bt/actions/bt_set_agent_property.h"
+#include "bt/actions/bt_set_var.h"
 #include "bt/actions/bt_wait.h"
 #include "bt/actions/bt_wait_ticks.h"
 #include "bt/behavior_tree.h"
@@ -62,6 +64,9 @@
 #include "bt/composites/bt_random_sequence.h"
 #include "bt/composites/bt_selector.h"
 #include "bt/composites/bt_sequence.h"
+#include "bt/conditions/bt_check_agent_property.h"
+#include "bt/conditions/bt_check_trigger.h"
+#include "bt/conditions/bt_check_var.h"
 #include "bt/conditions/bt_condition.h"
 #include "bt/decorators/bt_always_fail.h"
 #include "bt/decorators/bt_always_succeed.h"
@@ -99,6 +104,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
 		LimboDebugger::initialize();
 
+		GDREGISTER_CLASS(LimboUtility);
 		GDREGISTER_CLASS(Blackboard);
 
 		GDREGISTER_CLASS(LimboState);
@@ -133,15 +139,20 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTForEach);
 
 		GDREGISTER_CLASS(BTAction);
-		GDREGISTER_CLASS(BTFail);
-		GDREGISTER_CLASS(BTWait);
-		GDREGISTER_CLASS(BTRandomWait);
-		GDREGISTER_CLASS(BTWaitTicks);
-		GDREGISTER_CLASS(BTNewScope);
-		GDREGISTER_CLASS(BTSubtree);
 		GDREGISTER_CLASS(BTConsolePrint);
+		GDREGISTER_CLASS(BTFail);
+		GDREGISTER_CLASS(BTNewScope);
+		GDREGISTER_CLASS(BTRandomWait);
+		GDREGISTER_CLASS(BTSetAgentProperty);
+		GDREGISTER_CLASS(BTSetVar);
+		GDREGISTER_CLASS(BTSubtree);
+		GDREGISTER_CLASS(BTWait);
+		GDREGISTER_CLASS(BTWaitTicks);
 
 		GDREGISTER_CLASS(BTCondition);
+		GDREGISTER_CLASS(BTCheckAgentProperty);
+		GDREGISTER_CLASS(BTCheckTrigger);
+		GDREGISTER_CLASS(BTCheckVar);
 
 		GDREGISTER_ABSTRACT_CLASS(BBParam);
 		GDREGISTER_CLASS(BBInt);
@@ -178,7 +189,6 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBVariant);
 
 		_limbo_utility = memnew(LimboUtility);
-		GDREGISTER_CLASS(LimboUtility);
 
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
 		LimboStringNames::create();

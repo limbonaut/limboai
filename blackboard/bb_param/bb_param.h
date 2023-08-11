@@ -43,6 +43,11 @@ protected:
 
 	virtual Variant::Type get_type() const { return Variant::NIL; }
 
+	_FORCE_INLINE_ void _assign_default_value() {
+		Callable::CallError err;
+		Variant::construct(get_type(), saved_value, nullptr, 0, err);
+	}
+
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 public:

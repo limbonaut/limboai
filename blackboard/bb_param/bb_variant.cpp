@@ -14,9 +14,18 @@
 #include "core/variant/variant.h"
 
 void BBVariant::set_type(Variant::Type p_type) {
-	type = p_type;
-	notify_property_list_changed();
-	emit_changed();
+	if (type != p_type) {
+		type = p_type;
+		if (get_saved_value().get_type() != p_type) {
+			_assign_default_value();
+		}
+		emit_changed();
+		notify_property_list_changed();
+	}
+}
+
+Variant::Type BBVariant::get_type() const {
+	return type;
 }
 
 void BBVariant::_bind_methods() {
@@ -33,5 +42,4 @@ void BBVariant::_bind_methods() {
 }
 
 BBVariant::BBVariant() {
-	type = Variant::NIL;
 }

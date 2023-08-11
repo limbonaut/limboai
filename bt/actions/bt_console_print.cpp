@@ -22,10 +22,13 @@ String BTConsolePrint::_generate_name() const {
 		tx = text.substr(0, 30) + "...";
 	}
 	tx = tx.replace("\"", "\\\"");
+	tx = tx.replace("\r", "\\r");
+	tx = tx.replace("\t", "\\t");
+	tx = tx.replace("\n", "\\n");
 	if (bb_format_parameters.size() > 0) {
-		return vformat("ConsolePrint  text: \"%s\"  format_parameters: %s", tx, bb_format_parameters);
+		return vformat("ConsolePrint  text: \"%s\"  params: %s", tx, bb_format_parameters);
 	}
-	return vformat("ConsolePrint \"%s\"", tx);
+	return vformat("ConsolePrint  text: \"%s\"", tx);
 }
 
 int BTConsolePrint::_tick(double p_delta) {
