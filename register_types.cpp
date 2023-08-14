@@ -47,6 +47,7 @@
 #include "bt/actions/bt_action.h"
 #include "bt/actions/bt_console_print.h"
 #include "bt/actions/bt_fail.h"
+#include "bt/actions/bt_pause_animation.h"
 #include "bt/actions/bt_play_animation.h"
 #include "bt/actions/bt_random_wait.h"
 #include "bt/actions/bt_set_agent_property.h"
@@ -144,6 +145,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTConsolePrint);
 		GDREGISTER_CLASS(BTFail);
 		GDREGISTER_CLASS(BTNewScope);
+		GDREGISTER_CLASS(BTPauseAnimation);
 		GDREGISTER_CLASS(BTPlayAnimation);
 		GDREGISTER_CLASS(BTRandomWait);
 		GDREGISTER_CLASS(BTSetAgentProperty);

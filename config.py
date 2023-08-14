@@ -76,6 +76,7 @@ def get_doc_classes():
         "BTInvert",
         "BTNewScope",
         "BTParallel",
+        "BTPauseAnimation",
         "BTPlayAnimation",
         "BTPlayer",
         "BTProbability",
