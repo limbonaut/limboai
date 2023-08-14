@@ -51,6 +51,7 @@
 #include "bt/actions/bt_random_wait.h"
 #include "bt/actions/bt_set_agent_property.h"
 #include "bt/actions/bt_set_var.h"
+#include "bt/actions/bt_stop_animation.h"
 #include "bt/actions/bt_wait.h"
 #include "bt/actions/bt_wait_ticks.h"
 #include "bt/behavior_tree.h"
@@ -147,6 +148,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTRandomWait);
 		GDREGISTER_CLASS(BTSetAgentProperty);
 		GDREGISTER_CLASS(BTSetVar);
+		GDREGISTER_CLASS(BTStopAnimation);
 		GDREGISTER_CLASS(BTSubtree);
 		GDREGISTER_CLASS(BTWait);
 		GDREGISTER_CLASS(BTWaitTicks);

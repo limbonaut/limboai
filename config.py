@@ -91,6 +91,7 @@ def get_doc_classes():
         "BTSetAgentProperty",
         "BTSetVar",
         "BTState",
+        "BTStopAnimation",
         "BTSubtree",
         "BTTask",
         "BTTimeLimit",
