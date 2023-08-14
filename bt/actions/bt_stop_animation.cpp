@@ -26,6 +26,11 @@ void BTStopAnimation::set_animation_name(StringName p_animation_name) {
 	emit_changed();
 }
 
+void BTStopAnimation::set_keep_state(bool p_keep_state) {
+	keep_state = p_keep_state;
+	emit_changed();
+}
+
 //**** Task Implementation
 
 String BTStopAnimation::get_configuration_warning() const {
@@ -48,10 +53,9 @@ String BTStopAnimation::get_configuration_warning() const {
 }
 
 String BTStopAnimation::_generate_name() const {
-	if (animation_name == StringName() || animation_player_param.is_null()) {
-		return "StopAnimation";
-	}
-	return vformat("StopAnimation \"%s\"", animation_name);
+	return "StopAnimation" +
+			(animation_name != StringName() ? vformat(" \"%s\"", animation_name) : "") +
+			(keep_state ? "  keep_state: true" : "");
 }
 
 void BTStopAnimation::_setup() {
@@ -68,7 +72,7 @@ void BTStopAnimation::_setup() {
 int BTStopAnimation::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(setup_failed == true, FAILURE, "BTStopAnimation: _setup() failed - returning FAILURE.");
 	if (animation_player->is_playing() && (animation_name == StringName() || animation_name == animation_player->get_assigned_animation())) {
-		animation_player->stop();
+		animation_player->stop(keep_state);
 	}
 	return SUCCESS;
 }
@@ -80,7 +84,10 @@ void BTStopAnimation::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_animation_player"), &BTStopAnimation::get_animation_player);
 	ClassDB::bind_method(D_METHOD("set_animation_name", "p_anim_name"), &BTStopAnimation::set_animation_name);
 	ClassDB::bind_method(D_METHOD("get_animation_name"), &BTStopAnimation::get_animation_name);
+	ClassDB::bind_method(D_METHOD("set_keep_state", "p_keep_state"), &BTStopAnimation::set_keep_state);
+	ClassDB::bind_method(D_METHOD("get_keep_state"), &BTStopAnimation::get_keep_state);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "animation_player", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_animation_player", "get_animation_player");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "animation_name"), "set_animation_name", "get_animation_name");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "keep_state"), "set_keep_state", "get_keep_state");
 }

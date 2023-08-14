@@ -24,6 +24,7 @@ class BTStopAnimation : public BTAction {
 private:
 	Ref<BBNode> animation_player_param;
 	StringName animation_name;
+	bool keep_state = false;
 
 	AnimationPlayer *animation_player = nullptr;
 	bool setup_failed = false;
@@ -41,6 +42,9 @@ public:
 
 	void set_animation_name(StringName p_animation_name);
 	StringName get_animation_name() const { return animation_name; }
+
+	void set_keep_state(bool p_keep_state);
+	bool get_keep_state() const { return keep_state; }
 
 	virtual String get_configuration_warning() const override;
 };
