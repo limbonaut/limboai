@@ -13,7 +13,7 @@
 	</tutorials>
 	<members>
 		<member name="animation_name" type="StringName" setter="set_animation_name" getter="get_animation_name" default="&amp;&quot;&quot;">
-			Animation's key within the AnimationPlayer node.
+			Animation's key within the AnimationPlayer node. If empty, BTPlayAnimation will resume the last played animation if [class AnimationPlayer] was paused.
 		</member>
 		<member name="animation_player" type="BBNode" setter="set_animation_player" getter="get_animation_player">
 			Parameter that specifies the AnimationPlayer node.

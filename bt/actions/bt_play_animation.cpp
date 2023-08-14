@@ -65,18 +65,16 @@ String BTPlayAnimation::get_configuration_warning() const {
 			warning += "AnimationPlayer blackboard variable is not set.\n";
 		}
 	}
-	if (animation_name == StringName()) {
-		warning += "Animation Name is not set.\n";
+	if (animation_name == StringName() && await_completion > 0.0) {
+		warning += "Animation Name is required in order to wait for the animation to finish.\n";
 	}
 
 	return warning;
 }
 
 String BTPlayAnimation::_generate_name() const {
-	if (animation_name == StringName() || animation_player_param.is_null()) {
-		return "PlayAnimation ???";
-	}
-	return vformat("PlayAnimation \"%s\"", animation_name) +
+	return "PlayAnimation" +
+			(animation_name != StringName() ? vformat(" \"%s\"", animation_name) : "") +
 			(blend >= 0.0 ? vformat("  blend: %ss", Math::snapped(blend, 0.001)) : "") +
 			(speed != 1.0 ? vformat("  speed: %s", Math::snapped(speed, 0.001)) : "") +
 			(from_end != false ? vformat("  from_end: %s", from_end) : "") +
@@ -88,8 +86,10 @@ void BTPlayAnimation::_setup() {
 	ERR_FAIL_COND_MSG(animation_player_param.is_null(), "BTPlayAnimation: AnimationPlayer parameter is not set.");
 	animation_player = Object::cast_to<AnimationPlayer>(animation_player_param->get_value(get_agent(), get_blackboard()));
 	ERR_FAIL_COND_MSG(animation_player == nullptr, "BTPlayAnimation: Failed to get AnimationPlayer.");
-	ERR_FAIL_COND_MSG(animation_name == StringName(), "BTPlayAnimation: Animation name is not set.");
-	ERR_FAIL_COND_MSG(!animation_player->has_animation(animation_name), vformat("BTPlayAnimation: Animation not found: %s", animation_name));
+	ERR_FAIL_COND_MSG(animation_name != StringName() && !animation_player->has_animation(animation_name), vformat("BTPlayAnimation: Animation not found: %s", animation_name));
+	if (animation_name == StringName() && await_completion > 0.0) {
+		WARN_PRINT("BTPlayAnimation: Animation Name is required in order to wait for the animation to finish.");
+	}
 	setup_failed = false;
 }
 
