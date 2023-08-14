@@ -45,6 +45,7 @@
 #include "blackboard/bb_param/bb_vector4i.h"
 #include "blackboard/blackboard.h"
 #include "bt/actions/bt_action.h"
+#include "bt/actions/bt_await_animation.h"
 #include "bt/actions/bt_console_print.h"
 #include "bt/actions/bt_fail.h"
 #include "bt/actions/bt_pause_animation.h"
@@ -142,6 +143,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTForEach);
 
 		GDREGISTER_CLASS(BTAction);
+		GDREGISTER_CLASS(BTAwaitAnimation);
 		GDREGISTER_CLASS(BTConsolePrint);
 		GDREGISTER_CLASS(BTFail);
 		GDREGISTER_CLASS(BTNewScope);
