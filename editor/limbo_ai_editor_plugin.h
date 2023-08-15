@@ -14,7 +14,7 @@
 #define LIMBO_AI_EDITOR_PLUGIN_H
 
 #include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 #include "core/object/class_db.h"
 #include "core/object/object.h"

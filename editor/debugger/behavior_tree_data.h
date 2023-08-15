@@ -12,9 +12,7 @@
 #ifndef BEHAVIOR_TREE_DATA_H
 #define BEHAVIOR_TREE_DATA_H
 
-#include "modules/limboai/bt/bt_task.h"
-
-#include "core/object/object.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 class BehaviorTreeData {
 public:

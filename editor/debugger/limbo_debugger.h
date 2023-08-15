@@ -12,7 +12,7 @@
 #ifndef LIMBO_DEBUGGER_H
 #define LIMBO_DEBUGGER_H
 
-#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 #include "core/object/class_db.h"
 #include "core/object/object.h"

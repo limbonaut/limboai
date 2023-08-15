@@ -12,8 +12,9 @@
 #ifndef LIMBO_UTILITY_H
 #define LIMBO_UTILITY_H
 
-#include "core/object/class_db.h"
 #include "core/object/object.h"
+
+#include "core/object/class_db.h"
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 

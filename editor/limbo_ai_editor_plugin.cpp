@@ -13,12 +13,12 @@
 
 #include "limbo_ai_editor_plugin.h"
 
-#include "modules/limboai/bt/actions/bt_action.h"
 #include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/bt_task.h"
-#include "modules/limboai/bt/composites/bt_parallel.h"
-#include "modules/limboai/bt/composites/bt_selector.h"
-#include "modules/limboai/bt/composites/bt_sequence.h"
+#include "modules/limboai/bt/tasks/bt_action.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
+#include "modules/limboai/bt/tasks/composites/bt_parallel.h"
+#include "modules/limboai/bt/tasks/composites/bt_selector.h"
+#include "modules/limboai/bt/tasks/composites/bt_sequence.h"
 #include "modules/limboai/editor/debugger/limbo_debugger_plugin.h"
 #include "modules/limboai/util/limbo_utility.h"
 

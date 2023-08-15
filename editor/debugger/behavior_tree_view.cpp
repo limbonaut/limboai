@@ -12,8 +12,9 @@
 #ifdef TOOLS_ENABLED
 
 #include "behavior_tree_view.h"
+
 #include "behavior_tree_data.h"
-#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/math/color.h"

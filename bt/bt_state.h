@@ -12,11 +12,10 @@
 #ifndef BT_STATE_H
 #define BT_STATE_H
 
-#include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/hsm/limbo_state.h"
 
-#include "core/object/object.h"
+#include "modules/limboai/bt/behavior_tree.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 class BTState : public LimboState {
 	GDCLASS(BTState, LimboState);

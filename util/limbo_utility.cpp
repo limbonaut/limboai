@@ -11,7 +11,7 @@
 
 #include "limbo_utility.h"
 
-#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"

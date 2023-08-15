@@ -11,7 +11,6 @@
 
 #include "bt_player.h"
 
-#include "bt_task.h"
 #include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/editor/debugger/limbo_debugger.h"
 #include "modules/limboai/util/limbo_string_names.h"
@@ -20,7 +19,6 @@
 #include "core/error/error_macros.h"
 #include "core/io/resource_loader.h"
 #include "core/object/class_db.h"
-#include "core/object/object.h"
 #include "core/os/memory.h"
 #include "core/string/string_name.h"
 #include "core/variant/variant.h"

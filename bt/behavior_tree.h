@@ -12,12 +12,10 @@
 #ifndef BEHAVIOR_TREE_H
 #define BEHAVIOR_TREE_H
 
-#include "bt_task.h"
+#include "core/io/resource.h"
 
 #include "modules/limboai/blackboard/blackboard.h"
-
-#include "core/io/resource.h"
-#include "core/object/object.h"
+#include "tasks/bt_task.h"
 
 class BehaviorTree : public Resource {
 	GDCLASS(BehaviorTree, Resource);

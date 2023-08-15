@@ -12,7 +12,7 @@
 #include "limbo_debugger.h"
 
 #include "behavior_tree_data.h"
-#include "modules/limboai/bt/bt_task.h"
+#include "modules/limboai/bt/tasks/bt_task.h"
 
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"

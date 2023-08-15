@@ -11,7 +11,6 @@
 
 #include "bt_state.h"
 
-#include "modules/limboai/bt/bt_task.h"
 #include "modules/limboai/editor/debugger/limbo_debugger.h"
 #include "modules/limboai/hsm/limbo_state.h"
 #include "modules/limboai/util/limbo_string_names.h"
