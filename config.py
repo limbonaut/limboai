@@ -61,6 +61,7 @@ def get_doc_classes():
         "BTAlwaysFail",
         "BTAlwaysSucceed",
         "BTAwaitAnimation",
+        "BTCallMethod",
         "BTCheckAgentProperty",
         "BTCheckTrigger",
         "BTCheckVar",
