@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTCallMethod" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BT action that calls a method on the specified [Node].
+	</brief_description>
+	<description>
+		BTCallMethod calls a method on the specified [Node] and returns [code]SUCCESS[/code].
+		Returns [code]FAILURE[/code] if the action fails executing the node's method.
+	</description>
+	<tutorials>
+	</tutorials>
+	<members>
+		<member name="args" type="Array" setter="set_args" getter="get_args" default="[]">
+			Arguments to pass to the method call.
+		</member>
+		<member name="method_name" type="StringName" setter="set_method_name" getter="get_method_name" default="&amp;&quot;&quot;">
+			Name of the node's method that will be called.
+		</member>
+		<member name="node" type="BBNode" setter="set_node_param" getter="get_node_param">
+			Node parameter that will be used to get the node instance.
+		</member>
+	</members>
+</class>
