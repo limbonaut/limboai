@@ -24,18 +24,15 @@ void BTSetAgentProperty::set_value(Ref<BBVariant> p_value) {
 	}
 }
 
-String BTSetAgentProperty::get_configuration_warning() const {
-	String warning = BTAction::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTSetAgentProperty::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (property == StringName()) {
-		warning += "`property` should be assigned.\n";
+		warnings.append("`property` should be assigned.");
 	}
 	if (!value.is_valid()) {
-		warning += "`value` should be assigned.\n";
+		warnings.append("`value` should be assigned.");
 	}
-	return warning;
+	return warnings;
 }
 
 String BTSetAgentProperty::_generate_name() const {

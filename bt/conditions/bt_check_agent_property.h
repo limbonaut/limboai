@@ -35,8 +35,6 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	virtual String get_configuration_warning() const override;
-
 	void set_property(StringName p_prop);
 	StringName get_property() const { return property; }
 
@@ -45,6 +43,8 @@ public:
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
+
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_CHECK_AGENT_PROPERTY

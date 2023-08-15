@@ -18,6 +18,11 @@
 #include "core/variant/array.h"
 #include "core/variant/variant.h"
 
+void BTDelay::set_seconds(double p_value) {
+	seconds = p_value;
+	emit_changed();
+}
+
 String BTDelay::_generate_name() const {
 	return vformat("Delay %s sec", Math::snapped(seconds, 0.001));
 }

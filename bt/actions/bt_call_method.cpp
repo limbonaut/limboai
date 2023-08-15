@@ -33,17 +33,17 @@ void BTCallMethod::set_args(Array p_args) {
 
 //**** Task Implementation
 
-String BTCallMethod::get_configuration_warning() const {
-	String warnings = BTAction::get_configuration_warning();
+PackedStringArray BTCallMethod::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (method_name == StringName()) {
-		warnings += "Method Name is not set.\n";
+		warnings.append("Method Name is not set.");
 	}
 	if (node_param.is_null()) {
-		warnings += "Node parameter is not set.\n";
+		warnings.append("Node parameter is not set.");
 	} else if (node_param->get_value_source() == BBParam::SAVED_VALUE && node_param->get_saved_value().is_zero()) {
-		warnings += "Path to node is not set.\n";
+		warnings.append("Path to node is not set.");
 	} else if (node_param->get_value_source() == BBParam::BLACKBOARD_VAR && node_param->get_variable() == StringName()) {
-		warnings += "Node blackboard variable is not set.\n";
+		warnings.append("Node blackboard variable is not set.");
 	}
 	return warnings;
 }

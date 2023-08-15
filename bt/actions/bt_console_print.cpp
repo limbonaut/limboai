@@ -66,15 +66,12 @@ int BTConsolePrint::_tick(double p_delta) {
 	return SUCCESS;
 }
 
-String BTConsolePrint::get_configuration_warning() const {
-	String warning = BTAction::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTConsolePrint::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (bb_format_parameters.size() > 5) {
-		warning += "ConsolePrint supports up to 5 format arguments.\n";
+		warnings.append("ConsolePrint supports up to 5 format arguments.");
 	}
-	return warning;
+	return warnings;
 }
 
 void BTConsolePrint::_bind_methods() {

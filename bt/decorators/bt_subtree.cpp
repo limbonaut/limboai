@@ -20,9 +20,13 @@
 
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
-#include "core/object/object.h"
 #include "core/typedefs.h"
 #include "core/variant/variant.h"
+
+void BTSubtree::set_subtree(const Ref<BehaviorTree> &p_value) {
+	subtree = p_value;
+	emit_changed();
+}
 
 String BTSubtree::_generate_name() const {
 	String s;
@@ -51,15 +55,12 @@ int BTSubtree::_tick(double p_delta) {
 	return get_child(0)->execute(p_delta);
 }
 
-String BTSubtree::get_configuration_warning() const {
-	String warning = BTTask::get_configuration_warning(); // BTDecorator skipped intentionally
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTSubtree::get_configuration_warnings() const {
+	PackedStringArray warnings = BTTask::get_configuration_warnings(); // ! BTDecorator skipped intentionally
 	if (subtree.is_null()) {
-		warning += "Subtree needs to be assigned.\n";
+		warnings.append("Subtree needs to be assigned.");
 	}
-	return warning;
+	return warnings;
 }
 
 void BTSubtree::_bind_methods() {

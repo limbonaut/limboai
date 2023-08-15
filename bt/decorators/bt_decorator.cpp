@@ -11,13 +11,10 @@
 
 #include "bt_decorator.h"
 
-String BTDecorator::get_configuration_warning() const {
-	String warning = BTTask::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTDecorator::get_configuration_warnings() const {
+	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count() != 1) {
-		warning += "Decorator should have a single child task.\n";
+		warnings.append("Decorator should have a single child task.");
 	}
-	return warning;
+	return warnings;
 }

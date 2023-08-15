@@ -14,8 +14,6 @@
 
 #include "bt_decorator.h"
 
-#include "core/object/object.h"
-
 class BTRunLimit : public BTDecorator {
 	GDCLASS(BTRunLimit, BTDecorator);
 
@@ -30,10 +28,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_run_limit(int p_value) {
-		run_limit = p_value;
-		emit_changed();
-	}
+	void set_run_limit(int p_value);
 	int get_run_limit() const { return run_limit; }
 };
 

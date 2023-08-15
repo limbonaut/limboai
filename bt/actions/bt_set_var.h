@@ -34,7 +34,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 
 	void set_variable(const String &p_variable);
 	String get_variable() const { return variable; }

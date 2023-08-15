@@ -16,6 +16,35 @@
 #include "core/variant/array.h"
 #include "scene/main/scene_tree.h"
 
+//**** Setters / Getters
+
+void BTCooldown::set_duration(double p_value) {
+	duration = p_value;
+	emit_changed();
+}
+
+void BTCooldown::set_process_pause(bool p_value) {
+	process_pause = p_value;
+	emit_changed();
+}
+
+void BTCooldown::set_start_cooled(bool p_value) {
+	start_cooled = p_value;
+	emit_changed();
+}
+
+void BTCooldown::set_trigger_on_failure(bool p_value) {
+	trigger_on_failure = p_value;
+	emit_changed();
+}
+
+void BTCooldown::set_cooldown_state_var(String p_value) {
+	cooldown_state_var = p_value;
+	emit_changed();
+}
+
+//**** Task Implementation
+
 String BTCooldown::_generate_name() const {
 	return vformat("Cooldown %s sec", Math::snapped(duration, 0.001));
 }
@@ -56,6 +85,8 @@ void BTCooldown::_on_timeout() {
 	get_blackboard()->set_var(cooldown_state_var, false);
 	timer.unref();
 }
+
+//**** Godot
 
 void BTCooldown::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_duration", "p_value"), &BTCooldown::set_duration);

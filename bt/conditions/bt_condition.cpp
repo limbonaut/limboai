@@ -11,13 +11,10 @@
 
 #include "bt_condition.h"
 
-String BTCondition::get_configuration_warning() const {
-	String warning = BTTask::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTCondition::get_configuration_warnings() const {
+	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count() != 0) {
-		warning += "Condition task can't have child tasks.\n";
+		warnings.append("Condition task can't have child tasks.");
 	}
-	return warning;
+	return warnings;
 }

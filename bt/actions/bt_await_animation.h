@@ -46,7 +46,7 @@ public:
 	void set_max_time(double p_max_time);
 	double get_max_time() const { return max_time; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_AWAIT_ANIMATION

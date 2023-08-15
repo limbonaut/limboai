@@ -59,7 +59,7 @@ public:
 	void set_from_end(bool p_from_end);
 	bool get_from_end() const { return from_end; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_PLAY_ANIMATION

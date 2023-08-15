@@ -17,9 +17,6 @@
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
 #include "modules/limboai/util/limbo_utility.h"
 
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-
 class BTCheckVar : public BTCondition {
 	GDCLASS(BTCheckVar, BTCondition);
 
@@ -35,7 +32,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 
 	void set_variable(String p_variable);
 	String get_variable() const { return variable; }

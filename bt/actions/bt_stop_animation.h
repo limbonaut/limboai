@@ -46,7 +46,7 @@ public:
 	void set_keep_state(bool p_keep_state);
 	bool get_keep_state() const { return keep_state; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_STOP_ANIMATION

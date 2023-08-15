@@ -33,23 +33,18 @@ void BTStopAnimation::set_keep_state(bool p_keep_state) {
 
 //**** Task Implementation
 
-String BTStopAnimation::get_configuration_warning() const {
-	String warning = BTAction::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
-
+PackedStringArray BTStopAnimation::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (animation_player_param.is_null()) {
-		warning += "Animation Player parameter is not set.\n";
+		warnings.append("Animation Player parameter is not set.");
 	} else {
 		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value().is_zero()) {
-			warning += "Path to AnimationPlayer node is not set.\n";
+			warnings.append("Path to AnimationPlayer node is not set.");
 		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable().is_empty()) {
-			warning += "AnimationPlayer blackboard variable is not set.\n";
+			warnings.append("AnimationPlayer blackboard variable is not set.");
 		}
 	}
-
-	return warning;
+	return warnings;
 }
 
 String BTStopAnimation::_generate_name() const {

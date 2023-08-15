@@ -33,18 +33,15 @@ void BTCheckAgentProperty::set_value(Ref<BBVariant> p_value) {
 	}
 }
 
-String BTCheckAgentProperty::get_configuration_warning() const {
-	String warning = BTCondition::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTCheckAgentProperty::get_configuration_warnings() const {
+	PackedStringArray warnings = BTCondition::get_configuration_warnings();
 	if (property == StringName()) {
-		warning += "`property` should be assigned.\n";
+		warnings.append("`property` should be assigned.");
 	}
 	if (!value.is_valid()) {
-		warning += "`value` should be assigned.\n";
+		warnings.append("`value` should be assigned.");
 	}
-	return warning;
+	return warnings;
 }
 
 String BTCheckAgentProperty::_generate_name() const {

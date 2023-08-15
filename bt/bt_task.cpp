@@ -251,12 +251,15 @@ Ref<BTTask> BTTask::next_sibling() const {
 	return Ref<BTTask>();
 }
 
-String BTTask::get_configuration_warning() const {
-	String warning = "";
+PackedStringArray BTTask::get_configuration_warnings() const {
+	PackedStringArray ret;
 
-	GDVIRTUAL_CALL(_get_configuration_warning, warning);
+	PackedStringArray warnings;
+	if (GDVIRTUAL_CALL(_get_configuration_warning, warnings)) {
+		ret.append_array(warnings);
+	}
 
-	return warning;
+	return ret;
 }
 
 void BTTask::print_tree(int p_initial_tabs) const {

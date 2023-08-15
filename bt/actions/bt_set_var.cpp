@@ -43,18 +43,15 @@ void BTSetVar::set_value(Ref<BBVariant> p_value) {
 	}
 }
 
-String BTSetVar::get_configuration_warning() const {
-	String warning = BTAction::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTSetVar::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (variable.is_empty()) {
-		warning += "`variable` should be assigned.\n";
+		warnings.append("`variable` should be assigned.");
 	}
 	if (!value.is_valid()) {
-		warning += "`value` should be assigned.\n";
+		warnings.append("`value` should be assigned.");
 	}
-	return warning;
+	return warnings;
 }
 
 void BTSetVar::_bind_methods() {

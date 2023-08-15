@@ -107,9 +107,17 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	for (int i = 0; i < p_item->get_button_count(0); i++) {
 		p_item->erase_button(0, i);
 	}
-	String warning = task->get_configuration_warning();
-	if (!warning.is_empty()) {
-		p_item->add_button(0, get_theme_icon(SNAME("NodeWarning"), SNAME("EditorIcons")), 0, false, warning);
+
+	PackedStringArray warnings = task->get_configuration_warnings();
+	String warning_text;
+	for (int j = 0; j < warnings.size(); j++) {
+		if (j > 0) {
+			warning_text += "\n";
+		}
+		warning_text += warnings[j];
+	}
+	if (!warning_text.is_empty()) {
+		p_item->add_button(0, get_theme_icon(SNAME("NodeWarning"), SNAME("EditorIcons")), 0, false, warning_text);
 	}
 
 	// TODO: Update probabilities.

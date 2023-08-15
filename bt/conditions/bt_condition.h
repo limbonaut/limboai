@@ -20,7 +20,7 @@ class BTCondition : public BTTask {
 	GDCLASS(BTCondition, BTTask);
 
 public:
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_CONDITION_H

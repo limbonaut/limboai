@@ -11,6 +11,11 @@
 
 #include "bt_run_limit.h"
 
+void BTRunLimit::set_run_limit(int p_value) {
+	run_limit = p_value;
+	emit_changed();
+}
+
 String BTRunLimit::_generate_name() const {
 	return vformat("RunLimit x%d", run_limit);
 }

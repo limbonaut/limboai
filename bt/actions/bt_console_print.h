@@ -43,7 +43,7 @@ public:
 	}
 	PackedStringArray get_bb_format_parameters() const { return bb_format_parameters; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_CONSOLE_PRINT_H

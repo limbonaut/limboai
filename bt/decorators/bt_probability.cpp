@@ -11,7 +11,10 @@
 
 #include "bt_probability.h"
 
-#include "core/object/object.h"
+void BTProbability::set_run_chance(float p_value) {
+	run_chance = p_value;
+	emit_changed();
+}
 
 String BTProbability::_generate_name() const {
 	return vformat("Probability %.1f%%", run_chance);

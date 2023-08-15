@@ -14,8 +14,6 @@
 
 #include "bt_decorator.h"
 
-#include "core/object/object.h"
-
 class BTProbability : public BTDecorator {
 	GDCLASS(BTProbability, BTDecorator);
 
@@ -29,10 +27,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_run_chance(float p_value) {
-		run_chance = p_value;
-		emit_changed();
-	}
+	void set_run_chance(float p_value);
 	float get_run_chance() const { return run_chance; }
 };
 

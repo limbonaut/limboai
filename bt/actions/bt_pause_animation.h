@@ -38,7 +38,7 @@ public:
 	void set_animation_player(Ref<BBNode> p_animation_player);
 	Ref<BBNode> get_animation_player() const { return animation_player_param; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_PAUSE_ANIMATION

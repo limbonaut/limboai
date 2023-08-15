@@ -13,9 +13,8 @@
 #define BT_SUBTREE_H
 
 #include "bt_new_scope.h"
-#include "modules/limboai/bt/behavior_tree.h"
 
-#include "core/object/object.h"
+#include "modules/limboai/bt/behavior_tree.h"
 
 class BTSubtree : public BTNewScope {
 	GDCLASS(BTSubtree, BTNewScope);
@@ -30,14 +29,11 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_subtree(const Ref<BehaviorTree> &p_value) {
-		subtree = p_value;
-		emit_changed();
-	}
+	void set_subtree(const Ref<BehaviorTree> &p_value);
 	Ref<BehaviorTree> get_subtree() const { return subtree; }
 
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_SUBTREE_H

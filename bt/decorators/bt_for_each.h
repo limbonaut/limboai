@@ -33,15 +33,10 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_array_var(String p_value) {
-		array_var = p_value;
-		emit_changed();
-	}
+	void set_array_var(String p_value);
 	String get_array_var() const { return array_var; }
-	void set_save_var(String p_value) {
-		save_var = p_value;
-		emit_changed();
-	}
+
+	void set_save_var(String p_value);
 	String get_save_var() const { return save_var; }
 };
 

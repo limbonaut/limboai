@@ -18,6 +18,20 @@
 #include "core/error/error_macros.h"
 #include "core/variant/variant.h"
 
+//**** Setters / Getters
+
+void BTForEach::set_array_var(String p_value) {
+	array_var = p_value;
+	emit_changed();
+}
+
+void BTForEach::set_save_var(String p_value) {
+	save_var = p_value;
+	emit_changed();
+}
+
+//**** Task Implementation
+
 String BTForEach::_generate_name() const {
 	return vformat("ForEach %s in %s",
 			LimboUtility::get_singleton()->decorate_var(save_var),
@@ -52,6 +66,8 @@ int BTForEach::_tick(double p_delta) {
 		return RUNNING;
 	}
 }
+
+//**** Godot
 
 void BTForEach::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_array_var", "p_variable"), &BTForEach::set_array_var);

@@ -65,7 +65,7 @@ protected:
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1R(int, _tick, double);
-	GDVIRTUAL0RC(String, _get_configuration_warning);
+	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warning);
 
 public:
 	virtual bool editor_can_reload_from_file() override { return false; }
@@ -84,7 +84,7 @@ public:
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
-	virtual String get_configuration_warning() const;
+	virtual PackedStringArray get_configuration_warnings() const;
 
 	int execute(double p_delta);
 	void cancel();

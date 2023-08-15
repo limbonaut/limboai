@@ -11,13 +11,10 @@
 
 #include "bt_composite.h"
 
-String BTComposite::get_configuration_warning() const {
-	String warning = BTTask::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
+PackedStringArray BTComposite::get_configuration_warnings() const {
+	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count() < 1) {
-		warning += "Composite should have at least one child task.\n";
+		warnings.append("Composite should have at least one child task.");
 	}
-	return warning;
+	return warnings;
 }

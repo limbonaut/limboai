@@ -29,10 +29,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_seconds(double p_value) {
-		seconds = p_value;
-		emit_changed();
-	}
+	void set_seconds(double p_value);
 	double get_seconds() const { return seconds; }
 };
 

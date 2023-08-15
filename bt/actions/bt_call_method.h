@@ -40,7 +40,7 @@ public:
 	void set_args(Array p_args);
 	Array get_args() const { return args; }
 
-	virtual String get_configuration_warning() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_CALL_METHOD

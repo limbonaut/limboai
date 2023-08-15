@@ -33,29 +33,24 @@ void BTAwaitAnimation::set_max_time(double p_max_time) {
 
 //**** Task Implementation
 
-String BTAwaitAnimation::get_configuration_warning() const {
-	String warning = BTAction::get_configuration_warning();
-	if (!warning.is_empty()) {
-		warning += "\n";
-	}
-
+PackedStringArray BTAwaitAnimation::get_configuration_warnings() const {
+	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (animation_player_param.is_null()) {
-		warning += "Animation Player parameter is not set.\n";
+		warnings.append("Animation Player parameter is not set.");
 	} else {
 		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value().is_zero()) {
-			warning += "Path to AnimationPlayer node is not set.\n";
+			warnings.append("Path to AnimationPlayer node is not set.");
 		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable().is_empty()) {
-			warning += "AnimationPlayer blackboard variable is not set.\n";
+			warnings.append("AnimationPlayer blackboard variable is not set.");
 		}
 	}
 	if (animation_name == StringName()) {
-		warning += "Animation Name is required in order to wait for the animation to finish.\n";
+		warnings.append("Animation Name is required in order to wait for the animation to finish.");
 	}
 	if (max_time <= 0.0) {
-		warning += "Max time should be greater than 0.0.\n";
+		warnings.append("Max time should be greater than 0.0.");
 	}
-
-	return warning;
+	return warnings;
 }
 
 String BTAwaitAnimation::_generate_name() const {

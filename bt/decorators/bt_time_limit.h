@@ -29,10 +29,7 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_time_limit(double p_value) {
-		time_limit = p_value;
-		emit_changed();
-	}
+	void set_time_limit(double p_value);
 	double get_time_limit() const { return time_limit; }
 };
 

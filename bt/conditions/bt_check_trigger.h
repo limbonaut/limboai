@@ -36,6 +36,8 @@ protected:
 public:
 	void set_variable(String p_variable);
 	String get_variable() const { return variable; }
+
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_CHECK_TRIGGER
