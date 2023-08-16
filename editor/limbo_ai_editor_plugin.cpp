@@ -73,7 +73,7 @@
 #include "scene/gui/tree.h"
 #include "servers/display_server.h"
 
-//////////////////////////////  TaskTree  //////////////////////////////////////
+//**** TaskTree
 
 TreeItem *TaskTree::_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, int p_idx) {
 	ERR_FAIL_COND_V(p_task.is_null(), nullptr);
@@ -130,6 +130,10 @@ void TaskTree::_update_tree() {
 	}
 
 	tree->clear();
+	if (bt.is_null()) {
+		return;
+	}
+
 	if (bt->get_root_task().is_valid()) {
 		_create_tree(bt->get_root_task(), nullptr);
 	}
@@ -280,6 +284,14 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	}
 }
 
+void TaskTree::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_THEME_CHANGED: {
+			_update_tree();
+		} break;
+	}
+}
+
 void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("load_bt", "p_behavior_tree"), &TaskTree::load_bt);
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
@@ -327,9 +339,9 @@ TaskTree::~TaskTree() {
 	}
 }
 
-//////////////////////////////  TaskTree  //////////////////////////////////////
+//**** TaskTree ^
 
-////////////////////////////// TaskSection  ////////////////////////////////////
+//**** TaskSection
 
 void TaskSection::_on_task_button_pressed(const StringName &p_task) {
 	emit_signal(SNAME("task_button_pressed"), p_task);
@@ -374,6 +386,13 @@ bool TaskSection::is_collapsed() const {
 	return !tasks_container->is_visible();
 }
 
+void TaskSection::_notification(int p_what) {
+	if (p_what == NOTIFICATION_THEME_CHANGED) {
+		section_header->set_icon(is_collapsed() ? get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons")) : get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")));
+		section_header->add_theme_font_override(SNAME("font"), get_theme_font(SNAME("bold"), SNAME("EditorFonts")));
+	}
+}
+
 void TaskSection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_button_pressed"));
 }
@@ -382,9 +401,7 @@ TaskSection::TaskSection(String p_category_name) {
 	section_header = memnew(Button);
 	add_child(section_header);
 	section_header->set_text(p_category_name);
-	section_header->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")));
 	section_header->set_focus_mode(FOCUS_NONE);
-	section_header->add_theme_font_override(SNAME("font"), get_theme_font(SNAME("bold"), SNAME("EditorFonts")));
 	section_header->connect("pressed", callable_mp(this, &TaskSection::_on_header_pressed));
 
 	tasks_container = memnew(HFlowContainer);
@@ -394,9 +411,9 @@ TaskSection::TaskSection(String p_category_name) {
 TaskSection::~TaskSection() {
 }
 
-////////////////////////////// TaskSection  ////////////////////////////////////
+//**** TaskSection ^
 
-//////////////////////////////  TaskPanel  /////////////////////////////////////
+//**** TaskPanel
 
 void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
 	emit_signal(SNAME("task_selected"), p_task);
@@ -560,22 +577,29 @@ void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p
 }
 
 void TaskPanel::_notification(int p_what) {
-	if (p_what == NOTIFICATION_EXIT_TREE) {
-		if (sections->get_child_count() == 0) {
-			return;
-		}
-		Array collapsed_sections;
-		for (int i = 0; i < sections->get_child_count(); i++) {
-			TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
-			if (sec->is_collapsed()) {
-				collapsed_sections.push_back(sec->get_category_name());
+	switch (p_what) {
+		case NOTIFICATION_EXIT_TREE: {
+			if (sections->get_child_count() == 0) {
+				return;
 			}
-		}
-		ConfigFile conf;
-		String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
-		conf.load(conf_path);
-		conf.set_value("bt_editor", "collapsed_sections", collapsed_sections);
-		conf.save(conf_path);
+			Array collapsed_sections;
+			for (int i = 0; i < sections->get_child_count(); i++) {
+				TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
+				if (sec->is_collapsed()) {
+					collapsed_sections.push_back(sec->get_category_name());
+				}
+			}
+			ConfigFile conf;
+			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+			conf.load(conf_path);
+			conf.set_value("bt_editor", "collapsed_sections", collapsed_sections);
+			conf.save(conf_path);
+		} break;
+		case NOTIFICATION_THEME_CHANGED: {
+			if (is_visible_in_tree()) {
+				refresh();
+			}
+		} break;
 	}
 }
 
@@ -590,28 +614,28 @@ TaskPanel::TaskPanel() {
 	add_child(vb);
 
 	filter_edit = memnew(LineEdit);
-	vb->add_child(filter_edit);
 	filter_edit->set_clear_button_enabled(true);
 	filter_edit->set_placeholder(TTR("Filter tasks"));
 	filter_edit->connect("text_changed", callable_mp(this, &TaskPanel::_on_filter_text_changed));
+	vb->add_child(filter_edit);
 
 	ScrollContainer *sc = memnew(ScrollContainer);
-	vb->add_child(sc);
 	sc->set_h_size_flags(SIZE_EXPAND_FILL);
 	sc->set_v_size_flags(SIZE_EXPAND_FILL);
+	vb->add_child(sc);
 
 	sections = memnew(VBoxContainer);
-	sc->add_child(sections);
 	sections->set_h_size_flags(SIZE_EXPAND_FILL);
 	sections->set_v_size_flags(SIZE_EXPAND_FILL);
+	sc->add_child(sections);
 }
 
 TaskPanel::~TaskPanel() {
 }
 
-//////////////////////////////  TaskPanel  /////////////////////////////////////
+//**** TaskPanel ^
 
-////////////////////////////  LimboAIEditor  ///////////////////////////////////
+//**** LimboAIEditor
 
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
@@ -654,6 +678,12 @@ void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
 }
 
 void LimboAIEditor::_update_header() const {
+	if (task_tree->get_bt().is_null()) {
+		header->set_text("");
+		header->set_icon(nullptr);
+		return;
+	}
+
 	String text = task_tree->get_bt()->get_path();
 	if (text.is_empty()) {
 		text = TTR("New Behavior Tree");
@@ -1059,6 +1089,19 @@ void LimboAIEditor::_notification(int p_what) {
 			conf.set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
 			conf.save(conf_path);
 		} break;
+		case NOTIFICATION_THEME_CHANGED: {
+			selector_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSelector"));
+			sequence_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSequence"));
+			parallel_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTParallel"));
+			new_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("New"), SNAME("EditorIcons")));
+			load_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Load"), SNAME("EditorIcons")));
+			save_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Save"), SNAME("EditorIcons")));
+			new_script_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
+			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
+			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
+
+			_update_header();
+		}
 	}
 }
 
@@ -1078,20 +1121,20 @@ LimboAIEditor::LimboAIEditor() {
 	idx_history = 0;
 
 	save_dialog = memnew(FileDialog);
-	add_child(save_dialog);
 	save_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);
 	save_dialog->set_title("Save Behavior Tree");
 	save_dialog->add_filter("*.tres");
 	save_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_save_bt));
 	save_dialog->hide();
+	add_child(save_dialog);
 
 	load_dialog = memnew(FileDialog);
-	add_child(load_dialog);
 	load_dialog->set_file_mode(FileDialog::FILE_MODE_OPEN_FILE);
 	load_dialog->set_title("Load Behavior Tree");
 	load_dialog->add_filter("*.tres");
 	load_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_load_bt));
 	load_dialog->hide();
+	add_child(load_dialog);
 
 	VBoxContainer *vb = memnew(VBoxContainer);
 	vb->set_anchor(SIDE_RIGHT, ANCHOR_END);
@@ -1101,28 +1144,25 @@ LimboAIEditor::LimboAIEditor() {
 	HBoxContainer *panel = memnew(HBoxContainer);
 	vb->add_child(panel);
 
-	Button *selector_btn = memnew(Button);
+	selector_btn = memnew(Button);
 	selector_btn->set_text(TTR("Selector"));
 	selector_btn->set_tooltip_text(TTR("Add Selector task."));
-	selector_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSelector"));
 	selector_btn->set_flat(true);
 	selector_btn->set_focus_mode(Control::FOCUS_NONE);
 	selector_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTSelector))));
 	panel->add_child(selector_btn);
 
-	Button *sequence_btn = memnew(Button);
+	sequence_btn = memnew(Button);
 	sequence_btn->set_text(TTR("Sequence"));
 	sequence_btn->set_tooltip_text(TTR("Add Sequence task."));
-	sequence_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSequence"));
 	sequence_btn->set_flat(true);
 	sequence_btn->set_focus_mode(Control::FOCUS_NONE);
 	sequence_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTSequence))));
 	panel->add_child(sequence_btn);
 
-	Button *parallel_btn = memnew(Button);
+	parallel_btn = memnew(Button);
 	parallel_btn->set_text(TTR("Parallel"));
 	parallel_btn->set_tooltip_text(TTR("Add Parallel task."));
-	parallel_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTParallel"));
 	parallel_btn->set_flat(true);
 	parallel_btn->set_focus_mode(Control::FOCUS_NONE);
 	parallel_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTParallel))));
@@ -1130,74 +1170,67 @@ LimboAIEditor::LimboAIEditor() {
 
 	panel->add_child(memnew(VSeparator));
 
-	Button *new_btn = memnew(Button);
-	panel->add_child(new_btn);
+	new_btn = memnew(Button);
 	new_btn->set_text(TTR("New"));
 	new_btn->set_tooltip_text(TTR("Create new behavior tree."));
-	new_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("New"), SNAME("EditorIcons")));
 	new_btn->set_flat(true);
 	new_btn->set_focus_mode(Control::FOCUS_NONE);
 	new_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_new_bt));
+	panel->add_child(new_btn);
 
-	Button *load_btn = memnew(Button);
-	panel->add_child(load_btn);
+	load_btn = memnew(Button);
 	load_btn->set_text(TTR("Load"));
 	load_btn->set_tooltip_text(TTR("Load behavior tree."));
-	load_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Load"), SNAME("EditorIcons")));
 	load_btn->set_flat(true);
 	load_btn->set_focus_mode(Control::FOCUS_NONE);
 	load_btn->connect("pressed", callable_mp(load_dialog, &FileDialog::popup_file_dialog));
+	panel->add_child(load_btn);
 
-	Button *save_btn = memnew(Button);
-	panel->add_child(save_btn);
+	save_btn = memnew(Button);
 	save_btn->set_text(TTR("Save"));
 	save_btn->set_tooltip_text(TTR("Save current behavior tree."));
-	save_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Save"), SNAME("EditorIcons")));
 	save_btn->set_flat(true);
 	save_btn->set_focus_mode(Control::FOCUS_NONE);
 	save_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_on_save_pressed));
+	panel->add_child(save_btn);
 
 	panel->add_child(memnew(VSeparator));
 
-	Button *new_script_btn = memnew(Button);
-	panel->add_child(new_script_btn);
+	new_script_btn = memnew(Button);
 	new_script_btn->set_text(TTR("New Task"));
 	new_script_btn->set_tooltip_text(TTR("Create new task script and edit it."));
-	new_script_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
 	new_script_btn->set_flat(true);
 	new_script_btn->set_focus_mode(Control::FOCUS_NONE);
+	panel->add_child(new_script_btn);
 
 	HBoxContainer *nav = memnew(HBoxContainer);
-	panel->add_child(nav);
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
+	panel->add_child(nav);
 
 	history_back = memnew(Button);
-	history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
 	history_back->set_flat(true);
 	history_back->set_focus_mode(FOCUS_NONE);
 	history_back->connect("pressed", callable_mp(this, &LimboAIEditor::_on_history_back));
 	nav->add_child(history_back);
 
 	history_forward = memnew(Button);
-	history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 	history_forward->set_flat(true);
 	history_forward->set_focus_mode(FOCUS_NONE);
 	history_forward->connect("pressed", callable_mp(this, &LimboAIEditor::_on_history_forward));
 	nav->add_child(history_forward);
 
 	header = memnew(Button);
-	vb->add_child(header);
 	header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
 	header->add_theme_constant_override("hseparation", 8);
 	header->connect("pressed", callable_mp(this, &LimboAIEditor::_on_header_pressed));
+	vb->add_child(header);
 
 	hsc = memnew(HSplitContainer);
-	vb->add_child(hsc);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
 	hsc->set_v_size_flags(SIZE_EXPAND_FILL);
+	vb->add_child(hsc);
 
 	task_tree = memnew(TaskTree);
-	hsc->add_child(task_tree);
 	task_tree->set_v_size_flags(SIZE_EXPAND_FILL);
 	task_tree->set_h_size_flags(SIZE_EXPAND_FILL);
 	task_tree->connect("rmb_pressed", callable_mp(this, &LimboAIEditor::_on_tree_rmb));
@@ -1206,11 +1239,13 @@ LimboAIEditor::LimboAIEditor() {
 	task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
 	task_tree->connect("task_double_clicked", callable_mp(this, &LimboAIEditor::_on_tree_task_double_clicked));
 	task_tree->hide();
+	hsc->add_child(task_tree);
 
 	usage_hint = memnew(Panel);
 	usage_hint->set_v_size_flags(SIZE_EXPAND_FILL);
 	usage_hint->set_h_size_flags(SIZE_EXPAND_FILL);
 	hsc->add_child(usage_hint);
+
 	Label *usage_label = memnew(Label);
 	usage_label->set_anchor(SIDE_RIGHT, 1);
 	usage_label->set_anchor(SIDE_BOTTOM, 1);
@@ -1220,10 +1255,10 @@ LimboAIEditor::LimboAIEditor() {
 	usage_hint->add_child(usage_label);
 
 	task_panel = memnew(TaskPanel());
-	hsc->add_child(task_panel);
 	hsc->set_split_offset(-300);
 	task_panel->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_panel_task_selected));
 	task_panel->hide();
+	hsc->add_child(task_panel);
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
@@ -1284,9 +1319,9 @@ LimboAIEditor::LimboAIEditor() {
 LimboAIEditor::~LimboAIEditor() {
 }
 
-////////////////////////////  LimboAIEditor  ///////////////////////////////////
+//**** LimboAIEditor ^
 
-/////////////////////////  LimboAIEditorPlugin  ////////////////////////////////
+//**** LimboAIEditorPlugin
 
 const Ref<Texture2D> LimboAIEditorPlugin::get_icon() const {
 	return EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("LimboAIEditor"), SNAME("EditorIcons"));

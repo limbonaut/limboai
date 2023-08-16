@@ -58,6 +58,8 @@ private:
 protected:
 	static void _bind_methods();
 
+	void _notification(int p_what);
+
 public:
 	void load_bt(const Ref<BehaviorTree> &p_behavior_tree);
 	void unload();
@@ -85,6 +87,8 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	void set_filter(String p_filter);
@@ -150,6 +154,14 @@ private:
 	Button *history_back;
 	Button *history_forward;
 	TaskPanel *task_panel;
+
+	Button *selector_btn;
+	Button *sequence_btn;
+	Button *parallel_btn;
+	Button *new_btn;
+	Button *load_btn;
+	Button *save_btn;
+	Button *new_script_btn;
 
 	ConfirmationDialog *rename_dialog;
 	LineEdit *rename_edit;
