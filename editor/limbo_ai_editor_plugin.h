@@ -133,11 +133,12 @@ class LimboAIEditor : public Control {
 
 private:
 	enum Action {
-		ACTION_REMOVE,
+		ACTION_RENAME,
 		ACTION_MOVE_UP,
 		ACTION_MOVE_DOWN,
 		ACTION_DUPLICATE,
 		ACTION_MAKE_ROOT,
+		ACTION_REMOVE,
 	};
 
 	Vector<Ref<BehaviorTree>> history;
@@ -179,6 +180,7 @@ private:
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
+	void _create_popup_menu();
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
@@ -186,7 +188,7 @@ private:
 	void _rename_task_confirmed();
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
-	void _on_action_selected(int p_id);
+	void _action_selected(int p_id);
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_tree_task_double_clicked();
 	void _on_visibility_changed();
@@ -197,6 +199,8 @@ private:
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 	void _on_resources_reload(const Vector<String> &p_resources);
+
+	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
 protected:
 	static void _bind_methods();

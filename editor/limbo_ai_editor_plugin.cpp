@@ -764,40 +764,66 @@ void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 	}
 }
 
-void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
+void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
+	if (!p_event->is_pressed() || !(has_focus() || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
+		return;
+	}
+
+	if (ED_IS_SHORTCUT("limbo_ai/rename_task", p_event)) {
+		_action_selected(ACTION_RENAME);
+	} else if (ED_IS_SHORTCUT("limbo_ai/move_task_up", p_event)) {
+		_action_selected(ACTION_MOVE_UP);
+	} else if (ED_IS_SHORTCUT("limbo_ai/move_task_down", p_event)) {
+		_action_selected(ACTION_MOVE_DOWN);
+	} else if (ED_IS_SHORTCUT("limbo_ai/duplicate_task", p_event)) {
+		_action_selected(ACTION_DUPLICATE);
+	} else if (ED_IS_SHORTCUT("limbo_ai/remove_task", p_event)) {
+		_action_selected(ACTION_REMOVE);
+	} else if (ED_IS_SHORTCUT("limbo_ai/new_behavior_tree", p_event)) {
+		_new_bt();
+	} else if (ED_IS_SHORTCUT("limbo_ai/save_behavior_tree", p_event)) {
+		_on_save_pressed();
+	} else if (ED_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
+		load_dialog->popup_file_dialog();
+	} else {
+		return;
+	}
+
+	accept_event();
+}
+
+void LimboAIEditor::_create_popup_menu() {
 	menu->clear();
-	menu->add_icon_item(get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")), TTR("Remove"), ACTION_REMOVE);
+	menu->add_icon_shortcut(get_theme_icon(SNAME("Rename"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_separator();
-	menu->add_icon_item(get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons")), TTR("Move Up"), ACTION_MOVE_UP);
-	menu->add_icon_item(get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons")), TTR("Move Down"), ACTION_MOVE_DOWN);
-	menu->add_icon_item(get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons")), TTR("Duplicate"), ACTION_DUPLICATE);
+	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
+	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_down"), ACTION_MOVE_DOWN);
+	menu->add_icon_shortcut(get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
 	menu->add_icon_item(get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons")), TTR("Make Root"), ACTION_MAKE_ROOT);
+	menu->add_separator();
+	menu->add_icon_shortcut(get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
 
 	menu->reset_size();
+}
+
+void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
+	_create_popup_menu();
 	menu->set_position(p_menu_pos);
 	menu->popup();
 }
 
-void LimboAIEditor::_on_action_selected(int p_id) {
+void LimboAIEditor::_action_selected(int p_id) {
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	switch (p_id) {
-		case ACTION_REMOVE: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid()) {
-				undo_redo->create_action(TTR("Remove BT Task"));
-				if (sel->get_parent().is_null()) {
-					undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), Variant());
-					undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
-				} else {
-					undo_redo->add_do_method(sel->get_parent().ptr(), SNAME("remove_child"), sel);
-					undo_redo->add_undo_method(sel->get_parent().ptr(), SNAME("add_child_at_index"), sel, sel->get_parent()->get_child_index(sel));
-				}
-				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
-				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
-				undo_redo->commit_action();
-				EditorNode::get_singleton()->edit_resource(task_tree->get_selected());
-				_mark_as_dirty(true);
+		case ACTION_RENAME: {
+			if (!task_tree->get_selected().is_valid()) {
+				return;
 			}
+
+			rename_dialog->popup_centered();
+			rename_edit->set_text(task_tree->get_selected()->get_custom_name());
+			rename_edit->select_all();
+			rename_edit->grab_focus();
 		} break;
 		case ACTION_MOVE_UP: {
 			Ref<BTTask> sel = task_tree->get_selected();
@@ -871,6 +897,24 @@ void LimboAIEditor::_on_action_selected(int p_id) {
 				_mark_as_dirty(true);
 			}
 		} break;
+		case ACTION_REMOVE: {
+			Ref<BTTask> sel = task_tree->get_selected();
+			if (sel.is_valid()) {
+				undo_redo->create_action(TTR("Remove BT Task"));
+				if (sel->get_parent().is_null()) {
+					undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), Variant());
+					undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
+				} else {
+					undo_redo->add_do_method(sel->get_parent().ptr(), SNAME("remove_child"), sel);
+					undo_redo->add_undo_method(sel->get_parent().ptr(), SNAME("add_child_at_index"), sel, sel->get_parent()->get_child_index(sel));
+				}
+				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+				undo_redo->commit_action();
+				EditorNode::get_singleton()->edit_resource(task_tree->get_selected());
+				_mark_as_dirty(true);
+			}
+		} break;
 	}
 }
 
@@ -879,14 +923,7 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) {
 }
 
 void LimboAIEditor::_on_tree_task_double_clicked() {
-	if (!task_tree->get_selected().is_valid()) {
-		return;
-	}
-
-	rename_dialog->popup_centered();
-	rename_edit->set_text(task_tree->get_selected()->get_custom_name());
-	rename_edit->select_all();
-	rename_edit->grab_focus();
+	_action_selected(ACTION_RENAME);
 }
 
 void LimboAIEditor::_on_panel_task_selected(String p_task) {
@@ -1100,6 +1137,7 @@ void LimboAIEditor::_notification(int p_what) {
 			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
+			_create_popup_menu();
 			_update_header();
 		}
 	}
@@ -1119,6 +1157,19 @@ void LimboAIEditor::_bind_methods() {
 
 LimboAIEditor::LimboAIEditor() {
 	idx_history = 0;
+
+	ED_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), Key::F2);
+	ED_SHORTCUT_OVERRIDE("limbo_ai/rename_task", "macos", Key::ENTER);
+	ED_SHORTCUT("limbo_ai/move_task_up", TTR("Move Up"), KeyModifierMask::CMD_OR_CTRL | Key::UP);
+	ED_SHORTCUT("limbo_ai/move_task_down", TTR("Move Down"), KeyModifierMask::CMD_OR_CTRL | Key::DOWN);
+	ED_SHORTCUT("limbo_ai/duplicate_task", TTR("Duplicate"), KeyModifierMask::CMD_OR_CTRL | Key::D);
+	ED_SHORTCUT("limbo_ai/remove_task", TTR("Remove"), Key::KEY_DELETE);
+
+	ED_SHORTCUT("limbo_ai/new_behavior_tree", TTR("New Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::N);
+	ED_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::S);
+	ED_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::L);
+
+	set_process_shortcut_input(true);
 
 	save_dialog = memnew(FileDialog);
 	save_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);
@@ -1172,7 +1223,8 @@ LimboAIEditor::LimboAIEditor() {
 
 	new_btn = memnew(Button);
 	new_btn->set_text(TTR("New"));
-	new_btn->set_tooltip_text(TTR("Create new behavior tree."));
+	new_btn->set_tooltip_text(TTR("Create a new behavior tree."));
+	new_btn->set_shortcut(ED_GET_SHORTCUT("limbo_ai/new_behavior_tree"));
 	new_btn->set_flat(true);
 	new_btn->set_focus_mode(Control::FOCUS_NONE);
 	new_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_new_bt));
@@ -1180,7 +1232,8 @@ LimboAIEditor::LimboAIEditor() {
 
 	load_btn = memnew(Button);
 	load_btn->set_text(TTR("Load"));
-	load_btn->set_tooltip_text(TTR("Load behavior tree."));
+	load_btn->set_tooltip_text(TTR("Load behavior tree from a resource file."));
+	load_btn->set_shortcut(ED_GET_SHORTCUT("limbo_ai/load_behavior_tree"));
 	load_btn->set_flat(true);
 	load_btn->set_focus_mode(Control::FOCUS_NONE);
 	load_btn->connect("pressed", callable_mp(load_dialog, &FileDialog::popup_file_dialog));
@@ -1188,7 +1241,8 @@ LimboAIEditor::LimboAIEditor() {
 
 	save_btn = memnew(Button);
 	save_btn->set_text(TTR("Save"));
-	save_btn->set_tooltip_text(TTR("Save current behavior tree."));
+	save_btn->set_tooltip_text(TTR("Save edited behavior tree to a resource file."));
+	save_btn->set_shortcut(ED_GET_SHORTCUT("limbo_ai/save_behavior_tree"));
 	save_btn->set_flat(true);
 	save_btn->set_focus_mode(Control::FOCUS_NONE);
 	save_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_on_save_pressed));
@@ -1228,6 +1282,7 @@ LimboAIEditor::LimboAIEditor() {
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
 	hsc->set_v_size_flags(SIZE_EXPAND_FILL);
+	hsc->set_focus_mode(FOCUS_NONE);
 	vb->add_child(hsc);
 
 	task_tree = memnew(TaskTree);
@@ -1262,7 +1317,7 @@ LimboAIEditor::LimboAIEditor() {
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
-	menu->connect("id_pressed", callable_mp(this, &LimboAIEditor::_on_action_selected));
+	menu->connect("id_pressed", callable_mp(this, &LimboAIEditor::_action_selected));
 
 	rename_dialog = memnew(ConfirmationDialog);
 	{
