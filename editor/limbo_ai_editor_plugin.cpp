@@ -800,6 +800,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 
 	menu->add_icon_shortcut(get_theme_icon(SNAME("Rename"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), ACTION_EDIT_SCRIPT);
+	menu->add_icon_item(get_theme_icon(SNAME("Help"), SNAME("EditorIcons")), TTR("Open Documentation"), ACTION_OPEN_DOC);
 	menu->set_item_disabled(ACTION_EDIT_SCRIPT, task->get_script().is_null());
 
 	menu->add_separator();
@@ -832,6 +833,20 @@ void LimboAIEditor::_action_selected(int p_id) {
 		case ACTION_EDIT_SCRIPT: {
 			ERR_FAIL_COND(task_tree->get_selected().is_null());
 			EditorNode::get_singleton()->edit_resource(task_tree->get_selected()->get_script());
+		} break;
+		case ACTION_OPEN_DOC: {
+			Ref<BTTask> task = task_tree->get_selected();
+			ERR_FAIL_COND(task.is_null());
+			String help_class;
+			if (!task->get_script().is_null()) {
+				Ref<Script> s = task->get_script();
+				help_class = s->get_language()->get_global_class_name(s->get_path());
+			}
+			if (help_class.is_empty()) {
+				help_class = task->get_class();
+			}
+			ScriptEditor::get_singleton()->goto_help("class_name:" + help_class);
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
 		} break;
 		case ACTION_MOVE_UP: {
 			Ref<BTTask> sel = task_tree->get_selected();
