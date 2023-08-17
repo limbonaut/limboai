@@ -343,8 +343,19 @@ TaskTree::~TaskTree() {
 
 //**** TaskSection
 
-void TaskSection::_on_task_button_pressed(const StringName &p_task) {
+void TaskSection::_on_task_button_pressed(const String &p_task) {
 	emit_signal(SNAME("task_button_pressed"), p_task);
+}
+
+void TaskSection::_on_task_button_gui_input(const Ref<InputEvent> &p_event, const String &p_task) {
+	if (!p_event->is_pressed()) {
+		return;
+	}
+
+	Ref<InputEventMouseButton> mb = p_event;
+	if (mb.is_valid() && mb->get_button_index() == MouseButton::RIGHT) {
+		emit_signal(SNAME("task_button_rmb"), p_task);
+	}
 }
 
 void TaskSection::_on_header_pressed() {
@@ -373,7 +384,8 @@ void TaskSection::add_task_button(String p_name, const Ref<Texture> &icon, Varia
 	btn->set_text(p_name);
 	btn->set_icon(icon);
 	btn->add_theme_constant_override(SNAME("icon_max_width"), 16 * EDSCALE); // Force user icons to  be of the proper size.
-	btn->connect("pressed", callable_mp(this, &TaskSection::_on_task_button_pressed).bind(p_meta));
+	btn->connect(SNAME("pressed"), callable_mp(this, &TaskSection::_on_task_button_pressed).bind(p_meta));
+	btn->connect(SNAME("gui_input"), callable_mp(this, &TaskSection::_on_task_button_gui_input).bind(p_meta));
 	tasks_container->add_child(btn);
 }
 
@@ -395,6 +407,7 @@ void TaskSection::_notification(int p_what) {
 
 void TaskSection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_button_pressed"));
+	ADD_SIGNAL(MethodInfo("task_button_rmb"));
 }
 
 TaskSection::TaskSection(String p_category_name) {
@@ -415,8 +428,46 @@ TaskSection::~TaskSection() {
 
 //**** TaskPanel
 
-void TaskPanel::_on_task_button_pressed(const StringName &p_task) {
+void TaskPanel::_menu_action_selected(int p_id) {
+	ERR_FAIL_COND(context_task.is_empty());
+	switch (p_id) {
+		case MENU_OPEN_DOC: {
+			String help_class;
+			if (context_task.begins_with("res://")) {
+				Ref<Script> s = ResourceLoader::load(context_task, "Script");
+				help_class = s->get_language()->get_global_class_name(context_task);
+			}
+			if (help_class.is_empty()) {
+				// Assuming context task is core class.
+				help_class = context_task;
+			}
+			ScriptEditor::get_singleton()->goto_help("class_name:" + help_class);
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+		} break;
+		case MENU_EDIT_SCRIPT: {
+			ERR_FAIL_COND(!context_task.begins_with("res://"));
+			ScriptEditor::get_singleton()->open_file(context_task);
+		} break;
+	}
+}
+
+void TaskPanel::_on_task_button_pressed(const String &p_task) {
 	emit_signal(SNAME("task_selected"), p_task);
+}
+
+void TaskPanel::_on_task_button_rmb(const String &p_task) {
+	ERR_FAIL_COND(p_task.is_empty());
+
+	context_task = p_task;
+	menu->clear();
+
+	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), MENU_EDIT_SCRIPT);
+	menu->set_item_disabled(MENU_EDIT_SCRIPT, !context_task.begins_with("res://"));
+	menu->add_icon_item(get_theme_icon(SNAME("Help"), SNAME("EditorIcons")), TTR("Open Documentation"), MENU_OPEN_DOC);
+
+	menu->reset_size();
+	menu->set_position(get_screen_position() + get_local_mouse_position());
+	menu->popup();
 }
 
 void TaskPanel::_on_filter_text_changed(String p_text) {
@@ -506,7 +557,8 @@ void TaskPanel::refresh() {
 			sec->add_task_button(tname, icon, task_meta);
 		}
 		sec->set_filter("");
-		sec->connect("task_button_pressed", callable_mp(this, &TaskPanel::_on_task_button_pressed));
+		sec->connect(SNAME("task_button_pressed"), callable_mp(this, &TaskPanel::_on_task_button_pressed));
+		sec->connect(SNAME("task_button_rmb"), callable_mp(this, &TaskPanel::_on_task_button_rmb));
 		sections->add_child(sec);
 		sec->set_collapsed(collapsed_sections.has(cat));
 	}
@@ -628,6 +680,10 @@ TaskPanel::TaskPanel() {
 	sections->set_h_size_flags(SIZE_EXPAND_FILL);
 	sections->set_v_size_flags(SIZE_EXPAND_FILL);
 	sc->add_child(sections);
+
+	menu = memnew(PopupMenu);
+	add_child(menu);
+	menu->connect("id_pressed", callable_mp(this, &TaskPanel::_menu_action_selected));
 }
 
 TaskPanel::~TaskPanel() {
