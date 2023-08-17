@@ -134,6 +134,7 @@ class LimboAIEditor : public Control {
 private:
 	enum Action {
 		ACTION_RENAME,
+		ACTION_EDIT_SCRIPT,
 		ACTION_MOVE_UP,
 		ACTION_MOVE_DOWN,
 		ACTION_DUPLICATE,
@@ -180,7 +181,6 @@ private:
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
-	void _create_popup_menu();
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");

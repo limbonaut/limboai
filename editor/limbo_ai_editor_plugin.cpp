@@ -792,22 +792,26 @@ void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 	accept_event();
 }
 
-void LimboAIEditor::_create_popup_menu() {
+void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->clear();
+
+	Ref<BTTask> task = task_tree->get_selected();
+	ERR_FAIL_COND_MSG(task.is_null(), "LimboAIEditor: get_selected() returned null");
+
 	menu->add_icon_shortcut(get_theme_icon(SNAME("Rename"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
+	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), ACTION_EDIT_SCRIPT);
+	menu->set_item_disabled(ACTION_EDIT_SCRIPT, task->get_script().is_null());
+
 	menu->add_separator();
 	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
 	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_down"), ACTION_MOVE_DOWN);
 	menu->add_icon_shortcut(get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
 	menu->add_icon_item(get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons")), TTR("Make Root"), ACTION_MAKE_ROOT);
+
 	menu->add_separator();
 	menu->add_icon_shortcut(get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
 
 	menu->reset_size();
-}
-
-void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
-	_create_popup_menu();
 	menu->set_position(p_menu_pos);
 	menu->popup();
 }
@@ -824,6 +828,10 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_edit->set_text(task_tree->get_selected()->get_custom_name());
 			rename_edit->select_all();
 			rename_edit->grab_focus();
+		} break;
+		case ACTION_EDIT_SCRIPT: {
+			ERR_FAIL_COND(task_tree->get_selected().is_null());
+			EditorNode::get_singleton()->edit_resource(task_tree->get_selected()->get_script());
 		} break;
 		case ACTION_MOVE_UP: {
 			Ref<BTTask> sel = task_tree->get_selected();
@@ -1137,7 +1145,6 @@ void LimboAIEditor::_notification(int p_what) {
 			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
-			_create_popup_menu();
 			_update_header();
 		}
 	}
