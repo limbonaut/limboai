@@ -94,6 +94,13 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
+	if (task->get_custom_name().is_empty()) {
+		p_item->set_custom_font(0, nullptr);
+		// p_item->clear_custom_color(0);
+	} else {
+		p_item->set_custom_font(0, (get_theme_font(SNAME("bold"), SNAME("EditorFonts"))));
+		// p_item->set_custom_color(0, get_theme_color(SNAME("warning_color"), SNAME("Editor")));
+	}
 	String type_arg;
 	if (task->get_script_instance() && !task->get_script_instance()->get_script()->get_path().is_empty()) {
 		type_arg = task->get_script_instance()->get_script()->get_path();
