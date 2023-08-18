@@ -111,6 +111,7 @@ private:
 	enum MenuAction {
 		MENU_EDIT_SCRIPT,
 		MENU_OPEN_DOC,
+		MENU_FAVORITE,
 	};
 
 	LineEdit *filter_edit;
@@ -168,10 +169,8 @@ private:
 	Button *history_back;
 	Button *history_forward;
 	TaskPanel *task_panel;
+	HBoxContainer *fav_tasks_hbox;
 
-	Button *selector_btn;
-	Button *sequence_btn;
-	Button *parallel_btn;
 	Button *new_btn;
 	Button *load_btn;
 	Button *save_btn;
@@ -185,10 +184,12 @@ private:
 	HashSet<String> disk_changed_files;
 
 	void _add_task(const Ref<BTTask> &p_task);
+	void _add_task_by_class_or_path(String p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header() const;
 	void _update_history_buttons();
+	void _update_favorite_tasks();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
@@ -206,7 +207,6 @@ private:
 	void _on_visibility_changed();
 	void _on_header_pressed();
 	void _on_save_pressed();
-	void _on_panel_task_selected(String p_task);
 	void _on_history_back();
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);

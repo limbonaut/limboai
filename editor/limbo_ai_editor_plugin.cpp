@@ -448,6 +448,17 @@ void TaskPanel::_menu_action_selected(int p_id) {
 			ERR_FAIL_COND(!context_task.begins_with("res://"));
 			ScriptEditor::get_singleton()->open_file(context_task);
 		} break;
+		case MENU_FAVORITE: {
+			Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+			if (favorite_tasks.has(context_task)) {
+				favorite_tasks.erase(context_task);
+			} else {
+				favorite_tasks.append(context_task);
+			}
+			ProjectSettings::get_singleton()->set_setting("limbo_ai/behavior_tree/favorite_tasks", favorite_tasks);
+			ProjectSettings::get_singleton()->save();
+			emit_signal(SNAME("favorite_tasks_changed"));
+		} break;
 	}
 }
 
@@ -464,6 +475,14 @@ void TaskPanel::_on_task_button_rmb(const String &p_task) {
 	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), MENU_EDIT_SCRIPT);
 	menu->set_item_disabled(MENU_EDIT_SCRIPT, !context_task.begins_with("res://"));
 	menu->add_icon_item(get_theme_icon(SNAME("Help"), SNAME("EditorIcons")), TTR("Open Documentation"), MENU_OPEN_DOC);
+
+	menu->add_separator();
+	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+	if (favorite_tasks.has(context_task)) {
+		menu->add_icon_item(get_theme_icon(SNAME("NonFavorite"), SNAME("EditorIcons")), TTR("Remove from Favorites"), MENU_FAVORITE);
+	} else {
+		menu->add_icon_item(get_theme_icon(SNAME("Favorites"), SNAME("EditorIcons")), TTR("Add to Favorites"), MENU_FAVORITE);
+	}
 
 	menu->reset_size();
 	menu->set_position(get_screen_position() + get_local_mouse_position());
@@ -659,6 +678,7 @@ void TaskPanel::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("refresh"), &TaskPanel::refresh);
 
 	ADD_SIGNAL(MethodInfo("task_selected"));
+	ADD_SIGNAL(MethodInfo("favorite_tasks_changed"));
 }
 
 TaskPanel::TaskPanel() {
@@ -713,6 +733,33 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
 	undo_redo->commit_action();
 	_mark_as_dirty(true);
+}
+
+void LimboAIEditor::_add_task_by_class_or_path(String p_class_or_path) {
+	Ref<BTTask> task;
+
+	if (p_class_or_path.begins_with("res:")) {
+		Ref<Script> s = ResourceLoader::load(p_class_or_path, "Script");
+		ERR_FAIL_COND_MSG(s.is_null() || !s->is_valid(), vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
+		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
+		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instantiate base type \"%s\".", s->get_instance_base_type()));
+
+		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
+			if (!inst.is_ref_counted()) {
+				memdelete((Object *)inst);
+			}
+			ERR_PRINT(vformat("LimboAI: Failed to instantiate task. Script is not a BTTask: %s", p_class_or_path));
+			return;
+		}
+
+		if (inst && s.is_valid()) {
+			((Object *)inst)->set_script(s);
+			task = inst;
+		}
+	} else {
+		task = ClassDB::instantiate(p_class_or_path);
+	}
+	_add_task(task);
 }
 
 void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
@@ -1005,33 +1052,6 @@ void LimboAIEditor::_on_tree_task_double_clicked() {
 	_action_selected(ACTION_RENAME);
 }
 
-void LimboAIEditor::_on_panel_task_selected(String p_task) {
-	Ref<BTTask> task;
-
-	if (p_task.begins_with("res:")) {
-		Ref<Script> s = ResourceLoader::load(p_task, "Script");
-		ERR_FAIL_COND_MSG(s.is_null() || !s->is_valid(), vformat("LimboAI: Failed to instance task. Bad script: %s", p_task));
-		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
-		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instance base type \"%s\".", s->get_instance_base_type()));
-
-		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
-			if (!inst.is_ref_counted()) {
-				memdelete((Object *)inst);
-			}
-			ERR_PRINT(vformat("LimboAI: Failed to instance task. Script is not a BTTask: %s", p_task));
-			return;
-		}
-
-		if (inst && s.is_valid()) {
-			((Object *)inst)->set_script(s);
-			task = inst;
-		}
-	} else {
-		task = ClassDB::instantiate(p_task);
-	}
-	_add_task(task);
-}
-
 void LimboAIEditor::_on_visibility_changed() {
 	if (task_tree->is_visible()) {
 		Ref<BTTask> sel = task_tree->get_selected();
@@ -1043,6 +1063,7 @@ void LimboAIEditor::_on_visibility_changed() {
 
 		task_panel->refresh();
 	}
+	_update_favorite_tasks();
 }
 
 void LimboAIEditor::_on_header_pressed() {
@@ -1189,6 +1210,32 @@ void LimboAIEditor::apply_changes() {
 	}
 }
 
+void LimboAIEditor::_update_favorite_tasks() {
+	for (int i = 0; i < fav_tasks_hbox->get_child_count(); i++) {
+		fav_tasks_hbox->get_child(i)->queue_free();
+	}
+	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+	for (int i = 0; i < favorite_tasks.size(); i++) {
+		String task_meta = favorite_tasks[i];
+		Button *btn = memnew(Button);
+		String task_name;
+		if (task_meta.begins_with("res:")) {
+			task_name = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
+		} else {
+			task_name = task_meta.trim_prefix("BT");
+		}
+		btn->set_text(task_name);
+		btn->set_meta(SNAME("task_meta"), task_meta);
+		btn->set_icon(LimboUtility::get_singleton()->get_task_icon(task_meta));
+		btn->set_tooltip_text(vformat(TTR("Add %s task."), task_name));
+		btn->set_flat(true);
+		btn->add_theme_constant_override(SNAME("icon_max_width"), 16 * EDSCALE); // Force user icons to be of the proper size.
+		btn->set_focus_mode(Control::FOCUS_NONE);
+		btn->connect(SNAME("pressed"), callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path).bind(task_meta));
+		fav_tasks_hbox->add_child(btn);
+	}
+}
+
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -1206,16 +1253,13 @@ void LimboAIEditor::_notification(int p_what) {
 			conf.save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
-			selector_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSelector"));
-			sequence_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTSequence"));
-			parallel_btn->set_icon(EditorNode::get_singleton()->get_class_icon("BTParallel"));
 			new_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("New"), SNAME("EditorIcons")));
 			load_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Load"), SNAME("EditorIcons")));
 			save_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Save"), SNAME("EditorIcons")));
 			new_script_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
 			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
-
+			_update_favorite_tasks();
 			_update_header();
 		}
 	}
@@ -1270,34 +1314,19 @@ LimboAIEditor::LimboAIEditor() {
 	vb->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	add_child(vb);
 
-	HBoxContainer *panel = memnew(HBoxContainer);
-	vb->add_child(panel);
+	HBoxContainer *toolbar = memnew(HBoxContainer);
+	vb->add_child(toolbar);
 
-	selector_btn = memnew(Button);
-	selector_btn->set_text(TTR("Selector"));
-	selector_btn->set_tooltip_text(TTR("Add Selector task."));
-	selector_btn->set_flat(true);
-	selector_btn->set_focus_mode(Control::FOCUS_NONE);
-	selector_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTSelector))));
-	panel->add_child(selector_btn);
+	Array favorite_tasks_default;
+	favorite_tasks_default.append("BTSelector");
+	favorite_tasks_default.append("BTSequence");
+	favorite_tasks_default.append("BTParallel");
+	GLOBAL_DEF(PropertyInfo(Variant::ARRAY, "limbo_ai/behavior_tree/favorite_tasks", PROPERTY_HINT_ARRAY_TYPE, "String"), favorite_tasks_default);
 
-	sequence_btn = memnew(Button);
-	sequence_btn->set_text(TTR("Sequence"));
-	sequence_btn->set_tooltip_text(TTR("Add Sequence task."));
-	sequence_btn->set_flat(true);
-	sequence_btn->set_focus_mode(Control::FOCUS_NONE);
-	sequence_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTSequence))));
-	panel->add_child(sequence_btn);
+	fav_tasks_hbox = memnew(HBoxContainer);
+	toolbar->add_child(fav_tasks_hbox);
 
-	parallel_btn = memnew(Button);
-	parallel_btn->set_text(TTR("Parallel"));
-	parallel_btn->set_tooltip_text(TTR("Add Parallel task."));
-	parallel_btn->set_flat(true);
-	parallel_btn->set_focus_mode(Control::FOCUS_NONE);
-	parallel_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_with_prototype).bind(Ref<BTTask>(memnew(BTParallel))));
-	panel->add_child(parallel_btn);
-
-	panel->add_child(memnew(VSeparator));
+	toolbar->add_child(memnew(VSeparator));
 
 	new_btn = memnew(Button);
 	new_btn->set_text(TTR("New"));
@@ -1306,7 +1335,7 @@ LimboAIEditor::LimboAIEditor() {
 	new_btn->set_flat(true);
 	new_btn->set_focus_mode(Control::FOCUS_NONE);
 	new_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_new_bt));
-	panel->add_child(new_btn);
+	toolbar->add_child(new_btn);
 
 	load_btn = memnew(Button);
 	load_btn->set_text(TTR("Load"));
@@ -1315,7 +1344,7 @@ LimboAIEditor::LimboAIEditor() {
 	load_btn->set_flat(true);
 	load_btn->set_focus_mode(Control::FOCUS_NONE);
 	load_btn->connect("pressed", callable_mp(load_dialog, &FileDialog::popup_file_dialog));
-	panel->add_child(load_btn);
+	toolbar->add_child(load_btn);
 
 	save_btn = memnew(Button);
 	save_btn->set_text(TTR("Save"));
@@ -1324,20 +1353,20 @@ LimboAIEditor::LimboAIEditor() {
 	save_btn->set_flat(true);
 	save_btn->set_focus_mode(Control::FOCUS_NONE);
 	save_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_on_save_pressed));
-	panel->add_child(save_btn);
+	toolbar->add_child(save_btn);
 
-	panel->add_child(memnew(VSeparator));
+	toolbar->add_child(memnew(VSeparator));
 
 	new_script_btn = memnew(Button);
 	new_script_btn->set_text(TTR("New Task"));
 	new_script_btn->set_tooltip_text(TTR("Create new task script and edit it."));
 	new_script_btn->set_flat(true);
 	new_script_btn->set_focus_mode(Control::FOCUS_NONE);
-	panel->add_child(new_script_btn);
+	toolbar->add_child(new_script_btn);
 
 	HBoxContainer *nav = memnew(HBoxContainer);
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
-	panel->add_child(nav);
+	toolbar->add_child(nav);
 
 	history_back = memnew(Button);
 	history_back->set_flat(true);
@@ -1389,7 +1418,8 @@ LimboAIEditor::LimboAIEditor() {
 
 	task_panel = memnew(TaskPanel());
 	hsc->set_split_offset(-300);
-	task_panel->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_panel_task_selected));
+	task_panel->connect("task_selected", callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path));
+	task_panel->connect("favorite_tasks_changed", callable_mp(this, &LimboAIEditor::_update_favorite_tasks));
 	task_panel->hide();
 	hsc->add_child(task_panel);
 
