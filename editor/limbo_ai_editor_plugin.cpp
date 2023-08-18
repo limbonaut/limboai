@@ -94,9 +94,12 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
-	if (task->get_custom_name().is_empty()) {
+	if (task->is_class("BTComment")) {
+		p_item->set_custom_font(0, (get_theme_font(SNAME("doc_italic"), SNAME("EditorFonts"))));
+		p_item->set_custom_color(0, get_theme_color(SNAME("disabled_font_color"), SNAME("Editor")));
+	} else if (task->get_custom_name().is_empty()) {
 		p_item->set_custom_font(0, nullptr);
-		// p_item->clear_custom_color(0);
+		p_item->clear_custom_color(0);
 	} else {
 		p_item->set_custom_font(0, (get_theme_font(SNAME("bold"), SNAME("EditorFonts"))));
 		// p_item->set_custom_color(0, get_theme_color(SNAME("warning_color"), SNAME("Editor")));
@@ -1332,6 +1335,15 @@ LimboAIEditor::LimboAIEditor() {
 
 	fav_tasks_hbox = memnew(HBoxContainer);
 	toolbar->add_child(fav_tasks_hbox);
+
+	comment_btn = memnew(Button);
+	comment_btn->set_text(TTR("Comment"));
+	comment_btn->set_icon(LimboUtility::get_singleton()->get_task_icon("BTComment"));
+	comment_btn->set_tooltip_text(TTR("Add a BTComment task."));
+	comment_btn->set_flat(true);
+	comment_btn->set_focus_mode(Control::FOCUS_NONE);
+	comment_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path).bind("BTComment"));
+	toolbar->add_child(comment_btn);
 
 	toolbar->add_child(memnew(VSeparator));
 

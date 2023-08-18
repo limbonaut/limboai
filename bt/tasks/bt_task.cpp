@@ -104,10 +104,19 @@ Ref<BTTask> BTTask::clone() const {
 	inst->data.parent = nullptr;
 	inst->data.agent = nullptr;
 	inst->data.blackboard.unref();
+	int num_null = 0;
 	for (int i = 0; i < data.children.size(); i++) {
 		Ref<BTTask> c = get_child(i)->clone();
-		c->data.parent = inst.ptr();
-		inst->data.children.set(i, c);
+		if (c.is_valid()) {
+			c->data.parent = inst.ptr();
+			inst->data.children.set(i - num_null, c);
+		} else {
+			num_null += 1;
+		}
+	}
+	if (num_null > 0) {
+		// * BTComment tasks return nullptr at runtime - we remove those.
+		inst->data.children.resize(data.children.size() - num_null);
 	}
 
 	// Make BBParam properties unique.

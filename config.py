@@ -65,6 +65,7 @@ def get_doc_classes():
         "BTCheckAgentProperty",
         "BTCheckTrigger",
         "BTCheckVar",
+        "BTComment",
         "BTComposite",
         "BTCondition",
         "BTConsolePrint",
