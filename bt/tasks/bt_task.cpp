@@ -11,6 +11,7 @@
 
 #include "bt_task.h"
 
+#include "bt_comment.h"
 #include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/util/limbo_string_names.h"
 #include "modules/limboai/util/limbo_utility.h"
@@ -198,6 +199,16 @@ int BTTask::get_child_count() const {
 	return data.children.size();
 }
 
+int BTTask::get_child_count_excluding_comments() const {
+	int count = 0;
+	for (int i = 0; i < data.children.size(); i++) {
+		if (!data.children[i]->is_class_ptr(BTComment::get_class_ptr_static())) {
+			count += 1;
+		}
+	}
+	return count;
+}
+
 void BTTask::add_child(Ref<BTTask> p_child) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
 	p_child->data.parent = this;
@@ -291,6 +302,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("execute", "p_delta"), &BTTask::execute);
 	ClassDB::bind_method(D_METHOD("get_child", "p_idx"), &BTTask::get_child);
 	ClassDB::bind_method(D_METHOD("get_child_count"), &BTTask::get_child_count);
+	ClassDB::bind_method(D_METHOD("get_child_count_excluding_comments"), &BTTask::get_child_count_excluding_comments);
 	ClassDB::bind_method(D_METHOD("add_child", "p_child"), &BTTask::add_child);
 	ClassDB::bind_method(D_METHOD("add_child_at_index", "p_child", "p_idx"), &BTTask::add_child_at_index);
 	ClassDB::bind_method(D_METHOD("remove_child", "p_child"), &BTTask::remove_child);

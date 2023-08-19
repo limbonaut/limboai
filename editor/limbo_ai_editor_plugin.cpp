@@ -15,6 +15,7 @@
 
 #include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/tasks/bt_action.h"
+#include "modules/limboai/bt/tasks/bt_comment.h"
 #include "modules/limboai/bt/tasks/bt_task.h"
 #include "modules/limboai/bt/tasks/composites/bt_parallel.h"
 #include "modules/limboai/bt/tasks/composites/bt_selector.h"
@@ -94,7 +95,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
-	if (task->is_class("BTComment")) {
+	if (task->is_class_ptr(BTComment::get_class_ptr_static())) {
 		p_item->set_custom_font(0, (get_theme_font(SNAME("doc_italic"), SNAME("EditorFonts"))));
 		p_item->set_custom_color(0, get_theme_color(SNAME("disabled_font_color"), SNAME("Editor")));
 	} else if (task->get_custom_name().is_empty()) {
