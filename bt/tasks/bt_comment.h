@@ -21,6 +21,7 @@ class BTComment : public BTTask {
 private:
 public:
 	virtual Ref<BTTask> clone() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
 #endif // BT_COMMENT
