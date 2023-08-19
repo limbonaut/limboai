@@ -938,9 +938,18 @@ void LimboAIEditor::_action_selected(int p_id) {
 			if (!task_tree->get_selected().is_valid()) {
 				return;
 			}
-
+			Ref<BTTask> task = task_tree->get_selected();
+			if (task->is_class_ptr(BTComment::get_class_ptr_static())) {
+				rename_dialog->set_title(TTR("Edit Comment"));
+				rename_dialog->get_ok_button()->set_text(TTR("OK"));
+				rename_edit->set_placeholder(TTR("Comment"));
+			} else {
+				rename_dialog->set_title(TTR("Rename Task"));
+				rename_dialog->get_ok_button()->set_text(TTR("Rename"));
+				rename_edit->set_placeholder(TTR("Custom Name"));
+			}
+			rename_edit->set_text(task->get_custom_name());
 			rename_dialog->popup_centered();
-			rename_edit->set_text(task_tree->get_selected()->get_custom_name());
 			rename_edit->select_all();
 			rename_edit->grab_focus();
 		} break;
@@ -1449,19 +1458,15 @@ LimboAIEditor::LimboAIEditor() {
 
 	rename_dialog = memnew(ConfirmationDialog);
 	{
-		rename_dialog->set_title("Rename Task");
-
 		VBoxContainer *vbc = memnew(VBoxContainer);
 		rename_dialog->add_child(vbc);
 
 		rename_edit = memnew(LineEdit);
 		vbc->add_child(rename_edit);
-		rename_edit->set_placeholder("Custom Name");
 		rename_edit->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		rename_edit->set_custom_minimum_size(Size2(350.0, 0.0));
 
 		rename_dialog->register_text_enter(rename_edit);
-		rename_dialog->get_ok_button()->set_text(TTR("Rename"));
 		rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task_confirmed));
 	}
 	add_child(rename_dialog);
