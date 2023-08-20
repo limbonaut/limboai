@@ -50,6 +50,8 @@
 #include "core/variant/callable.h"
 #include "core/variant/dictionary.h"
 #include "core/variant/variant.h"
+#include "editor/debugger/editor_debugger_node.h"
+#include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
 #include "editor/editor_inspector.h"
 #include "editor/editor_node.h"
@@ -1064,6 +1066,21 @@ void LimboAIEditor::_action_selected(int p_id) {
 	}
 }
 
+void LimboAIEditor::_misc_option_selected(int p_id) {
+	switch (p_id) {
+		case MISC_OPEN_DEBUGGER: {
+			ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
+			if (LimboDebuggerPlugin::get_singleton()->get_session_tab()->get_window_enabled()) {
+				LimboDebuggerPlugin::get_singleton()->get_session_tab()->set_window_enabled(true);
+			} else {
+				EditorNode::get_singleton()->make_bottom_panel_item_visible(EditorDebuggerNode::get_singleton());
+				EditorDebuggerNode::get_singleton()->get_default_debugger()->switch_to_debugger(
+						LimboDebuggerPlugin::get_singleton()->get_session_tab_index());
+			}
+		} break;
+	}
+}
+
 void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) {
 	EditorNode::get_singleton()->edit_resource(p_task);
 }
@@ -1279,6 +1296,12 @@ void LimboAIEditor::_notification(int p_what) {
 			new_script_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
 			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
+
+			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
+			PopupMenu *misc_menu = misc_btn->get_popup();
+			misc_menu->clear();
+			misc_menu->add_icon_item(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), TTR("Open Debugger"), MISC_OPEN_DEBUGGER);
+
 			_update_favorite_tasks();
 			_update_header();
 		}
@@ -1392,6 +1415,16 @@ LimboAIEditor::LimboAIEditor() {
 	new_script_btn->set_flat(true);
 	new_script_btn->set_focus_mode(Control::FOCUS_NONE);
 	toolbar->add_child(new_script_btn);
+
+	// toolbar->add_child(memnew(VSeparator));
+
+	misc_btn = memnew(MenuButton);
+	misc_btn->set_text(TTR("Misc"));
+	misc_btn->set_flat(true);
+	misc_btn->get_popup()->connect("index_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
+	toolbar->add_child(misc_btn);
+
+	// toolbar->add_child(memnew(VSeparator));
 
 	HBoxContainer *nav = memnew(HBoxContainer);
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);

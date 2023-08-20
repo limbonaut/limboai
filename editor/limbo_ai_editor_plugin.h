@@ -155,6 +155,10 @@ private:
 		ACTION_REMOVE,
 	};
 
+	enum MiscMenu {
+		MISC_OPEN_DEBUGGER,
+	};
+
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	HashSet<Ref<BehaviorTree>> dirty;
@@ -176,6 +180,7 @@ private:
 	Button *load_btn;
 	Button *save_btn;
 	Button *new_script_btn;
+	MenuButton *misc_btn;
 
 	ConfirmationDialog *rename_dialog;
 	LineEdit *rename_edit;
@@ -203,6 +208,7 @@ private:
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _action_selected(int p_id);
+	void _misc_option_selected(int p_id);
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_tree_task_double_clicked();
 	void _on_visibility_changed();
