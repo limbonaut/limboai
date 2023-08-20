@@ -881,7 +881,20 @@ void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 }
 
 void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
-	if (!p_event->is_pressed() || !(has_focus() || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
+	if (!p_event->is_pressed()) {
+		return;
+	}
+
+	// * Global shortcuts.
+
+	if (ED_IS_SHORTCUT("limbo_ai/open_debugger", p_event)) {
+		_misc_option_selected(MISC_OPEN_DEBUGGER);
+		accept_event();
+	}
+
+	// * Local shortcuts.
+
+	if (!(has_focus() || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
 		return;
 	}
 
@@ -1300,7 +1313,7 @@ void LimboAIEditor::_notification(int p_what) {
 			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
 			PopupMenu *misc_menu = misc_btn->get_popup();
 			misc_menu->clear();
-			misc_menu->add_icon_item(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), TTR("Open Debugger"), MISC_OPEN_DEBUGGER);
+			misc_menu->add_icon_shortcut(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
 
 			_update_favorite_tasks();
 			_update_header();
@@ -1333,6 +1346,7 @@ LimboAIEditor::LimboAIEditor() {
 	ED_SHORTCUT("limbo_ai/new_behavior_tree", TTR("New Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::N);
 	ED_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::S);
 	ED_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::L);
+	ED_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), KeyModifierMask::CMD_OR_CTRL | KeyModifierMask::ALT | Key::D);
 
 	set_process_shortcut_input(true);
 
