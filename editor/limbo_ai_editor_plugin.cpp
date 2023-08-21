@@ -902,6 +902,24 @@ void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 	}
 }
 
+void LimboAIEditor::_create_user_task_dir() {
+	String task_dir = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
+	ERR_FAIL_COND_MSG(DirAccess::exists(task_dir), "LimboAIEditor: Directory already exists: " + task_dir);
+
+	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+	Error err;
+	err = dir->make_dir_recursive(task_dir);
+	ERR_FAIL_COND_MSG(err != OK, "LimboAIEditor: Failed to create directory: " + task_dir);
+
+	_update_warnings();
+	EditorFileSystem::get_singleton()->scan_changes();
+}
+
+void LimboAIEditor::_edit_project_settings() {
+	ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
+	ProjectSettingsEditor::get_singleton()->popup_project_settings();
+}
+
 void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 	if (!p_event->is_pressed()) {
 		return;
@@ -1114,8 +1132,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			}
 		} break;
 		case MISC_PROJECT_SETTINGS: {
-			ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
-			ProjectSettingsEditor::get_singleton()->popup_project_settings();
+			_edit_project_settings();
 		} break;
 		case MISC_CREATE_SCRIPT_TEMPLATE: {
 			String template_path = _get_script_template_path();
@@ -1376,6 +1393,10 @@ void LimboAIEditor::_update_misc_menu() {
 			MISC_CREATE_SCRIPT_TEMPLATE);
 }
 
+void LimboAIEditor::_update_warnings() {
+	task_dir_warning->set_visible(!DirAccess::exists(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")));
+}
+
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -1401,6 +1422,8 @@ void LimboAIEditor::_notification(int p_what) {
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
 			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
+
+			warning_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
 
 			_update_favorite_tasks();
 			_update_header();
@@ -1517,16 +1540,12 @@ LimboAIEditor::LimboAIEditor() {
 	new_script_btn->set_focus_mode(Control::FOCUS_NONE);
 	toolbar->add_child(new_script_btn);
 
-	// toolbar->add_child(memnew(VSeparator));
-
 	misc_btn = memnew(MenuButton);
 	misc_btn->set_text(TTR("Misc"));
 	misc_btn->set_flat(true);
 	misc_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_update_misc_menu));
 	misc_btn->get_popup()->connect("id_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
 	toolbar->add_child(misc_btn);
-
-	// toolbar->add_child(memnew(VSeparator));
 
 	HBoxContainer *nav = memnew(HBoxContainer);
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
@@ -1559,12 +1578,13 @@ LimboAIEditor::LimboAIEditor() {
 	task_tree = memnew(TaskTree);
 	task_tree->set_v_size_flags(SIZE_EXPAND_FILL);
 	task_tree->set_h_size_flags(SIZE_EXPAND_FILL);
+	task_tree->hide();
 	task_tree->connect("rmb_pressed", callable_mp(this, &LimboAIEditor::_on_tree_rmb));
 	task_tree->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_tree_task_selected));
-	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
 	task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
 	task_tree->connect("task_double_clicked", callable_mp(this, &LimboAIEditor::_on_tree_task_double_clicked));
-	task_tree->hide();
+	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
+	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_warnings));
 	hsc->add_child(task_tree);
 
 	usage_hint = memnew(Panel);
@@ -1586,6 +1606,51 @@ LimboAIEditor::LimboAIEditor() {
 	task_panel->connect("favorite_tasks_changed", callable_mp(this, &LimboAIEditor::_update_favorite_tasks));
 	task_panel->hide();
 	hsc->add_child(task_panel);
+
+	task_dir_warning = memnew(MarginContainer);
+	{
+		task_dir_warning->add_theme_constant_override("margin_bottom", 4);
+		task_dir_warning->add_theme_constant_override("margin_top", 4);
+		task_dir_warning->add_theme_constant_override("margin_left", 4);
+		task_dir_warning->add_theme_constant_override("margin_right", 4);
+
+		HBoxContainer *hb = memnew(HBoxContainer);
+		hb->add_theme_constant_override("hseparation", 8);
+		task_dir_warning->add_child(hb);
+
+		warning_icon = memnew(TextureRect);
+		warning_icon->set_expand_mode(TextureRect::ExpandMode::EXPAND_KEEP_SIZE);
+		warning_icon->set_stretch_mode(TextureRect::StretchMode::STRETCH_KEEP_CENTERED);
+		hb->add_child(warning_icon);
+
+		Label *warning_label = memnew(Label);
+		warning_label->set_text(vformat(TTR("User task folder doesn't exist")));
+		warning_label->set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER);
+		hb->add_child(warning_label);
+
+		Control *spacer = memnew(Control);
+		spacer->set_custom_minimum_size(Size2(0, 16));
+		hb->add_child(spacer);
+
+		Button *create_action = memnew(Button);
+		create_action->set_text(TTR("Create"));
+		create_action->connect("pressed", callable_mp(this, &LimboAIEditor::_create_user_task_dir));
+		hb->add_child(create_action);
+
+		Button *edit_action = memnew(Button);
+		edit_action->set_text(TTR("Edit Path..."));
+		edit_action->connect("pressed", callable_mp(this, &LimboAIEditor::_edit_project_settings));
+		hb->add_child(edit_action);
+
+		Button *refresh_action = memnew(Button);
+		refresh_action->set_text(TTR("Refresh"));
+		refresh_action->connect("pressed", callable_mp(task_panel, &TaskPanel::refresh));
+		refresh_action->connect("pressed", callable_mp(this, &LimboAIEditor::_update_warnings));
+		hb->add_child(refresh_action);
+
+		task_dir_warning->hide();
+	}
+	vb->add_child(task_dir_warning);
 
 	menu = memnew(PopupMenu);
 	add_child(menu);

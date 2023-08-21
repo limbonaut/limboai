@@ -26,6 +26,7 @@
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/margin_container.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
@@ -177,6 +178,8 @@ private:
 	Button *history_forward;
 	TaskPanel *task_panel;
 	HBoxContainer *fav_tasks_hbox;
+	MarginContainer *task_dir_warning;
+	TextureRect *warning_icon;
 
 	Button *comment_btn;
 	Button *new_btn;
@@ -200,10 +203,13 @@ private:
 	void _update_history_buttons();
 	void _update_favorite_tasks();
 	void _update_misc_menu();
+	void _update_warnings();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
+	void _create_user_task_dir();
+	void _edit_project_settings();
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
