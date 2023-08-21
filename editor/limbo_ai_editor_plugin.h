@@ -158,6 +158,7 @@ private:
 	enum MiscMenu {
 		MISC_OPEN_DEBUGGER,
 		MISC_PROJECT_SETTINGS,
+		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
 
 	Vector<Ref<BehaviorTree>> history;
@@ -197,6 +198,7 @@ private:
 	void _update_header() const;
 	void _update_history_buttons();
 	void _update_favorite_tasks();
+	void _update_misc_menu();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);

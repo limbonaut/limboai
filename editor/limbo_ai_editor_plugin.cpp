@@ -1096,6 +1096,54 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
 			ProjectSettingsEditor::get_singleton()->popup_project_settings();
 		} break;
+		case MISC_CREATE_SCRIPT_TEMPLATE: {
+			if (!FileAccess::exists("res://script_templates/BTTask/custom_task.gd")) {
+				Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+				if (!dir->exists("res://script_templates/")) {
+					dir->make_dir("res://script_templates/");
+				}
+				if (!dir->exists("res://script_templates/BTTask")) {
+					dir->make_dir("res://script_templates/BTTask");
+				}
+				Error err;
+				Ref<FileAccess> f = FileAccess::open("res://script_templates/BTTask/custom_task.gd", FileAccess::WRITE, &err);
+				ERR_FAIL_COND(err != OK);
+
+				String script_template =
+						"# meta-name: Custom Task\n"
+						"# meta-description: Custom task to be used in a BehaviorTree\n"
+						"# meta-default: true\n"
+						"@tool\n"
+						"extends _BASE_\n"
+						"## _CLASS_\n"
+						"\n\n"
+						"# Display a customized name (requires @tool).\n"
+						"func _generate_name() -> String:\n"
+						"_TS_return \"_CLASS_\"\n"
+						"\n\n"
+						"# Called once during initialization.\n"
+						"func _setup() -> void:\n"
+						"_TS_pass\n"
+						"\n\n"
+						"# Called each time this task is entered.\n"
+						"func _enter() -> void:\n"
+						"_TS_pass\n"
+						"\n\n"
+						"# Called each time this task is exited.\n"
+						"func _exit() -> void:\n"
+						"_TS_pass\n"
+						"\n\n"
+						"# Called each time this task is ticked (aka executed).\n"
+						"func _tick(delta: float) -> int:\n"
+						"_TS_return SUCCESS\n";
+
+				f->store_string(script_template);
+				f->close();
+			}
+
+			ScriptEditor::get_singleton()->open_file("res://script_templates/BTTask/custom_task.gd");
+
+		} break;
 	}
 }
 
@@ -1291,6 +1339,20 @@ void LimboAIEditor::_update_favorite_tasks() {
 	}
 }
 
+void LimboAIEditor::_update_misc_menu() {
+	PopupMenu *misc_menu = misc_btn->get_popup();
+
+	misc_menu->clear();
+
+	misc_menu->add_icon_shortcut(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
+	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
+
+	misc_menu->add_separator();
+	misc_menu->add_item(
+			FileAccess::exists("res://script_templates/BTAction/custom_action.gd") ? TTR("Edit Script Template") : TTR("Create Script Template"),
+			MISC_CREATE_SCRIPT_TEMPLATE);
+}
+
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -1316,10 +1378,6 @@ void LimboAIEditor::_notification(int p_what) {
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
 			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
-			PopupMenu *misc_menu = misc_btn->get_popup();
-			misc_menu->clear();
-			misc_menu->add_icon_shortcut(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
-			misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 
 			_update_favorite_tasks();
 			_update_header();
@@ -1441,7 +1499,8 @@ LimboAIEditor::LimboAIEditor() {
 	misc_btn = memnew(MenuButton);
 	misc_btn->set_text(TTR("Misc"));
 	misc_btn->set_flat(true);
-	misc_btn->get_popup()->connect("index_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
+	misc_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_update_misc_menu));
+	misc_btn->get_popup()->connect("id_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
 	toolbar->add_child(misc_btn);
 
 	// toolbar->add_child(memnew(VSeparator));
