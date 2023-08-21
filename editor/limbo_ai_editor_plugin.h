@@ -157,6 +157,7 @@ private:
 
 	enum MiscMenu {
 		MISC_OPEN_DEBUGGER,
+		MISC_PROJECT_SETTINGS,
 	};
 
 	Vector<Ref<BehaviorTree>> history;

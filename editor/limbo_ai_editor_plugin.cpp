@@ -62,6 +62,7 @@
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/inspector_dock.h"
 #include "editor/plugins/script_editor_plugin.h"
+#include "editor/project_settings_editor.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/control.h"
@@ -1091,6 +1092,10 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 						LimboDebuggerPlugin::get_singleton()->get_session_tab_index());
 			}
 		} break;
+		case MISC_PROJECT_SETTINGS: {
+			ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
+			ProjectSettingsEditor::get_singleton()->popup_project_settings();
+		} break;
 	}
 }
 
@@ -1314,6 +1319,7 @@ void LimboAIEditor::_notification(int p_what) {
 			PopupMenu *misc_menu = misc_btn->get_popup();
 			misc_menu->clear();
 			misc_menu->add_icon_shortcut(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
+			misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 
 			_update_favorite_tasks();
 			_update_header();
