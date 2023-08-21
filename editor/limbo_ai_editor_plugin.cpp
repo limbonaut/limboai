@@ -727,6 +727,11 @@ TaskPanel::~TaskPanel() {
 
 //**** LimboAIEditor
 
+_FORCE_INLINE_ String _get_script_template_path() {
+	String templates_search_path = GLOBAL_GET("editor/script/templates_search_path");
+	return templates_search_path.path_join("BTTask").path_join("custom_task.gd");
+}
+
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(task_tree->get_bt().is_null());
@@ -1097,16 +1102,18 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			ProjectSettingsEditor::get_singleton()->popup_project_settings();
 		} break;
 		case MISC_CREATE_SCRIPT_TEMPLATE: {
-			if (!FileAccess::exists("res://script_templates/BTTask/custom_task.gd")) {
+			String template_path = _get_script_template_path();
+			String template_dir = template_path.get_base_dir();
+
+			if (!FileAccess::exists(template_path)) {
 				Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-				if (!dir->exists("res://script_templates/")) {
-					dir->make_dir("res://script_templates/");
-				}
-				if (!dir->exists("res://script_templates/BTTask")) {
-					dir->make_dir("res://script_templates/BTTask");
-				}
 				Error err;
-				Ref<FileAccess> f = FileAccess::open("res://script_templates/BTTask/custom_task.gd", FileAccess::WRITE, &err);
+				if (!dir->exists(template_dir)) {
+					err = dir->make_dir_recursive(template_dir);
+					ERR_FAIL_COND(err != OK);
+				}
+
+				Ref<FileAccess> f = FileAccess::open(template_path, FileAccess::WRITE, &err);
 				ERR_FAIL_COND(err != OK);
 
 				String script_template =
@@ -1141,7 +1148,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 				f->close();
 			}
 
-			ScriptEditor::get_singleton()->open_file("res://script_templates/BTTask/custom_task.gd");
+			ScriptEditor::get_singleton()->open_file(template_path);
 
 		} break;
 	}
@@ -1349,7 +1356,7 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->add_separator();
 	misc_menu->add_item(
-			FileAccess::exists("res://script_templates/BTAction/custom_action.gd") ? TTR("Edit Script Template") : TTR("Create Script Template"),
+			FileAccess::exists(_get_script_template_path()) ? TTR("Edit Script Template") : TTR("Create Script Template"),
 			MISC_CREATE_SCRIPT_TEMPLATE);
 }
 
