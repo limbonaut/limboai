@@ -503,7 +503,7 @@ void TaskPanel::_on_task_button_rmb(const String &p_task) {
 	menu->popup();
 }
 
-void TaskPanel::_on_filter_text_changed(String p_text) {
+void TaskPanel::_apply_filter(const String &p_text) {
 	for (int i = 0; i < sections->get_child_count(); i++) {
 		TaskSection *sec = Object::cast_to<TaskSection>(sections->get_child(i));
 		ERR_FAIL_COND(sec == nullptr);
@@ -595,6 +595,10 @@ void TaskPanel::refresh() {
 		sections->add_child(sec);
 		sec->set_collapsed(collapsed_sections.has(cat));
 	}
+
+	if (!filter_edit->get_text().is_empty()) {
+		_apply_filter(filter_edit->get_text());
+	}
 }
 
 void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes) {
@@ -681,6 +685,7 @@ void TaskPanel::_notification(int p_what) {
 			conf.save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
+			refresh_btn->set_icon(get_theme_icon(SNAME("Reload"), SNAME("EditorIcons")));
 			if (is_visible_in_tree()) {
 				refresh();
 			}
@@ -699,11 +704,22 @@ TaskPanel::TaskPanel() {
 	VBoxContainer *vb = memnew(VBoxContainer);
 	add_child(vb);
 
+	HBoxContainer *hb = memnew(HBoxContainer);
+	vb->add_child(hb);
+
 	filter_edit = memnew(LineEdit);
 	filter_edit->set_clear_button_enabled(true);
 	filter_edit->set_placeholder(TTR("Filter tasks"));
-	filter_edit->connect("text_changed", callable_mp(this, &TaskPanel::_on_filter_text_changed));
-	vb->add_child(filter_edit);
+	filter_edit->connect("text_changed", callable_mp(this, &TaskPanel::_apply_filter));
+	filter_edit->set_h_size_flags(SIZE_EXPAND_FILL);
+	hb->add_child(filter_edit);
+
+	refresh_btn = memnew(Button);
+	refresh_btn->set_tooltip_text(TTR("Refresh tasks"));
+	refresh_btn->set_flat(true);
+	refresh_btn->set_focus_mode(FocusMode::FOCUS_NONE);
+	refresh_btn->connect("pressed", callable_mp(this, &TaskPanel::refresh));
+	hb->add_child(refresh_btn);
 
 	ScrollContainer *sc = memnew(ScrollContainer);
 	sc->set_h_size_flags(SIZE_EXPAND_FILL);

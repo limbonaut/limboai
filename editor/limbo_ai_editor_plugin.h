@@ -117,6 +117,7 @@ private:
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
 	PopupMenu *menu;
+	Button *refresh_btn;
 
 	String context_task;
 
@@ -126,7 +127,7 @@ private:
 	void _menu_action_selected(int p_id);
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_rmb(const String &p_task);
-	void _on_filter_text_changed(String p_text);
+	void _apply_filter(const String &p_text);
 
 protected:
 	static void _bind_methods();
