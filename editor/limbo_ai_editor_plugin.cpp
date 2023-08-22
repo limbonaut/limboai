@@ -555,7 +555,7 @@ void TaskPanel::refresh() {
 	categorized_tasks["Conditions"] = List<String>();
 	_populate_core_tasks_from_class("BTCondition", &categorized_tasks["Conditions"]);
 
-	categorized_tasks["User"] = List<String>();
+	categorized_tasks["Uncategorized"] = List<String>();
 
 	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
 	_populate_from_user_dir(dir1, &categorized_tasks);
@@ -625,7 +625,7 @@ void TaskPanel::_populate_from_user_dir(String p_path, HashMap<String, List<Stri
 				String category;
 				if (fn == ".") {
 					full_path = p_path;
-					category = "User";
+					category = "Uncategorized";
 				} else {
 					full_path = p_path.path_join(fn);
 					category = fn.capitalize();
