@@ -210,6 +210,7 @@ private:
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
 	void _edit_project_settings();
+	void _remove_task_from_favorite(const String &p_task);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");

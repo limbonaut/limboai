@@ -464,7 +464,7 @@ void TaskPanel::_menu_action_selected(int p_id) {
 			ScriptEditor::get_singleton()->open_file(context_task);
 		} break;
 		case MENU_FAVORITE: {
-			Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+			PackedStringArray favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
 			if (favorite_tasks.has(context_task)) {
 				favorite_tasks.erase(context_task);
 			} else {
@@ -922,6 +922,13 @@ void LimboAIEditor::_edit_project_settings() {
 	ProjectSettingsEditor::get_singleton()->connect(SNAME("visibility_changed"), callable_mp(this, &LimboAIEditor::_update_banners), CONNECT_ONE_SHOT);
 }
 
+void LimboAIEditor::_remove_task_from_favorite(const String &p_task) {
+	PackedStringArray favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+	favorite_tasks.erase(p_task);
+	ProjectSettings::get_singleton()->set_setting("limbo_ai/behavior_tree/favorite_tasks", favorite_tasks);
+	ProjectSettings::get_singleton()->save();
+}
+
 void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 	if (!p_event->is_pressed()) {
 		return;
@@ -1362,6 +1369,12 @@ void LimboAIEditor::_update_favorite_tasks() {
 	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
 	for (int i = 0; i < favorite_tasks.size(); i++) {
 		String task_meta = favorite_tasks[i];
+
+		if (task_meta.is_empty() || (!FileAccess::exists(task_meta) && !ClassDB::class_exists(task_meta))) {
+			call_deferred(SNAME("_update_banners"));
+			continue;
+		}
+
 		Button *btn = memnew(Button);
 		String task_name;
 		if (task_meta.begins_with("res:")) {
@@ -1397,7 +1410,9 @@ void LimboAIEditor::_update_misc_menu() {
 
 void LimboAIEditor::_update_banners() {
 	for (int i = 0; i < banners->get_child_count(); i++) {
-		banners->get_child(i)->queue_free();
+		if (banners->get_child(i)->has_meta(SNAME("managed"))) {
+			banners->get_child(i)->queue_free();
+		}
 	}
 
 	for (String dir_setting : { "limbo_ai/behavior_tree/user_task_dir_1", "limbo_ai/behavior_tree/user_task_dir_2", "limbo_ai/behavior_tree/user_task_dir_3" }) {
@@ -1407,6 +1422,21 @@ void LimboAIEditor::_update_banners() {
 			banner->set_text(vformat(TTR("Task folder not found: %s"), task_dir));
 			banner->add_action(TTR("Create"), callable_mp(this, &LimboAIEditor::_create_user_task_dir), true);
 			banner->add_action(TTR("Edit Path..."), callable_mp(this, &LimboAIEditor::_edit_project_settings));
+			banner->set_meta(SNAME("managed"), Variant(true));
+			banners->call_deferred(SNAME("add_child"), banner);
+		}
+	}
+
+	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
+	for (int i = 0; i < favorite_tasks.size(); i++) {
+		String task_meta = favorite_tasks[i];
+
+		if (task_meta.is_empty() || (!FileAccess::exists(task_meta) && !ClassDB::class_exists(task_meta))) {
+			ActionBanner *banner = memnew(ActionBanner);
+			banner->set_text(vformat(TTR("Favorite task not found: %s"), task_meta));
+			banner->add_action(TTR("Remove"), callable_mp(this, &LimboAIEditor::_remove_task_from_favorite).bind(task_meta), true);
+			banner->add_action(TTR("Edit Favorite Tasks..."), callable_mp(this, &LimboAIEditor::_edit_project_settings));
+			banner->set_meta(SNAME("managed"), Variant(true));
 			banners->call_deferred(SNAME("add_child"), banner);
 		}
 	}
@@ -1497,11 +1527,11 @@ LimboAIEditor::LimboAIEditor() {
 	HBoxContainer *toolbar = memnew(HBoxContainer);
 	vbox->add_child(toolbar);
 
-	Array favorite_tasks_default;
+	PackedStringArray favorite_tasks_default;
 	favorite_tasks_default.append("BTSelector");
 	favorite_tasks_default.append("BTSequence");
 	favorite_tasks_default.append("BTParallel");
-	GLOBAL_DEF(PropertyInfo(Variant::ARRAY, "limbo_ai/behavior_tree/favorite_tasks", PROPERTY_HINT_ARRAY_TYPE, "String"), favorite_tasks_default);
+	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/favorite_tasks", PROPERTY_HINT_ARRAY_TYPE, "String"), favorite_tasks_default);
 
 	fav_tasks_hbox = memnew(HBoxContainer);
 	toolbar->add_child(fav_tasks_hbox);
