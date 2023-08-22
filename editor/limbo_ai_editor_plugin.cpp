@@ -13,6 +13,7 @@
 
 #include "limbo_ai_editor_plugin.h"
 
+#include "action_banner.h"
 #include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/tasks/bt_action.h"
 #include "modules/limboai/bt/tasks/bt_comment.h"
@@ -911,13 +912,14 @@ void LimboAIEditor::_create_user_task_dir() {
 	err = dir->make_dir_recursive(task_dir);
 	ERR_FAIL_COND_MSG(err != OK, "LimboAIEditor: Failed to create directory: " + task_dir);
 
-	_update_warnings();
 	EditorFileSystem::get_singleton()->scan_changes();
+	_update_banners();
 }
 
 void LimboAIEditor::_edit_project_settings() {
 	ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
 	ProjectSettingsEditor::get_singleton()->popup_project_settings();
+	ProjectSettingsEditor::get_singleton()->connect(SNAME("visibility_changed"), callable_mp(this, &LimboAIEditor::_update_banners), CONNECT_ONE_SHOT);
 }
 
 void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
@@ -1393,8 +1395,21 @@ void LimboAIEditor::_update_misc_menu() {
 			MISC_CREATE_SCRIPT_TEMPLATE);
 }
 
-void LimboAIEditor::_update_warnings() {
-	task_dir_warning->set_visible(!DirAccess::exists(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")));
+void LimboAIEditor::_update_banners() {
+	for (int i = 0; i < banners->get_child_count(); i++) {
+		banners->get_child(i)->queue_free();
+	}
+
+	for (String dir_setting : { "limbo_ai/behavior_tree/user_task_dir_1", "limbo_ai/behavior_tree/user_task_dir_2", "limbo_ai/behavior_tree/user_task_dir_3" }) {
+		String task_dir = GLOBAL_GET(dir_setting);
+		if (!task_dir.is_empty() && !DirAccess::exists(task_dir)) {
+			ActionBanner *banner = memnew(ActionBanner);
+			banner->set_text(vformat(TTR("Task folder not found: %s"), task_dir));
+			banner->add_action(TTR("Create"), callable_mp(this, &LimboAIEditor::_create_user_task_dir), true);
+			banner->add_action(TTR("Edit Path..."), callable_mp(this, &LimboAIEditor::_edit_project_settings));
+			banners->call_deferred(SNAME("add_child"), banner);
+		}
+	}
 }
 
 void LimboAIEditor::_notification(int p_what) {
@@ -1422,8 +1437,6 @@ void LimboAIEditor::_notification(int p_what) {
 			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
 			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
-
-			warning_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
 
 			_update_favorite_tasks();
 			_update_header();
@@ -1476,13 +1489,13 @@ LimboAIEditor::LimboAIEditor() {
 	load_dialog->hide();
 	add_child(load_dialog);
 
-	VBoxContainer *vb = memnew(VBoxContainer);
-	vb->set_anchor(SIDE_RIGHT, ANCHOR_END);
-	vb->set_anchor(SIDE_BOTTOM, ANCHOR_END);
-	add_child(vb);
+	vbox = memnew(VBoxContainer);
+	vbox->set_anchor(SIDE_RIGHT, ANCHOR_END);
+	vbox->set_anchor(SIDE_BOTTOM, ANCHOR_END);
+	add_child(vbox);
 
 	HBoxContainer *toolbar = memnew(HBoxContainer);
-	vb->add_child(toolbar);
+	vbox->add_child(toolbar);
 
 	Array favorite_tasks_default;
 	favorite_tasks_default.append("BTSelector");
@@ -1567,13 +1580,13 @@ LimboAIEditor::LimboAIEditor() {
 	header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
 	header->add_theme_constant_override("hseparation", 8);
 	header->connect("pressed", callable_mp(this, &LimboAIEditor::_on_header_pressed));
-	vb->add_child(header);
+	vbox->add_child(header);
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
 	hsc->set_v_size_flags(SIZE_EXPAND_FILL);
 	hsc->set_focus_mode(FOCUS_NONE);
-	vb->add_child(hsc);
+	vbox->add_child(hsc);
 
 	task_tree = memnew(TaskTree);
 	task_tree->set_v_size_flags(SIZE_EXPAND_FILL);
@@ -1584,7 +1597,7 @@ LimboAIEditor::LimboAIEditor() {
 	task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
 	task_tree->connect("task_double_clicked", callable_mp(this, &LimboAIEditor::_on_tree_task_double_clicked));
 	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
-	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_warnings));
+	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_banners));
 	hsc->add_child(task_tree);
 
 	usage_hint = memnew(Panel);
@@ -1607,50 +1620,8 @@ LimboAIEditor::LimboAIEditor() {
 	task_panel->hide();
 	hsc->add_child(task_panel);
 
-	task_dir_warning = memnew(MarginContainer);
-	{
-		task_dir_warning->add_theme_constant_override("margin_bottom", 4);
-		task_dir_warning->add_theme_constant_override("margin_top", 4);
-		task_dir_warning->add_theme_constant_override("margin_left", 4);
-		task_dir_warning->add_theme_constant_override("margin_right", 4);
-
-		HBoxContainer *hb = memnew(HBoxContainer);
-		hb->add_theme_constant_override("hseparation", 8);
-		task_dir_warning->add_child(hb);
-
-		warning_icon = memnew(TextureRect);
-		warning_icon->set_expand_mode(TextureRect::ExpandMode::EXPAND_KEEP_SIZE);
-		warning_icon->set_stretch_mode(TextureRect::StretchMode::STRETCH_KEEP_CENTERED);
-		hb->add_child(warning_icon);
-
-		Label *warning_label = memnew(Label);
-		warning_label->set_text(vformat(TTR("User task folder doesn't exist")));
-		warning_label->set_vertical_alignment(VERTICAL_ALIGNMENT_CENTER);
-		hb->add_child(warning_label);
-
-		Control *spacer = memnew(Control);
-		spacer->set_custom_minimum_size(Size2(0, 16));
-		hb->add_child(spacer);
-
-		Button *create_action = memnew(Button);
-		create_action->set_text(TTR("Create"));
-		create_action->connect("pressed", callable_mp(this, &LimboAIEditor::_create_user_task_dir));
-		hb->add_child(create_action);
-
-		Button *edit_action = memnew(Button);
-		edit_action->set_text(TTR("Edit Path..."));
-		edit_action->connect("pressed", callable_mp(this, &LimboAIEditor::_edit_project_settings));
-		hb->add_child(edit_action);
-
-		Button *refresh_action = memnew(Button);
-		refresh_action->set_text(TTR("Refresh"));
-		refresh_action->connect("pressed", callable_mp(task_panel, &TaskPanel::refresh));
-		refresh_action->connect("pressed", callable_mp(this, &LimboAIEditor::_update_warnings));
-		hb->add_child(refresh_action);
-
-		task_dir_warning->hide();
-	}
-	vb->add_child(task_dir_warning);
+	banners = memnew(VBoxContainer);
+	vbox->add_child(banners);
 
 	menu = memnew(PopupMenu);
 	add_child(menu);

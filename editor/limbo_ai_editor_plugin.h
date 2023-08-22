@@ -167,9 +167,11 @@ private:
 	int idx_history;
 	HashSet<Ref<BehaviorTree>> dirty;
 
+	VBoxContainer *vbox;
 	Button *header;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
+	VBoxContainer *banners;
 	Panel *usage_hint;
 	PopupMenu *menu;
 	FileDialog *save_dialog;
@@ -178,8 +180,6 @@ private:
 	Button *history_forward;
 	TaskPanel *task_panel;
 	HBoxContainer *fav_tasks_hbox;
-	MarginContainer *task_dir_warning;
-	TextureRect *warning_icon;
 
 	Button *comment_btn;
 	Button *new_btn;
@@ -203,7 +203,7 @@ private:
 	void _update_history_buttons();
 	void _update_favorite_tasks();
 	void _update_misc_menu();
-	void _update_warnings();
+	void _update_banners();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
