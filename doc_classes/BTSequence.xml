@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTSequence" inherits="BTComposite" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT composite that executes tasks in turn for as long as they return [code]SUCCESS[/code].
+		BT composite that sequentially executes tasks as long as they return [code]SUCCESS[/code].
 	</brief_description>
 	<description>
-		BT composite that executes child tasks from first to last for as long as they return [code]SUCCESS[/code].
-		Returns [code]RUNNING[/code] if a task returns [code]RUNNING[/code], and remembers last [code]RUNNING[/code] child. BTSequence will continue where it left off on the next execution tick. 
-		Returns [code]FAILURE[/code] if any task returns [code]FAILURE[/code]. 
-		Returns [code]SUCCESS[/code] if all tasks return [code]SUCCESS[/code].
+		BTSequence executes its child tasks sequentially, from first to last, as long as they return [code]SUCCESS[/code].
+		Returns [code]RUNNING[/code] if any child task returns [code]RUNNING[/code]. The composite will also remember the last child task that returned [code]RUNNING[/code], ensuring it resumes from that point in the next execution tick.
+		Returns [code]FAILURE[/code] if a child task returns [code]FAILURE[/code].
+		Returns [code]SUCCESS[/code] if all child tasks return [code]SUCCESS[/code].
 	</description>
 	<tutorials>
 	</tutorials>

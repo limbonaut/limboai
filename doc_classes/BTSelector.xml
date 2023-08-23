@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTSelector" inherits="BTComposite" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT composite that executes tasks in turn until first [code]SUCCESS[/code].
+		BT composite that sequentially executes tasks until first [code]SUCCESS[/code].
 	</brief_description>
 	<description>
-		BT composite that executes child tasks from first to last until any child returns [code]SUCCESS[/code].
-		Returns [code]RUNNING[/code] if a task returns [code]RUNNING[/code], and remembers last [code]RUNNING[/code] child. BTSelector will continue where it left off on the next execution tick. 
-		Returns [code]FAILURE[/code] if all tasks return [code]FAILURE[/code]. 
-		Returns [code]SUCCESS[/code] if any task returns [code]SUCCESS[/code].
+		BTSelector executes its child tasks sequentially, from first to last, until any child returns [code]SUCCESS[/code].
+		Returns [code]RUNNING[/code] if any child task returns [code]RUNNING[/code]. The composite will also remember the last child task that returned [code]RUNNING[/code], ensuring it resumes from that point in the next execution tick.
+		Returns [code]FAILURE[/code] if all child tasks return [code]FAILURE[/code].
+		Returns [code]SUCCESS[/code] if a child task returns [code]SUCCESS[/code].
 	</description>
 	<tutorials>
 	</tutorials>
