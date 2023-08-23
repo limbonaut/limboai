@@ -76,6 +76,13 @@ public:
 	~TaskTree();
 };
 
+class TaskButton : public Button {
+	GDCLASS(TaskButton, Button);
+
+public:
+	virtual Control *make_custom_tooltip(const String &p_text) const override;
+};
+
 class TaskSection : public VBoxContainer {
 	GDCLASS(TaskSection, VBoxContainer);
 
@@ -94,7 +101,7 @@ protected:
 
 public:
 	void set_filter(String p_filter);
-	void add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta);
+	void add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_tooltip, Variant p_meta);
 
 	void set_collapsed(bool p_collapsed);
 	bool is_collapsed() const;

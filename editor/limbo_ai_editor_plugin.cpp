@@ -54,6 +54,7 @@
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
+#include "editor/editor_help.h"
 #include "editor/editor_inspector.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
@@ -356,6 +357,26 @@ TaskTree::~TaskTree() {
 
 //**** TaskTree ^
 
+//**** TaskButton
+
+Control *TaskButton::make_custom_tooltip(const String &p_text) const {
+	EditorHelpBit *help_bit = memnew(EditorHelpBit);
+	help_bit->get_rich_text()->set_custom_minimum_size(Size2(360 * EDSCALE, 1));
+
+	String help_text;
+	if (!p_text.is_empty()) {
+		help_text = p_text;
+	} else {
+		help_text = "[i]" + TTR("No description.") + "[/i]";
+	}
+
+	help_bit->set_text(help_text);
+
+	return help_bit;
+}
+
+//**** TaskButton ^
+
 //**** TaskSection
 
 void TaskSection::_on_task_button_pressed(const String &p_task) {
@@ -394,10 +415,11 @@ void TaskSection::set_filter(String p_filter_text) {
 	}
 }
 
-void TaskSection::add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta) {
-	Button *btn = memnew(Button);
+void TaskSection::add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_tooltip, Variant p_meta) {
+	TaskButton *btn = memnew(TaskButton);
 	btn->set_text(p_name);
 	btn->set_icon(icon);
+	btn->set_tooltip_text(p_tooltip);
 	btn->add_theme_constant_override(SNAME("icon_max_width"), 16 * EDSCALE); // Force user icons to  be of the proper size.
 	btn->connect(SNAME("pressed"), callable_mp(this, &TaskSection::_on_task_button_pressed).bind(p_meta));
 	btn->connect(SNAME("gui_input"), callable_mp(this, &TaskSection::_on_task_button_gui_input).bind(p_meta));
@@ -582,13 +604,31 @@ void TaskPanel::refresh() {
 		TaskSection *sec = memnew(TaskSection(cat));
 		for (String task_meta : tasks) {
 			Ref<Texture2D> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
+
 			String tname;
+			DocTools *dd = EditorHelp::get_doc_data();
+			HashMap<String, DocData::ClassDoc>::Iterator E;
 			if (task_meta.begins_with("res:")) {
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
+				E = dd->class_list.find(vformat("\"%s\"", task_meta.trim_prefix("res://")));
+				if (!E) {
+					E = dd->class_list.find(tname);
+				}
 			} else {
 				tname = task_meta.trim_prefix("BT");
+				E = dd->class_list.find(task_meta);
 			}
-			sec->add_task_button(tname, icon, task_meta);
+
+			String descr;
+			if (E) {
+				if (E->value.description.is_empty() || E->value.description.length() > 1000) {
+					descr = DTR(E->value.brief_description);
+				} else {
+					descr = DTR(E->value.description);
+				}
+			}
+
+			sec->add_task_button(tname, icon, descr, task_meta);
 		}
 		sec->set_filter("");
 		sec->connect(SNAME("task_button_pressed"), callable_mp(this, &TaskPanel::_on_task_button_pressed));
