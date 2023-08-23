@@ -983,7 +983,7 @@ void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 
 	// * Local shortcuts.
 
-	if (!(has_focus() || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
+	if (!(has_focus() || get_viewport()->gui_get_focus_owner() == nullptr || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
 		return;
 	}
 
