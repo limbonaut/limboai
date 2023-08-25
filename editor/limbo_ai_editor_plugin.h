@@ -26,6 +26,7 @@
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/margin_container.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
@@ -75,6 +76,13 @@ public:
 	~TaskTree();
 };
 
+class TaskButton : public Button {
+	GDCLASS(TaskButton, Button);
+
+public:
+	virtual Control *make_custom_tooltip(const String &p_text) const override;
+};
+
 class TaskSection : public VBoxContainer {
 	GDCLASS(TaskSection, VBoxContainer);
 
@@ -82,7 +90,8 @@ private:
 	FlowContainer *tasks_container;
 	Button *section_header;
 
-	void _on_task_button_pressed(const StringName &p_task);
+	void _on_task_button_pressed(const String &p_task);
+	void _on_task_button_gui_input(const Ref<InputEvent> &p_event, const String &p_task);
 	void _on_header_pressed();
 
 protected:
@@ -92,7 +101,7 @@ protected:
 
 public:
 	void set_filter(String p_filter);
-	void add_task_button(String p_name, const Ref<Texture> &icon, Variant p_meta);
+	void add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_tooltip, Variant p_meta);
 
 	void set_collapsed(bool p_collapsed);
 	bool is_collapsed() const;
@@ -107,14 +116,26 @@ class TaskPanel : public PanelContainer {
 	GDCLASS(TaskPanel, PanelContainer)
 
 private:
+	enum MenuAction {
+		MENU_EDIT_SCRIPT,
+		MENU_OPEN_DOC,
+		MENU_FAVORITE,
+	};
+
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
+	PopupMenu *menu;
+	Button *refresh_btn;
+
+	String context_task;
 
 	void _populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes);
 	void _populate_from_user_dir(String p_path, HashMap<String, List<String>> *p_categories);
 	void _populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes);
-	void _on_task_button_pressed(const StringName &p_task);
-	void _on_filter_text_changed(String p_text);
+	void _menu_action_selected(int p_id);
+	void _on_task_button_pressed(const String &p_task);
+	void _on_task_button_rmb(const String &p_task);
+	void _apply_filter(const String &p_text);
 
 protected:
 	static void _bind_methods();
@@ -133,20 +154,31 @@ class LimboAIEditor : public Control {
 
 private:
 	enum Action {
-		ACTION_REMOVE,
+		ACTION_RENAME,
+		ACTION_EDIT_SCRIPT,
+		ACTION_OPEN_DOC,
 		ACTION_MOVE_UP,
 		ACTION_MOVE_DOWN,
 		ACTION_DUPLICATE,
 		ACTION_MAKE_ROOT,
+		ACTION_REMOVE,
+	};
+
+	enum MiscMenu {
+		MISC_OPEN_DEBUGGER,
+		MISC_PROJECT_SETTINGS,
+		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
 
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	HashSet<Ref<BehaviorTree>> dirty;
 
+	VBoxContainer *vbox;
 	Button *header;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
+	VBoxContainer *banners;
 	Panel *usage_hint;
 	PopupMenu *menu;
 	FileDialog *save_dialog;
@@ -154,14 +186,14 @@ private:
 	Button *history_back;
 	Button *history_forward;
 	TaskPanel *task_panel;
+	HBoxContainer *fav_tasks_hbox;
 
-	Button *selector_btn;
-	Button *sequence_btn;
-	Button *parallel_btn;
+	Button *comment_btn;
 	Button *new_btn;
 	Button *load_btn;
 	Button *save_btn;
 	Button *new_script_btn;
+	MenuButton *misc_btn;
 
 	ConfirmationDialog *rename_dialog;
 	LineEdit *rename_edit;
@@ -171,14 +203,21 @@ private:
 	HashSet<String> disk_changed_files;
 
 	void _add_task(const Ref<BTTask> &p_task);
+	void _add_task_by_class_or_path(String p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header() const;
 	void _update_history_buttons();
+	void _update_favorite_tasks();
+	void _update_misc_menu();
+	void _update_banners();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
+	void _create_user_task_dir();
+	void _edit_project_settings();
+	void _remove_task_from_favorite(const String &p_task);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
@@ -186,17 +225,19 @@ private:
 	void _rename_task_confirmed();
 
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
-	void _on_action_selected(int p_id);
+	void _action_selected(int p_id);
+	void _misc_option_selected(int p_id);
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_tree_task_double_clicked();
 	void _on_visibility_changed();
 	void _on_header_pressed();
 	void _on_save_pressed();
-	void _on_panel_task_selected(String p_task);
 	void _on_history_back();
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 	void _on_resources_reload(const Vector<String> &p_resources);
+
+	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
 protected:
 	static void _bind_methods();

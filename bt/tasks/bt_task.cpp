@@ -11,6 +11,7 @@
 
 #include "bt_task.h"
 
+#include "bt_comment.h"
 #include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/util/limbo_string_names.h"
 #include "modules/limboai/util/limbo_utility.h"
@@ -104,10 +105,19 @@ Ref<BTTask> BTTask::clone() const {
 	inst->data.parent = nullptr;
 	inst->data.agent = nullptr;
 	inst->data.blackboard.unref();
+	int num_null = 0;
 	for (int i = 0; i < data.children.size(); i++) {
 		Ref<BTTask> c = get_child(i)->clone();
-		c->data.parent = inst.ptr();
-		inst->data.children.set(i, c);
+		if (c.is_valid()) {
+			c->data.parent = inst.ptr();
+			inst->data.children.set(i - num_null, c);
+		} else {
+			num_null += 1;
+		}
+	}
+	if (num_null > 0) {
+		// * BTComment tasks return nullptr at runtime - we remove those.
+		inst->data.children.resize(data.children.size() - num_null);
 	}
 
 	// Make BBParam properties unique.
@@ -187,6 +197,16 @@ Ref<BTTask> BTTask::get_child(int p_idx) const {
 
 int BTTask::get_child_count() const {
 	return data.children.size();
+}
+
+int BTTask::get_child_count_excluding_comments() const {
+	int count = 0;
+	for (int i = 0; i < data.children.size(); i++) {
+		if (!data.children[i]->is_class_ptr(BTComment::get_class_ptr_static())) {
+			count += 1;
+		}
+	}
+	return count;
 }
 
 void BTTask::add_child(Ref<BTTask> p_child) {
@@ -282,6 +302,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("execute", "p_delta"), &BTTask::execute);
 	ClassDB::bind_method(D_METHOD("get_child", "p_idx"), &BTTask::get_child);
 	ClassDB::bind_method(D_METHOD("get_child_count"), &BTTask::get_child_count);
+	ClassDB::bind_method(D_METHOD("get_child_count_excluding_comments"), &BTTask::get_child_count_excluding_comments);
 	ClassDB::bind_method(D_METHOD("add_child", "p_child"), &BTTask::add_child);
 	ClassDB::bind_method(D_METHOD("add_child_at_index", "p_child", "p_idx"), &BTTask::add_child_at_index);
 	ClassDB::bind_method(D_METHOD("remove_child", "p_child"), &BTTask::remove_child);

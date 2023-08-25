@@ -70,17 +70,25 @@ class LimboDebuggerPlugin : public EditorDebuggerPlugin {
 	GDCLASS(LimboDebuggerPlugin, EditorDebuggerPlugin);
 
 private:
+	static LimboDebuggerPlugin *singleton;
+
 	LimboDebuggerTab *tab = nullptr;
 	WindowWrapper *window_wrapper = nullptr;
 
 	void _window_visibility_changed(bool p_visible);
 
 public:
+	static _FORCE_INLINE_ LimboDebuggerPlugin *get_singleton() { return singleton; }
+
 	void setup_session(int p_idx) override;
 	bool has_capture(const String &p_capture) const override;
 	bool capture(const String &p_message, const Array &p_data, int p_session) override;
 
+	WindowWrapper *get_session_tab() const;
+	int get_session_tab_index() const;
+
 	LimboDebuggerPlugin();
+	~LimboDebuggerPlugin();
 };
 
 #endif // LIMBO_DEBUGGER_PLUGIN

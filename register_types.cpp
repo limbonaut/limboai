@@ -60,6 +60,7 @@
 #include "bt/tasks/actions/bt_wait.h"
 #include "bt/tasks/actions/bt_wait_ticks.h"
 #include "bt/tasks/bt_action.h"
+#include "bt/tasks/bt_comment.h"
 #include "bt/tasks/bt_composite.h"
 #include "bt/tasks/bt_condition.h"
 #include "bt/tasks/bt_decorator.h"
@@ -119,6 +120,8 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BehaviorTree);
 		GDREGISTER_CLASS(BTPlayer);
 		GDREGISTER_CLASS(BTState);
+
+		GDREGISTER_CLASS(BTComment);
 
 		GDREGISTER_CLASS(BTComposite);
 		GDREGISTER_CLASS(BTSequence);

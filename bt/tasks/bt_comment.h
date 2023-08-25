@@ -1,5 +1,5 @@
 /**
- * bt_composite.cpp
+ * bt_comment.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -8,13 +8,20 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
+/* bt_comment.h */
 
-#include "bt_composite.h"
+#ifndef BT_COMMENT_H
+#define BT_COMMENT_H
 
-PackedStringArray BTComposite::get_configuration_warnings() const {
-	PackedStringArray warnings = BTTask::get_configuration_warnings();
-	if (get_child_count_excluding_comments() < 1) {
-		warnings.append("Composite should have at least one child task.");
-	}
-	return warnings;
-}
+#include "bt_task.h"
+
+class BTComment : public BTTask {
+	GDCLASS(BTComment, BTTask);
+
+private:
+public:
+	virtual Ref<BTTask> clone() const override;
+	virtual PackedStringArray get_configuration_warnings() const override;
+};
+
+#endif // BT_COMMENT

@@ -93,6 +93,7 @@ public:
 
 	Ref<BTTask> get_child(int p_idx) const;
 	int get_child_count() const;
+	int get_child_count_excluding_comments() const;
 	void add_child(Ref<BTTask> p_child);
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);
 	void remove_child(Ref<BTTask> p_child);

@@ -32,9 +32,10 @@
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/split_container.h"
+#include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
 
-/////////////////////// LimboDebuggerTab
+//**** LimboDebuggerTab
 
 void LimboDebuggerTab::start_session() {
 	bt_player_list->clear();
@@ -209,7 +210,9 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowW
 	stop_session();
 }
 
-//////////////////////// LimboDebuggerPlugin
+//**** LimboDebuggerPlugin
+
+LimboDebuggerPlugin *LimboDebuggerPlugin::singleton = nullptr;
 
 void LimboDebuggerPlugin::_window_visibility_changed(bool p_visible) {
 }
@@ -259,8 +262,23 @@ bool LimboDebuggerPlugin::has_capture(const String &p_capture) const {
 	return p_capture == "limboai";
 }
 
+WindowWrapper *LimboDebuggerPlugin::get_session_tab() const {
+	return window_wrapper;
+}
+
+int LimboDebuggerPlugin::get_session_tab_index() const {
+	TabContainer *c = Object::cast_to<TabContainer>(window_wrapper->get_parent());
+	ERR_FAIL_COND_V(c == nullptr, -1);
+	return c->get_tab_idx_from_control(window_wrapper);
+}
+
 LimboDebuggerPlugin::LimboDebuggerPlugin() {
 	tab = nullptr;
+	singleton = this;
+}
+
+LimboDebuggerPlugin::~LimboDebuggerPlugin() {
+	singleton = nullptr;
 }
 
 #endif // TOOLS_ENABLED
