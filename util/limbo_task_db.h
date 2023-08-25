@@ -21,6 +21,12 @@ private:
 	static HashMap<String, List<String>> core_tasks;
 	static HashMap<String, List<String>> tasks_cache;
 
+	struct ComparatorByTaskName {
+		bool operator()(const String &p_left, const String &p_right) const {
+			return get_task_name(p_left) < get_task_name(p_right);
+		}
+	};
+
 public:
 	template <class T>
 	static void register_task() {
@@ -39,6 +45,13 @@ public:
 	static _FORCE_INLINE_ String get_misc_category() { return "Misc"; }
 	static List<String> get_categories();
 	static List<String> get_tasks_in_category(const String &p_category);
+	static _FORCE_INLINE_ String get_task_name(String p_class_or_script_path) {
+		if (p_class_or_script_path.begins_with("res:")) {
+			return p_class_or_script_path.get_file().get_basename().trim_prefix("BT").to_pascal_case();
+		} else {
+			return p_class_or_script_path.trim_prefix("BT");
+		}
+	}
 };
 
 #define LIMBO_REGISTER_TASK(m_class)             \

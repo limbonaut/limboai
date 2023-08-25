@@ -83,6 +83,10 @@ void LimboTaskDB::scan_user_tasks() {
 		String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_" + itos(i));
 		_populate_from_user_dir(dir1, &tasks_cache);
 	}
+
+	for (KeyValue<String, List<String>> &E : tasks_cache) {
+		E.value.sort_custom<ComparatorByTaskName>();
+	}
 }
 
 List<String> LimboTaskDB::get_categories() {
