@@ -563,39 +563,12 @@ void TaskPanel::refresh() {
 		}
 	}
 
-	HashMap<String, List<String>> categorized_tasks;
-
-	categorized_tasks["Composites"] = List<String>();
-	_populate_core_tasks_from_class("BTComposite", &categorized_tasks["Composites"]);
-
-	categorized_tasks["Actions"] = List<String>();
-	_populate_core_tasks_from_class("BTAction", &categorized_tasks["Actions"]);
-
-	categorized_tasks["Decorators"] = List<String>();
-	_populate_core_tasks_from_class("BTDecorator", &categorized_tasks["Decorators"]);
-
-	categorized_tasks["Conditions"] = List<String>();
-	_populate_core_tasks_from_class("BTCondition", &categorized_tasks["Conditions"]);
-
-	categorized_tasks["Uncategorized"] = List<String>();
-
-	String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1");
-	_populate_from_user_dir(dir1, &categorized_tasks);
-
-	String dir2 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_2");
-	_populate_from_user_dir(dir2, &categorized_tasks);
-
-	String dir3 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_3");
-	_populate_from_user_dir(dir3, &categorized_tasks);
-
-	List<String> categories;
-	for (KeyValue<String, List<String>> &K : categorized_tasks) {
-		K.value.sort();
-		categories.push_back(K.key);
-	}
+	LimboTaskDB::scan_user_tasks();
+	List<String> categories = LimboTaskDB::get_categories();
 	categories.sort();
+
 	for (String cat : categories) {
-		List<String> tasks = categorized_tasks.get(cat);
+		List<String> tasks = LimboTaskDB::get_tasks_in_category(cat);
 
 		if (tasks.size() == 0) {
 			continue;
@@ -639,70 +612,6 @@ void TaskPanel::refresh() {
 
 	if (!filter_edit->get_text().is_empty()) {
 		_apply_filter(filter_edit->get_text());
-	}
-}
-
-void TaskPanel::_populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes) {
-	List<StringName> inheriters;
-	ClassDB::get_inheriters_from_class(p_base_class, &inheriters);
-
-	for (StringName cl : inheriters) {
-		p_task_classes->push_back(cl);
-	}
-}
-
-void TaskPanel::_populate_from_user_dir(String p_path, HashMap<String, List<String>> *p_categories) {
-	if (p_path.is_empty()) {
-		return;
-	}
-	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-	if (dir->change_dir(p_path) == OK) {
-		dir->list_dir_begin();
-		String fn = dir->get_next();
-		while (!fn.is_empty()) {
-			if (dir->current_is_dir() && fn != "..") {
-				String full_path;
-				String category;
-				if (fn == ".") {
-					full_path = p_path;
-					category = "Uncategorized";
-				} else {
-					full_path = p_path.path_join(fn);
-					category = fn.capitalize();
-				}
-
-				if (!p_categories->has(category)) {
-					p_categories->insert(category, List<String>());
-				}
-
-				_populate_scripted_tasks_from_dir(full_path, &p_categories->get(category));
-			}
-			fn = dir->get_next();
-		}
-		dir->list_dir_end();
-	} else {
-		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
-	}
-}
-
-void TaskPanel::_populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes) {
-	if (p_path.is_empty()) {
-		return;
-	}
-	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-	if (dir->change_dir(p_path) == OK) {
-		dir->list_dir_begin();
-		String fn = dir->get_next();
-		while (!fn.is_empty()) {
-			if (fn.ends_with(".gd")) {
-				String full_path = p_path.path_join(fn);
-				p_task_classes->push_back(full_path);
-			}
-			fn = dir->get_next();
-		}
-		dir->list_dir_end();
-	} else {
-		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
 	}
 }
 

@@ -16,6 +16,7 @@
 
 class BTWaitTicks : public BTAction {
 	GDCLASS(BTWaitTicks, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	int num_ticks = 1;

@@ -129,9 +129,6 @@ private:
 
 	String context_task;
 
-	void _populate_core_tasks_from_class(const StringName &p_base_class, List<String> *p_task_classes);
-	void _populate_from_user_dir(String p_path, HashMap<String, List<String>> *p_categories);
-	void _populate_scripted_tasks_from_dir(String p_path, List<String> *p_task_classes);
 	void _menu_action_selected(int p_id);
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_rmb(const String &p_task);

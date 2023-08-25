@@ -16,6 +16,7 @@
 
 class BTFail : public BTAction {
 	GDCLASS(BTFail, BTAction);
+	TASK_CATEGORY(Actions);
 
 protected:
 	virtual int _tick(double p_delta) override;

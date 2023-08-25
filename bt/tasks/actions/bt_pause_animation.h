@@ -20,6 +20,7 @@
 
 class BTPauseAnimation : public BTAction {
 	GDCLASS(BTPauseAnimation, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	Ref<BBNode> animation_player_param;

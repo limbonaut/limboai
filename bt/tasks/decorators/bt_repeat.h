@@ -16,6 +16,7 @@
 
 class BTRepeat : public BTDecorator {
 	GDCLASS(BTRepeat, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	bool forever = false;

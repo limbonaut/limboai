@@ -1,0 +1,57 @@
+/**
+ * limbo_task_db.h
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
+
+#ifndef LIMBO_TASK_DB_H
+#define LIMBO_TASK_DB_H
+
+#include "core/object/class_db.h"
+#include "core/templates/hash_map.h"
+#include "core/templates/list.h"
+
+class LimboTaskDB {
+private:
+	static HashMap<String, List<String>> core_tasks;
+	static HashMap<String, List<String>> tasks_cache;
+
+public:
+	template <class T>
+	static void register_task() {
+		GDREGISTER_CLASS(T);
+		HashMap<String, List<String>>::Iterator E = core_tasks.find(T::get_task_category());
+		if (E) {
+			E->value.push_back(T::get_class_static());
+		} else {
+			List<String> tasks;
+			tasks.push_back(T::get_class_static());
+			core_tasks.insert(T::get_task_category(), tasks);
+		}
+	}
+
+	static void scan_user_tasks();
+	static _FORCE_INLINE_ String get_misc_category() { return "Misc"; }
+	static List<String> get_categories();
+	static List<String> get_tasks_in_category(const String &p_category);
+};
+
+#define LIMBO_REGISTER_TASK(m_class)             \
+	if (m_class::_class_is_enabled) {            \
+		::LimboTaskDB::register_task<m_class>(); \
+	}
+
+#define TASK_CATEGORY(m_cat)                           \
+public:                                                \
+	static _FORCE_INLINE_ String get_task_category() { \
+		return String(#m_cat);                         \
+	}                                                  \
+                                                       \
+private:
+
+#endif // LIMBO_TASK_DB_H

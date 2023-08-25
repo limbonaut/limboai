@@ -18,6 +18,7 @@
 
 class BTCooldown : public BTDecorator {
 	GDCLASS(BTCooldown, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	double duration = 10.0;

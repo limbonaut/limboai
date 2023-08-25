@@ -13,6 +13,7 @@
 #define BTTASK_H
 
 #include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/util/limbo_task_db.h"
 
 #include "core/io/resource.h"
 #include "core/object/object.h"

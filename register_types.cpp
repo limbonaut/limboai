@@ -93,6 +93,7 @@
 #include "hsm/limbo_hsm.h"
 #include "hsm/limbo_state.h"
 #include "util/limbo_string_names.h"
+#include "util/limbo_task_db.h"
 #include "util/limbo_utility.h"
 
 #ifdef TOOLS_ENABLED
@@ -121,51 +122,51 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTPlayer);
 		GDREGISTER_CLASS(BTState);
 
-		GDREGISTER_CLASS(BTComment);
+		LIMBO_REGISTER_TASK(BTComment);
 
 		GDREGISTER_CLASS(BTComposite);
-		GDREGISTER_CLASS(BTSequence);
-		GDREGISTER_CLASS(BTSelector);
-		GDREGISTER_CLASS(BTParallel);
-		GDREGISTER_CLASS(BTDynamicSequence);
-		GDREGISTER_CLASS(BTDynamicSelector);
-		GDREGISTER_CLASS(BTRandomSequence);
-		GDREGISTER_CLASS(BTRandomSelector);
+		LIMBO_REGISTER_TASK(BTSequence);
+		LIMBO_REGISTER_TASK(BTSelector);
+		LIMBO_REGISTER_TASK(BTParallel);
+		LIMBO_REGISTER_TASK(BTDynamicSequence);
+		LIMBO_REGISTER_TASK(BTDynamicSelector);
+		LIMBO_REGISTER_TASK(BTRandomSequence);
+		LIMBO_REGISTER_TASK(BTRandomSelector);
 
 		GDREGISTER_CLASS(BTDecorator);
-		GDREGISTER_CLASS(BTInvert);
-		GDREGISTER_CLASS(BTAlwaysFail);
-		GDREGISTER_CLASS(BTAlwaysSucceed);
-		GDREGISTER_CLASS(BTDelay);
-		GDREGISTER_CLASS(BTRepeat);
-		GDREGISTER_CLASS(BTRepeatUntilFailure);
-		GDREGISTER_CLASS(BTRepeatUntilSuccess);
-		GDREGISTER_CLASS(BTRunLimit);
-		GDREGISTER_CLASS(BTTimeLimit);
-		GDREGISTER_CLASS(BTCooldown);
-		GDREGISTER_CLASS(BTProbability);
-		GDREGISTER_CLASS(BTForEach);
+		LIMBO_REGISTER_TASK(BTInvert);
+		LIMBO_REGISTER_TASK(BTAlwaysFail);
+		LIMBO_REGISTER_TASK(BTAlwaysSucceed);
+		LIMBO_REGISTER_TASK(BTDelay);
+		LIMBO_REGISTER_TASK(BTRepeat);
+		LIMBO_REGISTER_TASK(BTRepeatUntilFailure);
+		LIMBO_REGISTER_TASK(BTRepeatUntilSuccess);
+		LIMBO_REGISTER_TASK(BTRunLimit);
+		LIMBO_REGISTER_TASK(BTTimeLimit);
+		LIMBO_REGISTER_TASK(BTCooldown);
+		LIMBO_REGISTER_TASK(BTProbability);
+		LIMBO_REGISTER_TASK(BTForEach);
 
 		GDREGISTER_CLASS(BTAction);
-		GDREGISTER_CLASS(BTAwaitAnimation);
-		GDREGISTER_CLASS(BTCallMethod);
-		GDREGISTER_CLASS(BTConsolePrint);
-		GDREGISTER_CLASS(BTFail);
-		GDREGISTER_CLASS(BTNewScope);
-		GDREGISTER_CLASS(BTPauseAnimation);
-		GDREGISTER_CLASS(BTPlayAnimation);
-		GDREGISTER_CLASS(BTRandomWait);
-		GDREGISTER_CLASS(BTSetAgentProperty);
-		GDREGISTER_CLASS(BTSetVar);
-		GDREGISTER_CLASS(BTStopAnimation);
-		GDREGISTER_CLASS(BTSubtree);
-		GDREGISTER_CLASS(BTWait);
-		GDREGISTER_CLASS(BTWaitTicks);
+		LIMBO_REGISTER_TASK(BTAwaitAnimation);
+		LIMBO_REGISTER_TASK(BTCallMethod);
+		LIMBO_REGISTER_TASK(BTConsolePrint);
+		LIMBO_REGISTER_TASK(BTFail);
+		LIMBO_REGISTER_TASK(BTNewScope);
+		LIMBO_REGISTER_TASK(BTPauseAnimation);
+		LIMBO_REGISTER_TASK(BTPlayAnimation);
+		LIMBO_REGISTER_TASK(BTRandomWait);
+		LIMBO_REGISTER_TASK(BTSetAgentProperty);
+		LIMBO_REGISTER_TASK(BTSetVar);
+		LIMBO_REGISTER_TASK(BTStopAnimation);
+		LIMBO_REGISTER_TASK(BTSubtree);
+		LIMBO_REGISTER_TASK(BTWait);
+		LIMBO_REGISTER_TASK(BTWaitTicks);
 
 		GDREGISTER_CLASS(BTCondition);
-		GDREGISTER_CLASS(BTCheckAgentProperty);
-		GDREGISTER_CLASS(BTCheckTrigger);
-		GDREGISTER_CLASS(BTCheckVar);
+		LIMBO_REGISTER_TASK(BTCheckAgentProperty);
+		LIMBO_REGISTER_TASK(BTCheckTrigger);
+		LIMBO_REGISTER_TASK(BTCheckVar);
 
 		GDREGISTER_ABSTRACT_CLASS(BBParam);
 		GDREGISTER_CLASS(BBInt);

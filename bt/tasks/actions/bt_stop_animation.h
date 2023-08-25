@@ -20,6 +20,7 @@
 
 class BTStopAnimation : public BTAction {
 	GDCLASS(BTStopAnimation, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	Ref<BBNode> animation_player_param;

@@ -8,7 +8,6 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
-/* bt_comment.h */
 
 #ifndef BT_COMMENT_H
 #define BT_COMMENT_H
@@ -18,8 +17,9 @@
 class BTComment : public BTTask {
 	GDCLASS(BTComment, BTTask);
 
-private:
 public:
+	static _FORCE_INLINE_ String get_task_category() { return LimboTaskDB::get_misc_category(); }
+
 	virtual Ref<BTTask> clone() const override;
 	virtual PackedStringArray get_configuration_warnings() const override;
 };

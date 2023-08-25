@@ -16,6 +16,7 @@
 
 class BTSelector : public BTComposite {
 	GDCLASS(BTSelector, BTComposite);
+	TASK_CATEGORY(Composites);
 
 private:
 	int last_running_idx = 0;

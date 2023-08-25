@@ -19,6 +19,7 @@
 
 class BTCheckVar : public BTCondition {
 	GDCLASS(BTCheckVar, BTCondition);
+	TASK_CATEGORY(Conditions);
 
 private:
 	String variable;

@@ -8,7 +8,6 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
-/* bt_set_var.h */
 
 #ifndef BT_SET_VAR_H
 #define BT_SET_VAR_H
@@ -21,6 +20,7 @@
 
 class BTSetVar : public BTAction {
 	GDCLASS(BTSetVar, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	String variable;

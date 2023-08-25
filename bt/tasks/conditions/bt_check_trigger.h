@@ -9,8 +9,6 @@
  * =============================================================================
  */
 
-/* bt_check_trigger.h */
-
 #ifndef BT_CHECK_TRIGGER_H
 #define BT_CHECK_TRIGGER_H
 
@@ -20,6 +18,7 @@
 
 class BTCheckTrigger : public BTCondition {
 	GDCLASS(BTCheckTrigger, BTCondition);
+	TASK_CATEGORY(Conditions);
 
 private:
 	String variable;

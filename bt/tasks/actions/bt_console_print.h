@@ -18,6 +18,7 @@
 
 class BTConsolePrint : public BTAction {
 	GDCLASS(BTConsolePrint, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	String text;

@@ -21,6 +21,7 @@
 
 class BTCheckAgentProperty : public BTCondition {
 	GDCLASS(BTCheckAgentProperty, BTCondition);
+	TASK_CATEGORY(Conditions);
 
 private:
 	StringName property;

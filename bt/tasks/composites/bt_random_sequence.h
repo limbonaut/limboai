@@ -18,6 +18,7 @@
 
 class BTRandomSequence : public BTComposite {
 	GDCLASS(BTRandomSequence, BTComposite);
+	TASK_CATEGORY(Composites);
 
 private:
 	int last_running_idx = 0;

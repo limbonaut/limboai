@@ -18,6 +18,7 @@
 
 class BTSetAgentProperty : public BTAction {
 	GDCLASS(BTSetAgentProperty, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	StringName property;

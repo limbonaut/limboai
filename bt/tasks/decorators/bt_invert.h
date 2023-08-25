@@ -16,6 +16,7 @@
 
 class BTInvert : public BTDecorator {
 	GDCLASS(BTInvert, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 protected:
 	virtual int _tick(double p_delta) override;

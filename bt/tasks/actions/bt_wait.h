@@ -16,6 +16,7 @@
 
 class BTWait : public BTAction {
 	GDCLASS(BTWait, BTAction);
+	TASK_CATEGORY(Actions);
 
 private:
 	double duration = 1.0;
