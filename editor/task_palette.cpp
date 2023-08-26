@@ -305,6 +305,10 @@ void TaskPalette::_filter_data_changed() {
 	call_deferred(SNAME("refresh"));
 }
 
+void TaskPalette::_draw_category_choice_background() {
+	category_choice_background->draw(category_choice->get_canvas_item(), Rect2(Point2(), category_choice->get_size()));
+}
+
 void TaskPalette::refresh() {
 	filter_edit->set_right_icon(get_theme_icon(SNAME("Search"), SNAME("EditorIcons")));
 
@@ -419,6 +423,9 @@ void TaskPalette::_notification(int p_what) {
 			tool_refresh->set_icon(get_theme_icon(SNAME("Reload"), SNAME("EditorIcons")));
 			select_all->set_icon(get_theme_icon(SNAME("LimboSelectAll"), SNAME("EditorIcons")));
 			deselect_all->set_icon(get_theme_icon(SNAME("LimboDeselectAll"), SNAME("EditorIcons")));
+
+			category_choice_background = get_theme_stylebox(SNAME("normal"), SNAME("LineEdit"));
+			category_choice->queue_redraw();
 
 			if (is_visible_in_tree()) {
 				refresh();
@@ -564,6 +571,7 @@ TaskPalette::TaskPalette() {
 		category_filter->add_child(category_exclude);
 
 		category_choice = memnew(VBoxContainer);
+		category_choice->connect("draw", callable_mp(this, &TaskPalette::_draw_category_choice_background));
 		vbox->add_child(category_choice);
 
 		HBoxContainer *selection_controls = memnew(HBoxContainer);

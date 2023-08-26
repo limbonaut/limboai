@@ -101,6 +101,7 @@ private:
 	Button *deselect_all;
 	ScrollContainer *category_scroll;
 	VBoxContainer *category_list;
+	Ref<StyleBox> category_choice_background;
 
 	String context_task;
 
@@ -115,6 +116,7 @@ private:
 	void _set_all_filter_categories(bool p_selected);
 	void _category_item_toggled(bool p_pressed, const String &p_category);
 	void _filter_data_changed();
+	void _draw_category_choice_background();
 
 	_FORCE_INLINE_ void _set_category_excluded(const String &p_category, bool p_excluded) {
 		if (p_excluded) {
