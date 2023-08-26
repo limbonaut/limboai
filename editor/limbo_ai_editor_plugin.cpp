@@ -496,7 +496,7 @@ void LimboAIEditor::_on_tree_task_double_clicked() {
 }
 
 void LimboAIEditor::_on_visibility_changed() {
-	if (task_tree->is_visible()) {
+	if (task_tree->is_visible_in_tree()) {
 		Ref<BTTask> sel = task_tree->get_selected();
 		if (sel.is_valid()) {
 			EditorNode::get_singleton()->edit_resource(sel);

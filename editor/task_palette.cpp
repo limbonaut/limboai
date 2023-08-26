@@ -199,19 +199,6 @@ void TaskPalette::_apply_filter(const String &p_text) {
 	}
 }
 
-void TaskPalette::_show_filter_popup() {
-	_update_filter_popup();
-
-	category_list->reset_size();
-	category_scroll->set_custom_minimum_size(category_list->get_size() + Size2(8, 8));
-
-	Rect2i rect = tool_filters->get_screen_rect();
-	rect.position.y += rect.size.height;
-	rect.size.height = 0;
-	filter_popup->reset_size();
-	filter_popup->popup(rect);
-}
-
 void TaskPalette::_update_filter_popup() {
 	switch (filter_settings.type_filter) {
 		case FilterSettings::TypeFilter::TYPE_ALL: {
@@ -237,12 +224,15 @@ void TaskPalette::_update_filter_popup() {
 		} break;
 	}
 
-	for (int i = 0; i < category_list->get_child_count(); i++) {
-		category_list->get_child(i)->queue_free();
+	while (category_list->get_child_count() > 0) {
+		Node *item = category_list->get_child(0);
+		category_list->remove_child(item);
+		item->queue_free();
 	}
 	for (String &cat : LimboTaskDB::get_categories()) {
 		CheckBox *category_item = memnew(CheckBox);
 		category_item->set_text(cat);
+		category_item->set_focus_mode(FocusMode::FOCUS_NONE);
 		category_item->set_pressed_no_signal(LOGICAL_XOR(
 				filter_settings.excluded_categories.has(cat),
 				filter_settings.category_filter == FilterSettings::CategoryFilter::CATEGORY_INCLUDE));
@@ -250,7 +240,23 @@ void TaskPalette::_update_filter_popup() {
 		category_list->add_child(category_item);
 	}
 
+	category_list->reset_size();
+	Size2 size = category_list->get_size() + Size2(8, 8);
+	size.width = MIN(size.width, 400 * EDSCALE);
+	size.height = MIN(size.height, 600 * EDSCALE);
+	category_scroll->set_custom_minimum_size(size);
+
 	category_choice->set_visible(filter_settings.category_filter != FilterSettings::CATEGORY_ALL);
+}
+
+void TaskPalette::_show_filter_popup() {
+	_update_filter_popup();
+
+	Rect2i rect = tool_filters->get_screen_rect();
+	rect.position.y += rect.size.height;
+	rect.size.height = 0;
+	filter_popup->reset_size();
+	filter_popup->popup(rect);
 }
 
 void TaskPalette::_category_filter_changed() {
@@ -305,7 +311,7 @@ void TaskPalette::_filter_data_changed() {
 	call_deferred(SNAME("refresh"));
 }
 
-void TaskPalette::_draw_category_choice_background() {
+void TaskPalette::_draw_filter_popup_background() {
 	category_choice_background->draw(category_choice->get_canvas_item(), Rect2(Point2(), category_choice->get_size()));
 }
 
@@ -571,7 +577,7 @@ TaskPalette::TaskPalette() {
 		category_filter->add_child(category_exclude);
 
 		category_choice = memnew(VBoxContainer);
-		category_choice->connect("draw", callable_mp(this, &TaskPalette::_draw_category_choice_background));
+		category_choice->connect("draw", callable_mp(this, &TaskPalette::_draw_filter_popup_background));
 		vbox->add_child(category_choice);
 
 		HBoxContainer *selection_controls = memnew(HBoxContainer);

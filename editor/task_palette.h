@@ -109,14 +109,14 @@ private:
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_rmb(const String &p_task);
 	void _apply_filter(const String &p_text);
-	void _show_filter_popup();
 	void _update_filter_popup();
+	void _show_filter_popup();
 	void _type_filter_changed();
 	void _category_filter_changed();
 	void _set_all_filter_categories(bool p_selected);
 	void _category_item_toggled(bool p_pressed, const String &p_category);
 	void _filter_data_changed();
-	void _draw_category_choice_background();
+	void _draw_filter_popup_background();
 
 	_FORCE_INLINE_ void _set_category_excluded(const String &p_category, bool p_excluded) {
 		if (p_excluded) {
