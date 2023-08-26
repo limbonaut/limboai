@@ -94,6 +94,7 @@ List<String> LimboTaskDB::get_categories() {
 	for (const KeyValue<String, List<String>> &E : tasks_cache) {
 		r_cat.push_back(E.key);
 	}
+	r_cat.sort();
 	return r_cat;
 }
 

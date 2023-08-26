@@ -20,6 +20,7 @@
 #include "editor/editor_paths.h"
 #include "editor/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
+#include "scene/gui/check_box.h"
 
 //**** TaskButton
 
@@ -198,6 +199,112 @@ void TaskPalette::_apply_filter(const String &p_text) {
 	}
 }
 
+void TaskPalette::_show_filter_popup() {
+	_update_filter_popup();
+
+	category_list->reset_size();
+	category_scroll->set_custom_minimum_size(category_list->get_size() + Size2(8, 8));
+
+	Rect2i rect = tool_filters->get_screen_rect();
+	rect.position.y += rect.size.height;
+	rect.size.height = 0;
+	filter_popup->reset_size();
+	filter_popup->popup(rect);
+}
+
+void TaskPalette::_update_filter_popup() {
+	switch (filter_settings.type_filter) {
+		case FilterSettings::TypeFilter::TYPE_ALL: {
+			type_all->set_pressed(true);
+		} break;
+		case FilterSettings::TypeFilter::TYPE_CORE: {
+			type_core->set_pressed(true);
+		} break;
+		case FilterSettings::TypeFilter::TYPE_USER: {
+			type_user->set_pressed(true);
+		} break;
+	}
+
+	switch (filter_settings.category_filter) {
+		case FilterSettings::CategoryFilter::CATEGORY_ALL: {
+			category_all->set_pressed(true);
+		} break;
+		case FilterSettings::CategoryFilter::CATEGORY_INCLUDE: {
+			category_include->set_pressed(true);
+		} break;
+		case FilterSettings::CategoryFilter::CATEGORY_EXCLUDE: {
+			category_exclude->set_pressed(true);
+		} break;
+	}
+
+	for (int i = 0; i < category_list->get_child_count(); i++) {
+		category_list->get_child(i)->queue_free();
+	}
+	for (String &cat : LimboTaskDB::get_categories()) {
+		CheckBox *category_item = memnew(CheckBox);
+		category_item->set_text(cat);
+		category_item->set_pressed_no_signal(LOGICAL_XOR(
+				filter_settings.excluded_categories.has(cat),
+				filter_settings.category_filter == FilterSettings::CategoryFilter::CATEGORY_INCLUDE));
+		category_item->connect(SNAME("toggled"), callable_mp(this, &TaskPalette::_category_item_toggled).bind(cat));
+		category_list->add_child(category_item);
+	}
+
+	category_choice->set_visible(filter_settings.category_filter != FilterSettings::CATEGORY_ALL);
+}
+
+void TaskPalette::_category_filter_changed() {
+	if (category_all->is_pressed()) {
+		filter_settings.category_filter = FilterSettings::CategoryFilter::CATEGORY_ALL;
+	} else if (category_include->is_pressed()) {
+		filter_settings.category_filter = FilterSettings::CategoryFilter::CATEGORY_INCLUDE;
+	} else if (category_exclude->is_pressed()) {
+		filter_settings.category_filter = FilterSettings::CategoryFilter::CATEGORY_EXCLUDE;
+	}
+
+	for (int i = 0; i < category_list->get_child_count(); i++) {
+		CheckBox *item = Object::cast_to<CheckBox>(category_list->get_child(i));
+		item->set_pressed_no_signal(LOGICAL_XOR(
+				filter_settings.excluded_categories.has(item->get_text()),
+				filter_settings.category_filter == FilterSettings::CATEGORY_INCLUDE));
+	}
+
+	category_choice->set_visible(filter_settings.category_filter != FilterSettings::CATEGORY_ALL);
+	filter_popup->reset_size();
+	_filter_data_changed();
+}
+
+void TaskPalette::_set_all_filter_categories(bool p_selected) {
+	for (int i = 0; i < category_list->get_child_count(); i++) {
+		CheckBox *item = Object::cast_to<CheckBox>(category_list->get_child(i));
+		item->set_pressed_no_signal(p_selected);
+		bool excluded = LOGICAL_XOR(p_selected, filter_settings.category_filter == FilterSettings::CATEGORY_INCLUDE);
+		_set_category_excluded(item->get_text(), excluded);
+	}
+	_filter_data_changed();
+}
+
+void TaskPalette::_type_filter_changed() {
+	if (type_all->is_pressed()) {
+		filter_settings.type_filter = FilterSettings::TypeFilter::TYPE_ALL;
+	} else if (type_core->is_pressed()) {
+		filter_settings.type_filter = FilterSettings::TypeFilter::TYPE_CORE;
+	} else if (type_user->is_pressed()) {
+		filter_settings.type_filter = FilterSettings::TypeFilter::TYPE_USER;
+	}
+	_filter_data_changed();
+}
+
+void TaskPalette::_category_item_toggled(bool p_pressed, const String &p_category) {
+	bool excluded = LOGICAL_XOR(p_pressed, filter_settings.category_filter == FilterSettings::CATEGORY_INCLUDE);
+	_set_category_excluded(p_category, excluded);
+	_filter_data_changed();
+}
+
+void TaskPalette::_filter_data_changed() {
+	call_deferred(SNAME("refresh"));
+}
+
 void TaskPalette::refresh() {
 	filter_edit->set_right_icon(get_theme_icon(SNAME("Search"), SNAME("EditorIcons")));
 
@@ -232,8 +339,11 @@ void TaskPalette::refresh() {
 	categories.sort();
 
 	for (String cat : categories) {
-		List<String> tasks = LimboTaskDB::get_tasks_in_category(cat);
+		if (filter_settings.category_filter != FilterSettings::CATEGORY_ALL && filter_settings.excluded_categories.has(cat)) {
+			continue;
+		}
 
+		List<String> tasks = LimboTaskDB::get_tasks_in_category(cat);
 		if (tasks.size() == 0) {
 			continue;
 		}
@@ -246,12 +356,18 @@ void TaskPalette::refresh() {
 			DocTools *dd = EditorHelp::get_doc_data();
 			HashMap<String, DocData::ClassDoc>::Iterator E;
 			if (task_meta.begins_with("res:")) {
+				if (filter_settings.type_filter == FilterSettings::TYPE_CORE) {
+					continue;
+				}
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
 				E = dd->class_list.find(vformat("\"%s\"", task_meta.trim_prefix("res://")));
 				if (!E) {
 					E = dd->class_list.find(tname);
 				}
 			} else {
+				if (filter_settings.type_filter == FilterSettings::TYPE_USER) {
+					continue;
+				}
 				tname = task_meta.trim_prefix("BT");
 				E = dd->class_list.find(task_meta);
 			}
@@ -299,7 +415,11 @@ void TaskPalette::_notification(int p_what) {
 			conf.save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
-			refresh_btn->set_icon(get_theme_icon(SNAME("Reload"), SNAME("EditorIcons")));
+			tool_filters->set_icon(get_theme_icon(SNAME("AnimationFilter"), SNAME("EditorIcons")));
+			tool_refresh->set_icon(get_theme_icon(SNAME("Reload"), SNAME("EditorIcons")));
+			select_all->set_icon(get_theme_icon(SNAME("LimboSelectAll"), SNAME("EditorIcons")));
+			deselect_all->set_icon(get_theme_icon(SNAME("LimboDeselectAll"), SNAME("EditorIcons")));
+
 			if (is_visible_in_tree()) {
 				refresh();
 			}
@@ -321,6 +441,13 @@ TaskPalette::TaskPalette() {
 	HBoxContainer *hb = memnew(HBoxContainer);
 	vb->add_child(hb);
 
+	tool_filters = memnew(Button);
+	tool_filters->set_tooltip_text(TTR("Show filters"));
+	tool_filters->set_flat(true);
+	tool_filters->set_focus_mode(FocusMode::FOCUS_NONE);
+	tool_filters->connect("pressed", callable_mp(this, &TaskPalette::_show_filter_popup));
+	hb->add_child(tool_filters);
+
 	filter_edit = memnew(LineEdit);
 	filter_edit->set_clear_button_enabled(true);
 	filter_edit->set_placeholder(TTR("Filter tasks"));
@@ -328,12 +455,12 @@ TaskPalette::TaskPalette() {
 	filter_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	hb->add_child(filter_edit);
 
-	refresh_btn = memnew(Button);
-	refresh_btn->set_tooltip_text(TTR("Refresh tasks"));
-	refresh_btn->set_flat(true);
-	refresh_btn->set_focus_mode(FocusMode::FOCUS_NONE);
-	refresh_btn->connect("pressed", callable_mp(this, &TaskPalette::refresh));
-	hb->add_child(refresh_btn);
+	tool_refresh = memnew(Button);
+	tool_refresh->set_tooltip_text(TTR("Refresh tasks"));
+	tool_refresh->set_flat(true);
+	tool_refresh->set_focus_mode(FocusMode::FOCUS_NONE);
+	tool_refresh->connect("pressed", callable_mp(this, &TaskPalette::refresh));
+	hb->add_child(tool_refresh);
 
 	ScrollContainer *sc = memnew(ScrollContainer);
 	sc->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -348,6 +475,120 @@ TaskPalette::TaskPalette() {
 	menu = memnew(PopupMenu);
 	add_child(menu);
 	menu->connect("id_pressed", callable_mp(this, &TaskPalette::_menu_action_selected));
+
+	filter_popup = memnew(PopupPanel);
+	{
+		VBoxContainer *vbox = memnew(VBoxContainer);
+		filter_popup->add_child(vbox);
+
+		Label *type_header = memnew(Label);
+		type_header->set_text(TTR("Type"));
+		type_header->set_theme_type_variation("HeaderSmall");
+		vbox->add_child(type_header);
+
+		HBoxContainer *type_filter = memnew(HBoxContainer);
+		vbox->add_child(type_filter);
+
+		Ref<ButtonGroup> type_filter_group;
+		type_filter_group.instantiate();
+
+		type_all = memnew(Button);
+		type_all->set_text(TTR("All"));
+		type_all->set_tooltip_text(TTR("Show tasks of all types"));
+		type_all->set_toggle_mode(true);
+		type_all->set_focus_mode(FocusMode::FOCUS_NONE);
+		type_all->set_button_group(type_filter_group);
+		type_all->set_pressed(true);
+		type_all->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
+		type_filter->add_child(type_all);
+
+		type_core = memnew(Button);
+		type_core->set_text(TTR("Core"));
+		type_core->set_tooltip_text(TTR("Show only core tasks"));
+		type_core->set_toggle_mode(true);
+		type_core->set_focus_mode(FocusMode::FOCUS_NONE);
+		type_core->set_button_group(type_filter_group);
+		type_core->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
+		type_filter->add_child(type_core);
+
+		type_user = memnew(Button);
+		type_user->set_text(TTR("User"));
+		type_user->set_tooltip_text(TTR("Show only user-implemented tasks (aka scripts)"));
+		type_user->set_toggle_mode(true);
+		type_user->set_focus_mode(FocusMode::FOCUS_NONE);
+		type_user->set_button_group(type_filter_group);
+		type_user->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
+		type_filter->add_child(type_user);
+
+		Control *space1 = memnew(Control);
+		space1->set_custom_minimum_size(Size2(0, 4));
+		vbox->add_child(space1);
+
+		Label *category_header = memnew(Label);
+		category_header->set_text(TTR("Categories"));
+		category_header->set_theme_type_variation("HeaderSmall");
+		vbox->add_child(category_header);
+
+		HBoxContainer *category_filter = memnew(HBoxContainer);
+		vbox->add_child(category_filter);
+
+		Ref<ButtonGroup> category_filter_group;
+		category_filter_group.instantiate();
+
+		category_all = memnew(Button);
+		category_all->set_text(TTR("All"));
+		category_all->set_tooltip_text(TTR("Show tasks of all categories"));
+		category_all->set_toggle_mode(true);
+		category_all->set_focus_mode(FocusMode::FOCUS_NONE);
+		category_all->set_pressed(true);
+		category_all->set_button_group(category_filter_group);
+		category_all->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
+		category_filter->add_child(category_all);
+
+		category_include = memnew(Button);
+		category_include->set_text(TTR("Include"));
+		category_include->set_tooltip_text(TTR("Show tasks from selected categories"));
+		category_include->set_toggle_mode(true);
+		category_include->set_focus_mode(FocusMode::FOCUS_NONE);
+		category_include->set_button_group(category_filter_group);
+		category_include->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
+		category_filter->add_child(category_include);
+
+		category_exclude = memnew(Button);
+		category_exclude->set_text(TTR("Exclude"));
+		category_exclude->set_tooltip_text(TTR("Don't show tasks from selected categories"));
+		category_exclude->set_toggle_mode(true);
+		category_exclude->set_focus_mode(FocusMode::FOCUS_NONE);
+		category_exclude->set_button_group(category_filter_group);
+		category_exclude->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
+		category_filter->add_child(category_exclude);
+
+		category_choice = memnew(VBoxContainer);
+		vbox->add_child(category_choice);
+
+		HBoxContainer *selection_controls = memnew(HBoxContainer);
+		selection_controls->set_alignment(BoxContainer::ALIGNMENT_CENTER);
+		category_choice->add_child(selection_controls);
+
+		select_all = memnew(Button);
+		select_all->set_tooltip_text(TTR("Select all categories"));
+		select_all->set_focus_mode(FocusMode::FOCUS_NONE);
+		select_all->connect("pressed", callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(true));
+		selection_controls->add_child(select_all);
+
+		deselect_all = memnew(Button);
+		deselect_all->set_tooltip_text(TTR("Deselect all categories"));
+		deselect_all->set_focus_mode(FocusMode::FOCUS_NONE);
+		deselect_all->connect("pressed", callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(false));
+		selection_controls->add_child(deselect_all);
+
+		category_scroll = memnew(ScrollContainer);
+		category_choice->add_child(category_scroll);
+
+		category_list = memnew(VBoxContainer);
+		category_scroll->add_child(category_list);
+	}
+	add_child(filter_popup);
 }
 
 TaskPalette::~TaskPalette() {
