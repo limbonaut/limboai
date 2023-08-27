@@ -252,6 +252,8 @@ void TaskPalette::_update_filter_popup() {
 void TaskPalette::_show_filter_popup() {
 	_update_filter_popup();
 
+	tool_filters->set_pressed_no_signal(true);
+
 	Rect2i rect = tool_filters->get_screen_rect();
 	rect.position.y += rect.size.height;
 	rect.size.height = 0;
@@ -309,10 +311,17 @@ void TaskPalette::_category_item_toggled(bool p_pressed, const String &p_categor
 
 void TaskPalette::_filter_data_changed() {
 	call_deferred(SNAME("refresh"));
+	_update_filter_button();
 }
 
 void TaskPalette::_draw_filter_popup_background() {
 	category_choice_background->draw(category_choice->get_canvas_item(), Rect2(Point2(), category_choice->get_size()));
+}
+
+void TaskPalette::_update_filter_button() {
+	tool_filters->set_pressed_no_signal(filter_popup->is_visible() ||
+			filter_settings.type_filter != FilterSettings::TYPE_ALL ||
+			(filter_settings.category_filter != FilterSettings::CATEGORY_ALL && !filter_settings.excluded_categories.is_empty()));
 }
 
 void TaskPalette::refresh() {
@@ -457,6 +466,7 @@ TaskPalette::TaskPalette() {
 	tool_filters = memnew(Button);
 	tool_filters->set_tooltip_text(TTR("Show filters"));
 	tool_filters->set_flat(true);
+	tool_filters->set_toggle_mode(true);
 	tool_filters->set_focus_mode(FocusMode::FOCUS_NONE);
 	tool_filters->connect("pressed", callable_mp(this, &TaskPalette::_show_filter_popup));
 	hb->add_child(tool_filters);
@@ -603,6 +613,7 @@ TaskPalette::TaskPalette() {
 		category_scroll->add_child(category_list);
 	}
 	add_child(filter_popup);
+	filter_popup->connect("popup_hide", callable_mp(this, &TaskPalette::_update_filter_button));
 }
 
 TaskPalette::~TaskPalette() {

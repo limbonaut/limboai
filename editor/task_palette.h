@@ -117,6 +117,7 @@ private:
 	void _category_item_toggled(bool p_pressed, const String &p_category);
 	void _filter_data_changed();
 	void _draw_filter_popup_background();
+	void _update_filter_button();
 
 	_FORCE_INLINE_ void _set_category_excluded(const String &p_category, bool p_excluded) {
 		if (p_excluded) {
