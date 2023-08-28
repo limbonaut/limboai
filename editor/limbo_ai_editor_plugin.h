@@ -74,7 +74,6 @@ private:
 	TaskPalette *task_palette;
 	HBoxContainer *fav_tasks_hbox;
 
-	Button *comment_btn;
 	Button *new_btn;
 	Button *load_btn;
 	Button *save_btn;

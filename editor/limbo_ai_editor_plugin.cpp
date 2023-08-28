@@ -823,20 +823,11 @@ LimboAIEditor::LimboAIEditor() {
 	PackedStringArray favorite_tasks_default;
 	favorite_tasks_default.append("BTSelector");
 	favorite_tasks_default.append("BTSequence");
-	favorite_tasks_default.append("BTParallel");
+	favorite_tasks_default.append("BTComment");
 	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/favorite_tasks", PROPERTY_HINT_ARRAY_TYPE, "String"), favorite_tasks_default);
 
 	fav_tasks_hbox = memnew(HBoxContainer);
 	toolbar->add_child(fav_tasks_hbox);
-
-	comment_btn = memnew(Button);
-	comment_btn->set_text(TTR("Comment"));
-	comment_btn->set_icon(LimboUtility::get_singleton()->get_task_icon("BTComment"));
-	comment_btn->set_tooltip_text(TTR("Add a BTComment task."));
-	comment_btn->set_flat(true);
-	comment_btn->set_focus_mode(Control::FOCUS_NONE);
-	comment_btn->connect("pressed", callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path).bind("BTComment"));
-	toolbar->add_child(comment_btn);
 
 	toolbar->add_child(memnew(VSeparator));
 
