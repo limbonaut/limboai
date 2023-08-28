@@ -18,6 +18,7 @@
 
 class BTSubtree : public BTNewScope {
 	GDCLASS(BTSubtree, BTNewScope);
+	TASK_CATEGORY(Decorators);
 
 private:
 	Ref<BehaviorTree> subtree;

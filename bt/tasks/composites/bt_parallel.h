@@ -16,6 +16,7 @@
 
 class BTParallel : public BTComposite {
 	GDCLASS(BTParallel, BTComposite);
+	TASK_CATEGORY(Composites);
 
 private:
 	int num_successes_required = 1;

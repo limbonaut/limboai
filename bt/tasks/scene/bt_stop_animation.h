@@ -1,5 +1,5 @@
 /**
- * bt_await_animation.h
+ * bt_stop_animation.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,8 +9,8 @@
  * =============================================================================
  */
 
-#ifndef BT_AWAIT_ANIMATION_H
-#define BT_AWAIT_ANIMATION_H
+#ifndef BT_STOP_ANIMATION_H
+#define BT_STOP_ANIMATION_H
 
 #include "../bt_action.h"
 
@@ -18,13 +18,14 @@
 
 #include "scene/animation/animation_player.h"
 
-class BTAwaitAnimation : public BTAction {
-	GDCLASS(BTAwaitAnimation, BTAction);
+class BTStopAnimation : public BTAction {
+	GDCLASS(BTStopAnimation, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
 	Ref<BBNode> animation_player_param;
 	StringName animation_name;
-	double max_time = 1.0;
+	bool keep_state = false;
 
 	AnimationPlayer *animation_player = nullptr;
 	bool setup_failed = false;
@@ -43,10 +44,10 @@ public:
 	void set_animation_name(StringName p_animation_name);
 	StringName get_animation_name() const { return animation_name; }
 
-	void set_max_time(double p_max_time);
-	double get_max_time() const { return max_time; }
+	void set_keep_state(bool p_keep_state);
+	bool get_keep_state() const { return keep_state; }
 
 	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_AWAIT_ANIMATION
+#endif // BT_STOP_ANIMATION

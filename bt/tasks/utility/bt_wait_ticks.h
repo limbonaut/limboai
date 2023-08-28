@@ -1,5 +1,5 @@
 /**
- * bt_wait.h
+ * bt_wait_ticks.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,29 +9,33 @@
  * =============================================================================
  */
 
-#ifndef BT_WAIT_H
-#define BT_WAIT_H
+#ifndef BT_WAIT_TICKS_H
+#define BT_WAIT_TICKS_H
 
 #include "../bt_action.h"
 
-class BTWait : public BTAction {
-	GDCLASS(BTWait, BTAction);
+class BTWaitTicks : public BTAction {
+	GDCLASS(BTWaitTicks, BTAction);
+	TASK_CATEGORY(Utility);
 
 private:
-	double duration = 1.0;
+	int num_ticks = 1;
+
+	int num_passed = 0;
 
 protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
+	virtual void _enter() override;
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_duration(double p_value) {
-		duration = p_value;
+	void set_num_ticks(int p_value) {
+		num_ticks = p_value;
 		emit_changed();
 	}
-	double get_duration() const { return duration; }
+	int get_num_ticks() const { return num_ticks; }
 };
 
-#endif // BT_WAIT_H
+#endif // BT_WAIT_TICKS_H

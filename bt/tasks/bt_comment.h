@@ -8,7 +8,6 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
-/* bt_comment.h */
 
 #ifndef BT_COMMENT_H
 #define BT_COMMENT_H
@@ -17,8 +16,8 @@
 
 class BTComment : public BTTask {
 	GDCLASS(BTComment, BTTask);
+	TASK_CATEGORY(Utility);
 
-private:
 public:
 	virtual Ref<BTTask> clone() const override;
 	virtual PackedStringArray get_configuration_warnings() const override;

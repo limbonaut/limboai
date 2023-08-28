@@ -1,5 +1,5 @@
 /**
- * bt_console_print.h
+ * bt_call_method.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,19 +9,21 @@
  * =============================================================================
  */
 
-#ifndef BT_CONSOLE_PRINT_H
-#define BT_CONSOLE_PRINT_H
+#ifndef BT_CALL_METHOD_H
+#define BT_CALL_METHOD_H
 
 #include "../bt_action.h"
 
-#include "core/variant/variant.h"
+#include "modules/limboai/blackboard/bb_param/bb_node.h"
 
-class BTConsolePrint : public BTAction {
-	GDCLASS(BTConsolePrint, BTAction);
+class BTCallMethod : public BTAction {
+	GDCLASS(BTCallMethod, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
-	String text;
-	PackedStringArray bb_format_parameters;
+	StringName method_name;
+	Ref<BBNode> node_param;
+	Array args;
 
 protected:
 	static void _bind_methods();
@@ -30,19 +32,16 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_text(String p_value) {
-		text = p_value;
-		emit_changed();
-	}
-	String get_text() const { return text; }
+	void set_method_name(StringName p_method_name);
+	StringName get_method_name() const { return method_name; }
 
-	void set_bb_format_parameters(const PackedStringArray &p_value) {
-		bb_format_parameters = p_value;
-		emit_changed();
-	}
-	PackedStringArray get_bb_format_parameters() const { return bb_format_parameters; }
+	void set_node_param(Ref<BBNode> p_object);
+	Ref<BBNode> get_node_param() const { return node_param; }
+
+	void set_args(Array p_args);
+	Array get_args() const { return args; }
 
 	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_CONSOLE_PRINT_H
+#endif // BT_CALL_METHOD

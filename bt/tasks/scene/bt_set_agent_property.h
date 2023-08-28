@@ -1,5 +1,5 @@
 /**
- * bt_set_var.h
+ * bt_set_agent_property.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -8,22 +8,20 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
-/* bt_set_var.h */
 
-#ifndef BT_SET_VAR_H
-#define BT_SET_VAR_H
+#ifndef BT_SET_AGENT_PROPERTY_H
+#define BT_SET_AGENT_PROPERTY_H
 
 #include "../bt_action.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
 
-#include "core/string/ustring.h"
-
-class BTSetVar : public BTAction {
-	GDCLASS(BTSetVar, BTAction);
+class BTSetAgentProperty : public BTAction {
+	GDCLASS(BTSetAgentProperty, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
-	String variable;
+	StringName property;
 	Ref<BBVariant> value;
 
 protected:
@@ -35,11 +33,11 @@ protected:
 public:
 	virtual PackedStringArray get_configuration_warnings() const override;
 
-	void set_variable(const String &p_variable);
-	String get_variable() const { return variable; }
+	void set_property(StringName p_prop);
+	StringName get_property() const { return property; }
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
 };
 
-#endif // BT_SET_VAR
+#endif // BT_SET_AGENT_PROPERTY

@@ -16,6 +16,7 @@
 
 class BTTimeLimit : public BTDecorator {
 	GDCLASS(BTTimeLimit, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	double time_limit = 5.0;

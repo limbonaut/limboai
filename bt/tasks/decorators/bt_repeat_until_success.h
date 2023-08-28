@@ -16,6 +16,7 @@
 
 class BTRepeatUntilSuccess : public BTDecorator {
 	GDCLASS(BTRepeatUntilSuccess, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 protected:
 	virtual int _tick(double p_delta) override;

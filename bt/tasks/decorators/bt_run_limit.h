@@ -16,6 +16,7 @@
 
 class BTRunLimit : public BTDecorator {
 	GDCLASS(BTRunLimit, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	int run_limit = 1;

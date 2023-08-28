@@ -16,6 +16,7 @@
 
 class BTForEach : public BTDecorator {
 	GDCLASS(BTForEach, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	String array_var;

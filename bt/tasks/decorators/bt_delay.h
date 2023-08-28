@@ -16,6 +16,7 @@
 
 class BTDelay : public BTDecorator {
 	GDCLASS(BTDelay, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	double seconds = 1.0;

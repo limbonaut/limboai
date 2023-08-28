@@ -16,6 +16,7 @@
 
 class BTNewScope : public BTDecorator {
 	GDCLASS(BTNewScope, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	Dictionary blackboard_data;

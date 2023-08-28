@@ -18,6 +18,8 @@
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 
+#define LOGICAL_XOR(a, b) (a) ? !(b) : (b)
+
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
 

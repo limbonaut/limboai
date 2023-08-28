@@ -1,5 +1,5 @@
 /**
- * bt_call_method.h
+ * bt_pause_animation.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,38 +9,37 @@
  * =============================================================================
  */
 
-#ifndef BT_CALL_METHOD_H
-#define BT_CALL_METHOD_H
+#ifndef BT_PAUSE_ANIMATION_H
+#define BT_PAUSE_ANIMATION_H
 
 #include "../bt_action.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_node.h"
 
-class BTCallMethod : public BTAction {
-	GDCLASS(BTCallMethod, BTAction);
+#include "scene/animation/animation_player.h"
+
+class BTPauseAnimation : public BTAction {
+	GDCLASS(BTPauseAnimation, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
-	StringName method_name;
-	Ref<BBNode> node_param;
-	Array args;
+	Ref<BBNode> animation_player_param;
+
+	AnimationPlayer *animation_player = nullptr;
+	bool setup_failed = false;
 
 protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
+	virtual void _setup() override;
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_method_name(StringName p_method_name);
-	StringName get_method_name() const { return method_name; }
-
-	void set_node_param(Ref<BBNode> p_object);
-	Ref<BBNode> get_node_param() const { return node_param; }
-
-	void set_args(Array p_args);
-	Array get_args() const { return args; }
+	void set_animation_player(Ref<BBNode> p_animation_player);
+	Ref<BBNode> get_animation_player() const { return animation_player_param; }
 
 	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_CALL_METHOD
+#endif // BT_PAUSE_ANIMATION

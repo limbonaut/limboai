@@ -1,5 +1,5 @@
 /**
- * bt_wait_ticks.h
+ * bt_random_wait.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,18 +9,20 @@
  * =============================================================================
  */
 
-#ifndef BT_WAIT_TICKS_H
-#define BT_WAIT_TICKS_H
+#ifndef BT_RANDOM_WAIT_H
+#define BT_RANDOM_WAIT_H
 
 #include "../bt_action.h"
 
-class BTWaitTicks : public BTAction {
-	GDCLASS(BTWaitTicks, BTAction);
+class BTRandomWait : public BTAction {
+	GDCLASS(BTRandomWait, BTAction);
+	TASK_CATEGORY(Utility);
 
 private:
-	int num_ticks = 1;
+	double min_duration = 1.0;
+	double max_duration = 2.0;
 
-	int num_passed = 0;
+	double duration = 0.0;
 
 protected:
 	static void _bind_methods();
@@ -30,11 +32,11 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_num_ticks(int p_value) {
-		num_ticks = p_value;
-		emit_changed();
-	}
-	int get_num_ticks() const { return num_ticks; }
+	void set_min_duration(double p_max_duration);
+	double get_min_duration() const { return min_duration; }
+
+	void set_max_duration(double p_max_duration);
+	double get_max_duration() const { return max_duration; }
 };
 
-#endif // BT_WAIT_TICKS_H
+#endif // BT_RANDOM_WAIT_H

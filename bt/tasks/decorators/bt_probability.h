@@ -16,6 +16,7 @@
 
 class BTProbability : public BTDecorator {
 	GDCLASS(BTProbability, BTDecorator);
+	TASK_CATEGORY(Decorators);
 
 private:
 	float run_chance = 0.5;

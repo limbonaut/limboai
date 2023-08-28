@@ -16,6 +16,7 @@
 
 class BTDynamicSequence : public BTComposite {
 	GDCLASS(BTDynamicSequence, BTComposite);
+	TASK_CATEGORY(Composites);
 
 private:
 	int last_running_idx = 0;
