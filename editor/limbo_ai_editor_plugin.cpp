@@ -736,18 +736,20 @@ void LimboAIEditor::_update_banners() {
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
-			ConfigFile conf;
+			Ref<ConfigFile> cf;
+			cf.instantiate();
 			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
-			if (conf.load(conf_path) == OK) {
-				hsc->set_split_offset(conf.get_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset()));
+			if (cf->load(conf_path) == OK) {
+				hsc->set_split_offset(cf->get_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset()));
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			ConfigFile conf;
+			Ref<ConfigFile> cf;
+			cf.instantiate();
 			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
-			conf.load(conf_path);
-			conf.set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
-			conf.save(conf_path);
+			cf->load(conf_path);
+			cf->set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
+			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			new_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("New"), SNAME("EditorIcons")));

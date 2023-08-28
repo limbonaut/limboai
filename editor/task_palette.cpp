@@ -330,10 +330,11 @@ void TaskPalette::refresh() {
 	HashSet<String> collapsed_sections;
 	if (sections->get_child_count() == 0) {
 		// Restore collapsed state from config.
-		ConfigFile conf;
+		Ref<ConfigFile> cf;
+		cf.instantiate();
 		String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
-		if (conf.load(conf_path) == OK) {
-			Variant value = conf.get_value("bt_editor", "collapsed_sections", Array());
+		if (cf->load(conf_path) == OK) {
+			Variant value = cf->get_value("task_palette", "collapsed_sections", Array());
 			if (value.is_array()) {
 				Array arr = value;
 				for (int i = 0; i < arr.size(); i++) {
@@ -416,10 +417,39 @@ void TaskPalette::refresh() {
 
 void TaskPalette::_notification(int p_what) {
 	switch (p_what) {
-		case NOTIFICATION_EXIT_TREE: {
-			if (sections->get_child_count() == 0) {
-				return;
+		case NOTIFICATION_ENTER_TREE: {
+			Ref<ConfigFile> cf;
+			cf.instantiate();
+			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+			if (cf->load(conf_path) == OK) {
+				Variant value = cf->get_value("task_palette", "type_filter", FilterSettings::TypeFilter(0));
+				if (value.is_num()) {
+					filter_settings.type_filter = (FilterSettings::TypeFilter)(int)value;
+				}
+
+				value = cf->get_value("task_palette", "category_filter", FilterSettings::CategoryFilter(0));
+				if (value.is_num()) {
+					filter_settings.category_filter = (FilterSettings::CategoryFilter)(int)value;
+				}
+
+				value = cf->get_value("task_palette", "excluded_categories", Array());
+				if (value.is_array()) {
+					Array arr = value;
+					for (int i = 0; i < arr.size(); i++) {
+						if (arr[i].get_type() == Variant::STRING) {
+							filter_settings.excluded_categories.insert(arr[i]);
+						}
+					}
+				}
 			}
+			_update_filter_button();
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			Ref<ConfigFile> cf;
+			cf.instantiate();
+			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+			cf->load(conf_path);
+
 			Array collapsed_sections;
 			for (int i = 0; i < sections->get_child_count(); i++) {
 				TaskPaletteSection *sec = Object::cast_to<TaskPaletteSection>(sections->get_child(i));
@@ -427,11 +457,18 @@ void TaskPalette::_notification(int p_what) {
 					collapsed_sections.push_back(sec->get_category_name());
 				}
 			}
-			ConfigFile conf;
-			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
-			conf.load(conf_path);
-			conf.set_value("bt_editor", "collapsed_sections", collapsed_sections);
-			conf.save(conf_path);
+			cf->set_value("task_palette", "collapsed_sections", collapsed_sections);
+
+			cf->set_value("task_palette", "type_filter", filter_settings.type_filter);
+			cf->set_value("task_palette", "category_filter", filter_settings.category_filter);
+
+			Array excluded_categories;
+			for (const String &cat : filter_settings.excluded_categories) {
+				excluded_categories.append(cat);
+			}
+			cf->set_value("task_palette", "excluded_categories", excluded_categories);
+
+			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			tool_filters->set_icon(get_theme_icon(SNAME("AnimationFilter"), SNAME("EditorIcons")));
