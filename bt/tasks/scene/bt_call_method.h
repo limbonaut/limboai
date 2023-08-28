@@ -18,7 +18,7 @@
 
 class BTCallMethod : public BTAction {
 	GDCLASS(BTCallMethod, BTAction);
-	TASK_CATEGORY(Actions);
+	TASK_CATEGORY(Scene);
 
 private:
 	StringName method_name;

@@ -1,5 +1,5 @@
 /**
- * bt_console_print.h
+ * bt_set_var.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,20 +9,22 @@
  * =============================================================================
  */
 
-#ifndef BT_CONSOLE_PRINT_H
-#define BT_CONSOLE_PRINT_H
+#ifndef BT_SET_VAR_H
+#define BT_SET_VAR_H
 
 #include "../bt_action.h"
 
-#include "core/variant/variant.h"
+#include "modules/limboai/blackboard/bb_param/bb_variant.h"
 
-class BTConsolePrint : public BTAction {
-	GDCLASS(BTConsolePrint, BTAction);
-	TASK_CATEGORY(Actions);
+#include "core/string/ustring.h"
+
+class BTSetVar : public BTAction {
+	GDCLASS(BTSetVar, BTAction);
+	TASK_CATEGORY(Blackboard);
 
 private:
-	String text;
-	PackedStringArray bb_format_parameters;
+	String variable;
+	Ref<BBVariant> value;
 
 protected:
 	static void _bind_methods();
@@ -31,19 +33,13 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_text(String p_value) {
-		text = p_value;
-		emit_changed();
-	}
-	String get_text() const { return text; }
-
-	void set_bb_format_parameters(const PackedStringArray &p_value) {
-		bb_format_parameters = p_value;
-		emit_changed();
-	}
-	PackedStringArray get_bb_format_parameters() const { return bb_format_parameters; }
-
 	virtual PackedStringArray get_configuration_warnings() const override;
+
+	void set_variable(const String &p_variable);
+	String get_variable() const { return variable; }
+
+	void set_value(Ref<BBVariant> p_value);
+	Ref<BBVariant> get_value() const { return value; }
 };
 
-#endif // BT_CONSOLE_PRINT_H
+#endif // BT_SET_VAR

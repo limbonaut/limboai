@@ -1,5 +1,5 @@
 /**
- * bt_stop_animation.h
+ * bt_pause_animation.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,8 +9,8 @@
  * =============================================================================
  */
 
-#ifndef BT_STOP_ANIMATION_H
-#define BT_STOP_ANIMATION_H
+#ifndef BT_PAUSE_ANIMATION_H
+#define BT_PAUSE_ANIMATION_H
 
 #include "../bt_action.h"
 
@@ -18,14 +18,12 @@
 
 #include "scene/animation/animation_player.h"
 
-class BTStopAnimation : public BTAction {
-	GDCLASS(BTStopAnimation, BTAction);
-	TASK_CATEGORY(Actions);
+class BTPauseAnimation : public BTAction {
+	GDCLASS(BTPauseAnimation, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
 	Ref<BBNode> animation_player_param;
-	StringName animation_name;
-	bool keep_state = false;
 
 	AnimationPlayer *animation_player = nullptr;
 	bool setup_failed = false;
@@ -41,13 +39,7 @@ public:
 	void set_animation_player(Ref<BBNode> p_animation_player);
 	Ref<BBNode> get_animation_player() const { return animation_player_param; }
 
-	void set_animation_name(StringName p_animation_name);
-	StringName get_animation_name() const { return animation_name; }
-
-	void set_keep_state(bool p_keep_state);
-	bool get_keep_state() const { return keep_state; }
-
 	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_STOP_ANIMATION
+#endif // BT_PAUSE_ANIMATION

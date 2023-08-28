@@ -20,7 +20,7 @@
 
 class BTAwaitAnimation : public BTAction {
 	GDCLASS(BTAwaitAnimation, BTAction);
-	TASK_CATEGORY(Actions);
+	TASK_CATEGORY(Scene);
 
 private:
 	Ref<BBNode> animation_player_param;

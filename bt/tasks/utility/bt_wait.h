@@ -1,5 +1,5 @@
 /**
- * bt_fail.h
+ * bt_wait.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,17 +9,30 @@
  * =============================================================================
  */
 
-#ifndef BT_FAIL_H
-#define BT_FAIL_H
+#ifndef BT_WAIT_H
+#define BT_WAIT_H
 
 #include "../bt_action.h"
 
-class BTFail : public BTAction {
-	GDCLASS(BTFail, BTAction);
-	TASK_CATEGORY(Actions);
+class BTWait : public BTAction {
+	GDCLASS(BTWait, BTAction);
+	TASK_CATEGORY(Utility);
+
+private:
+	double duration = 1.0;
 
 protected:
+	static void _bind_methods();
+
+	virtual String _generate_name() const override;
 	virtual int _tick(double p_delta) override;
+
+public:
+	void set_duration(double p_value) {
+		duration = p_value;
+		emit_changed();
+	}
+	double get_duration() const { return duration; }
 };
 
-#endif // BT_FAIL_H
+#endif // BT_WAIT_H

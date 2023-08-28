@@ -1,5 +1,5 @@
 /**
- * bt_check_trigger.h
+ * bt_set_agent_property.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,19 +9,20 @@
  * =============================================================================
  */
 
-#ifndef BT_CHECK_TRIGGER_H
-#define BT_CHECK_TRIGGER_H
+#ifndef BT_SET_AGENT_PROPERTY_H
+#define BT_SET_AGENT_PROPERTY_H
 
-#include "../bt_condition.h"
+#include "../bt_action.h"
 
-#include "core/string/ustring.h"
+#include "modules/limboai/blackboard/bb_param/bb_variant.h"
 
-class BTCheckTrigger : public BTCondition {
-	GDCLASS(BTCheckTrigger, BTCondition);
-	TASK_CATEGORY(Conditions);
+class BTSetAgentProperty : public BTAction {
+	GDCLASS(BTSetAgentProperty, BTAction);
+	TASK_CATEGORY(Scene);
 
 private:
-	String variable;
+	StringName property;
+	Ref<BBVariant> value;
 
 protected:
 	static void _bind_methods();
@@ -30,10 +31,13 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_variable(String p_variable);
-	String get_variable() const { return variable; }
-
 	virtual PackedStringArray get_configuration_warnings() const override;
+
+	void set_property(StringName p_prop);
+	StringName get_property() const { return property; }
+
+	void set_value(Ref<BBVariant> p_value);
+	Ref<BBVariant> get_value() const { return value; }
 };
 
-#endif // BT_CHECK_TRIGGER
+#endif // BT_SET_AGENT_PROPERTY

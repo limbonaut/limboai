@@ -16,7 +16,7 @@
 
 class BTRandomWait : public BTAction {
 	GDCLASS(BTRandomWait, BTAction);
-	TASK_CATEGORY(Actions);
+	TASK_CATEGORY(Utility);
 
 private:
 	double min_duration = 1.0;

@@ -20,7 +20,7 @@
 
 class BTPlayAnimation : public BTAction {
 	GDCLASS(BTPlayAnimation, BTAction);
-	TASK_CATEGORY(Actions);
+	TASK_CATEGORY(Scene);
 
 private:
 	Ref<BBNode> animation_player_param;

@@ -1,5 +1,5 @@
 /**
- * bt_set_agent_property.h
+ * bt_check_agent_property.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,19 +9,23 @@
  * =============================================================================
  */
 
-#ifndef BT_SET_AGENT_PROPERTY_H
-#define BT_SET_AGENT_PROPERTY_H
+#ifndef BT_CHECK_AGENT_PROPERTY
+#define BT_CHECK_AGENT_PROPERTY
 
-#include "../bt_action.h"
+#include "../bt_condition.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
+#include "modules/limboai/util/limbo_utility.h"
 
-class BTSetAgentProperty : public BTAction {
-	GDCLASS(BTSetAgentProperty, BTAction);
-	TASK_CATEGORY(Actions);
+#include "core/string/string_name.h"
+
+class BTCheckAgentProperty : public BTCondition {
+	GDCLASS(BTCheckAgentProperty, BTCondition);
+	TASK_CATEGORY(Scene);
 
 private:
 	StringName property;
+	LimboUtility::CheckType check_type = LimboUtility::CheckType::CHECK_EQUAL;
 	Ref<BBVariant> value;
 
 protected:
@@ -31,13 +35,16 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	virtual PackedStringArray get_configuration_warnings() const override;
-
 	void set_property(StringName p_prop);
 	StringName get_property() const { return property; }
 
+	void set_check_type(LimboUtility::CheckType p_check_type);
+	LimboUtility::CheckType get_check_type() const { return check_type; }
+
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
+
+	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_SET_AGENT_PROPERTY
+#endif // BT_CHECK_AGENT_PROPERTY

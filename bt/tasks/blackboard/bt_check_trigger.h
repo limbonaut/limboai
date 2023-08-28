@@ -1,5 +1,5 @@
 /**
- * bt_subtree.h
+ * bt_check_trigger.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,19 +9,19 @@
  * =============================================================================
  */
 
-#ifndef BT_SUBTREE_H
-#define BT_SUBTREE_H
+#ifndef BT_CHECK_TRIGGER_H
+#define BT_CHECK_TRIGGER_H
 
-#include "bt_new_scope.h"
+#include "../bt_condition.h"
 
-#include "modules/limboai/bt/behavior_tree.h"
+#include "core/string/ustring.h"
 
-class BTSubtree : public BTNewScope {
-	GDCLASS(BTSubtree, BTNewScope);
-	TASK_CATEGORY(Decorators);
+class BTCheckTrigger : public BTCondition {
+	GDCLASS(BTCheckTrigger, BTCondition);
+	TASK_CATEGORY(Blackboard);
 
 private:
-	Ref<BehaviorTree> subtree;
+	String variable;
 
 protected:
 	static void _bind_methods();
@@ -30,11 +30,10 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_subtree(const Ref<BehaviorTree> &p_value);
-	Ref<BehaviorTree> get_subtree() const { return subtree; }
+	void set_variable(String p_variable);
+	String get_variable() const { return variable; }
 
-	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
 	virtual PackedStringArray get_configuration_warnings() const override;
 };
 
-#endif // BT_SUBTREE_H
+#endif // BT_CHECK_TRIGGER

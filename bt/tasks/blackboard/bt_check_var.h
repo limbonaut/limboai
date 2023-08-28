@@ -1,5 +1,5 @@
 /**
- * bt_set_var.h
+ * bt_check_var.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,21 +9,21 @@
  * =============================================================================
  */
 
-#ifndef BT_SET_VAR_H
-#define BT_SET_VAR_H
+#ifndef BT_CHECK_VAR_H
+#define BT_CHECK_VAR_H
 
-#include "../bt_action.h"
+#include "../bt_condition.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
+#include "modules/limboai/util/limbo_utility.h"
 
-#include "core/string/ustring.h"
-
-class BTSetVar : public BTAction {
-	GDCLASS(BTSetVar, BTAction);
-	TASK_CATEGORY(Actions);
+class BTCheckVar : public BTCondition {
+	GDCLASS(BTCheckVar, BTCondition);
+	TASK_CATEGORY(Blackboard);
 
 private:
 	String variable;
+	LimboUtility::CheckType check_type = LimboUtility::CheckType::CHECK_EQUAL;
 	Ref<BBVariant> value;
 
 protected:
@@ -35,11 +35,14 @@ protected:
 public:
 	virtual PackedStringArray get_configuration_warnings() const override;
 
-	void set_variable(const String &p_variable);
+	void set_variable(String p_variable);
 	String get_variable() const { return variable; }
+
+	void set_check_type(LimboUtility::CheckType p_check_type);
+	LimboUtility::CheckType get_check_type() const { return check_type; }
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
 };
 
-#endif // BT_SET_VAR
+#endif // BT_CHECK_VAR_H
