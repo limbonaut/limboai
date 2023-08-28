@@ -13,8 +13,8 @@
 		<member name="args" type="Array" setter="set_args" getter="get_args" default="[]">
 			Arguments to pass to the method call.
 		</member>
-		<member name="method_name" type="StringName" setter="set_method_name" getter="get_method_name" default="&amp;&quot;&quot;">
-			Name of the node's method that will be called.
+		<member name="method" type="StringName" setter="set_method" getter="get_method" default="&amp;&quot;&quot;">
+			Node's method that will be called.
 		</member>
 		<member name="node" type="BBNode" setter="set_node_param" getter="get_node_param">
 			Node parameter that will be used to get the node instance.

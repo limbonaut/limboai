@@ -32,7 +32,7 @@
 			</description>
 		</method>
 		<method name="_get_configuration_warning" qualifiers="virtual const">
-			<return type="String" />
+			<return type="PackedStringArray" />
 			<description>
 				The string returned by this method is displayed as a warning in the BT editor if the script that overrides it is a [code]tool[/code] script.
 			</description>
@@ -91,6 +91,12 @@
 			<return type="int" />
 			<description>
 				Returns the number of child tasks.
+			</description>
+		</method>
+		<method name="get_child_count_excluding_comments" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of child tasks not counting [BTComment] tasks.
 			</description>
 		</method>
 		<method name="get_child_index" qualifiers="const">

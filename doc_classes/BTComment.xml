@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="BTComment" inherits="BTTask" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		BTComment adds annotations or explanatory notes to the [BehaviorTree].
+	</brief_description>
+	<description>
+		BTComment adds annotations or explanatory notes to the [BehaviorTree].
+		Comments are not executed as part of the tree. They are removed from runtime instances of the [BehaviorTree].
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

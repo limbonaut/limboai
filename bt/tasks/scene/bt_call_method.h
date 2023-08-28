@@ -21,7 +21,7 @@ class BTCallMethod : public BTAction {
 	TASK_CATEGORY(Scene);
 
 private:
-	StringName method_name;
+	StringName method;
 	Ref<BBNode> node_param;
 	Array args;
 
@@ -32,8 +32,8 @@ protected:
 	virtual int _tick(double p_delta) override;
 
 public:
-	void set_method_name(StringName p_method_name);
-	StringName get_method_name() const { return method_name; }
+	void set_method(StringName p_method_name);
+	StringName get_method() const { return method; }
 
 	void set_node_param(Ref<BBNode> p_object);
 	Ref<BBNode> get_node_param() const { return node_param; }
