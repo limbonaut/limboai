@@ -213,7 +213,11 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 
 	int section = tree->get_drop_section_at_position(p_point);
 	TreeItem *item = tree->get_item_at_position(p_point);
-	if (!item || section < -1 || (section == -1 && !item->get_parent())) {
+	if (!item || section < -1) {
+		return false;
+	}
+
+	if (!item->get_parent() && section != 0) { // before/after root item
 		return false;
 	}
 

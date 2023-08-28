@@ -539,6 +539,8 @@ void LimboAIEditor::_on_history_forward() {
 
 void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type) {
 	ERR_FAIL_COND(p_type < -1 || p_type > 1);
+	ERR_FAIL_COND(p_type != 0 && p_to_task->get_parent().is_null());
+
 	if (p_task == p_to_task) {
 		return;
 	}
@@ -550,10 +552,10 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 	if (p_type == 0) {
 		undo_redo->add_do_method(p_to_task.ptr(), SNAME("add_child"), p_task);
 		undo_redo->add_undo_method(p_to_task.ptr(), SNAME("remove_child"), p_task);
-	} else if (p_type == -1 && p_to_task->get_parent().is_valid()) {
+	} else if (p_type == -1) {
 		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task));
 		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
-	} else if (p_type == 1 && p_to_task->get_parent().is_valid()) {
+	} else if (p_type == 1) {
 		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task) + 1);
 		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
 	}
