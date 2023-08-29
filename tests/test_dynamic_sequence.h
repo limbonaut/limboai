@@ -19,7 +19,7 @@
 
 namespace TestDynamicSequence {
 
-TEST_CASE("[Modules][LimboAI] BTDynamicSequence #1") {
+TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 	Ref<BTDynamicSequence> seq = memnew(BTDynamicSequence);
 	Ref<BTTestAction> task1 = memnew(BTTestAction(BTTask::SUCCESS));
 	Ref<BTTestAction> task2 = memnew(BTTestAction(BTTask::SUCCESS));
@@ -53,7 +53,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence #1") {
 			CHECK(task2->get_status() == BTTask::RUNNING);
 			CHECK(task3->get_status() == BTTask::FRESH);
 
-			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * reevaluated with SUCCESS
+			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * re-evaluated with SUCCESS
 			CHECK_ENTRIES_TICKS_EXITS(task2, 1, 2, 0); // * continued
 			CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0); // * still fresh
 		}
@@ -66,7 +66,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence #1") {
 			CHECK(task2->get_status() == BTTask::FRESH); // * cancelled - status changed to FRESH
 			CHECK(task3->get_status() == BTTask::FRESH);
 
-			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * reevaluated with FAILURE
+			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * re-evaluated with FAILURE
 			CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 1); // * cancelled - not ticked and exited
 			CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0); // * still fresh
 		}
@@ -81,7 +81,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence #1") {
 			CHECK(task2->get_status() == BTTask::SUCCESS);
 			CHECK(task3->get_status() == BTTask::RUNNING);
 
-			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * reevaluated with SUCCESS
+			CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2); // * re-evaluated with SUCCESS
 			CHECK_ENTRIES_TICKS_EXITS(task2, 1, 2, 1); // * ticked and exited with SUCCESS
 			CHECK_ENTRIES_TICKS_EXITS(task3, 1, 1, 0); // * entered and running
 
@@ -95,9 +95,9 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence #1") {
 				CHECK(task2->get_status() == BTTask::SUCCESS);
 				CHECK(task3->get_status() == BTTask::SUCCESS);
 
-				CHECK_ENTRIES_TICKS_EXITS(task1, 3, 3, 3); // * reevaluated with SUCCESS
-				CHECK_ENTRIES_TICKS_EXITS(task2, 2, 3, 2); // * reevaluated with SUCCESS
-				CHECK_ENTRIES_TICKS_EXITS(task3, 1, 2, 1); // * tiched and exited with SUCCESS
+				CHECK_ENTRIES_TICKS_EXITS(task1, 3, 3, 3); // * re-evaluated with SUCCESS
+				CHECK_ENTRIES_TICKS_EXITS(task2, 2, 3, 2); // * re-evaluated with SUCCESS
+				CHECK_ENTRIES_TICKS_EXITS(task3, 1, 2, 1); // * ticked and exited with SUCCESS
 			}
 		}
 	}
