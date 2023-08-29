@@ -38,17 +38,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Editor (x86_64, release)
+          - name: 🐧 Editor (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: false
 
-          - name: Template (x86_64, release)
+          - name: 🐧 Template (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: false
 
-          - name: Template (x86_64, debug)
+          - name: 🐧 Template (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: false
@@ -136,12 +136,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: Editor .NET (x86_64, release)
+          - name: 🪟 Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: true
 
-          - name: Template .NET (x86_64, release)
+          - name: 🪟 Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: true
