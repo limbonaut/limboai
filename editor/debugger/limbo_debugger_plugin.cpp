@@ -77,8 +77,6 @@ void LimboDebuggerTab::update_behavior_tree(const BehaviorTreeData &p_data) {
 
 void LimboDebuggerTab::_show_alert(const String &p_message) {
 	alert_message->set_text(p_message);
-	// alert_icon->set_texture(get_theme_icon(SNAME("NodeInfo"), SNAME("EditorIcons")));
-	alert_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
 	alert_box->set_visible(!p_message.is_empty());
 }
 
@@ -136,6 +134,12 @@ void LimboDebuggerTab::_filter_changed(String p_text) {
 
 void LimboDebuggerTab::_window_visibility_changed(bool p_visible) {
 	make_floating->set_visible(!p_visible);
+}
+
+void LimboDebuggerTab::_notification(int p_what) {
+	if (p_what == NOTIFICATION_THEME_CHANGED) {
+		alert_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
+	}
 }
 
 LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowWrapper *p_wrapper) {

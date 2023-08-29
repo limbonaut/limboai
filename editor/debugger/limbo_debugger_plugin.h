@@ -55,6 +55,9 @@ private:
 	void _filter_changed(String p_text);
 	void _window_visibility_changed(bool p_visible);
 
+protected:
+	void _notification(int p_what);
+
 public:
 	void start_session();
 	void stop_session();
