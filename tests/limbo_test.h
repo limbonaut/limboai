@@ -1,5 +1,5 @@
 /**
- * bt_test_action.h
+ * limbo_test.h
  * =============================================================================
  * Copyright 2021-2023 Serhii Snitsaruk
  *
@@ -9,8 +9,10 @@
  * =============================================================================
  */
 
-#ifndef BT_TEST_ACTION_H
-#define BT_TEST_ACTION_H
+#ifndef LIMBO_TEST_H
+#define LIMBO_TEST_H
+
+#include "tests/test_macros.h"
 
 #include "modules/limboai/bt/tasks/bt_action.h"
 
@@ -36,4 +38,9 @@ public:
 	BTTestAction(int p_return_status) { ret_status = p_return_status; }
 };
 
-#endif // BT_TEST_ACTION_H
+#define CHECK_ENTRIES_TICKS_EXITS(m_task, m_entries, m_ticks, m_exits) \
+	CHECK(m_task->num_entries == m_entries);                           \
+	CHECK(m_task->num_ticks == m_ticks);                               \
+	CHECK(m_task->num_exits == m_exits);
+
+#endif // LIMBO_TEST_H

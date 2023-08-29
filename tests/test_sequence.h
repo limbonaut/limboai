@@ -12,11 +12,10 @@
 #ifndef TEST_SEQUENCE_H
 #define TEST_SEQUENCE_H
 
-#include "tests/test_macros.h"
+#include "limbo_test.h"
 
 #include "modules/limboai/bt/tasks/bt_task.h"
 #include "modules/limboai/bt/tasks/composites/bt_sequence.h"
-#include "modules/limboai/tests/tasks/bt_test_action.h"
 
 namespace TestSequence {
 
@@ -39,17 +38,9 @@ TEST_CASE("[Modules][LimboAI] BTSequence when all return SUCCESS") {
 	CHECK(task2->get_status() == BTTask::SUCCESS);
 	CHECK(task3->get_status() == BTTask::SUCCESS);
 
-	CHECK(task1->num_entries == 1);
-	CHECK(task1->num_ticks == 1);
-	CHECK(task1->num_exits == 1);
-
-	CHECK(task2->num_entries == 1);
-	CHECK(task2->num_ticks == 1);
-	CHECK(task2->num_exits == 1);
-
-	CHECK(task3->num_entries == 1);
-	CHECK(task3->num_ticks == 1);
-	CHECK(task3->num_exits == 1);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 1, 1, 1);
 
 	// * Second execution.
 	CHECK(seq->execute(0.1666) == BTTask::SUCCESS);
@@ -58,17 +49,9 @@ TEST_CASE("[Modules][LimboAI] BTSequence when all return SUCCESS") {
 	CHECK(task2->get_status() == BTTask::SUCCESS);
 	CHECK(task3->get_status() == BTTask::SUCCESS);
 
-	CHECK(task1->num_entries == 2);
-	CHECK(task1->num_ticks == 2);
-	CHECK(task1->num_exits == 2);
-
-	CHECK(task2->num_entries == 2);
-	CHECK(task2->num_ticks == 2);
-	CHECK(task2->num_exits == 2);
-
-	CHECK(task3->num_entries == 2);
-	CHECK(task3->num_ticks == 2);
-	CHECK(task3->num_exits == 2);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 2, 2, 2);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 2, 2, 2);
 }
 
 TEST_CASE("[Modules][LimboAI] BTSequence when second returns FAILURE") {
@@ -90,17 +73,9 @@ TEST_CASE("[Modules][LimboAI] BTSequence when second returns FAILURE") {
 	CHECK(task2->get_status() == BTTask::FAILURE);
 	CHECK(task3->get_status() == BTTask::FRESH);
 
-	CHECK(task1->num_entries == 1);
-	CHECK(task1->num_ticks == 1);
-	CHECK(task1->num_exits == 1);
-
-	CHECK(task2->num_entries == 1);
-	CHECK(task2->num_ticks == 1);
-	CHECK(task2->num_exits == 1);
-
-	CHECK(task3->num_entries == 0);
-	CHECK(task3->num_ticks == 0);
-	CHECK(task3->num_exits == 0);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 
 	// * Second execution.
 	CHECK(seq->execute(0.1666) == BTTask::FAILURE);
@@ -109,17 +84,9 @@ TEST_CASE("[Modules][LimboAI] BTSequence when second returns FAILURE") {
 	CHECK(task2->get_status() == BTTask::FAILURE);
 	CHECK(task3->get_status() == BTTask::FRESH);
 
-	CHECK(task1->num_entries == 2);
-	CHECK(task1->num_ticks == 2);
-	CHECK(task1->num_exits == 2);
-
-	CHECK(task2->num_entries == 2);
-	CHECK(task2->num_ticks == 2);
-	CHECK(task2->num_exits == 2);
-
-	CHECK(task3->num_entries == 0);
-	CHECK(task3->num_ticks == 0);
-	CHECK(task3->num_exits == 0);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 2, 2, 2);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 2, 2, 2);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 }
 
 TEST_CASE("[Modules][LimboAI] BTSequence when second returns RUNNING") {
@@ -141,32 +108,28 @@ TEST_CASE("[Modules][LimboAI] BTSequence when second returns RUNNING") {
 	CHECK(task2->get_status() == BTTask::RUNNING);
 	CHECK(task3->get_status() == BTTask::FRESH);
 
-	CHECK(task1->num_entries == 1);
-	CHECK(task1->num_exits == 1);
-	CHECK(task1->num_ticks == 1);
-
-	CHECK(task2->num_entries == 1);
-	CHECK(task2->num_ticks == 1);
-	CHECK(task2->num_exits == 0);
-
-	CHECK(task3->num_entries == 0);
-	CHECK(task3->num_ticks == 0);
-	CHECK(task3->num_exits == 0);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 0);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 
 	// * Second execution.
 	CHECK(seq->execute(0.1666) == BTTask::RUNNING);
 
-	CHECK(task1->num_entries == 1);
-	CHECK(task1->num_exits == 1);
-	CHECK(task1->num_ticks == 1);
+	CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 1, 2, 0);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 
-	CHECK(task2->num_entries == 1);
-	CHECK(task2->num_ticks == 2);
-	CHECK(task2->num_exits == 0);
+	// * Third execution with second task returning SUCCESS.
+	task2->ret_status = BTTask::SUCCESS;
+	CHECK(seq->execute(0.1666) == BTTask::SUCCESS);
 
-	CHECK(task3->num_entries == 0);
-	CHECK(task3->num_ticks == 0);
-	CHECK(task3->num_exits == 0);
+	CHECK(task1->get_status() == BTTask::SUCCESS);
+	CHECK(task2->get_status() == BTTask::SUCCESS);
+	CHECK(task3->get_status() == BTTask::SUCCESS);
+
+	CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task2, 1, 3, 1);
+	CHECK_ENTRIES_TICKS_EXITS(task3, 1, 1, 1);
 }
 
 TEST_CASE("[Modules][LimboAI] BTSequence with no child tasks") {
