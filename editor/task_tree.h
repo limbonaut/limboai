@@ -23,6 +23,16 @@ private:
 	Ref<BTTask> last_selected;
 	bool editable;
 
+	struct ThemeCache {
+		Ref<Font> comment_font;
+		Ref<Font> custom_name_font;
+		Ref<Font> normal_name_font;
+
+		Ref<Texture2D> task_warning_icon;
+
+		Color comment_color;
+	} theme_cache;
+
 	TreeItem *_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, int p_idx = -1);
 	void _update_item(TreeItem *p_item);
 	void _update_tree();
@@ -38,9 +48,10 @@ private:
 	void _drop_data_fw(const Point2 &p_point, const Variant &p_data);
 
 protected:
-	static void _bind_methods();
+	virtual void _update_theme_item_cache() override;
 
 	void _notification(int p_what);
+	static void _bind_methods();
 
 public:
 	void load_bt(const Ref<BehaviorTree> &p_behavior_tree);

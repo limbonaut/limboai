@@ -38,13 +38,13 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
 	if (task->is_class_ptr(BTComment::get_class_ptr_static())) {
-		p_item->set_custom_font(0, (get_theme_font(SNAME("doc_italic"), SNAME("EditorFonts"))));
-		p_item->set_custom_color(0, get_theme_color(SNAME("disabled_font_color"), SNAME("Editor")));
+		p_item->set_custom_font(0, theme_cache.comment_font);
+		p_item->set_custom_color(0, theme_cache.comment_color);
 	} else if (task->get_custom_name().is_empty()) {
-		p_item->set_custom_font(0, nullptr);
+		p_item->set_custom_font(0, theme_cache.normal_name_font);
 		p_item->clear_custom_color(0);
 	} else {
-		p_item->set_custom_font(0, (get_theme_font(SNAME("bold"), SNAME("EditorFonts"))));
+		p_item->set_custom_font(0, theme_cache.custom_name_font);
 		// p_item->set_custom_color(0, get_theme_color(SNAME("warning_color"), SNAME("Editor")));
 	}
 	String type_arg;
@@ -70,7 +70,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 		warning_text += warnings[j];
 	}
 	if (!warning_text.is_empty()) {
-		p_item->add_button(0, get_theme_icon(SNAME("NodeWarning"), SNAME("EditorIcons")), 0, false, warning_text);
+		p_item->add_button(0, theme_cache.task_warning_icon, 0, false, warning_text);
 	}
 
 	// TODO: Update probabilities.
@@ -239,6 +239,18 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 		Ref<BTTask> task = d["task"];
 		emit_signal(SNAME("task_dragged"), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
 	}
+}
+
+void TaskTree::_update_theme_item_cache() {
+	Control::_update_theme_item_cache();
+
+	theme_cache.comment_font = get_theme_font(SNAME("doc_italic"), SNAME("EditorFonts"));
+	theme_cache.custom_name_font = get_theme_font(SNAME("bold"), SNAME("EditorFonts"));
+	// theme_cache.normal_name_font = Ref<Font>(nullptr);
+
+	theme_cache.task_warning_icon = get_theme_icon(SNAME("NodeWarning"), SNAME("EditorIcons"));
+
+	theme_cache.comment_color = get_theme_color(SNAME("disabled_font_color"), SNAME("Editor"));
 }
 
 void TaskTree::_notification(int p_what) {
