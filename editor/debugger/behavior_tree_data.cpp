@@ -40,6 +40,7 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath
 		tasks.push_back(TaskData(
 				id,
 				task->get_task_name(),
+				!task->get_custom_name().is_empty(),
 				num_children,
 				task->get_status(),
 				task->get_elapsed_time(),
@@ -54,6 +55,7 @@ void BehaviorTreeData::serialize(Array &p_arr) {
 	for (const TaskData &td : tasks) {
 		p_arr.push_back(td.id);
 		p_arr.push_back(td.name);
+		p_arr.push_back(td.is_custom_name);
 		p_arr.push_back(td.num_children);
 		p_arr.push_back(td.status);
 		p_arr.push_back(td.elapsed_time);
@@ -74,12 +76,13 @@ void BehaviorTreeData::deserialize(const Array &p_arr) {
 		ERR_FAIL_COND(p_arr.size() < idx + 7);
 		ERR_FAIL_COND(p_arr[idx].get_type() != Variant::INT);
 		ERR_FAIL_COND(p_arr[idx + 1].get_type() != Variant::STRING);
-		ERR_FAIL_COND(p_arr[idx + 2].get_type() != Variant::INT);
+		ERR_FAIL_COND(p_arr[idx + 2].get_type() != Variant::BOOL);
 		ERR_FAIL_COND(p_arr[idx + 3].get_type() != Variant::INT);
-		ERR_FAIL_COND(p_arr[idx + 4].get_type() != Variant::FLOAT);
-		ERR_FAIL_COND(p_arr[idx + 5].get_type() != Variant::STRING);
+		ERR_FAIL_COND(p_arr[idx + 4].get_type() != Variant::INT);
+		ERR_FAIL_COND(p_arr[idx + 5].get_type() != Variant::FLOAT);
 		ERR_FAIL_COND(p_arr[idx + 6].get_type() != Variant::STRING);
-		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4], p_arr[idx + 5], p_arr[idx + 6]));
-		idx += 7;
+		ERR_FAIL_COND(p_arr[idx + 7].get_type() != Variant::STRING);
+		tasks.push_back(TaskData(p_arr[idx], p_arr[idx + 1], p_arr[idx + 2], p_arr[idx + 3], p_arr[idx + 4], p_arr[idx + 5], p_arr[idx + 6], p_arr[idx + 7]));
+		idx += 8;
 	}
 }

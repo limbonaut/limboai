@@ -28,14 +28,20 @@ class BehaviorTreeView : public Control {
 
 private:
 	Tree *tree;
-	StyleBoxFlat sbf_running;
-	StyleBoxFlat sbf_success;
-	StyleBoxFlat sbf_failure;
-	Vector<int> collapsed_ids;
 
-	Ref<Texture2D> icon_running;
-	Ref<Texture2D> icon_success;
-	Ref<Texture2D> icon_failure;
+	struct ThemeCache {
+		Ref<StyleBoxFlat> sbf_running;
+		Ref<StyleBoxFlat> sbf_success;
+		Ref<StyleBoxFlat> sbf_failure;
+
+		Ref<Texture2D> icon_running;
+		Ref<Texture2D> icon_success;
+		Ref<Texture2D> icon_failure;
+
+		Ref<Font> font_custom_name;
+	} theme_cache;
+
+	Vector<int> collapsed_ids;
 
 	void _draw_success_status(Object *p_obj, Rect2 p_rect);
 	void _draw_running_status(Object *p_obj, Rect2 p_rect);
@@ -43,9 +49,9 @@ private:
 	void _item_collapsed(Object *p_obj);
 
 protected:
-	static void _bind_methods();
+	virtual void _update_theme_item_cache() override;
 
-	void _notification(int p_notification);
+	static void _bind_methods();
 
 public:
 	void update_tree(const BehaviorTreeData &p_data);

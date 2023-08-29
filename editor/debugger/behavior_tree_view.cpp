@@ -26,17 +26,17 @@
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
 	p_rect = p_rect.grow_side(SIDE_LEFT, p_rect.get_position().x);
-	sbf_running.draw(tree->get_canvas_item(), p_rect);
+	theme_cache.sbf_running->draw(tree->get_canvas_item(), p_rect);
 }
 
 void BehaviorTreeView::_draw_success_status(Object *p_obj, Rect2 p_rect) {
 	p_rect = p_rect.grow_side(SIDE_LEFT, p_rect.get_position().x);
-	sbf_success.draw(tree->get_canvas_item(), p_rect);
+	theme_cache.sbf_success->draw(tree->get_canvas_item(), p_rect);
 }
 
 void BehaviorTreeView::_draw_failure_status(Object *p_obj, Rect2 p_rect) {
 	p_rect = p_rect.grow_side(SIDE_LEFT, p_rect.get_position().x);
-	sbf_failure.draw(tree->get_canvas_item(), p_rect);
+	theme_cache.sbf_failure->draw(tree->get_canvas_item(), p_rect);
 }
 
 void BehaviorTreeView::_item_collapsed(Object *p_obj) {
@@ -81,7 +81,12 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 		item->set_cell_mode(1, TreeItem::CELL_MODE_ICON);
 
 		item->set_metadata(0, task_data.id);
+
 		item->set_text(0, task_data.name);
+		if (task_data.is_custom_name) {
+			item->set_custom_font(0, theme_cache.font_custom_name);
+		}
+
 		item->set_text(2, rtos(Math::snapped(task_data.elapsed_time, 0.01)).pad_decimals(2));
 
 		String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
@@ -90,13 +95,13 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 
 		if (task_data.status == BTTask::SUCCESS) {
 			item->set_custom_draw(0, this, SNAME("_draw_success_status"));
-			item->set_icon(1, icon_success);
+			item->set_icon(1, theme_cache.icon_success);
 		} else if (task_data.status == BTTask::FAILURE) {
 			item->set_custom_draw(0, this, SNAME("_draw_failure_status"));
-			item->set_icon(1, icon_failure);
+			item->set_icon(1, theme_cache.icon_failure);
 		} else if (task_data.status == BTTask::RUNNING) {
 			item->set_custom_draw(0, this, SNAME("_draw_running_status"));
-			item->set_icon(1, icon_running);
+			item->set_icon(1, theme_cache.icon_running);
 		}
 
 		if (task_data.id == selected_id) {
@@ -119,34 +124,39 @@ void BehaviorTreeView::clear() {
 	collapsed_ids.clear();
 }
 
-void BehaviorTreeView::_notification(int p_notification) {
-	if (p_notification == NOTIFICATION_THEME_CHANGED) {
-		icon_running = get_theme_icon(SNAME("LimboExtraClock"), SNAME("EditorIcons"));
-		icon_success = get_theme_icon(SNAME("BTAlwaysSucceed"), SNAME("EditorIcons"));
-		icon_failure = get_theme_icon(SNAME("BTAlwaysFail"), SNAME("EditorIcons"));
+void BehaviorTreeView::_update_theme_item_cache() {
+	Control::_update_theme_item_cache();
 
-		Color running_border = Color::html("#fea900");
-		Color running_fill = Color(running_border, 0.1);
-		Color success_border = Color::html("#2fa139");
-		Color success_fill = Color(success_border, 0.1);
-		Color failure_border = Color::html("#cd3838");
-		Color failure_fill = Color(failure_border, 0.1);
+	theme_cache.icon_running = get_theme_icon(SNAME("LimboExtraClock"), SNAME("EditorIcons"));
+	theme_cache.icon_success = get_theme_icon(SNAME("BTAlwaysSucceed"), SNAME("EditorIcons"));
+	theme_cache.icon_failure = get_theme_icon(SNAME("BTAlwaysFail"), SNAME("EditorIcons"));
 
-		sbf_running.set_border_color(running_border);
-		sbf_running.set_bg_color(running_fill);
-		sbf_running.set_border_width(SIDE_LEFT, 4.0);
-		sbf_running.set_border_width(SIDE_RIGHT, 4.0);
+	theme_cache.font_custom_name = get_theme_font(SNAME("bold"), SNAME("EditorFonts"));
 
-		sbf_success.set_border_color(success_border);
-		sbf_success.set_bg_color(success_fill);
-		sbf_success.set_border_width(SIDE_LEFT, 4.0);
-		sbf_success.set_border_width(SIDE_RIGHT, 4.0);
+	Color running_border = Color::html("#fea900");
+	Color running_fill = Color(running_border, 0.1);
+	Color success_border = Color::html("#2fa139");
+	Color success_fill = Color(success_border, 0.1);
+	Color failure_border = Color::html("#cd3838");
+	Color failure_fill = Color(failure_border, 0.1);
 
-		sbf_failure.set_border_color(failure_border);
-		sbf_failure.set_bg_color(failure_fill);
-		sbf_failure.set_border_width(SIDE_LEFT, 4.0);
-		sbf_failure.set_border_width(SIDE_RIGHT, 4.0);
-	}
+	theme_cache.sbf_running.instantiate();
+	theme_cache.sbf_running->set_border_color(running_border);
+	theme_cache.sbf_running->set_bg_color(running_fill);
+	theme_cache.sbf_running->set_border_width(SIDE_LEFT, 4.0);
+	theme_cache.sbf_running->set_border_width(SIDE_RIGHT, 4.0);
+
+	theme_cache.sbf_success.instantiate();
+	theme_cache.sbf_success->set_border_color(success_border);
+	theme_cache.sbf_success->set_bg_color(success_fill);
+	theme_cache.sbf_success->set_border_width(SIDE_LEFT, 4.0);
+	theme_cache.sbf_success->set_border_width(SIDE_RIGHT, 4.0);
+
+	theme_cache.sbf_failure.instantiate();
+	theme_cache.sbf_failure->set_border_color(failure_border);
+	theme_cache.sbf_failure->set_bg_color(failure_fill);
+	theme_cache.sbf_failure->set_border_width(SIDE_LEFT, 4.0);
+	theme_cache.sbf_failure->set_border_width(SIDE_RIGHT, 4.0);
 }
 
 void BehaviorTreeView::_bind_methods() {
