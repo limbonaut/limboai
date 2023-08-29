@@ -267,19 +267,19 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	Ref<BTTask> task = task_tree->get_selected();
 	ERR_FAIL_COND_MSG(task.is_null(), "LimboAIEditor: get_selected() returned null");
 
-	menu->add_icon_shortcut(get_theme_icon(SNAME("Rename"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
-	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), ACTION_EDIT_SCRIPT);
-	menu->add_icon_item(get_theme_icon(SNAME("Help"), SNAME("EditorIcons")), TTR("Open Documentation"), ACTION_OPEN_DOC);
+	menu->add_icon_shortcut(theme_cache.rename_task_icon, ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
+	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
+	menu->add_icon_item(theme_cache.open_doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
 	menu->set_item_disabled(ACTION_EDIT_SCRIPT, task->get_script().is_null());
 
 	menu->add_separator();
-	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
-	menu->add_icon_shortcut(get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/move_task_down"), ACTION_MOVE_DOWN);
-	menu->add_icon_shortcut(get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
-	menu->add_icon_item(get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons")), TTR("Make Root"), ACTION_MAKE_ROOT);
+	menu->add_icon_shortcut(theme_cache.move_task_up_icon, ED_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
+	menu->add_icon_shortcut(theme_cache.move_task_down_icon, ED_GET_SHORTCUT("limbo_ai/move_task_down"), ACTION_MOVE_DOWN);
+	menu->add_icon_shortcut(theme_cache.duplicate_task_icon, ED_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
+	menu->add_icon_item(theme_cache.make_root_icon, TTR("Make Root"), ACTION_MAKE_ROOT);
 
 	menu->add_separator();
-	menu->add_icon_shortcut(get_theme_icon(SNAME("Remove"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
+	menu->add_icon_shortcut(theme_cache.remove_task_icon, ED_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
 
 	menu->reset_size();
 	menu->set_position(p_menu_pos);
@@ -692,7 +692,7 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->clear();
 
-	misc_menu->add_icon_shortcut(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Debug"), SNAME("EditorIcons")), ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
+	misc_menu->add_icon_shortcut(theme_cache.open_debugger_icon, ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
 	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 
 	misc_menu->add_separator();
@@ -735,6 +735,20 @@ void LimboAIEditor::_update_banners() {
 	}
 }
 
+void LimboAIEditor::_update_theme_item_cache() {
+	Control::_update_theme_item_cache();
+
+	theme_cache.duplicate_task_icon = get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons"));
+	theme_cache.edit_script_icon = get_theme_icon(SNAME("Script"), SNAME("EditorIcons"));
+	theme_cache.make_root_icon = get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons"));
+	theme_cache.move_task_down_icon = get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons"));
+	theme_cache.move_task_up_icon = get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons"));
+	theme_cache.open_debugger_icon = get_theme_icon(SNAME("Debug"), SNAME("EditorIcons"));
+	theme_cache.open_doc_icon = get_theme_icon(SNAME("Help"), SNAME("EditorIcons"));
+	theme_cache.remove_task_icon = get_theme_icon(SNAME("Remove"), SNAME("EditorIcons"));
+	theme_cache.rename_task_icon = get_theme_icon(SNAME("Rename"), SNAME("EditorIcons"));
+}
+
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -754,14 +768,14 @@ void LimboAIEditor::_notification(int p_what) {
 			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
-			new_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("New"), SNAME("EditorIcons")));
-			load_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Load"), SNAME("EditorIcons")));
-			save_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Save"), SNAME("EditorIcons")));
-			new_script_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
-			history_back->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
-			history_forward->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
+			new_btn->set_icon(get_theme_icon(SNAME("New"), SNAME("EditorIcons")));
+			load_btn->set_icon(get_theme_icon(SNAME("Load"), SNAME("EditorIcons")));
+			save_btn->set_icon(get_theme_icon(SNAME("Save"), SNAME("EditorIcons")));
+			new_script_btn->set_icon(get_theme_icon(SNAME("ScriptCreate"), SNAME("EditorIcons")));
+			history_back->set_icon(get_theme_icon(SNAME("Back"), SNAME("EditorIcons")));
+			history_forward->set_icon(get_theme_icon(SNAME("Forward"), SNAME("EditorIcons")));
 
-			misc_btn->set_icon(EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
+			misc_btn->set_icon(get_theme_icon(SNAME("Tools"), SNAME("EditorIcons")));
 
 			_update_favorite_tasks();
 			_update_header();
@@ -997,10 +1011,6 @@ LimboAIEditor::~LimboAIEditor() {
 //**** LimboAIEditor ^
 
 //**** LimboAIEditorPlugin
-
-const Ref<Texture2D> LimboAIEditorPlugin::get_icon() const {
-	return EditorNode::get_singleton()->get_gui_base()->get_theme_icon(SNAME("LimboAIEditor"), SNAME("EditorIcons"));
-}
 
 void LimboAIEditorPlugin::apply_changes() {
 	limbo_ai_editor->apply_changes();

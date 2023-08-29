@@ -56,6 +56,18 @@ private:
 		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
 
+	struct ThemeCache {
+		Ref<Texture2D> duplicate_task_icon;
+		Ref<Texture2D> edit_script_icon;
+		Ref<Texture2D> make_root_icon;
+		Ref<Texture2D> move_task_down_icon;
+		Ref<Texture2D> move_task_up_icon;
+		Ref<Texture2D> open_debugger_icon;
+		Ref<Texture2D> open_doc_icon;
+		Ref<Texture2D> remove_task_icon;
+		Ref<Texture2D> rename_task_icon;
+	} theme_cache;
+
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	HashSet<Ref<BehaviorTree>> dirty;
@@ -125,9 +137,10 @@ private:
 	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 
 protected:
-	static void _bind_methods();
+	virtual void _update_theme_item_cache() override;
 
 	void _notification(int p_what);
+	static void _bind_methods();
 
 public:
 	void edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh = false);
@@ -149,7 +162,6 @@ protected:
 
 public:
 	virtual String get_name() const override { return "LimboAI"; }
-	virtual const Ref<Texture2D> get_icon() const override;
 	bool has_main_screen() const override { return true; }
 	virtual void make_visible(bool p_visible) override;
 	virtual void apply_changes() override;
