@@ -93,16 +93,23 @@ void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture
 
 void TaskPaletteSection::set_collapsed(bool p_collapsed) {
 	tasks_container->set_visible(!p_collapsed);
-	section_header->set_icon(p_collapsed ? get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons")) : get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")));
+	section_header->set_icon(p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon);
 }
 
 bool TaskPaletteSection::is_collapsed() const {
 	return !tasks_container->is_visible();
 }
 
+void TaskPaletteSection::_update_theme_item_cache() {
+	VBoxContainer::_update_theme_item_cache();
+
+	theme_cache.arrow_down_icon = get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons"));
+	theme_cache.arrow_right_icon = get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons"));
+}
+
 void TaskPaletteSection::_notification(int p_what) {
 	if (p_what == NOTIFICATION_THEME_CHANGED) {
-		section_header->set_icon(is_collapsed() ? get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons")) : get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons")));
+		section_header->set_icon(is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon);
 		section_header->add_theme_font_override(SNAME("font"), get_theme_font(SNAME("bold"), SNAME("EditorFonts")));
 	}
 }
@@ -174,16 +181,16 @@ void TaskPalette::_on_task_button_rmb(const String &p_task) {
 	context_task = p_task;
 	menu->clear();
 
-	menu->add_icon_item(get_theme_icon(SNAME("Script"), SNAME("EditorIcons")), TTR("Edit Script"), MENU_EDIT_SCRIPT);
+	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), MENU_EDIT_SCRIPT);
 	menu->set_item_disabled(MENU_EDIT_SCRIPT, !context_task.begins_with("res://"));
-	menu->add_icon_item(get_theme_icon(SNAME("Help"), SNAME("EditorIcons")), TTR("Open Documentation"), MENU_OPEN_DOC);
+	menu->add_icon_item(theme_cache.open_doc_icon, TTR("Open Documentation"), MENU_OPEN_DOC);
 
 	menu->add_separator();
 	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
 	if (favorite_tasks.has(context_task)) {
-		menu->add_icon_item(get_theme_icon(SNAME("NonFavorite"), SNAME("EditorIcons")), TTR("Remove from Favorites"), MENU_FAVORITE);
+		menu->add_icon_item(theme_cache.remove_from_favorites_icon, TTR("Remove from Favorites"), MENU_FAVORITE);
 	} else {
-		menu->add_icon_item(get_theme_icon(SNAME("Favorites"), SNAME("EditorIcons")), TTR("Add to Favorites"), MENU_FAVORITE);
+		menu->add_icon_item(theme_cache.add_to_favorites_icon, TTR("Add to Favorites"), MENU_FAVORITE);
 	}
 
 	menu->reset_size();
@@ -315,7 +322,7 @@ void TaskPalette::_filter_data_changed() {
 }
 
 void TaskPalette::_draw_filter_popup_background() {
-	category_choice_background->draw(category_choice->get_canvas_item(), Rect2(Point2(), category_choice->get_size()));
+	theme_cache.category_choice_background->draw(category_choice->get_canvas_item(), Rect2(Point2(), category_choice->get_size()));
 }
 
 void TaskPalette::_update_filter_button() {
@@ -325,8 +332,6 @@ void TaskPalette::_update_filter_button() {
 }
 
 void TaskPalette::refresh() {
-	filter_edit->set_right_icon(get_theme_icon(SNAME("Search"), SNAME("EditorIcons")));
-
 	HashSet<String> collapsed_sections;
 	if (sections->get_child_count() == 0) {
 		// Restore collapsed state from config.
@@ -415,6 +420,17 @@ void TaskPalette::refresh() {
 	}
 }
 
+void TaskPalette::_update_theme_item_cache() {
+	PanelContainer::_update_theme_item_cache();
+
+	theme_cache.add_to_favorites_icon = get_theme_icon(SNAME("Favorites"), SNAME("EditorIcons"));
+	theme_cache.edit_script_icon = get_theme_icon(SNAME("Script"), SNAME("EditorIcons"));
+	theme_cache.open_doc_icon = get_theme_icon(SNAME("Help"), SNAME("EditorIcons"));
+	theme_cache.remove_from_favorites_icon = get_theme_icon(SNAME("NonFavorite"), SNAME("EditorIcons"));
+
+	theme_cache.category_choice_background = get_theme_stylebox(SNAME("normal"), SNAME("LineEdit"));
+}
+
 void TaskPalette::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE: {
@@ -476,7 +492,8 @@ void TaskPalette::_notification(int p_what) {
 			select_all->set_icon(get_theme_icon(SNAME("LimboSelectAll"), SNAME("EditorIcons")));
 			deselect_all->set_icon(get_theme_icon(SNAME("LimboDeselectAll"), SNAME("EditorIcons")));
 
-			category_choice_background = get_theme_stylebox(SNAME("normal"), SNAME("LineEdit"));
+			filter_edit->set_right_icon(get_theme_icon(SNAME("Search"), SNAME("EditorIcons")));
+
 			category_choice->queue_redraw();
 
 			if (is_visible_in_tree()) {

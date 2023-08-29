@@ -31,6 +31,11 @@ class TaskPaletteSection : public VBoxContainer {
 	GDCLASS(TaskPaletteSection, VBoxContainer);
 
 private:
+	struct ThemeCache {
+		Ref<Texture2D> arrow_down_icon;
+		Ref<Texture2D> arrow_right_icon;
+	} theme_cache;
+
 	FlowContainer *tasks_container;
 	Button *section_header;
 
@@ -39,9 +44,10 @@ private:
 	void _on_header_pressed();
 
 protected:
-	static void _bind_methods();
+	virtual void _update_theme_item_cache() override;
 
 	void _notification(int p_what);
+	static void _bind_methods();
 
 public:
 	void set_filter(String p_filter);
@@ -82,6 +88,15 @@ private:
 		HashSet<String> excluded_categories;
 	} filter_settings;
 
+	struct ThemeCache {
+		Ref<Texture2D> add_to_favorites_icon;
+		Ref<Texture2D> edit_script_icon;
+		Ref<Texture2D> open_doc_icon;
+		Ref<Texture2D> remove_from_favorites_icon;
+
+		Ref<StyleBox> category_choice_background;
+	} theme_cache;
+
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
 	PopupMenu *menu;
@@ -101,7 +116,6 @@ private:
 	Button *deselect_all;
 	ScrollContainer *category_scroll;
 	VBoxContainer *category_list;
-	Ref<StyleBox> category_choice_background;
 
 	String context_task;
 
@@ -128,9 +142,10 @@ private:
 	}
 
 protected:
-	static void _bind_methods();
+	virtual void _update_theme_item_cache() override;
 
 	void _notification(int p_what);
+	static void _bind_methods();
 
 public:
 	void refresh();
