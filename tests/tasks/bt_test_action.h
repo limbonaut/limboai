@@ -17,10 +17,8 @@
 class BTTestAction : public BTAction {
 	GDCLASS(BTTestAction, BTAction);
 
-private:
-	int ret_status = BTTask::SUCCESS;
-
 public:
+	int ret_status = BTTask::SUCCESS;
 	int num_entries = 0;
 	int num_ticks = 0;
 	int num_exits = 0;
