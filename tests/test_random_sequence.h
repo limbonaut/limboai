@@ -37,13 +37,24 @@ TEST_CASE("[Modules][LimboAI] BTRandomSequence") {
 		task3->ret_status = BTTask::SUCCESS;
 
 		CHECK(seq->execute(0.01666) == BTTask::RUNNING);
+
+		CHECK(task1->is_status_either(BTTask::SUCCESS, BTTask::FRESH));
+		CHECK(task2->get_status() == BTTask::RUNNING);
+		CHECK(task3->is_status_either(BTTask::SUCCESS, BTTask::FRESH));
+
 		CHECK_ENTRIES_TICKS_EXITS_UP_TO(task1, 1, 1, 1); // * ran no more than once
 		CHECK_ENTRIES_TICKS_EXITS(task2, 1, 1, 0); // * running - enters and ticks
 		CHECK_ENTRIES_TICKS_EXITS_UP_TO(task3, 1, 1, 1); // * ran no more than once
 
 		SUBCASE("Resuming and succeeding when all tasks succeed") {
 			task2->ret_status = BTTask::SUCCESS;
+
 			CHECK(seq->execute(0.01666) == BTTask::SUCCESS);
+
+			CHECK(task1->get_status() == BTTask::SUCCESS);
+			CHECK(task2->get_status() == BTTask::SUCCESS);
+			CHECK(task3->get_status() == BTTask::SUCCESS);
+
 			CHECK_ENTRIES_TICKS_EXITS(task1, 1, 1, 1); // * ran once
 			CHECK_ENTRIES_TICKS_EXITS(task2, 1, 2, 1); // * finishes - ticks and exits with SUCCESS
 			CHECK_ENTRIES_TICKS_EXITS(task3, 1, 1, 1); // * ran once
@@ -51,7 +62,13 @@ TEST_CASE("[Modules][LimboAI] BTRandomSequence") {
 
 		SUBCASE("Resuming and failing when a child task fails") {
 			task2->ret_status = BTTask::FAILURE;
+
 			CHECK(seq->execute(0.01666) == BTTask::FAILURE);
+
+			CHECK(task1->is_status_either(BTTask::SUCCESS, BTTask::FRESH));
+			CHECK(task2->get_status() == BTTask::FAILURE);
+			CHECK(task3->is_status_either(BTTask::SUCCESS, BTTask::FRESH));
+
 			CHECK_ENTRIES_TICKS_EXITS_UP_TO(task1, 1, 1, 1); // * ran no more than once
 			CHECK_ENTRIES_TICKS_EXITS(task2, 1, 2, 1); // * finishes - ticks and exits with FAILURE
 			CHECK_ENTRIES_TICKS_EXITS_UP_TO(task3, 1, 1, 1); // * ran no more than once

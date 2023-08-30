@@ -35,6 +35,8 @@ protected:
 	}
 
 public:
+	bool is_status_either(int p_status1, int p_status2) { return (get_status() == p_status1 || get_status() == p_status2); }
+
 	BTTestAction(int p_return_status) { ret_status = p_return_status; }
 	BTTestAction() {}
 };
