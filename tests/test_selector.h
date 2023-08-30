@@ -32,7 +32,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when all return FAILURE") {
 	REQUIRE(sel->get_child_count() == 3);
 
 	// * First execution.
-	CHECK(sel->execute(0.1666) == BTTask::FAILURE);
+	CHECK(sel->execute(0.01666) == BTTask::FAILURE);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::FAILURE);
@@ -43,7 +43,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when all return FAILURE") {
 	CHECK_ENTRIES_TICKS_EXITS(task3, 1, 1, 1);
 
 	// * Second execution.
-	CHECK(sel->execute(0.1666) == BTTask::FAILURE);
+	CHECK(sel->execute(0.01666) == BTTask::FAILURE);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::FAILURE);
@@ -67,7 +67,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when second returns SUCCESS") {
 	REQUIRE(sel->get_child_count() == 3);
 
 	// * First execution.
-	CHECK(sel->execute(0.1666) == BTTask::SUCCESS);
+	CHECK(sel->execute(0.01666) == BTTask::SUCCESS);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::SUCCESS);
@@ -78,7 +78,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when second returns SUCCESS") {
 	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 
 	// * Second execution.
-	CHECK(sel->execute(0.1666) == BTTask::SUCCESS);
+	CHECK(sel->execute(0.01666) == BTTask::SUCCESS);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::SUCCESS);
@@ -102,7 +102,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when second returns RUNNING") {
 	REQUIRE(sel->get_child_count() == 3);
 
 	// * First execution.
-	CHECK(sel->execute(0.1666) == BTTask::RUNNING);
+	CHECK(sel->execute(0.01666) == BTTask::RUNNING);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::RUNNING);
@@ -113,7 +113,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when second returns RUNNING") {
 	CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0);
 
 	// * Second execution.
-	CHECK(sel->execute(0.1666) == BTTask::RUNNING);
+	CHECK(sel->execute(0.01666) == BTTask::RUNNING);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::RUNNING);
@@ -125,7 +125,7 @@ TEST_CASE("[Modules][LimboAI] BTSelector when second returns RUNNING") {
 
 	// * Third execution with second task returning FAILURE.
 	task2->ret_status = BTTask::FAILURE;
-	CHECK(sel->execute(0.1666) == BTTask::FAILURE);
+	CHECK(sel->execute(0.01666) == BTTask::FAILURE);
 
 	CHECK(task1->get_status() == BTTask::FAILURE);
 	CHECK(task2->get_status() == BTTask::FAILURE);

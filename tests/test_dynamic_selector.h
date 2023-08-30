@@ -21,9 +21,9 @@ namespace TestDynamicSelector {
 
 TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 	Ref<BTDynamicSelector> sel = memnew(BTDynamicSelector);
-	Ref<BTTestAction> task1 = memnew(BTTestAction(BTTask::SUCCESS));
-	Ref<BTTestAction> task2 = memnew(BTTestAction(BTTask::SUCCESS));
-	Ref<BTTestAction> task3 = memnew(BTTestAction(BTTask::SUCCESS));
+	Ref<BTTestAction> task1 = memnew(BTTestAction());
+	Ref<BTTestAction> task2 = memnew(BTTestAction());
+	Ref<BTTestAction> task3 = memnew(BTTestAction());
 
 	sel->add_child(task1);
 	sel->add_child(task2);
@@ -36,7 +36,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 		task2->ret_status = BTTask::RUNNING;
 		task3->ret_status = BTTask::SUCCESS;
 
-		CHECK(sel->execute(0.1666) == BTTask::RUNNING);
+		CHECK(sel->execute(0.01666) == BTTask::RUNNING);
 
 		CHECK(task1->get_status() == BTTask::FAILURE);
 		CHECK(task2->get_status() == BTTask::RUNNING);
@@ -47,7 +47,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 		CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0); // * still fresh
 
 		SUBCASE("Subcase 1A: With no changes, first task is re-evaluated.") {
-			CHECK(sel->execute(0.1666) == BTTask::RUNNING);
+			CHECK(sel->execute(0.01666) == BTTask::RUNNING);
 
 			CHECK(task1->get_status() == BTTask::FAILURE);
 			CHECK(task2->get_status() == BTTask::RUNNING);
@@ -60,7 +60,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 
 		SUBCASE("Subcase 1B: When second task succeeds, we finish with SUCCESS.") {
 			task2->ret_status = BTTask::SUCCESS;
-			CHECK(sel->execute(0.1666) == BTTask::SUCCESS);
+			CHECK(sel->execute(0.01666) == BTTask::SUCCESS);
 
 			CHECK(task1->get_status() == BTTask::FAILURE);
 			CHECK(task2->get_status() == BTTask::SUCCESS);
@@ -73,7 +73,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 
 		SUBCASE("Subcase 1C: When first task re-evaluates to SUCCESS, second task should be cancelled and exited.") {
 			task1->ret_status = BTTask::SUCCESS;
-			CHECK(sel->execute(0.1666) == BTTask::SUCCESS);
+			CHECK(sel->execute(0.01666) == BTTask::SUCCESS);
 
 			CHECK(task1->get_status() == BTTask::SUCCESS);
 			CHECK(task2->get_status() == BTTask::FRESH); // * cancelled - status changed to FRESH
@@ -88,7 +88,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 			task1->ret_status = BTTask::FAILURE;
 			task2->ret_status = BTTask::FAILURE;
 			task3->ret_status = BTTask::RUNNING;
-			CHECK(sel->execute(0.1666) == BTTask::RUNNING);
+			CHECK(sel->execute(0.01666) == BTTask::RUNNING);
 
 			CHECK(task1->get_status() == BTTask::FAILURE);
 			CHECK(task2->get_status() == BTTask::FAILURE);
@@ -102,7 +102,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSelector") {
 				task1->ret_status = BTTask::FAILURE;
 				task2->ret_status = BTTask::FAILURE;
 				task3->ret_status = BTTask::FAILURE;
-				CHECK(sel->execute(0.1666) == BTTask::FAILURE);
+				CHECK(sel->execute(0.01666) == BTTask::FAILURE);
 
 				CHECK(task1->get_status() == BTTask::FAILURE);
 				CHECK(task2->get_status() == BTTask::FAILURE);

@@ -36,6 +36,7 @@ protected:
 
 public:
 	BTTestAction(int p_return_status) { ret_status = p_return_status; }
+	BTTestAction() {}
 };
 
 #define CHECK_ENTRIES_TICKS_EXITS(m_task, m_entries, m_ticks, m_exits) \

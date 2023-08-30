@@ -21,9 +21,9 @@ namespace TestDynamicSequence {
 
 TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 	Ref<BTDynamicSequence> seq = memnew(BTDynamicSequence);
-	Ref<BTTestAction> task1 = memnew(BTTestAction(BTTask::SUCCESS));
-	Ref<BTTestAction> task2 = memnew(BTTestAction(BTTask::SUCCESS));
-	Ref<BTTestAction> task3 = memnew(BTTestAction(BTTask::SUCCESS));
+	Ref<BTTestAction> task1 = memnew(BTTestAction());
+	Ref<BTTestAction> task2 = memnew(BTTestAction());
+	Ref<BTTestAction> task3 = memnew(BTTestAction());
 
 	seq->add_child(task1);
 	seq->add_child(task2);
@@ -36,7 +36,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 		task2->ret_status = BTTask::RUNNING;
 		task3->ret_status = BTTask::SUCCESS;
 
-		CHECK(seq->execute(0.1666) == BTTask::RUNNING);
+		CHECK(seq->execute(0.01666) == BTTask::RUNNING);
 
 		CHECK(task1->get_status() == BTTask::SUCCESS);
 		CHECK(task2->get_status() == BTTask::RUNNING);
@@ -47,7 +47,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 		CHECK_ENTRIES_TICKS_EXITS(task3, 0, 0, 0); // * still fresh
 
 		SUBCASE("Subcase 1A: With no changes, first task is re-evaluated.") {
-			CHECK(seq->execute(0.1666) == BTTask::RUNNING);
+			CHECK(seq->execute(0.01666) == BTTask::RUNNING);
 
 			CHECK(task1->get_status() == BTTask::SUCCESS);
 			CHECK(task2->get_status() == BTTask::RUNNING);
@@ -60,7 +60,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 
 		SUBCASE("Subcase 1B: When first task re-evaluates to FAILURE, second task should be cancelled and exited.") {
 			task1->ret_status = BTTask::FAILURE;
-			CHECK(seq->execute(0.1666) == BTTask::FAILURE);
+			CHECK(seq->execute(0.01666) == BTTask::FAILURE);
 
 			CHECK(task1->get_status() == BTTask::FAILURE);
 			CHECK(task2->get_status() == BTTask::FRESH); // * cancelled - status changed to FRESH
@@ -75,7 +75,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 			task1->ret_status = BTTask::SUCCESS;
 			task2->ret_status = BTTask::SUCCESS;
 			task3->ret_status = BTTask::RUNNING;
-			CHECK(seq->execute(0.1666) == BTTask::RUNNING);
+			CHECK(seq->execute(0.01666) == BTTask::RUNNING);
 
 			CHECK(task1->get_status() == BTTask::SUCCESS);
 			CHECK(task2->get_status() == BTTask::SUCCESS);
@@ -89,7 +89,7 @@ TEST_CASE("[Modules][LimboAI] BTDynamicSequence") {
 				task1->ret_status = BTTask::SUCCESS;
 				task2->ret_status = BTTask::SUCCESS;
 				task3->ret_status = BTTask::SUCCESS;
-				CHECK(seq->execute(0.1666) == BTTask::SUCCESS);
+				CHECK(seq->execute(0.01666) == BTTask::SUCCESS);
 
 				CHECK(task1->get_status() == BTTask::SUCCESS);
 				CHECK(task2->get_status() == BTTask::SUCCESS);
