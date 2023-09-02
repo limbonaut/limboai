@@ -72,7 +72,7 @@ Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard,
 	if (value_source == SAVED_VALUE) {
 		return saved_value;
 	} else {
-		ERR_FAIL_COND_V_MSG(!p_blackboard->has_var(variable), Variant(), vformat("BBParam: Blackboard variable doesn't exist: \"%s\".", p_default));
+		ERR_FAIL_COND_V_MSG(!p_blackboard->has_var(variable), p_default, vformat("BBParam: Blackboard variable doesn't exist: \"%s\".", p_default));
 		return p_blackboard->get_var(variable, p_default);
 	}
 }
