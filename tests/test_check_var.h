@@ -17,6 +17,7 @@
 #include "modules/limboai/bt/tasks/blackboard/bt_check_var.h"
 #include "modules/limboai/bt/tasks/bt_task.h"
 #include "modules/limboai/util/limbo_utility.h"
+#include "tests/test_macros.h"
 
 namespace TestCheckVar {
 
@@ -38,9 +39,9 @@ TEST_CASE("[Modules][LimboAI] BTCheckVar") {
 	cv->initialize(dummy, bb);
 
 	SUBCASE("Check with empty variable and value") {
-		ERR_PRINT_OFF;
 		cv->set_variable("");
 		cv->set_value(nullptr);
+		ERR_PRINT_OFF;
 		CHECK(cv->execute(0.01666) == BTTask::FAILURE);
 		ERR_PRINT_ON;
 	}
@@ -52,12 +53,20 @@ TEST_CASE("[Modules][LimboAI] BTCheckVar") {
 		SUBCASE("When checking against another variable") {
 			cv->set_check_type(LimboUtility::CHECK_EQUAL);
 			value->set_value_source(BBParam::BLACKBOARD_VAR);
-			value->set_variable("compare_var");
 			bb->set_var("var", 123);
-			bb->set_var("compare_var", 123);
-			CHECK(cv->execute(0.01666) == BTTask::SUCCESS);
-			bb->set_var("compare_var", 567);
-			CHECK(cv->execute(0.01666) == BTTask::FAILURE);
+			SUBCASE("When variable exists") {
+				value->set_variable("compare_var");
+				bb->set_var("compare_var", 123);
+				CHECK(cv->execute(0.01666) == BTTask::SUCCESS);
+				bb->set_var("compare_var", 567);
+				CHECK(cv->execute(0.01666) == BTTask::FAILURE);
+			}
+			SUBCASE("When variable doesn't exist") {
+				value->set_variable("not_found");
+				ERR_PRINT_OFF;
+				CHECK(cv->execute(0.01666) == BTTask::FAILURE);
+				ERR_PRINT_ON;
+			}
 		}
 
 		value->set_value_source(BBParam::SAVED_VALUE);
