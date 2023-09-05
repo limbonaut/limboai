@@ -12,9 +12,24 @@
 #ifndef LIMBO_TEST_H
 #define LIMBO_TEST_H
 
+#include "core/object/ref_counted.h"
 #include "tests/test_macros.h"
 
 #include "modules/limboai/bt/tasks/bt_action.h"
+
+class CallbackCounter : public RefCounted {
+	GDCLASS(CallbackCounter, RefCounted);
+
+public:
+	int num_callbacks = 0;
+
+	void callback() { num_callbacks += 1; }
+
+protected:
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("callback"), &CallbackCounter::callback);
+	}
+};
 
 class BTTestAction : public BTAction {
 	GDCLASS(BTTestAction, BTAction);
