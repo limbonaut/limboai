@@ -59,7 +59,7 @@ int BTCallMethod::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(method == StringName(), FAILURE, "BTCallMethod: Method Name is not set.");
 	ERR_FAIL_COND_V_MSG(node_param.is_null(), FAILURE, "BTCallMethod: Node parameter is not set.");
 	Object *obj = node_param->get_value(get_agent(), get_blackboard());
-	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get node: " + node_param->to_string());
+	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get object: " + node_param->to_string());
 
 	const Variant **argptrs = nullptr;
 
