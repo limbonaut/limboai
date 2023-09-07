@@ -12,7 +12,6 @@
 #ifndef TEST_CHECK_AGENT_PROPERTY_H
 #define TEST_CHECK_AGENT_PROPERTY_H
 
-#include "core/variant/variant.h"
 #include "limbo_test.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
@@ -20,6 +19,9 @@
 #include "modules/limboai/bt/tasks/bt_task.h"
 #include "modules/limboai/bt/tasks/scene/bt_check_agent_property.h"
 #include "modules/limboai/util/limbo_utility.h"
+
+#include "core/os/memory.h"
+#include "core/variant/variant.h"
 
 namespace TestCheckAgentProperty {
 
@@ -47,7 +49,7 @@ TEST_CASE("[Modules][LimboAI] BTCheckAgentProperty") {
 	Ref<BBVariant> value = memnew(BBVariant);
 	cap->set_value(value);
 	value->set_saved_value(agent_name);
-    REQUIRE(cap->execute(0.01666) == BTTask::SUCCESS);
+	REQUIRE(cap->execute(0.01666) == BTTask::SUCCESS);
 
 	SUBCASE("When property is not set") {
 		cap->set_property("");
@@ -82,6 +84,8 @@ TEST_CASE("[Modules][LimboAI] BTCheckAgentProperty") {
 		TC_CHECK_AGENT_PROP(cap, LimboUtility::CHECK_LESS_THAN, 1, 0, "invalid");
 		TC_CHECK_AGENT_PROP(cap, LimboUtility::CHECK_NOT_EQUAL, 1, 0, "invalid");
 	}
+
+	memdelete(agent);
 }
 
 } //namespace TestCheckAgentProperty
