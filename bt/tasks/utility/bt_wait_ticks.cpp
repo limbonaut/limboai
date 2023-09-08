@@ -23,8 +23,8 @@ void BTWaitTicks::_enter() {
 }
 
 int BTWaitTicks::_tick(double p_delta) {
-	num_passed += 1;
 	if (num_passed < num_ticks) {
+		num_passed += 1;
 		return RUNNING;
 	} else {
 		return SUCCESS;
