@@ -151,6 +151,11 @@ void BTPlayer::_notification(int p_notification) {
 			}
 		} break;
 #ifdef DEBUG_ENABLED
+		case NOTIFICATION_ENTER_TREE: {
+			if (tree_instance.is_valid()) {
+				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+			}
+		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			if (tree_instance.is_valid()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
