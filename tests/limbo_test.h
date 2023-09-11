@@ -24,10 +24,12 @@ public:
 	int num_callbacks = 0;
 
 	void callback() { num_callbacks += 1; }
+	void callback_delta(double delta) { num_callbacks += 1; }
 
 protected:
 	static void _bind_methods() {
 		ClassDB::bind_method(D_METHOD("callback"), &CallbackCounter::callback);
+		ClassDB::bind_method(D_METHOD("callback_delta", "delta"), &CallbackCounter::callback_delta);
 	}
 };
 
