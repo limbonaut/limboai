@@ -48,9 +48,9 @@ void BTRandomWait::set_max_duration(double p_max_duration) {
 }
 
 void BTRandomWait::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_min_duration"), &BTRandomWait::set_min_duration);
+	ClassDB::bind_method(D_METHOD("set_min_duration", "p_value"), &BTRandomWait::set_min_duration);
 	ClassDB::bind_method(D_METHOD("get_min_duration"), &BTRandomWait::get_min_duration);
-	ClassDB::bind_method(D_METHOD("set_max_duration"), &BTRandomWait::set_max_duration);
+	ClassDB::bind_method(D_METHOD("set_max_duration", "p_value"), &BTRandomWait::set_max_duration);
 	ClassDB::bind_method(D_METHOD("get_max_duration"), &BTRandomWait::get_max_duration);
 
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "min_duration"), "set_min_duration", "get_min_duration");
