@@ -26,32 +26,41 @@ on:
 env:
   SCONS_CACHE_MSVC_CONFIG: true
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
+  SCONSFLAGS: verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  linux-test-build:
+  linux-test-builds:
     runs-on: "ubuntu-20.04"
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix:
         include:
+          - name: 🐧 Editor (x86_64, debug) + Tests
+            target: editor
+            arch: x86_64
+            tests: true
+            sconsflags: devbuild=yes debug_symbols=yes
+
           - name: 🐧 Editor (x86_64, release)
             target: editor
             arch: x86_64
-            build-mono: false
+            tests: false
+            sconsflags: production=yes
 
           - name: 🐧 Template (x86_64, release)
             target: template_release
             arch: x86_64
-            build-mono: false
+            tests: false
+            sconsflags: production=yes
 
           - name: 🐧 Template (x86_64, debug)
             target: template_debug
             arch: x86_64
-            build-mono: false
+            tests: false
+            sconsflags: production=yes
 
     env:
       BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
@@ -109,7 +118,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} tests=${{matrix.tests}} ${{matrix.sconsflags}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         env:
@@ -129,6 +138,13 @@ jobs:
           name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*
 
+      - name: Unit Tests
+        if: ${{ matrix.tests }}
+        run: |
+          ./out/${{ env.BIN }} --version
+          ./out/${{ env.BIN }} --help
+          ./out/${{ env.BIN }} --headless --test --test-case="*[LimboAI]*"
+
   windows-dot-net:
     runs-on: "windows-latest"
     name: ${{ matrix.name }}
@@ -140,11 +156,13 @@ jobs:
             target: editor
             arch: x86_64
             build-mono: true
+            sconsflags: production=yes
 
           - name: 🪟 Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: true
+            sconsflags: production=yes
 
     env:
       BIN: godot.windows.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
@@ -195,7 +213,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{matrix.sconsflags}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
