@@ -48,9 +48,13 @@ int BTSetAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(property == StringName(), FAILURE, "BTSetAgentProperty: `property` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 
+	StringName error_value = SNAME("ErrorGettingValue");
+	Variant v = value->get_value(get_agent(), get_blackboard(), error_value);
+	ERR_FAIL_COND_V_MSG(v == Variant(error_value), FAILURE, "BTSetAgentProperty: Couldn't get value of value-parameter.");
+
 	bool r_valid;
-	get_agent()->set(property, value->get_value(get_agent(), get_blackboard()), &r_valid);
-	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Agent doesn't have property named \"%s\"", property));
+	get_agent()->set(property, v, &r_valid);
+	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, v));
 	return SUCCESS;
 }
 

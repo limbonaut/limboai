@@ -69,7 +69,7 @@ public:
 	Node *get_agent() const { return agent; }
 	void set_agent(Node *p_agent) { agent = p_agent; }
 
-	virtual bool dispatch(const String &p_event, const Variant &p_cargo);
+	virtual bool dispatch(const String &p_event, const Variant &p_cargo = Variant());
 
 	LimboState *named(String p_name);
 	LimboState *call_on_enter(const Callable &p_callable);

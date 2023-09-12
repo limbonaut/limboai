@@ -30,12 +30,12 @@ Variant BBNode::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, 
 		ERR_FAIL_COND_V_MSG(agent == nullptr, Variant(), "BBNode: p_agent must be a Node.");
 		return agent->get_node(val);
 	} else {
-		Node *node = Object::cast_to<Node>(val);
-		if (unlikely(node == nullptr && val.get_type() != Variant::NIL)) {
+		Object *obj = val;
+		if (unlikely(obj == nullptr && val.get_type() != Variant::NIL)) {
 			WARN_PRINT("BBNode: Unexpected variant type of a blackboard variable.");
 			return p_default;
 		} else {
-			return node;
+			return obj;
 		}
 	}
 }

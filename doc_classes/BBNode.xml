@@ -4,6 +4,8 @@
 		Node-type parameter to be used with BT tasks. See [BBParam].
 	</brief_description>
 	<description>
+		Node-type parameter to be used with BT tasks. See [BBParam].
+		If blackboard is chosen as source, it allows any [Object]-extended type.
 	</description>
 	<tutorials>
 	</tutorials>

@@ -16,6 +16,7 @@
 
 #include "core/object/object.h"
 #include "core/templates/hash_map.h"
+#include "core/variant/variant.h"
 
 class LimboHSM : public LimboState {
 	GDCLASS(LimboHSM, LimboState);
@@ -64,7 +65,7 @@ public:
 	LimboState *get_initial_state() const { return initial_state; }
 
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope = nullptr);
-	virtual bool dispatch(const String &p_event, const Variant &p_cargo) override;
+	virtual bool dispatch(const String &p_event, const Variant &p_cargo = Variant()) override;
 
 	void update(double p_delta) { _update(p_delta); }
 	void add_transition(Node *p_from_state, Node *p_to_state, const String &p_event);

@@ -11,6 +11,7 @@
 
 #include "bt_set_var.h"
 
+#include "modules/limboai/blackboard/bb_param/bb_param.h"
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/variant/callable.h"
@@ -24,9 +25,12 @@ String BTSetVar::_generate_name() const {
 }
 
 int BTSetVar::_tick(double p_delta) {
-	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BBSetVar: `variable` is not set.");
-	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BBSetVar: `value` is not set.");
-	get_blackboard()->set_var(variable, value->get_value(get_agent(), get_blackboard()));
+	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTSetVar: `variable` is not set.");
+	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetVar: `value` is not set.");
+	Variant error_result = SNAME("Error: BTSetVar failed to get value!");
+	Variant result = value->get_value(get_agent(), get_blackboard(), error_result);
+	ERR_FAIL_COND_V_MSG(result == error_result, FAILURE, "BTSetVar: Failed to get parameter value. Returning FAILURE.");
+	get_blackboard()->set_var(variable, result);
 	return SUCCESS;
 };
 
