@@ -14,7 +14,7 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 ## Features
 
-- Behavior Trees (BT):
+- **Behavior Trees (BT):**
     - Use the `BTPlayer` node to execute `BehaviorTree` resources.
     - Easily create, edit, and save `BehaviorTree` resources within the editor.
     - Combine and nest tasks in a hierarchy to create complex behaviors.
@@ -23,23 +23,28 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - Built-in class documentation. Check out the `BehaviorTree` and `BTTask` class documentation to get started.
     - Utilize the `Blackboard` for seamless data sharing between tasks.
     - Use the `BTSubtree` task to execute a tree from a different resource file, promoting organization and reusability.
-    - Blackboard scopes separate namespaces of variables from subtrees, and enable advanced techniques like sharing data among agents in a group.
+    - Blackboard scopes separate namespaces of variables from subtrees and enable advanced techniques like sharing data among agents in a group.
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
     - Evaluate the performance of your trees with custom performance monitors.
-- Hierarchical State Machine (HSM)
-    - Extend `LimboState` class to implement state logic.
-    - `LimboHSM` node serves as a state machine that manages `LimboState` instances and transitions.
+
+- **Hierarchical State Machine (HSM):**
+    - Extend the `LimboState` class to implement state logic.
+    - The `LimboHSM` node serves as a state machine that manages `LimboState` instances and transitions.
     - `LimboHSM` is a state itself and can be nested within other `LimboHSM` instances.
-    - Event-based: Transitions are associated with events, and are triggered by the state machine when the relevant event is dispatched, allowing for better decoupling of transitions from state logic.
+    - Event-based: Transitions are associated with events and are triggered by the state machine when the relevant event is dispatched, allowing for better decoupling of transitions from state logic.
     - Combine state machines with behavior trees using `BTState` for advanced reactive AI.
-    - Delegation: Instead of extending `LimboState`, utilize vanilla `LimboState` and delegate implementation to provided callback functions. Perfect for game jams and quick prototyping.
+    - Delegation: Instead of extending `LimboState`, utilize the vanilla `LimboState` and delegate implementation to provided callback functions. Perfect for game jams and quick prototyping.
     - 🛈 Note: Currently, state machine transition setup and initialization must be done through code as there is no GUI editor for state machines.
+
+- **Tested:** Behavior tree tasks and HSM have been covered by unit tests.
 
 ## How to Get Started
 
 You have two options to start using this module:
 
-1. Download precompiled builds: Navigate to "Actions → All Builds" and scroll down until you find the "Artifacts" section.
+1. Download precompiled builds:
+    - For the most recent builds, navigate to "Actions → All Builds" and scroll down until you find the "Artifacts" section.
+    - For release builds, check "Releases" for download links.
 2. Compile the module on your own (refer to the next section).
 
 ## Compiling
@@ -62,9 +67,9 @@ All contributions are welcome! Feel free to open issues with bug reports and fea
 
 Features and improvements that may be implemented in the future:
 - ~~Providing precompiled builds for download.~~ 🗸
+- ~~Tests and CI.~~🗸
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of Behavior Trees in the Visual Debugger.
-- Tests and CI.
 - Expanding the library of tasks that can be optionally included in the build.
 - Implementing an ignore list for tasks that users may want to hide in the task panel.
 - GUI editor for state machines.
