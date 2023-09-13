@@ -94,11 +94,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{matrix.cache-name}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
+          key: ${{env.CACHE_NAME}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}
           restore-keys: |
-            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}-${{github.sha}}
-            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}-${{github.ref}}
-            ${{env.CACHE_NAME}}-${{env.GODOT_BASE_BRANCH}}
+            ${{env.CACHE_NAME}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}
+            ${{env.CACHE_NAME}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}
+            ${{env.CACHE_NAME}}-${{inputs.godot-treeish}}
 
       - name: Compilation
         env:
