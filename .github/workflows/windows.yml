@@ -90,7 +90,7 @@ jobs:
 
           - name: Template .NET (x86_32, release)
             target: template_release
-            arch: x86_64
+            arch: x86_32
             build-mono: true
 
           - name: Template .NET (x86_32, debug)
