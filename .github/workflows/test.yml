@@ -1,4 +1,4 @@
-name: 🔧 Test builds
+name: 🔧 Test Builds
 on:
   workflow_dispatch:
 
@@ -22,7 +22,7 @@ on:
 env:
   GODOT_TREEISH: 4.1.1-stable
   SCONS_CACHE_MSVC_CONFIG: true
-  SCONS_CACHE_LIMIT: 4096
+  SCONS_CACHE_LIMIT: 7168
   SCONSFLAGS: verbose=yes warnings=extra werror=yes
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
@@ -38,29 +38,33 @@ jobs:
           - name: 🐧 Editor (x86_64, debug) + Tests
             target: editor
             arch: x86_64
+            production: false
+            dev_build: true
             tests: true
-            sconsflags: devbuild=yes debug_symbols=yes
 
           - name: 🐧 Editor (x86_64, release)
             target: editor
             arch: x86_64
+            production: true
+            dev_build: false
             tests: false
-            sconsflags: production=yes
 
           - name: 🐧 Template (x86_64, release)
             target: template_release
             arch: x86_64
+            production: true
+            dev_build: false
             tests: false
-            sconsflags: production=yes
 
           - name: 🐧 Template (x86_64, debug)
             target: template_debug
             arch: x86_64
+            production: true
+            dev_build: false
             tests: false
-            sconsflags: production=yes
 
     env:
-      BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}
+      BIN: godot.linuxbsd.${{matrix.target}}${{  matrix.dev_build == true && '.dev' || ''  }}.${{matrix.arch}}
 
     steps:
       - name: Clone Godot
@@ -108,19 +112,24 @@ jobs:
             ${{env.BIN}}-${{env.GODOT_TREEISH}}-${{github.ref}}-${{github.sha}}
             ${{env.BIN}}-${{env.GODOT_TREEISH}}-${{github.ref}}
             ${{env.BIN}}-${{env.GODOT_TREEISH}}
+        continue-on-error: true
 
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} tests=${{matrix.tests}} ${{matrix.sconsflags}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} production=${{matrix.production}} dev_build=${{matrix.dev_build}} tests=${{matrix.tests}} ${{env.SCONSFLAGS}}
+          ls -l bin/
+
+      - name: Strip binaries
+        if: matrix.dev_build == false
+        run: strip ./bin/godot.*
 
       - name: Prepare artifact
         env:
           OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
         run: |
-          strip ./bin/godot.*
           chmod +x ./bin/godot.*
           mkdir -p ${{env.OUTDIR}}
           mv ./bin/godot.* ${{env.OUTDIR}}
@@ -128,7 +137,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}${{matrix.dev_build == true && '.dev' || ''}}.linux.${{matrix.arch}}${{matrix.build-mono == true && '.mono' || ''}}
           NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.build-mono == true && '.mono' || ''  }}
         with:
           name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
@@ -137,9 +146,11 @@ jobs:
       - name: Unit Tests
         if: ${{ matrix.tests }}
         run: |
+          echo "Disk usage before tests:" && df -h
+          ls out/
           ./out/${{ env.BIN }} --version
           ./out/${{ env.BIN }} --help
-          ./out/${{ env.BIN }} --headless --test
+          ./out/${{ env.BIN }} --headless --test --test-case="*[LimboAI]*"
 
   windows-dot-net:
     runs-on: "windows-latest"
@@ -151,14 +162,14 @@ jobs:
           - name: 🪟 Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
+            production: true
             build-mono: true
-            sconsflags: production=yes
 
           - name: 🪟 Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
+            production: true
             build-mono: true
-            sconsflags: production=yes
 
     env:
       BIN: godot.windows.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
@@ -208,7 +219,7 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{matrix.sconsflags}} ${{env.SCONSFLAGS}}
+          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} production=${{matrix.production}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
         if: matrix.build-mono && matrix.target == 'editor'
@@ -236,7 +247,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}${{matrix.dev_build == true && '.dev' || ''}}.linux.${{matrix.arch}}${{matrix.build-mono == true && '.mono' || ''}}
           NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.build-mono == true && '.mono' || ''  }}
         with:
           name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}

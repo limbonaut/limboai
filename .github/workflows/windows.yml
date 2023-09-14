@@ -90,7 +90,7 @@ jobs:
 
           - name: Template .NET (x86_32, release)
             target: template_release
-            arch: x86_64
+            arch: x86_32
             build-mono: true
 
           - name: Template .NET (x86_32, debug)
@@ -169,8 +169,19 @@ jobs:
           OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           rm -f bin/*.{exp,lib,pdb}
-          mkdir -p out/templates/
+          mkdir -p ${{env.OUTDIR}}
           mv bin/* ${{env.OUTDIR}}
+          ls -R out/
+
+      - name: Rename templates
+        if: startsWith(matrix.target, 'template')
+        shell: bash
+        env:
+          BUILD_TYPE: ${{ endsWith(matrix.target, 'release') && 'release' || 'debug' }}
+        run: |
+          mv out/templates/${BIN}.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}.exe
+          mv out/templates/${BIN}.console.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}_console.exe
+          ls -R out/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
