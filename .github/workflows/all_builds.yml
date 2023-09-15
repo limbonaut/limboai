@@ -1,4 +1,4 @@
-name: 🔗 All Builds
+name: 🔗 All builds
 on:
   workflow_dispatch:
     inputs:
