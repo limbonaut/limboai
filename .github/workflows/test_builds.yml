@@ -148,7 +148,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} production=${{matrix.production}} dev_build=${{matrix.dev_build}} tests=${{matrix.tests}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} production=${{matrix.production}} dev_build=${{matrix.dev_build}} tests=${{matrix.tests}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
           ls -l bin/
 
       - name: Generate C# glue
