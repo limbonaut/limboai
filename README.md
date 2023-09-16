@@ -67,7 +67,7 @@ All contributions are welcome! Feel free to open issues with bug reports and fea
 
 Features and improvements that may be implemented in the future:
 - ~~Providing precompiled builds for download.~~ 🗸
-- ~~Tests and CI.~~🗸
+- ~~Tests and CI.~~ 🗸
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of Behavior Trees in the Visual Debugger.
 - Expanding the library of tasks that can be optionally included in the build.
