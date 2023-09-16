@@ -50,7 +50,7 @@
 			<return type="void" />
 			<param index="0" name="p_delta" type="float" />
 			<description>
-				Calls [member LimboState._update] on itself and on the active substate. Call propagates down to the leaf state.
+				Calls [method LimboState._update] on itself and on the active substate. Call propagates down to the leaf state.
 				It is called automatically, if [member update_mode] is not set to [constant MANUAL].
 			</description>
 		</method>

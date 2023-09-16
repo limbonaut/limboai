@@ -48,7 +48,7 @@
 			<param index="0" name="p_delta" type="float" />
 			<description>
 				Called when task is "ticked", i.e. executed by [BTPlayer] or [BTState] during update.
-				Returns [member TaskStatus].
+				Returns [enum TaskStatus].
 				*Note:* Tasks perform their main function by implementing this method.
 			</description>
 		</method>
@@ -157,7 +157,7 @@
 		<method name="next_sibling" qualifiers="const">
 			<return type="BTTask" />
 			<description>
-				Returns the next task after this task in the children list of the [member parent].
+				Returns the next task after this task in the children list of the parent.
 				Returns [code]null[/code] if this task has no parent or it is the last child in the parent's children list.
 			</description>
 		</method>

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTCooldown" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that executes child only if [member cooldown] time passed since previous execution.
+		BT decorator that executes child only if [member duration] time passed since previous execution.
 	</brief_description>
 	<description>
-		BT decorator that executes child only if [member cooldown] time passed since previous child task execution.
+		BT decorator that executes child only if [member duration] time passed since previous child task execution.
 		Returns [code]RUNNING[/code], when the child returns [code]RUNNING[/code].
 		Returns [code]SUCCESS[/code], when the child returns [code]SUCCESS[/code], and triggers the cooldown.
-		Returns [code]FAILURE[/code], if the child returns [code]FAILURE[/code] or [member cooldown] time didn't pass since previous execution.
+		Returns [code]FAILURE[/code], if the child returns [code]FAILURE[/code] or [member duration] time didn't pass since previous execution.
 	</description>
 	<tutorials>
 	</tutorials>

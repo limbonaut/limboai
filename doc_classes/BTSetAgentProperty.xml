@@ -4,7 +4,7 @@
 		BT action that assigns a value to agent's property.
 	</brief_description>
 	<description>
-		BTSetAgentProperty assigns the specified [member value] to the agent's property identified by the [member property_name] and returns [code]SUCCESS[/code].
+		BTSetAgentProperty assigns the specified [member value] to the agent's property identified by the [member property] and returns [code]SUCCESS[/code].
 		Returns [code]FAILURE[/code] if it fails to set the property.
 	</description>
 	<tutorials>
