@@ -26,7 +26,7 @@ _FORCE_INLINE_ void _populate_scripted_tasks_from_dir(String p_path, List<String
 		dir->list_dir_begin();
 		String fn = dir->get_next();
 		while (!fn.is_empty()) {
-			if (fn.ends_with(".gd")) {
+			if (fn.ends_with(".gd") || fn.ends_with(".cs")) {
 				String full_path = p_path.path_join(fn);
 				p_task_classes->push_back(full_path);
 			}
