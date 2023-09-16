@@ -21,6 +21,7 @@
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
 #include "core/variant/array.h"
+#include "core/variant/binder_common.h"
 #include "core/variant/dictionary.h"
 #include "scene/resources/texture.h"
 
@@ -28,7 +29,7 @@ class BTTask : public Resource {
 	GDCLASS(BTTask, Resource);
 
 public:
-	enum {
+	enum TaskStatus {
 		FRESH,
 		RUNNING,
 		FAILURE,
@@ -109,5 +110,7 @@ public:
 	BTTask();
 	~BTTask();
 };
+
+VARIANT_ENUM_CAST(BTTask::TaskStatus)
 
 #endif // BTTASK_H
