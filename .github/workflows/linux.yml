@@ -176,7 +176,7 @@ jobs:
           strip ./bin/godot.*
           chmod +x ./bin/godot.*
           mkdir -p ${{env.OUTDIR}}
-          mv ./bin/godot.* ${{env.OUTDIR}}
+          mv bin/* ${{env.OUTDIR}}
           ls -R out/
 
       - name: Rename templates
