@@ -22,8 +22,8 @@ void BTRandomSequence::_enter() {
 	indicies.shuffle();
 }
 
-int BTRandomSequence::_tick(double p_delta) {
-	int status = SUCCESS;
+BT::Status BTRandomSequence::_tick(double p_delta) {
+	Status status = SUCCESS;
 	for (int i = last_running_idx; i < get_child_count(); i++) {
 		status = get_child(indicies[i])->execute(p_delta);
 		if (status != SUCCESS) {

@@ -25,16 +25,30 @@
 #include "core/variant/dictionary.h"
 #include "scene/resources/texture.h"
 
-class BTTask : public Resource {
-	GDCLASS(BTTask, Resource);
+/**
+ * Base class for BTTask.
+ * Note: In order to properly return Status in the _tick virtual method (GDVIRTUAL1R...)
+ * we must do VARIANT_ENUM_CAST for Status enum before the actual BTTask class declaration.
+ */
+class BT : public Resource {
+	GDCLASS(BT, Resource);
 
 public:
-	enum TaskStatus {
+	enum Status {
 		FRESH,
 		RUNNING,
 		FAILURE,
 		SUCCESS,
 	};
+
+protected:
+	static void _bind_methods();
+};
+
+VARIANT_ENUM_CAST(BT::Status)
+
+class BTTask : public BT {
+	GDCLASS(BTTask, BT);
 
 private:
 	friend class BehaviorTree;
@@ -46,7 +60,7 @@ private:
 		Ref<Blackboard> blackboard;
 		BTTask *parent;
 		Vector<Ref<BTTask>> children;
-		int status;
+		Status status;
 		double elapsed;
 	} data;
 
@@ -60,13 +74,13 @@ protected:
 	virtual void _setup() {}
 	virtual void _enter() {}
 	virtual void _exit() {}
-	virtual int _tick(double p_delta) { return FAILURE; }
+	virtual Status _tick(double p_delta) { return FAILURE; }
 
 	GDVIRTUAL0RC(String, _generate_name);
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
-	GDVIRTUAL1R(int, _tick, double);
+	GDVIRTUAL1R(Status, _tick, double);
 	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warning);
 
 public:
@@ -88,9 +102,9 @@ public:
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual PackedStringArray get_configuration_warnings() const;
 
-	int execute(double p_delta);
+	Status execute(double p_delta);
 	void cancel();
-	int get_status() const { return data.status; }
+	Status get_status() const { return data.status; }
 	double get_elapsed_time() const { return data.elapsed; };
 
 	Ref<BTTask> get_child(int p_idx) const;
@@ -110,7 +124,5 @@ public:
 	BTTask();
 	~BTTask();
 };
-
-VARIANT_ENUM_CAST(BTTask::TaskStatus)
 
 #endif // BTTASK_H

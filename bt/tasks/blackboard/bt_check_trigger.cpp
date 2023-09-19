@@ -35,7 +35,7 @@ String BTCheckTrigger::_generate_name() const {
 	return "CheckTrigger " + LimboUtility::get_singleton()->decorate_var(variable);
 }
 
-int BTCheckTrigger::_tick(double p_delta) {
+BT::Status BTCheckTrigger::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BBCheckVar: `variable` is not set.");
 	Variant trigger_value = get_blackboard()->get_var(variable, false);
 	if (trigger_value == Variant(true)) {

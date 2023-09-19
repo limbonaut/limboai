@@ -55,7 +55,7 @@ String BTCallMethod::_generate_name() const {
 			(node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???"));
 }
 
-int BTCallMethod::_tick(double p_delta) {
+BT::Status BTCallMethod::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(method == StringName(), FAILURE, "BTCallMethod: Method Name is not set.");
 	ERR_FAIL_COND_V_MSG(node_param.is_null(), FAILURE, "BTCallMethod: Node parameter is not set.");
 	Object *obj = node_param->get_value(get_agent(), get_blackboard());

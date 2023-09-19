@@ -37,7 +37,7 @@ class BTTestAction : public BTAction {
 	GDCLASS(BTTestAction, BTAction);
 
 public:
-	int ret_status = BTTask::SUCCESS;
+	Status ret_status = BTTask::SUCCESS;
 	int num_entries = 0;
 	int num_ticks = 0;
 	int num_exits = 0;
@@ -46,15 +46,15 @@ protected:
 	virtual void _enter() override { num_entries += 1; }
 	virtual void _exit() override { num_exits += 1; }
 
-	virtual int _tick(double p_delta) override {
+	virtual Status _tick(double p_delta) override {
 		num_ticks += 1;
 		return ret_status;
 	}
 
 public:
-	bool is_status_either(int p_status1, int p_status2) { return (get_status() == p_status1 || get_status() == p_status2); }
+	bool is_status_either(Status p_status1, Status p_status2) { return (get_status() == p_status1 || get_status() == p_status2); }
 
-	BTTestAction(int p_return_status) { ret_status = p_return_status; }
+	BTTestAction(Status p_return_status) { ret_status = p_return_status; }
 	BTTestAction() {}
 };
 

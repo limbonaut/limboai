@@ -24,7 +24,7 @@ String BTSetVar::_generate_name() const {
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
-int BTSetVar::_tick(double p_delta) {
+BT::Status BTSetVar::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTSetVar: `variable` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetVar: `value` is not set.");
 	Variant error_result = SNAME("Error: BTSetVar failed to get value!");

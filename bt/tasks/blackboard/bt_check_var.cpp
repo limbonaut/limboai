@@ -54,7 +54,7 @@ String BTCheckVar::_generate_name() const {
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
-int BTCheckVar::_tick(double p_delta) {
+BT::Status BTCheckVar::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTCheckVar: `variable` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTCheckVar: `value` is not set.");
 

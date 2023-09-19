@@ -46,7 +46,7 @@ void BTSubtree::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	BTNewScope::initialize(p_agent, p_blackboard);
 }
 
-int BTSubtree::_tick(double p_delta) {
+BT::Status BTSubtree::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator doesn't have a child.");
 	return get_child(0)->execute(p_delta);
 }

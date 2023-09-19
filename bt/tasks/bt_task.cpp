@@ -26,6 +26,13 @@
 #include "core/templates/hash_map.h"
 #include "core/variant/variant.h"
 
+void BT::_bind_methods() {
+	BIND_ENUM_CONSTANT(FRESH);
+	BIND_ENUM_CONSTANT(RUNNING);
+	BIND_ENUM_CONSTANT(FAILURE);
+	BIND_ENUM_CONSTANT(SUCCESS);
+}
+
 String BTTask::_generate_name() const {
 	if (get_script_instance()) {
 		if (get_script_instance()->has_method(LimboStringNames::get_singleton()->_generate_name)) {
@@ -149,7 +156,7 @@ Ref<BTTask> BTTask::clone() const {
 	return inst;
 }
 
-int BTTask::execute(double p_delta) {
+BT::Status BTTask::execute(double p_delta) {
 	if (data.status != RUNNING) {
 		// Reset children status.
 		if (data.status != FRESH) {
@@ -340,12 +347,6 @@ void BTTask::_bind_methods() {
 	GDVIRTUAL_BIND(_tick, "p_delta");
 	GDVIRTUAL_BIND(_generate_name);
 	GDVIRTUAL_BIND(_get_configuration_warning);
-
-	// Enums.
-	ClassDB::bind_integer_constant(get_class_static(), "TaskStatus", "FRESH", FRESH);
-	ClassDB::bind_integer_constant(get_class_static(), "TaskStatus", "RUNNING", RUNNING);
-	ClassDB::bind_integer_constant(get_class_static(), "TaskStatus", "FAILURE", FAILURE);
-	ClassDB::bind_integer_constant(get_class_static(), "TaskStatus", "SUCCESS", SUCCESS);
 }
 
 BTTask::BTTask() {

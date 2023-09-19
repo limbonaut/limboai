@@ -19,7 +19,7 @@ class BTRepeatUntilSuccess : public BTDecorator {
 	TASK_CATEGORY(Decorators);
 
 protected:
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 };
 
 #endif // BT_REPEAT_UNTIL_SUCCESS_H

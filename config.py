@@ -57,6 +57,7 @@ def get_doc_classes():
         "BehaviorTree",
         "BehaviorTreeView",
         "Blackboard",
+        "BT",
         "BTAction",
         "BTAlwaysFail",
         "BTAlwaysSucceed",

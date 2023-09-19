@@ -29,7 +29,7 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 	BTDecorator::initialize(p_agent, bb);
 }
 
-int BTNewScope::_tick(double p_delta) {
+BT::Status BTNewScope::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	return get_child(0)->execute(p_delta);
 }

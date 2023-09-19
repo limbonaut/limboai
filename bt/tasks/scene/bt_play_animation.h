@@ -39,7 +39,7 @@ protected:
 	virtual String _generate_name() const override;
 	virtual void _setup() override;
 	virtual void _enter() override;
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 
 public:
 	void set_animation_player(Ref<BBNode> p_animation_player);

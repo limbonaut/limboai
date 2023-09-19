@@ -27,7 +27,7 @@ String BTDelay::_generate_name() const {
 	return vformat("Delay %s sec", Math::snapped(seconds, 0.001));
 }
 
-int BTDelay::_tick(double p_delta) {
+BT::Status BTDelay::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	if (get_elapsed_time() <= seconds) {
 		return RUNNING;

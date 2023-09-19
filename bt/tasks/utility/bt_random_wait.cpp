@@ -23,7 +23,7 @@ void BTRandomWait::_enter() {
 	duration = Math::random(min_duration, max_duration);
 }
 
-int BTRandomWait::_tick(double p_delta) {
+BT::Status BTRandomWait::_tick(double p_delta) {
 	if (get_elapsed_time() < duration) {
 		return RUNNING;
 	} else {

@@ -37,7 +37,7 @@ protected:
 
 	virtual String _generate_name() const override;
 	virtual void _setup() override;
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 
 public:
 	void set_duration(double p_value);

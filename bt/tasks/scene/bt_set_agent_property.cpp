@@ -44,7 +44,7 @@ String BTSetAgentProperty::_generate_name() const {
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
-int BTSetAgentProperty::_tick(double p_delta) {
+BT::Status BTSetAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(property == StringName(), FAILURE, "BTSetAgentProperty: `property` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 

@@ -22,7 +22,7 @@ void BTWaitTicks::_enter() {
 	num_passed = 0;
 }
 
-int BTWaitTicks::_tick(double p_delta) {
+BT::Status BTWaitTicks::_tick(double p_delta) {
 	if (num_passed < num_ticks) {
 		num_passed += 1;
 		return RUNNING;

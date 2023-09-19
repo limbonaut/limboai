@@ -117,6 +117,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LimboState);
 		GDREGISTER_CLASS(LimboHSM);
 
+		GDREGISTER_ABSTRACT_CLASS(BT);
 		GDREGISTER_ABSTRACT_CLASS(BTTask);
 		GDREGISTER_CLASS(BehaviorTree);
 		GDREGISTER_CLASS(BTPlayer);

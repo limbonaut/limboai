@@ -27,7 +27,7 @@ protected:
 	void _set_blackboard_data(const Dictionary &p_value) { blackboard_data = p_value; }
 	Dictionary _get_blackboard_data() const { return blackboard_data; }
 
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 
 public:
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;

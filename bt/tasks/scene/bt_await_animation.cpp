@@ -69,7 +69,7 @@ void BTAwaitAnimation::_setup() {
 	setup_failed = false;
 }
 
-int BTAwaitAnimation::_tick(double p_delta) {
+BT::Status BTAwaitAnimation::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(setup_failed == true, FAILURE, "BTAwaitAnimation: _setup() failed - returning FAILURE.");
 
 	// ! Doing this check instead of using signal due to a bug in Godot: https://github.com/godotengine/godot/issues/76127

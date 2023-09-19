@@ -19,7 +19,7 @@ class BTFail : public BTAction {
 	TASK_CATEGORY(Utility);
 
 protected:
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 };
 
 #endif // BT_FAIL_H

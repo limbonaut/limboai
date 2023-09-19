@@ -49,7 +49,7 @@ void BTPauseAnimation::_setup() {
 	setup_failed = false;
 }
 
-int BTPauseAnimation::_tick(double p_delta) {
+BT::Status BTPauseAnimation::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(setup_failed == true, FAILURE, "BTPauseAnimation: _setup() failed - returning FAILURE.");
 	animation_player->pause();
 	return SUCCESS;

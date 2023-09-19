@@ -31,9 +31,9 @@ void BTRepeat::_enter() {
 	cur_iteration = 1;
 }
 
-int BTRepeat::_tick(double p_delta) {
+BT::Status BTRepeat::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
-	int status = get_child(0)->execute(p_delta);
+	Status status = get_child(0)->execute(p_delta);
 	if (status == RUNNING || forever) {
 		return RUNNING;
 	} else if (status == FAILURE && abort_on_failure) {

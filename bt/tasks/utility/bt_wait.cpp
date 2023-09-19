@@ -20,7 +20,7 @@ String BTWait::_generate_name() const {
 	return vformat("Wait %s sec", Math::snapped(duration, 0.001));
 }
 
-int BTWait::_tick(double p_delta) {
+BT::Status BTWait::_tick(double p_delta) {
 	if (get_elapsed_time() < duration) {
 		return RUNNING;
 	} else {

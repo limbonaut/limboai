@@ -59,12 +59,12 @@ void BTCooldown::_setup() {
 	}
 }
 
-int BTCooldown::_tick(double p_delta) {
+BT::Status BTCooldown::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	if (get_blackboard()->get_var(cooldown_state_var, true)) {
 		return FAILURE;
 	}
-	int status = get_child(0)->execute(p_delta);
+	Status status = get_child(0)->execute(p_delta);
 	if (status == SUCCESS || (trigger_on_failure && status == FAILURE)) {
 		_chill();
 	}

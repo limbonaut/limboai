@@ -32,7 +32,7 @@ protected:
 	static void _bind_methods();
 
 	virtual String _generate_name() const override;
-	virtual int _tick(double p_delta) override;
+	virtual Status _tick(double p_delta) override;
 
 public:
 	void set_property(StringName p_prop);

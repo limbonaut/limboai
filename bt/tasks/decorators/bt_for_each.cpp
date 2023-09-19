@@ -42,7 +42,7 @@ void BTForEach::_enter() {
 	current_idx = 0;
 }
 
-int BTForEach::_tick(double p_delta) {
+BT::Status BTForEach::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "ForEach decorator has no child.");
 	ERR_FAIL_COND_V_MSG(save_var.is_empty(), FAILURE, "ForEach save variable is not set.");
 	ERR_FAIL_COND_V_MSG(array_var.is_empty(), FAILURE, "ForEach array variable is not set.");
@@ -54,7 +54,7 @@ int BTForEach::_tick(double p_delta) {
 	Variant elem = arr.get(current_idx);
 	get_blackboard()->set_var(save_var, elem);
 
-	int status = get_child(0)->execute(p_delta);
+	Status status = get_child(0)->execute(p_delta);
 	if (status == RUNNING) {
 		return RUNNING;
 	} else if (status == FAILURE) {

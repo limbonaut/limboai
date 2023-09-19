@@ -64,7 +64,7 @@ void BTStopAnimation::_setup() {
 	setup_failed = false;
 }
 
-int BTStopAnimation::_tick(double p_delta) {
+BT::Status BTStopAnimation::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(setup_failed == true, FAILURE, "BTStopAnimation: _setup() failed - returning FAILURE.");
 	if (animation_player->is_playing() && (animation_name == StringName() || animation_name == animation_player->get_assigned_animation())) {
 		animation_player->stop(keep_state);

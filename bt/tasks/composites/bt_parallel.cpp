@@ -19,12 +19,12 @@ void BTParallel::_enter() {
 	}
 }
 
-int BTParallel::_tick(double p_delta) {
+BT::Status BTParallel::_tick(double p_delta) {
 	int num_succeeded = 0;
 	int num_failed = 0;
-	int return_status = RUNNING;
+	BT::Status return_status = RUNNING;
 	for (int i = 0; i < get_child_count(); i++) {
-		int status = 0;
+		Status status = BT::FRESH;
 		Ref<BTTask> child = get_child(i);
 		if (!repeat && (child->get_status() == FAILURE || child->get_status() == SUCCESS)) {
 			status = child->get_status();
