@@ -74,7 +74,6 @@ void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_play
 	if (active_trees.has(p_player_path)) {
 		return;
 	}
-	print_line("DEBUG :: register :: ", p_player_path);
 
 	active_trees.insert(p_player_path, p_instance);
 	if (session_active) {
@@ -85,7 +84,6 @@ void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_play
 void LimboDebugger::unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
 	ERR_FAIL_COND(p_instance.is_null());
 	ERR_FAIL_COND(p_player_path.is_empty());
-	print_line("DEBUG :: unregister :: ", p_player_path);
 	ERR_FAIL_COND(!active_trees.has(p_player_path));
 
 	if (tracked_tree == p_player_path) {

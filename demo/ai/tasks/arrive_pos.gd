@@ -25,7 +25,7 @@ func _generate_name() -> String:
 		LimboUtility.decorate_var(speed_var),
 	]
 
-func _tick(p_delta: float) -> int:
+func _tick(p_delta: float) -> Status:
 	var target_pos: Vector2 = blackboard.get_var(target_position_var, Vector2.ZERO)
 	if target_pos.distance_to(agent.global_position) < tolerance:
 		return SUCCESS
