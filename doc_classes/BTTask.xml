@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="BTTask" inherits="Resource" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="BTTask" inherits="BT" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Base class for [BehaviorTree] tasks.
 	</brief_description>
 	<description>
 		Base class for all [BehaviorTree] tasks. A task is a building block in a [BehaviorTree] that represents a specific behavior or control flow. It is the basic unit of the Behavior Tree (BT) and is used to create complex behaviors by combining and nesting tasks in a hierarchy.
-		Tasks perform work and return their status with [method _tick]. See [enum TaskStatus].
+		Tasks perform work and return their status with [method _tick]. See [enum BT.Status].
 		A Task can be an action, a condition, a composite, or a decorator. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
 		[b]Note:[/b] Do not extend [code]BTTask[/code] directly for your own tasks, instead extend one of the subtypes above.
 	</description>
@@ -15,14 +15,14 @@
 		<method name="_enter" qualifiers="virtual">
 			<return type="void" />
 			<description>
-				Called when task is "entered", i.e. when task is executed while not having a [constant RUNNING] [member status].
+				Called when task is "entered", i.e. when task is executed while not having a [constant BT.RUNNING] [member status].
 				It is called before [method _tick] in the execution order. This method is used when preparation is needed before main work begins, usually when it takes more than one tick to finish the task.
 			</description>
 		</method>
 		<method name="_exit" qualifiers="virtual">
 			<return type="void" />
 			<description>
-				Called when task is "exited", i.e. after [method _tick] returns [constant SUCCESS] or [constant FAILURE] status.
+				Called when task is "exited", i.e. after [method _tick] returns [constant BT.SUCCESS] or [constant BT.FAILURE] status.
 			</description>
 		</method>
 		<method name="_generate_name" qualifiers="virtual const">
@@ -44,11 +44,11 @@
 			</description>
 		</method>
 		<method name="_tick" qualifiers="virtual">
-			<return type="int" />
+			<return type="int" enum="BT.Status" />
 			<param index="0" name="p_delta" type="float" />
 			<description>
 				Called when task is "ticked", i.e. executed by [BTPlayer] or [BTState] during update.
-				Returns [enum TaskStatus].
+				Returns [enum BT.Status].
 				*Note:* Tasks perform their main function by implementing this method.
 			</description>
 		</method>
@@ -74,10 +74,10 @@
 			</description>
 		</method>
 		<method name="execute">
-			<return type="int" />
+			<return type="int" enum="BT.Status" />
 			<param index="0" name="p_delta" type="float" />
 			<description>
-				Performs task's execution. During execution [method _enter] is called first, unless current task [member status] is [code]RUNNING[/code]. [method _tick] is called next to perform task's main function. If [constant SUCCESS] or [constant FAILURE] status is returned by [method _tick], [method _exit] will be called next.
+				Performs task's execution. During execution [method _enter] is called first, unless current task [member status] is [code]RUNNING[/code]. [method _tick] is called next to perform task's main function. If [constant BT.SUCCESS] or [constant BT.FAILURE] status is returned by [method _tick], [method _exit] will be called next.
 			</description>
 		</method>
 		<method name="get_child" qualifiers="const">
@@ -198,22 +198,8 @@
 			Elapsed time since the task was entered.
 			Returns 0 when task is not [code]RUNNING[/code].
 		</member>
-		<member name="status" type="int" setter="" getter="get_status">
-			Last execution [enum TaskStatus] returned by [method _tick].
+		<member name="status" type="int" setter="" getter="get_status" enum="BT.Status">
+			Last execution [enum BT.Status] returned by [method _tick].
 		</member>
 	</members>
-	<constants>
-		<constant name="FRESH" value="0" enum="TaskStatus">
-			Task wasn't executed yet or execution was cancelled.
-		</constant>
-		<constant name="RUNNING" value="1" enum="TaskStatus">
-			Task is being performed and hasn't finished yet.
-		</constant>
-		<constant name="FAILURE" value="2" enum="TaskStatus">
-			Task has finished with failure.
-		</constant>
-		<constant name="SUCCESS" value="3" enum="TaskStatus">
-			Task has finished with success.
-		</constant>
-	</constants>
 </class>

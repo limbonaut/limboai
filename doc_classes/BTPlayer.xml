@@ -12,7 +12,7 @@
 		<method name="get_last_status" qualifiers="const">
 			<return type="int" />
 			<description>
-				Returns last execution status. See [enum BTTask.TaskStatus].
+				Returns last execution status. See [enum BT.Status].
 			</description>
 		</method>
 		<method name="restart">
