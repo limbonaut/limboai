@@ -474,7 +474,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 						"_TS_pass\n"
 						"\n\n"
 						"# Called each time this task is ticked (aka executed).\n"
-						"func _tick(delta: float) -> int:\n"
+						"func _tick(delta: float) -> Status:\n"
 						"_TS_return SUCCESS\n";
 
 				f->store_string(script_template);
