@@ -17,7 +17,7 @@
 #include "modules/limboai/blackboard/bb_param/bb_node.h"
 #include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/bt/tasks/bt_task.h"
-#include "modules/limboai/bt/tasks/scene/bt_call_method.h"
+#include "modules/limboai/bt/tasks/utility/bt_call_method.h"
 
 #include "core/os/memory.h"
 
