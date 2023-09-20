@@ -15,6 +15,7 @@
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/config/project_settings.h"
+#include "core/error/error_macros.h"
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
@@ -155,7 +156,9 @@ void TaskPalette::_menu_action_selected(int p_id) {
 		} break;
 		case MENU_EDIT_SCRIPT: {
 			ERR_FAIL_COND(!context_task.begins_with("res://"));
-			ScriptEditor::get_singleton()->open_file(context_task);
+			Ref<Resource> res = ScriptEditor::get_singleton()->open_file(context_task);
+			ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + context_task);
+			EditorNode::get_singleton()->edit_resource(res);
 		} break;
 		case MENU_FAVORITE: {
 			PackedStringArray favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
