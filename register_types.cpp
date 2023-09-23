@@ -59,6 +59,7 @@
 #include "bt/tasks/composites/bt_dynamic_selector.h"
 #include "bt/tasks/composites/bt_dynamic_sequence.h"
 #include "bt/tasks/composites/bt_parallel.h"
+#include "bt/tasks/composites/bt_probability_selector.h"
 #include "bt/tasks/composites/bt_random_selector.h"
 #include "bt/tasks/composites/bt_random_sequence.h"
 #include "bt/tasks/composites/bt_selector.h"
@@ -131,6 +132,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		LIMBO_REGISTER_TASK(BTParallel);
 		LIMBO_REGISTER_TASK(BTDynamicSequence);
 		LIMBO_REGISTER_TASK(BTDynamicSelector);
+		LIMBO_REGISTER_TASK(BTProbabilitySelector);
 		LIMBO_REGISTER_TASK(BTRandomSequence);
 		LIMBO_REGISTER_TASK(BTRandomSelector);
 

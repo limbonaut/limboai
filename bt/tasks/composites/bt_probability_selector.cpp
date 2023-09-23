@@ -1,0 +1,101 @@
+/**
+ * bt_probability_selector.cpp
+ * =============================================================================
+ * Copyright 2021-2023 Serhii Snitsaruk
+ *
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT.
+ * =============================================================================
+ */
+
+#include "bt_probability_selector.h"
+
+#include "modules/limboai/bt/tasks/bt_task.h"
+
+#include "core/error/error_macros.h"
+
+double BTProbabilitySelector::get_weight(int p_index) const {
+	return _get_weight(p_index);
+}
+
+void BTProbabilitySelector::set_weight(int p_index, double p_weight) {
+	_set_weight(p_index, p_weight);
+}
+
+double BTProbabilitySelector::get_probability(int p_index) const {
+	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);
+	return _get_weight(p_index) / _get_total_weight();
+}
+
+void BTProbabilitySelector::set_probability(int p_index, double p_probability) {
+	ERR_FAIL_INDEX(p_index, get_child_count());
+	ERR_FAIL_COND(p_probability < 0.0);
+	ERR_FAIL_COND(p_probability > 1.0);
+	ERR_FAIL_COND(p_probability > 0.99 && get_child_count() > 1);
+
+	double others_total = _get_total_weight() - _get_weight(p_index);
+	double others_probability = 1.0 - p_probability;
+	double new_total = others_total / others_probability;
+	_set_weight(p_index, new_total - others_total);
+}
+
+void BTProbabilitySelector::_enter() {
+	_select_task();
+}
+
+void BTProbabilitySelector::_exit() {
+	failed_tasks.clear();
+	selected_task.unref();
+}
+
+BT::Status BTProbabilitySelector::_tick(double p_delta) {
+	while (selected_task.is_valid()) {
+		Status status = selected_task->execute(p_delta);
+		if (status == FAILURE) {
+			failed_tasks.insert(selected_task);
+			_select_task();
+		} else { // RUNNING or SUCCESS
+			return status;
+		}
+	}
+
+	return FAILURE;
+}
+
+void BTProbabilitySelector::_select_task() {
+	selected_task.unref();
+
+	double remaining_tasks_weight = _get_total_weight();
+	for (const Ref<BTTask> &task : failed_tasks) {
+		remaining_tasks_weight -= _get_weight(task);
+	}
+
+	double roll = Math::random(0.0, remaining_tasks_weight);
+	for (int i = 0; i < get_child_count(); i++) {
+		Ref<BTTask> task = get_child(i);
+		if (failed_tasks.has(task)) {
+			continue;
+		}
+		double weight = _get_weight(i);
+		if (weight == 0) {
+			continue;
+		}
+		if (roll > weight) {
+			roll -= weight;
+			continue;
+		}
+
+		selected_task = task;
+		break;
+	}
+}
+
+//***** Godot
+
+void BTProbabilitySelector::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_weight", "p_index"), &BTProbabilitySelector::get_weight);
+	ClassDB::bind_method(D_METHOD("set_weight", "p_index", "p_weight"), &BTProbabilitySelector::set_weight);
+	ClassDB::bind_method(D_METHOD("get_probability", "p_index"), &BTProbabilitySelector::get_probability);
+	ClassDB::bind_method(D_METHOD("set_probability", "p_index", "p_probability"), &BTProbabilitySelector::set_probability);
+}
