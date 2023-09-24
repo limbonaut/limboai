@@ -40,6 +40,15 @@ void BTProbabilitySelector::set_probability(int p_index, double p_probability) {
 	_set_weight(p_index, new_total - others_total);
 }
 
+void BTProbabilitySelector::set_abort_on_failure(bool p_abort_on_failure) {
+	abort_on_failure = p_abort_on_failure;
+	emit_changed();
+}
+
+bool BTProbabilitySelector::get_abort_on_failure() const {
+	return abort_on_failure;
+}
+
 void BTProbabilitySelector::_enter() {
 	_select_task();
 }
@@ -53,6 +62,9 @@ BT::Status BTProbabilitySelector::_tick(double p_delta) {
 	while (selected_task.is_valid()) {
 		Status status = selected_task->execute(p_delta);
 		if (status == FAILURE) {
+			if (abort_on_failure) {
+				return FAILURE;
+			}
 			failed_tasks.insert(selected_task);
 			_select_task();
 		} else { // RUNNING or SUCCESS
@@ -98,4 +110,8 @@ void BTProbabilitySelector::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_weight", "p_index", "p_weight"), &BTProbabilitySelector::set_weight);
 	ClassDB::bind_method(D_METHOD("get_probability", "p_index"), &BTProbabilitySelector::get_probability);
 	ClassDB::bind_method(D_METHOD("set_probability", "p_index", "p_probability"), &BTProbabilitySelector::set_probability);
+	ClassDB::bind_method(D_METHOD("get_abort_on_failure"), &BTProbabilitySelector::get_abort_on_failure);
+	ClassDB::bind_method(D_METHOD("set_abort_on_failure", "p_value"), &BTProbabilitySelector::set_abort_on_failure);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "abort_on_failure"), "set_abort_on_failure", "get_abort_on_failure");
 }

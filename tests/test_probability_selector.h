@@ -157,6 +157,30 @@ TEST_CASE("[Modules][LimboAI] BTProbabilitySelector") {
 		CHECK(task3->num_ticks > 5750);
 		CHECK(task3->num_ticks < 6750);
 	}
+	SUBCASE("Test abort_on_failure") {
+		task1->ret_status = BTTask::FAILURE;
+		task2->ret_status = BTTask::FAILURE;
+		task3->ret_status = BTTask::FAILURE;
+
+		int expected_child_executions = 0;
+
+		SUBCASE("When abort_on_failure == false") {
+			sel->set_abort_on_failure(false);
+			expected_child_executions = 3;
+		}
+		SUBCASE("When abort_on_failure == true") {
+			sel->set_abort_on_failure(true);
+			expected_child_executions = 1;
+		}
+
+		sel->execute(0.01666);
+		int num_ticks = task1->num_ticks + task2->num_ticks + task3->num_ticks;
+		CHECK(num_ticks == expected_child_executions);
+		int num_entries = task1->num_entries + task2->num_entries + task3->num_entries;
+		CHECK(num_entries == expected_child_executions);
+		int num_exits = task1->num_exits + task2->num_exits + task3->num_exits;
+		CHECK(num_exits == expected_child_executions);
+	}
 }
 
 } //namespace TestProbabilitySelector

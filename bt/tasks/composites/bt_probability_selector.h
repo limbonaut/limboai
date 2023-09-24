@@ -23,6 +23,7 @@ class BTProbabilitySelector : public BTComposite {
 private:
 	HashSet<Ref<BTTask>> failed_tasks;
 	Ref<BTTask> selected_task;
+	bool abort_on_failure = false;
 
 	void _select_task();
 
@@ -50,6 +51,9 @@ public:
 
 	double get_probability(int p_index) const;
 	void set_probability(int p_index, double p_probability);
+
+	void set_abort_on_failure(bool p_abort_on_failure);
+	bool get_abort_on_failure() const;
 };
 
 #endif // BT_PROBABILITY_SELECTOR_H
