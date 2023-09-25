@@ -25,19 +25,23 @@ void BTProbabilitySelector::set_weight(int p_index, double p_weight) {
 
 double BTProbabilitySelector::get_probability(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);
-	return _get_weight(p_index) / _get_total_weight();
+	double total = _get_total_weight();
+	return total == 0.0 ? 0.0 : _get_weight(p_index) / total;
 }
 
 void BTProbabilitySelector::set_probability(int p_index, double p_probability) {
 	ERR_FAIL_INDEX(p_index, get_child_count());
 	ERR_FAIL_COND(p_probability < 0.0);
-	ERR_FAIL_COND(p_probability > 1.0);
-	ERR_FAIL_COND(p_probability > 0.99 && get_child_count() > 1);
+	ERR_FAIL_COND(p_probability >= 1.0);
 
 	double others_total = _get_total_weight() - _get_weight(p_index);
 	double others_probability = 1.0 - p_probability;
-	double new_total = others_total / others_probability;
-	_set_weight(p_index, new_total - others_total);
+	if (others_total == 0.0) {
+		_set_weight(p_index, p_probability > 0.0 ? 1.0 : 0.0);
+	} else {
+		double new_total = others_total / others_probability;
+		_set_weight(p_index, new_total - others_total);
+	}
 }
 
 void BTProbabilitySelector::set_abort_on_failure(bool p_abort_on_failure) {
@@ -108,6 +112,7 @@ void BTProbabilitySelector::_select_task() {
 void BTProbabilitySelector::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_weight", "p_index"), &BTProbabilitySelector::get_weight);
 	ClassDB::bind_method(D_METHOD("set_weight", "p_index", "p_weight"), &BTProbabilitySelector::set_weight);
+	ClassDB::bind_method(D_METHOD("get_total_weight"), &BTProbabilitySelector::get_total_weight);
 	ClassDB::bind_method(D_METHOD("get_probability", "p_index"), &BTProbabilitySelector::get_probability);
 	ClassDB::bind_method(D_METHOD("set_probability", "p_index", "p_probability"), &BTProbabilitySelector::set_probability);
 	ClassDB::bind_method(D_METHOD("get_abort_on_failure"), &BTProbabilitySelector::get_abort_on_failure);

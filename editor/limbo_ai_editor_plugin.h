@@ -86,6 +86,8 @@ private:
 
 	PopupPanel *probability_popup;
 	EditorSpinSlider *probability_edit;
+	Button *weight_mode;
+	Button *percent_mode;
 
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
@@ -131,6 +133,8 @@ private:
 	void _action_selected(int p_id);
 	void _misc_option_selected(int p_id);
 	void _on_probability_edited(double p_value);
+	void _update_probability_edit();
+	void _probability_popup_closed();
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_visibility_changed();
 	void _on_header_pressed();

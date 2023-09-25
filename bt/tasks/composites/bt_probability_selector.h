@@ -52,6 +52,7 @@ protected:
 public:
 	double get_weight(int p_index) const;
 	void set_weight(int p_index, double p_weight);
+	double get_total_weight() const { return _get_total_weight(); };
 
 	double get_probability(int p_index) const;
 	void set_probability(int p_index, double p_probability);

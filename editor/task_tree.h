@@ -76,6 +76,7 @@ public:
 
 	Rect2 get_selected_probability_rect() const;
 	double get_selected_probability_weight() const;
+	double get_selected_probability_percent() const;
 	bool selected_has_probability() const;
 
 	virtual bool editor_can_reload_from_file() { return false; }

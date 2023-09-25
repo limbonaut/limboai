@@ -225,6 +225,14 @@ double TaskTree::get_selected_probability_weight() const {
 	return probability_selector->get_weight(probability_selector->get_child_index(selected));
 }
 
+double TaskTree::get_selected_probability_percent() const {
+	Ref<BTTask> selected = get_selected();
+	ERR_FAIL_COND_V(selected.is_null(), 0.0);
+	Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
+	ERR_FAIL_COND_V(probability_selector.is_null(), 0.0);
+	return probability_selector->get_probability(probability_selector->get_child_index(selected)) * 100.0;
+}
+
 bool TaskTree::selected_has_probability() const {
 	bool result = false;
 	Ref<BTTask> selected = get_selected();
