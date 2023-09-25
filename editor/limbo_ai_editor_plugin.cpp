@@ -15,11 +15,13 @@
 
 #include "action_banner.h"
 #include "modules/limboai/bt/tasks/bt_comment.h"
+#include "modules/limboai/bt/tasks/composites/bt_probability_selector.h"
 #include "modules/limboai/bt/tasks/composites/bt_selector.h"
 #include "modules/limboai/editor/debugger/limbo_debugger_plugin.h"
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/config/project_settings.h"
+#include "core/error/error_macros.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
@@ -267,10 +269,13 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	Ref<BTTask> task = task_tree->get_selected();
 	ERR_FAIL_COND_MSG(task.is_null(), "LimboAIEditor: get_selected() returned null");
 
+	if (task_tree->selected_has_probability()) {
+		menu->add_item(TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
+	}
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
 	menu->add_icon_item(theme_cache.open_doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
-	menu->set_item_disabled(ACTION_EDIT_SCRIPT, task->get_script().is_null());
+	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), task->get_script().is_null());
 
 	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.move_task_up_icon, ED_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
@@ -307,6 +312,15 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_dialog->popup_centered();
 			rename_edit->select_all();
 			rename_edit->grab_focus();
+		} break;
+		case ACTION_EDIT_PROBABILITY: {
+			Rect2 rect = task_tree->get_selected_probability_rect();
+			ERR_FAIL_COND(rect == Rect2());
+			rect.position.y += rect.size.y;
+			rect.position += task_tree->get_rect().position;
+			rect = task_tree->get_screen_transform().xform(rect);
+			probability_edit->set_value_no_signal(task_tree->get_selected_probability_weight());
+			probability_popup->popup(rect);
 		} break;
 		case ACTION_EDIT_SCRIPT: {
 			ERR_FAIL_COND(task_tree->get_selected().is_null());
@@ -419,6 +433,14 @@ void LimboAIEditor::_action_selected(int p_id) {
 	}
 }
 
+void LimboAIEditor::_on_probability_edited(double p_value) {
+	Ref<BTTask> selected = task_tree->get_selected();
+	ERR_FAIL_COND(selected == nullptr);
+	Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
+	ERR_FAIL_COND(probability_selector.is_null());
+	probability_selector->set_weight(probability_selector->get_child_index(selected), p_value);
+}
+
 void LimboAIEditor::_misc_option_selected(int p_id) {
 	switch (p_id) {
 		case MISC_OPEN_DEBUGGER: {
@@ -489,10 +511,6 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 
 void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) {
 	EditorNode::get_singleton()->edit_resource(p_task);
-}
-
-void LimboAIEditor::_on_tree_task_double_clicked() {
-	_action_selected(ACTION_RENAME);
 }
 
 void LimboAIEditor::_on_visibility_changed() {
@@ -925,7 +943,8 @@ LimboAIEditor::LimboAIEditor() {
 	task_tree->connect("rmb_pressed", callable_mp(this, &LimboAIEditor::_on_tree_rmb));
 	task_tree->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_tree_task_selected));
 	task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
-	task_tree->connect("task_double_clicked", callable_mp(this, &LimboAIEditor::_on_tree_task_double_clicked));
+	task_tree->connect("task_activated", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_RENAME));
+	task_tree->connect("probability_clicked", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_EDIT_PROBABILITY));
 	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
 	task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_banners));
 	hsc->add_child(task_tree);
@@ -956,6 +975,56 @@ LimboAIEditor::LimboAIEditor() {
 	menu = memnew(PopupMenu);
 	add_child(menu);
 	menu->connect("id_pressed", callable_mp(this, &LimboAIEditor::_action_selected));
+
+	probability_popup = memnew(PopupPanel);
+	{
+		VBoxContainer *vbc = memnew(VBoxContainer);
+		probability_popup->add_child(vbc);
+
+		// PanelContainer *mode_panel = memnew(PanelContainer);
+		// vbc->add_child(mode_panel);
+
+		// HBoxContainer *mode_hbox = memnew(HBoxContainer);
+		// mode_panel->add_child(mode_hbox);
+
+		// Ref<ButtonGroup> button_group;
+		// button_group.instantiate();
+
+		// Button *percent_button = memnew(Button);
+		// mode_hbox->add_child(percent_button);
+		// percent_button->set_flat(true);
+		// percent_button->set_toggle_mode(true);
+		// percent_button->set_button_group(button_group);
+		// percent_button->set_focus_mode(Control::FOCUS_NONE);
+		// percent_button->set_text(TTR("Percent"));
+		// percent_button->set_tooltip_text(TTR("Edit percent"));
+		// percent_button->set_pressed(true);
+		// // percent_button->connect(SNAME("pressed"), callable_mp())
+
+		// Button *weight_button = memnew(Button);
+		// mode_hbox->add_child(weight_button);
+		// weight_button->set_flat(true);
+		// weight_button->set_toggle_mode(true);
+		// weight_button->set_button_group(button_group);
+		// weight_button->set_focus_mode(Control::FOCUS_NONE);
+		// weight_button->set_text(TTR("Weight"));
+		// weight_button->set_tooltip_text(TTR("Edit weight"));
+
+		Label *probability_header = memnew(Label);
+		vbc->add_child(probability_header);
+		probability_header->set_text(TTR("Weight"));
+		probability_header->set_theme_type_variation("HeaderSmall");
+
+		probability_edit = memnew(EditorSpinSlider);
+		vbc->add_child(probability_edit);
+		probability_edit->set_min(0.0);
+		probability_edit->set_max(10.0);
+		probability_edit->set_step(0.01);
+		probability_edit->set_allow_greater(true);
+		probability_edit->set_custom_minimum_size(Size2(200.0 * EDSCALE, 0.0));
+		probability_edit->connect(SNAME("value_changed"), callable_mp(this, &LimboAIEditor::_on_probability_edited));
+	}
+	add_child(probability_popup);
 
 	rename_dialog = memnew(ConfirmationDialog);
 	{

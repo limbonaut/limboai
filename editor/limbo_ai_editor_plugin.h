@@ -23,6 +23,7 @@
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
 #include "editor/editor_plugin.h"
+#include "editor/gui/editor_spin_slider.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
 #include "scene/gui/file_dialog.h"
@@ -41,6 +42,7 @@ class LimboAIEditor : public Control {
 private:
 	enum Action {
 		ACTION_RENAME,
+		ACTION_EDIT_PROBABILITY,
 		ACTION_EDIT_SCRIPT,
 		ACTION_OPEN_DOC,
 		ACTION_MOVE_UP,
@@ -79,12 +81,16 @@ private:
 	VBoxContainer *banners;
 	Panel *usage_hint;
 	PopupMenu *menu;
+	HBoxContainer *fav_tasks_hbox;
+	TaskPalette *task_palette;
+
+	PopupPanel *probability_popup;
+	EditorSpinSlider *probability_edit;
+
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
 	Button *history_back;
 	Button *history_forward;
-	TaskPalette *task_palette;
-	HBoxContainer *fav_tasks_hbox;
 
 	Button *new_btn;
 	Button *load_btn;
@@ -124,8 +130,8 @@ private:
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _action_selected(int p_id);
 	void _misc_option_selected(int p_id);
+	void _on_probability_edited(double p_value);
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
-	void _on_tree_task_double_clicked();
 	void _on_visibility_changed();
 	void _on_header_pressed();
 	void _on_save_pressed();

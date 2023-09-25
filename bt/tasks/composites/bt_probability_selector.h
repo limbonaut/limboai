@@ -14,6 +14,7 @@
 
 #include "modules/limboai/bt/tasks/bt_composite.h"
 
+#include "core/core_string_names.h"
 #include "core/typedefs.h"
 
 class BTProbabilitySelector : public BTComposite {
@@ -29,7 +30,10 @@ private:
 
 	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(SNAME("_weight_"), 1.0); }
 	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(SNAME("_weight_"), 1.0); }
-	_FORCE_INLINE_ void _set_weight(int p_index, double p_weight) { get_child(p_index)->set_meta(SNAME("_weight_"), Variant(p_weight)); }
+	_FORCE_INLINE_ void _set_weight(int p_index, double p_weight) {
+		get_child(p_index)->set_meta(SNAME("_weight_"), Variant(p_weight));
+		get_child(p_index)->emit_signal(CoreStringNames::get_singleton()->changed);
+	}
 	_FORCE_INLINE_ double _get_total_weight() const {
 		double total = 0.0;
 		for (int i = 0; i < get_child_count(); i++) {
