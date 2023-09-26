@@ -12,6 +12,7 @@
 #ifndef BT_PROBABILITY_SELECTOR_H
 #define BT_PROBABILITY_SELECTOR_H
 
+#include "modules/limboai/bt/tasks/bt_comment.h"
 #include "modules/limboai/bt/tasks/bt_composite.h"
 
 #include "core/core_string_names.h"
@@ -37,7 +38,9 @@ private:
 	_FORCE_INLINE_ double _get_total_weight() const {
 		double total = 0.0;
 		for (int i = 0; i < get_child_count(); i++) {
-			total += _get_weight(i);
+			if (!get_child(i)->is_class_ptr(BTComment::get_class_ptr_static())) {
+				total += _get_weight(i);
+			}
 		}
 		return total;
 	}
@@ -56,6 +59,8 @@ public:
 
 	double get_probability(int p_index) const;
 	void set_probability(int p_index, double p_probability);
+
+	bool has_probability(int p_index) const;
 
 	void set_abort_on_failure(bool p_abort_on_failure);
 	bool get_abort_on_failure() const;
