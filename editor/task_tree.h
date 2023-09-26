@@ -13,6 +13,7 @@
 
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
+#include "scene/resources/style_box.h"
 
 class TaskTree : public Control {
 	GDCLASS(TaskTree, Control);
@@ -22,15 +23,24 @@ private:
 	Ref<BehaviorTree> bt;
 	Ref<BTTask> last_selected;
 	bool editable;
+	HashMap<ObjectID, Rect2> probability_rect_cache;
 
 	struct ThemeCache {
 		Ref<Font> comment_font;
+		Ref<Font> name_font;
 		Ref<Font> custom_name_font;
 		Ref<Font> normal_name_font;
+		Ref<Font> probability_font;
+
+		double name_font_size = 18.0;
+		double probability_font_size = 16.0;
 
 		Ref<Texture2D> task_warning_icon;
 
 		Color comment_color;
+		Color probability_font_color;
+
+		Ref<StyleBoxFlat> probability_bg;
 	} theme_cache;
 
 	TreeItem *_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, int p_idx = -1);
@@ -39,13 +49,15 @@ private:
 	TreeItem *_find_item(const Ref<BTTask> &p_task) const;
 
 	void _on_item_selected();
-	void _on_item_double_clicked();
-	void _on_item_mouse_selected(const Vector2 &p_pos, int p_button_index);
+	void _on_item_activated();
+	void _on_item_mouse_selected(const Vector2 &p_pos, MouseButton p_button_index);
 	void _on_task_changed();
 
 	Variant _get_drag_data_fw(const Point2 &p_point);
 	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;
 	void _drop_data_fw(const Point2 &p_point, const Variant &p_data);
+
+	void _draw_probability(Object *item_obj, Rect2 rect);
 
 protected:
 	virtual void _update_theme_item_cache() override;
@@ -61,6 +73,11 @@ public:
 	void update_task(const Ref<BTTask> &p_task);
 	Ref<BTTask> get_selected() const;
 	void deselect();
+
+	Rect2 get_selected_probability_rect() const;
+	double get_selected_probability_weight() const;
+	double get_selected_probability_percent() const;
+	bool selected_has_probability() const;
 
 	virtual bool editor_can_reload_from_file() { return false; }
 

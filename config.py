@@ -84,6 +84,7 @@ def get_doc_classes():
         "BTPlayAnimation",
         "BTPlayer",
         "BTProbability",
+        "BTProbabilitySelector",
         "BTRandomSelector",
         "BTRandomSequence",
         "BTRandomWait",
