@@ -66,6 +66,7 @@ private:
 		Ref<Texture2D> move_task_up_icon;
 		Ref<Texture2D> open_debugger_icon;
 		Ref<Texture2D> open_doc_icon;
+		Ref<Texture2D> percent_icon;
 		Ref<Texture2D> remove_task_icon;
 		Ref<Texture2D> rename_task_icon;
 	} theme_cache;
