@@ -38,7 +38,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 
 	if (p_item->get_parent()) {
 		Ref<BTProbabilitySelector> sel = p_item->get_parent()->get_metadata(0);
-		if (sel.is_valid()) {
+		if (sel.is_valid() && sel->has_probability(p_item->get_index())) {
 			p_item->set_custom_draw(0, this, SNAME("_draw_probability"));
 			p_item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
 		}
@@ -236,7 +236,7 @@ double TaskTree::get_selected_probability_percent() const {
 bool TaskTree::selected_has_probability() const {
 	bool result = false;
 	Ref<BTTask> selected = get_selected();
-	if (selected.is_valid()) {
+	if (selected.is_valid() && !selected->is_class_ptr(BTComment::get_class_ptr_static())) {
 		Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
 		result = probability_selector.is_valid();
 	}

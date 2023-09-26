@@ -271,7 +271,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	ERR_FAIL_COND_MSG(task.is_null(), "LimboAIEditor: get_selected() returned null");
 
 	if (task_tree->selected_has_probability()) {
-		menu->add_item(TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
+		menu->add_icon_item(theme_cache.percent_icon, TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
 	}
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
@@ -799,6 +799,7 @@ void LimboAIEditor::_update_theme_item_cache() {
 	theme_cache.move_task_up_icon = get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons"));
 	theme_cache.open_debugger_icon = get_theme_icon(SNAME("Debug"), SNAME("EditorIcons"));
 	theme_cache.open_doc_icon = get_theme_icon(SNAME("Help"), SNAME("EditorIcons"));
+	theme_cache.percent_icon = get_theme_icon(SNAME("LimboPercent"), SNAME("EditorIcons"));
 	theme_cache.remove_task_icon = get_theme_icon(SNAME("Remove"), SNAME("EditorIcons"));
 	theme_cache.rename_task_icon = get_theme_icon(SNAME("Rename"), SNAME("EditorIcons"));
 }
