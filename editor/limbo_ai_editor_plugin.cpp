@@ -474,7 +474,7 @@ void LimboAIEditor::_update_probability_edit() {
 }
 
 void LimboAIEditor::_probability_popup_closed() {
-	probability_edit->get_line_edit()->release_focus();
+	probability_edit->grab_focus(); // Hack: Workaround for an EditorSpinSlider bug keeping LineEdit visible and "stuck" with ghost value.
 }
 
 void LimboAIEditor::_misc_option_selected(int p_id) {
