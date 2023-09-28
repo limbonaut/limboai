@@ -5,10 +5,10 @@
 	</brief_description>
 	<description>
 		BTProbabilitySelector chooses a child task to execute based on attached probabilities. It is typically used for decision-making purposes. Probability distribution is calculated based on weights assigned to each child task.
-		Returns [code]SUCCESS[/code] when a child task returns [code]SUCCESS[/code].
-		Returns [code]RUNNING[/code] when a child task returns [code]RUNNING[/code].
-		The behavior of BTProbabilitySelector when a child task results in [code]FAILURE[/code] depends on the value of the [member abort_on_failure] property:
-		- If [member abort_on_failure] is [code]false[/code], when a child task results in [code]FAILURE[/code], BTProbabilitySelector will normalize the probability distribution over the remaiming children and choose a new child task to be executed. If all child tasks fail, the composite will return [code]FAILURE[/code].
+		Returns [code]SUCCESS[/code] when a child task results in [code]SUCCESS[/code].
+		Returns [code]RUNNING[/code] when a child task results in [code]RUNNING[/code].
+		The behavior of BTProbabilitySelector when a child task results in [code]FAILURE[/code] depends on the [member abort_on_failure] value:
+		- If [member abort_on_failure] is [code]false[/code], when a child task results in [code]FAILURE[/code], BTProbabilitySelector will normalize the probability distribution over the remaining children and choose a new child task to be executed. If all child tasks fail, the composite will return [code]FAILURE[/code].
 		- If [member abort_on_failure] is [code]true[/code], when a child task results in [code]FAILURE[/code], BTProbabilitySelector will not choose another child task to be executed and will immediately return [code]FAILURE[/code].
 	</description>
 	<tutorials>

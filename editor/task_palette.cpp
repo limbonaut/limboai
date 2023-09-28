@@ -402,7 +402,7 @@ void TaskPalette::refresh() {
 
 			String descr;
 			if (E) {
-				if (E->value.description.is_empty() || E->value.description.length() > 1000) {
+				if (E->value.description.is_empty() || E->value.description.length() > 1400) {
 					descr = DTR(E->value.brief_description);
 				} else {
 					descr = DTR(E->value.description);
