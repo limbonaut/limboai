@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTAlwaysFail" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that turns SUCCESS into FAILURE.
+		BT decorator that converts [code]SUCCESS[/code] into [code]FAILURE[/code].
 	</brief_description>
 	<description>
 	</description>
