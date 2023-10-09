@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTProbability" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that executes child with a given probability.
+		BT decorator that executes its child task with a given probability.
 	</brief_description>
 	<description>
-		BT decorator that executes child with a given probability defined by [member run_chance].
-		Returns the result of the child task if it was executed, otherwise returns [code]FAILURE[/code].
+		BTProbability executes its child task with a given probability defined by [member run_chance].
+		Returns the result of the child task if it was executed; otherwise, it returns [code]FAILURE[/code].
 	</description>
 	<tutorials>
 	</tutorials>
