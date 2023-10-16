@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTSubtree" inherits="BTNewScope" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that instantiates a subtree.
+		BT decorator that instantiates and runs a subtree within the larger tree.
 	</brief_description>
 	<description>
-		Instantiates a behavior tree as a child of this task during initialization and creates a new [Blackboard] scope.
-		Returns status of the child execution.
+		BTSubtree instantiates a [BehaviorTree] and includes its root task as a child during initialization, while also creating a new [Blackboard] scope.
+		Returns the status of the subtree's execution.
 	</description>
 	<tutorials>
 	</tutorials>
