@@ -4,19 +4,19 @@
 		BT condition that checks a variable on the blackboard.
 	</brief_description>
 	<description>
-		BTCheckVar checks [member variable] against [member value] and returns [code]SUCCESS[/code] or [code]FAILURE[/code] based on the [member check_type].
+		BTCheckVar evaluates the [member variable] against [member value] and returns [code]SUCCESS[/code] or [code]FAILURE[/code] based on the [member check_type].
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="check_type" type="int" setter="set_check_type" getter="get_check_type" enum="LimboUtility.CheckType" default="0">
-			Type of check to perform.
+			The type of check to be performed.
 		</member>
 		<member name="value" type="BBVariant" setter="set_value" getter="get_value">
-			Parameter that specifies the value to which the [member variable] will be compared.
+			A parameter that specifies the value against which the [member variable] will be compared.
 		</member>
 		<member name="variable" type="String" setter="set_variable" getter="get_variable" default="&quot;&quot;">
-			Variable name to check its value.
+			The name of the variable to check its value.
 		</member>
 	</members>
 </class>

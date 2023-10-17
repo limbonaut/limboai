@@ -4,7 +4,7 @@
 		BT decorator that sets a time limit for its child's execution.
 	</brief_description>
 	<description>
-		BTTimeLimit allocates a limited time for the child's execution and cancels it, returning [code]FAILURE[/code] if the [member time_limit] is exceeded.
+		BTTimeLimit allocates a limited time for the child's execution and aborts it, returning [code]FAILURE[/code] if the [member time_limit] is exceeded.
 		Returns [code]FAILURE[/code] if the [member time_limit] is exceeded; otherwise, it returns the status of the child task.
 	</description>
 	<tutorials>

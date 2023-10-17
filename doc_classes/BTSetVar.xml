@@ -4,6 +4,8 @@
 		BT action that assigns [member value] to the [member variable] and then returns [code]SUCCESS[/code].
 	</brief_description>
 	<description>
+		BTSetVar assigns [member value] to the [member variable] and then returns [code]SUCCESS[/code].
+		Returns [code]FAILURE[/code] if it fails to set the [member variable].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -12,7 +14,7 @@
 			Parameter that specifies the value to be assigned to the variable.
 		</member>
 		<member name="variable" type="String" setter="set_variable" getter="get_variable" default="&quot;&quot;">
-			Variable name whose value is to be assigned.
+			Name of the variable to which the value will be assigned.
 		</member>
 	</members>
 </class>
