@@ -4,9 +4,9 @@
 		BT action that waits for an animation to finish playing.
 	</brief_description>
 	<description>
-		BTAwaitAnimation waits for an animation on the specified [AnimationPlayer] node to finish playing and returns [code]SUCCESS[/code].
+		BTAwaitAnimation action waits for an animation on the specified [AnimationPlayer] node to finish playing and returns [code]SUCCESS[/code].
 		Returns [code]SUCCESS[/code] if the specified animation has finished playing or if the specified animation is not currently playing.
-		Returns [code]FAILURE[/code] if the specified animation doesn't exist or if the action fails to get [AnimationPlayer] instance.
+		Returns [code]FAILURE[/code] if the specified animation doesn't exist or if the action fails to get the [AnimationPlayer] node.
 	</description>
 	<tutorials>
 	</tutorials>

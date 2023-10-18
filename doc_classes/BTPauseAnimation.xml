@@ -5,7 +5,7 @@
 	</brief_description>
 	<description>
 		BTPauseAnimation action pauses the playback of an animation on the specified [AnimationPlayer] node and returns [code]SUCCESS[/code].
-		Returns [code]FAILURE[/code] if the action fails to acquire the [AnimationPlayer] node.
+		Returns [code]FAILURE[/code] if the action fails to get the [AnimationPlayer] node.
 	</description>
 	<tutorials>
 	</tutorials>
