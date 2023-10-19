@@ -4,20 +4,20 @@
 		BT action that calls a method on a specified [Node] or [Object].
 	</brief_description>
 	<description>
-		BTCallMethod calls a method on a specified [Node] or [Object] and returns [code]SUCCESS[/code].
-		Returns [code]FAILURE[/code] if the action fails executing the method.
+		BTCallMethod action calls a [member method] on the specified [Node] or [Object] instance and returns [code]SUCCESS[/code].
+		Returns [code]FAILURE[/code] if the action encounters an issue during the method execution.
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="args" type="Array" setter="set_args" getter="get_args" default="[]">
-			Arguments to pass to the method call.
+			The arguments to be passed when calling the method.
 		</member>
 		<member name="method" type="StringName" setter="set_method" getter="get_method" default="&amp;&quot;&quot;">
-			Method that will be called.
+			The name of the method to be called.
 		</member>
 		<member name="node" type="BBNode" setter="set_node_param" getter="get_node_param">
-			Parameter that will be used to get the node/object instance.
+			Specifies the [Node] or [Object] instance containing the method to be called.
 		</member>
 	</members>
 </class>
