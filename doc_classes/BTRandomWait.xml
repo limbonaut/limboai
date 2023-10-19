@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTRandomWait" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT action that waits for a randomized duration to pass and returns [code]SUCCESS[/code].
+		BT action that waits for a randomized duration to elapse and then returns [code]SUCCESS[/code].
 	</brief_description>
 	<description>
-		BT action that waits for a randomized duration to pass and returns [code]SUCCESS[/code]. Actual duration is randomized. The minimum wait time is defined by [code]min_duration[/code], and the maximum is defined by [code]max_duration[/code].
+		BTRandomWait action waits for a randomized duration to elapse and then returns [code]SUCCESS[/code]. The duration is randomized within the specified range, defined by [code]min_duration[/code] and [code]max_duration[/code].
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="max_duration" type="float" setter="set_max_duration" getter="get_max_duration" default="2.0">
-			Maximum duration to wait.
+			Maximum duration for the wait.
 		</member>
 		<member name="min_duration" type="float" setter="set_min_duration" getter="get_min_duration" default="1.0">
-			Minimum duration to wait.
+			Minimum duration for the wait.
 		</member>
 	</members>
 </class>
