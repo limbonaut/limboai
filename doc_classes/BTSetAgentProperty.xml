@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTSetAgentProperty" inherits="BTAction" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT action that assigns a value to agent's property.
+		BT action that assigns a value to the specified agent's property.
 	</brief_description>
 	<description>
 		BTSetAgentProperty assigns the specified [member value] to the agent's property identified by the [member property] and returns [code]SUCCESS[/code].
