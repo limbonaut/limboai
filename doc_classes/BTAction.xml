@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTAction" inherits="BTTask" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Base class for BT actions.
+		Base class for all [BehaviorTree] actions.
 	</brief_description>
 	<description>
-		Base class for all behavior tree actions. Extend [code]BTAction[/code] to create your own actions.
-		Represents a specific action or behavior in a [BehaviorTree] that the agent should perform. It is the lowest level of the [BehaviorTree] hierarchy and is responsible for carrying out the actual work required to achieve a goal. Actions cannot have child tasks.
-		Actions performs a task in one or multiple ticks. Actions return [code]RUNNING[/code] status, when it takes more than one tick to perform a task. When a task is finished an action returns [code]SUCCESS[/code] or [code]FAILURE[/code].
+		Base class for all actions within a [BehaviorTree]. You can create your own actions by extending the [code]BTAction[/code] class.
+		Represents a specific behavior or action in a [BehaviorTree] that an agent should execute. Actions are the lowest level of the [BehaviorTree] hierarchy and are responsible for performing the actual work required to achieve a goal. Actions do not have child tasks.
+		A single action can perform a task within one or multiple ticks. If it takes more than one tick to complete the task, the action should return [code]RUNNING[/code] status. When the task is finished, the action returns either [code]SUCCESS[/code] or [code]FAILURE[/code] to indicate the outcome.
 	</description>
 	<tutorials>
 	</tutorials>
