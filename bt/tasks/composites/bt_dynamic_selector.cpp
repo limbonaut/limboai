@@ -27,7 +27,7 @@ BT::Status BTDynamicSelector::_tick(double p_delta) {
 	// If the last node ticked is earlier in the tree than the previous runner,
 	// cancel previous runner.
 	if (last_running_idx > i && get_child(last_running_idx)->get_status() == RUNNING) {
-		get_child(last_running_idx)->cancel();
+		get_child(last_running_idx)->abort();
 	}
 	last_running_idx = i;
 	return status;

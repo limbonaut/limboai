@@ -161,7 +161,7 @@ BT::Status BTTask::execute(double p_delta) {
 		// Reset children status.
 		if (data.status != FRESH) {
 			for (int i = 0; i < get_child_count(); i++) {
-				data.children.get(i)->cancel();
+				data.children.get(i)->abort();
 			}
 		}
 		if (!GDVIRTUAL_CALL(_enter)) {
@@ -184,9 +184,9 @@ BT::Status BTTask::execute(double p_delta) {
 	return data.status;
 }
 
-void BTTask::cancel() {
+void BTTask::abort() {
 	for (int i = 0; i < data.children.size(); i++) {
-		get_child(i)->cancel();
+		get_child(i)->abort();
 	}
 	if (data.status == RUNNING) {
 		if (!GDVIRTUAL_CALL(_exit)) {
@@ -320,8 +320,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("next_sibling"), &BTTask::next_sibling);
 	ClassDB::bind_method(D_METHOD("print_tree", "p_initial_tabs"), &BTTask::print_tree, Variant(0));
 	ClassDB::bind_method(D_METHOD("get_task_name"), &BTTask::get_task_name);
-	ClassDB::bind_method(D_METHOD("get_custom_name"), &BTTask::get_custom_name);
-	ClassDB::bind_method(D_METHOD("set_custom_name", "p_name"), &BTTask::set_custom_name);
+	ClassDB::bind_method(D_METHOD("abort"), &BTTask::abort);
 
 	// Properties, setters and getters.
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
@@ -332,6 +331,8 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_parent"), &BTTask::get_parent);
 	ClassDB::bind_method(D_METHOD("get_status"), &BTTask::get_status);
 	ClassDB::bind_method(D_METHOD("get_elapsed_time"), &BTTask::get_elapsed_time);
+	ClassDB::bind_method(D_METHOD("get_custom_name"), &BTTask::get_custom_name);
+	ClassDB::bind_method(D_METHOD("set_custom_name", "p_name"), &BTTask::set_custom_name);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "set_agent", "get_agent");

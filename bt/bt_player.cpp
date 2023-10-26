@@ -90,7 +90,7 @@ void BTPlayer::update(double p_delta) {
 }
 
 void BTPlayer::restart() {
-	tree_instance->cancel();
+	tree_instance->abort();
 	set_active(true);
 }
 

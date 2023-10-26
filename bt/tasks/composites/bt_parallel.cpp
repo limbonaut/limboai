@@ -15,7 +15,7 @@
 
 void BTParallel::_enter() {
 	for (int i = 0; i < get_child_count(); i++) {
-		get_child(i)->cancel();
+		get_child(i)->abort();
 	}
 }
 
