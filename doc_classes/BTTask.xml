@@ -6,7 +6,7 @@
 	<description>
 		Base class for all [BehaviorTree] tasks. A task is a basic building block in a [BehaviorTree] that represents a specific behavior or control flow. Tasks are used to create complex behaviors by combining and nesting them in a hierarchy.
 		A task can be one of the following types: action, condition, composite, or decorator. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
-		Tasks perform their work and return their status using the [method _tick] method. Status values are defined in [enum BT.Status]. Tasks can be initialized using the [method _setup] method. See also [method _enter] & [method _exit].
+		Tasks perform their work and return their status using the [method _tick] method. Status values are defined in [enum BT.Status]. Tasks can be initialized using the [method _setup] method. See also [method _enter] &amp; [method _exit].
 		[b]Note:[/b] Do not extend [code]BTTask[/code] directly for your own tasks. Instead, extend one of the subtypes mentioned above.
 	</description>
 	<tutorials>
