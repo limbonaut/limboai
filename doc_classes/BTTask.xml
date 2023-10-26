@@ -52,6 +52,12 @@
 				[b]Note:[/b] Tasks perform their main function by implementing this method.
 			</description>
 		</method>
+		<method name="abort">
+			<return type="void" />
+			<description>
+				Resets the task and its children recursively. If a task is in the [code]RUNNING[/code] state, it is exited and its status is reset to [code]FRESH[/code].
+			</description>
+		</method>
 		<method name="add_child">
 			<return type="void" />
 			<param index="0" name="p_child" type="BTTask" />
