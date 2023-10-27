@@ -12,36 +12,42 @@
 			<return type="String" />
 			<param index="0" name="p_variable" type="String" />
 			<description>
-				Returns a string with a [Blackboard] variable name ready to be displayed or printed to console.
+				Produces a string with a [Blackboard] variable name that is formatted for display or console output.
 			</description>
 		</method>
 		<method name="get_status_name" qualifiers="const">
 			<return type="String" />
 			<param index="0" name="p_status" type="int" />
 			<description>
-				Returns name of a [BTTask] status code.
+				Returns a name of a [BTTask] status code.
 			</description>
 		</method>
 		<method name="get_task_icon" qualifiers="const">
 			<return type="Texture2D" />
 			<param index="0" name="p_class_or_script_path" type="String" />
 			<description>
-				Returns the icon texture associated with a task, given its class name or script resource path.
+				Returns the icon texture associated with a task based on its class name or script resource path.
 			</description>
 		</method>
 	</methods>
 	<constants>
 		<constant name="CHECK_EQUAL" value="0" enum="CheckType">
+			Equality Check.
 		</constant>
 		<constant name="CHECK_LESS_THAN" value="1" enum="CheckType">
+			Less Than Check.
 		</constant>
 		<constant name="CHECK_LESS_THAN_OR_EQUAL" value="2" enum="CheckType">
+			Less Than or Equal To Check.
 		</constant>
 		<constant name="CHECK_GREATER_THAN" value="3" enum="CheckType">
+			Greater Than Check.
 		</constant>
 		<constant name="CHECK_GREATER_THAN_OR_EQUAL" value="4" enum="CheckType">
+			Greater Than or Equal To Check
 		</constant>
 		<constant name="CHECK_NOT_EQUAL" value="5" enum="CheckType">
+			Inequality Check.
 		</constant>
 	</constants>
 </class>

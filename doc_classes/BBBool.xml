@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BBBool" inherits="BBParam" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Bool-type parameter to be used with BT tasks. See [BBParam].
+		Bool-type parameter for [BehaviorTree] tasks. See [BBParam].
 	</brief_description>
 	<description>
 	</description>

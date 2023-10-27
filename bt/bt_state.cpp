@@ -30,7 +30,7 @@ void BTState::_setup() {
 
 void BTState::_exit() {
 	ERR_FAIL_COND(tree_instance == nullptr);
-	tree_instance->cancel();
+	tree_instance->abort();
 }
 
 void BTState::_update(double p_delta) {

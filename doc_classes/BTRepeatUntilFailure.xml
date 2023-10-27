@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTRepeatUntilFailure" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that repeats child until [code]FAILURE[/code].
+		BT decorator that repeats its child task until [code]FAILURE[/code].
 	</brief_description>
 	<description>
-		BT decorator that repeats the child until [code]FAILURE[/code] status is returned.
-		Returns [code]RUNNING[/code] when the child returns [code]RUNNING[/code] or [code]SUCCESS[/code].
-		Returns [code]SUCCESS[/code] when the child returns [code]FAILURE[/code].
+		BTRepeatUntilFailure repeats its child task until it results in [code]FAILURE[/code].
+		Returns [code]RUNNING[/code] if the child task results in [code]RUNNING[/code] or [code]SUCCESS[/code].
+		Returns [code]SUCCESS[/code] if the child task results in [code]FAILURE[/code].
 	</description>
 	<tutorials>
 	</tutorials>

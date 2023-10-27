@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTDelay" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that delays execution of its child.
+		BT decorator that introduces a delay before executing its child task.
 	</brief_description>
 	<description>
-		BT decorator that delays execution of its child by [member seconds]. Returns [code]RUNNING[/code] during a period of delay.
+		BTDelay introduces a delay of [member seconds] before executing its child task. Returns [code]RUNNING[/code] during the delay period.
 	</description>
 	<tutorials>
 	</tutorials>

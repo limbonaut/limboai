@@ -185,7 +185,7 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 			CHECK(task->get_elapsed_time() == 0.0);
 		}
 		SUBCASE("When cancelled") {
-			task->cancel();
+			task->abort();
 			CHECK(task->get_elapsed_time() == 0.0);
 		}
 	}

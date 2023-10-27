@@ -4,8 +4,8 @@
 		BT decorator that creates a new [Blackboard] scope.
 	</brief_description>
 	<description>
-		BT decorator that creates a new [Blackboard] scope during initialization and fills it with data. See [Blackboard].
-		Returns status of the child execution.
+		BTNewScope creates a new [Blackboard] scope during initialization and populates it with data. See [Blackboard].
+		Returns the status of the child task execution.
 	</description>
 	<tutorials>
 	</tutorials>

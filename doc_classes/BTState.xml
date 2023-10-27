@@ -4,20 +4,19 @@
 		A state node for [LimboHSM] that hosts a [BehaviorTree].
 	</brief_description>
 	<description>
-		This state node instantiates and executes a [BehaviorTree] resource. Dispatches state machine event, when the task tree returns [code]SUCCESS[/code] or [code]FAILURE[/code]. Event names can be specified by [member success_event] and [member failure_event].
-		For more information about state machine events see [method LimboState.dispatch].
+		BTState is a [LimboState] node that manages a [BehaviorTree] to provide behavior logic for the state. It instantiates and runs the [BehaviorTree] resource, dispatching a state machine event upon [code]SUCCESS[/code] or [code]FAILURE[/code]. Event names are customizable through [member success_event] and [member failure_event]. For further details on state machine events, see [method LimboState.dispatch].
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="behavior_tree" type="BehaviorTree" setter="set_behavior_tree" getter="get_behavior_tree">
-			A [BehaviorTree] resource that contains state behavior.
+			A [BehaviorTree] resource that defines state behavior.
 		</member>
 		<member name="failure_event" type="String" setter="set_failure_event" getter="get_failure_event" default="&quot;failure&quot;">
-			HSM event that will be dispatched when the behavior tree returns [code]FAILURE[/code].
+			HSM event that will be dispatched when the behavior tree results in [code]FAILURE[/code]. See [method LimboState.dispatch].
 		</member>
 		<member name="success_event" type="String" setter="set_success_event" getter="get_success_event" default="&quot;success&quot;">
-			HSM event that will be dispatched when the behavior tree returns [code]SUCCESS[/code].
+			HSM event that will be dispatched when the behavior tree results in [code]SUCCESS[/code]. See [method LimboState.dispatch].
 		</member>
 	</members>
 </class>

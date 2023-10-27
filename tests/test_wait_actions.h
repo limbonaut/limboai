@@ -102,7 +102,7 @@ TEST_CASE("[Modules][LimboAI] BTRandomWait") {
 					num_undefined += 1;
 				} break;
 			}
-			wait->cancel();
+			wait->abort();
 		}
 
 		// * Expected ~500/500 SUCCESS/RUNNING.

@@ -479,6 +479,10 @@ void LimboAIEditor::_probability_popup_closed() {
 
 void LimboAIEditor::_misc_option_selected(int p_id) {
 	switch (p_id) {
+		case MISC_INTRODUCTION: {
+			ScriptEditor::get_singleton()->goto_help("class_name:BehaviorTree");
+			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+		} break;
 		case MISC_OPEN_DEBUGGER: {
 			ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
 			if (LimboDebuggerPlugin::get_singleton()->get_session_tab()->get_window_enabled()) {
@@ -540,7 +544,6 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			}
 
 			ScriptEditor::get_singleton()->open_file(template_path);
-
 		} break;
 	}
 }
@@ -746,6 +749,9 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->clear();
 
+	misc_menu->add_icon_item(theme_cache.open_doc_icon, TTR("Introduction"), MISC_INTRODUCTION);
+
+	misc_menu->add_separator();
 	misc_menu->add_icon_shortcut(theme_cache.open_debugger_icon, ED_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
 	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 

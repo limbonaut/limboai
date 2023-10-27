@@ -103,7 +103,7 @@ public:
 	virtual PackedStringArray get_configuration_warnings() const;
 
 	Status execute(double p_delta);
-	void cancel();
+	void abort();
 	Status get_status() const { return data.status; }
 	double get_elapsed_time() const { return data.elapsed; };
 

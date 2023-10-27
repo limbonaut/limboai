@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BBParam" inherits="Resource" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		A base class for typed parameters to be used with BT tasks.
+		A base class for LimboAI typed parameters.
 	</brief_description>
 	<description>
-		A base class for typed parameters.
-		BBParam can store a blackboard variable name or a raw value of specific type.
-		*Note*: Don't instantiate. Use specific subclasses instead.
+		A base class for LimboAI typed parameters, with the ability to reference a [Blackboard] variable or hold a raw value of a specific [enum Variant.Type].
+		[b]Note[/b]: Don't instantiate. Use specific subtypes instead.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -14,7 +13,7 @@
 		<method name="get_type" qualifiers="const">
 			<return type="int" enum="Variant.Type" />
 			<description>
-				Returns expected type of the parameter.
+				Returns the expected data type of the parameter.
 			</description>
 		</method>
 		<method name="get_value">
@@ -23,27 +22,27 @@
 			<param index="1" name="p_blackboard" type="Blackboard" />
 			<param index="2" name="p_default" type="Variant" default="null" />
 			<description>
-				Returns value of the parameter.
+				Returns the value of the parameter.
 			</description>
 		</method>
 	</methods>
 	<members>
 		<member name="saved_value" type="Variant" setter="set_saved_value" getter="get_saved_value" default="null">
-			A value that is saved with BBParam resource. The type of value is defined by [method get_type]. Provides the parameter's value, if [member value_source] is [constant SAVED_VALUE].
+			Stores the parameter value when [member value_source] is set to [constant SAVED_VALUE]. The data type of the value is determined by [method get_type].
 		</member>
 		<member name="value_source" type="int" setter="set_value_source" getter="get_value_source" enum="BBParam.ValueSource" default="0">
-			A source for the value of BBParam. See [enum ValueSource].
+			Specifies the source of the value for BBParam. See [enum ValueSource].
 		</member>
 		<member name="variable" type="String" setter="set_variable" getter="get_variable">
-			A name of [Blackboard] variable. It is used to retrieve the parameter's value, if [member value_source] is [constant BLACKBOARD_VAR].
+			Stores the name of a [Blackboard] variable when [member value_source] is set to [constant BLACKBOARD_VAR].
 		</member>
 	</members>
 	<constants>
 		<constant name="SAVED_VALUE" value="0" enum="ValueSource">
-			Value is stored directly with BBParam resource.
+			The value is stored directly within the BBParam resource.
 		</constant>
 		<constant name="BLACKBOARD_VAR" value="1" enum="ValueSource">
-			Value is referenced by a variable name and retrieved from the [Blackboard]. A variable name is stored with BBParam resource.
+			The value is referenced by a variable name and retrieved from the [Blackboard]. The variable name is stored within the BBParam resource.
 		</constant>
 	</constants>
 </class>

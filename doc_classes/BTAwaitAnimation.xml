@@ -4,9 +4,9 @@
 		BT action that waits for an animation to finish playing.
 	</brief_description>
 	<description>
-		BTAwaitAnimation waits for an animation on the specified [AnimationPlayer] node to finish playing and returns [code]SUCCESS[/code].
-		Returns [code]SUCCESS[/code] if the specified animation finished playing or if the specified animation is not currently playing.
-		Returns [code]FAILURE[/code] if the specified animation doesn't exist or the action failed to get [AnimationPlayer] instance.
+		BTAwaitAnimation action waits for an animation on the specified [AnimationPlayer] node to finish playing and returns [code]SUCCESS[/code].
+		Returns [code]SUCCESS[/code] if the specified animation has finished playing or if the specified animation is not currently playing.
+		Returns [code]FAILURE[/code] if the specified animation doesn't exist or if the action fails to get the [AnimationPlayer] node.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -18,7 +18,7 @@
 			Parameter that specifies the [AnimationPlayer] node.
 		</member>
 		<member name="max_time" type="float" setter="set_max_time" getter="get_max_time" default="1.0">
-			Maximum duration to wait for the animation to finish (in seconds).
+			The maximum duration to wait for the animation to complete (in seconds). If the animation doesn't finish within this time, BTAwaitAnimation will return [code]FAILURE[/code].
 		</member>
 	</members>
 </class>

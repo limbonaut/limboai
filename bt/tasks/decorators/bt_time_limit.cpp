@@ -26,7 +26,7 @@ BT::Status BTTimeLimit::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
 	Status status = get_child(0)->execute(p_delta);
 	if (status == RUNNING && get_elapsed_time() >= time_limit) {
-		get_child(0)->cancel();
+		get_child(0)->abort();
 		return FAILURE;
 	}
 	return status;

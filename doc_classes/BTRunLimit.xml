@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTRunLimit" inherits="BTDecorator" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		BT decorator that allows child's execution a limited number of times.
+		BT decorator that restricts the execution of its child a limited number of times.
 	</brief_description>
 	<description>
-		BT decorator that allows child's execution a limited number of times defined by [member run_limit].
-		Returns [code]FAILURE[/code], if a limit on executions is exceeded. Otherwise, returns child's status.
+		BTRunLimit restricts the execution of the child task to a maximum number of times, defined by [member run_limit].
+		Returns [code]FAILURE[/code] if the limit on executions is exceeded; otherwise, it returns the status of the child task.
 	</description>
 	<tutorials>
 	</tutorials>
 	<members>
 		<member name="run_limit" type="int" setter="set_run_limit" getter="get_run_limit" default="1">
-			A limit on number of times the child is allowed to be executed.
+			The maximum number of times the child is permitted to be executed.
 		</member>
 	</members>
 </class>
