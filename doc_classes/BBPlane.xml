@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BBPlane" inherits="BBParam" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-		Plane-type parameter to be used with BT tasks. See [BBParam].
+		Plane-type parameter for [BehaviorTree] tasks. See [BBParam].
 	</brief_description>
 	<description>
 	</description>
