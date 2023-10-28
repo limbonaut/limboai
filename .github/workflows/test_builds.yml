@@ -20,7 +20,7 @@ on:
 
 # Global settings
 env:
-  GODOT_TREEISH: 4.1.1-stable
+  GODOT_TREEISH: master
   SCONSFLAGS: verbose=yes warnings=extra werror=yes
   SCONS_CACHE_LIMIT: 7168
   DOTNET_NOLOGO: true
