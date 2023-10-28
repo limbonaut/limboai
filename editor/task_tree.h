@@ -13,7 +13,7 @@
 
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
-#include "scene/resources/style_box.h"
+#include "scene/resources/style_box_flat.h"
 
 class TaskTree : public Control {
 	GDCLASS(TaskTree, Control);
