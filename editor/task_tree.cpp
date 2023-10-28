@@ -15,6 +15,7 @@
 #include "modules/limboai/bt/tasks/composites/bt_probability_selector.h"
 #include "modules/limboai/util/limbo_utility.h"
 
+#include "core/object/script_language.h"
 #include "editor/editor_scale.h"
 
 //**** TaskTree

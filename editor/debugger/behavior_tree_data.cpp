@@ -11,6 +11,7 @@
 
 #include "behavior_tree_data.h"
 
+#include "core/object/script_language.h"
 #include "core/templates/list.h"
 
 //// BehaviorTreeData

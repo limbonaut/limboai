@@ -13,6 +13,7 @@
 
 #include "modules/limboai/bt/tasks/bt_task.h"
 
+#include "core/object/script_language.h"
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 
