@@ -44,8 +44,10 @@ _FORCE_INLINE_ String _get_script_template_path() {
 }
 
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
+	if (task_tree->get_bt().is_null()) {
+		return;
+	}
 	ERR_FAIL_COND(p_task.is_null());
-	ERR_FAIL_COND(task_tree->get_bt().is_null());
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Add BT Task"));
 	Ref<BTTask> parent = task_tree->get_selected();
