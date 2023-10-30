@@ -20,7 +20,7 @@
 #include "core/object/object.h"
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
-#include "scene/resources/style_box.h"
+#include "scene/resources/style_box_flat.h"
 #include "scene/resources/texture.h"
 
 class BehaviorTreeView : public Control {

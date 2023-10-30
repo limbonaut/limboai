@@ -27,7 +27,7 @@ namespace TestStopAnimation {
 TEST_CASE("[SceneTree][LimboAI] BTStopAnimation") {
 	AnimationPlayer *player = memnew(AnimationPlayer);
 	SceneTree::get_singleton()->get_root()->add_child(player);
-	player->set_process_callback(AnimationPlayer::AnimationProcessCallback::ANIMATION_PROCESS_IDLE);
+	player->set_callback_mode_process(AnimationMixer::ANIMATION_CALLBACK_MODE_PROCESS_IDLE);
 
 	Ref<AnimationLibrary> anim_lib = memnew(AnimationLibrary);
 	Ref<Animation> anim = memnew(Animation);
