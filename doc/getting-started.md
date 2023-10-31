@@ -26,7 +26,44 @@ Behavior Trees handle conditional logic using condition tasks. These tasks check
 
 Check out the `BTTask` class documentation in the editor, which provides the foundation for various building blocks of Behavior Trees.
 
-## Custom task example
+## Creating custom tasks in GDScript
+
+>**🛈 Note:** You can add a script template to your project with "Misc → Create script template" menu option.
+
+### Task anatomy
+```
+@tool
+extends BTAction
+
+# Task parameters.
+@export var parameter1: float
+@export var parameter2: Vector2
+
+## Note: Each method declaration is optional.
+## At minimum, you only need to define the "_tick" method.
+
+# Called to generate a display name for the task.
+func _generate_name() -> String:
+    return "MyTask"
+
+# Called to initialize the task.
+func _setup() -> void:
+    pass
+
+# Called when task is entered.
+func _enter() -> void:
+    pass
+
+# Called when task is exited.
+func _exit() -> void:
+    pass
+
+# Called each time this task is ticked (aka executed).
+func _tick(delta: float) -> Status:
+    return SUCCESS
+```
+
+### Custom task example
 
 ```gdscript
 @tool
@@ -51,7 +88,7 @@ func _generate_name() -> String:
 			LimboUtility.decorate_var(target_var)]
 
 
-# Called once to initialize the task.
+# Called to initialize the task.
 func _setup() -> void:
 	_min_distance_squared = distance_min * distance_min
 	_max_distance_squared = distance_max * distance_max
