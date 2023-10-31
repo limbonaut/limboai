@@ -32,8 +32,9 @@ Check out the `BTTask` class documentation in the editor, which provides the fou
 @tool
 extends BTCondition
 
-## InRange checks if agent is within a range of target.
-## Returns SUCCESS if agent is within a range of target;
+## InRange condition checks if the agent is within a range of target, defined by
+## distance_min and distance_max.
+## Returns SUCCESS if agent is within the defined range;
 ## otherwise, returns FAILURE.
 
 @export var distance_min: float
@@ -44,16 +45,19 @@ var _min_distance_squared: float
 var _max_distance_squared: float
 
 
+# Called to generate a display name for the task.
 func _generate_name() -> String:
 	return "InRange (%d, %d) of %s" % [distance_min, distance_max,
 			LimboUtility.decorate_var(target_var)]
 
 
+# Called once to initialize the task.
 func _setup() -> void:
 	_min_distance_squared = distance_min * distance_min
 	_max_distance_squared = distance_max * distance_max
 
 
+# Called when task is executed.
 func _tick(_delta: float) -> int:
 	var target: Node2D = blackboard.get_var(target_var, null)
 	if not is_instance_valid(target):
