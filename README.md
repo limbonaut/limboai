@@ -2,7 +2,9 @@ LimboAI - Behavior Trees and State Machines for Godot 4
 ---
 LimboAI is a C++ module for Godot Engine 4 that provides an implementation of Behavior Trees and State Machines, which can be used together to create complex AI behaviors.
 
->**🛈 Supported Godot Engine: 4.1**
+>**🛈 Supported Godot Engine: 4.2**
+
+>**🛈 Previously supported:** [godot-4.1](https://github.com/limbonaut/limboai/tree/godot-4.1)
 
 >**🛈 License**: Use of this source code is governed by an MIT-style license that can be found in the LICENSE file or at https://opensource.org/licenses/MIT.
 
@@ -27,7 +29,7 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
     - Evaluate the performance of your trees with custom performance monitors.
 
-- **Hierarchical State Machine (HSM):**
+- **Hierarchical State Machines (HSM):**
     - Extend the `LimboState` class to implement state logic.
     - The `LimboHSM` node serves as a state machine that manages `LimboState` instances and transitions.
     - `LimboHSM` is a state itself and can be nested within other `LimboHSM` instances.
@@ -38,26 +40,18 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 - **Tested:** Behavior tree tasks and HSM have been covered by unit tests.
 
-## How to Get Started
+## Getting LimboAI
 
-You have two options to start using this module:
+### Precompiled builds
 
-1. Download precompiled builds:
-    - For the most recent builds, navigate to "Actions → All Builds" and scroll down until you find the "Artifacts" section.
-    - For release builds, check "Releases" for download links.
-2. Compile the module on your own (refer to the next section).
+- For the most recent builds, navigate to "Actions → All Builds", select a build from the list, and scroll down until you find the "Artifacts" section.
+- For release builds, check [Releases](https://github.com/limbonaut/limboai/releases).
 
-## Compiling
-
-> 🛈 Precompiled builds are available in "Actions → All Builds".
-
-To incorporate this module, you'll need to build Godot Engine from source with LimboAI module included.
-
-Building From Source:
+### Compiling from source
 
 - Download the Godot Engine source code and put this module source into the `modules/limboai` directory.
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
-- If you plan to export a game utilizing the LimboAI module, you'll need to build export templates as well.
+- If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 
 ## Contributing
 
