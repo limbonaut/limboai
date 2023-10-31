@@ -9,6 +9,7 @@ on:
       - "LICENSE"
       - "**/*.png"
       - "demo/*"
+      - "doc/*"
 
   pull_request:
     branches: [ master ]
