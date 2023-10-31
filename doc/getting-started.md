@@ -31,7 +31,7 @@ Check out the `BTTask` class documentation in the editor, which provides the fou
 >**🛈 Note:** You can add a script template to your project with "Misc → Create script template" menu option.
 
 ### Task anatomy
-```
+```gdscript
 @tool
 extends BTAction
 
@@ -42,7 +42,7 @@ extends BTAction
 ## Note: Each method declaration is optional.
 ## At minimum, you only need to define the "_tick" method.
 
-# Called to generate a display name for the task.
+# Called to generate a display name for the task (requires @tool).
 func _generate_name() -> String:
     return "MyTask"
 
