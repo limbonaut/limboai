@@ -1,13 +1,20 @@
 # Getting Started
 
-> **🛈 Getting the module:** [README: Getting LimboAI](../README.md#getting-limboai).
+> **🛈 See also:** [**How to get LimboAI**](../README.md#getting-limboai).
 
+- [Getting Started](#getting-started)
+	- [TL;DR](#tldr)
+	- [Introduction to Behavior Trees](#introduction-to-behavior-trees)
+	- [Creating custom tasks in GDScript](#creating-custom-tasks-in-gdscript)
+		- [Task anatomy](#task-anatomy)
+		- [Custom task example](#custom-task-example)
 
 ## TL;DR
 
 - To create your own actions, extend the `BTAction` class.
 - To create your own conditions, extend the `BTCondition` class.
-- Use script template (available in "Misc → Create script template")
+- In-editor class documentation is available. Try searching `BTTask` and `BehaviorTree`.
+- Add a script template with "Misc → Create script template".
 
 
 ## Introduction to Behavior Trees

@@ -46,8 +46,8 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 ### Precompiled builds
 
-- For the most recent builds, navigate to "Actions → All Builds", select a build from the list, and scroll down until you find the "Artifacts" section.
-- For release builds, check [Releases](https://github.com/limbonaut/limboai/releases).
+- For the most recent builds, navigate to **Actions** → [**All Builds**](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml), select a build from the list, and scroll down until you find the **Artifacts** section.
+- For release builds, check [**Releases**](https://github.com/limbonaut/limboai/releases).
 
 ### Compiling from source
 
@@ -55,6 +55,14 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
+
+## Using the module
+
+<!-- - [Getting Started](./doc/getting-started.md#getting-started) -->
+- [Introduction to Behavior Trees](./doc/getting-started.md#introduction-to-behavior-trees)
+- [Creating custom tasks in GDScript](./doc/getting-started.md#creating-custom-tasks-in-gdscript)
+    - [Task anatomy](./doc/getting-started.md#task-anatomy)
+    - [Custom task example](./doc/getting-started.md#custom-task-example)
 
 ## Contributing
 
