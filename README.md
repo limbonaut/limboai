@@ -8,7 +8,9 @@ LimboAI is a C++ module for Godot Engine 4 that provides an implementation of Be
 
 >**🛈 License**: Use of this source code is governed by an MIT-style license that can be found in the LICENSE file or at https://opensource.org/licenses/MIT.
 
-A Behavior Tree (BT) is a powerful hierarchical structure used to model and control the behavior of agents in a game. It comprises tasks that represent specific actions or decision-making rules. When executed, the Behavior Tree starts from the root task and traverses down to the leaf tasks, which correspond to the actual actions or behaviors that the agent should perform. For detailed information on how various BT tasks function, please refer to the class documentation. The BTTask class serves as a good starting point.
+A Behavior Tree (BT) is a powerful hierarchical structure used to model and control the behavior of agents in a game. It comprises tasks that represent specific actions or decision-making rules. When executed, the Behavior Tree starts from the root task and traverses down to the leaf tasks, which correspond to the actual actions or behaviors that the agent should perform. For detailed information on how various BT tasks function, please refer to the class documentation. The BehaviorTree class serves as a good starting point.
+
+> 🛈 See also: [Introduction to Behavior Trees](./doc/getting-started.md).
 
 ![Textured screenshot](doc/images/behavior-tree-editor.png)
 
@@ -52,6 +54,7 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 - Download the Godot Engine source code and put this module source into the `modules/limboai` directory.
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
+- To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
 
 ## Contributing
 
