@@ -19,17 +19,17 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 ## Features
 
 - **Behavior Trees (BT):**
-    - Use the `BTPlayer` node to execute `BehaviorTree` resources.
-    - Easily create, edit, and save `BehaviorTree` resources within the editor.
-    - Combine and nest tasks in a hierarchy to create complex behaviors.
-    - Control the flow of execution using composite, decorator, and condition tasks.
-    - Write your own tasks by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
-    - Built-in class documentation. Check out the `BehaviorTree` and `BTTask` class documentation to get started.
-    - Utilize the `Blackboard` for seamless data sharing between tasks.
+    - Easily create, edit, and save `BehaviorTree` resources in the editor.
+    - Execute `BehaviorTree` resources using the `BTPlayer` node.
+    - Create complex behaviors by combining and nesting tasks in a hierarchy.
+    - Control execution flow using composite, decorator, and condition tasks.
+    - [Create custom tasks](./doc/getting-started.md#creating-custom-tasks-in-gdscript) by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
+    - Built-in class documentation. Check out the `BehaviorTree` class documentation to get started.
+    - Share data seamlessly between tasks using the `Blackboard`.
     - Use the `BTSubtree` task to execute a tree from a different resource file, promoting organization and reusability.
     - Blackboard scopes separate namespaces of variables from subtrees and enable advanced techniques like sharing data among agents in a group.
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
-    - Evaluate the performance of your trees with custom performance monitors.
+    - Monitor tree performance with custom performance monitors.
 
 - **Hierarchical State Machines (HSM):**
     - Extend the `LimboState` class to implement state logic.
@@ -37,10 +37,10 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - `LimboHSM` is a state itself and can be nested within other `LimboHSM` instances.
     - Event-based: Transitions are associated with events and are triggered by the state machine when the relevant event is dispatched, allowing for better decoupling of transitions from state logic.
     - Combine state machines with behavior trees using `BTState` for advanced reactive AI.
-    - Delegation: Instead of extending `LimboState`, utilize the vanilla `LimboState` and delegate implementation to provided callback functions. Perfect for game jams and quick prototyping.
-    - 🛈 Note: Currently, state machine transition setup and initialization must be done through code as there is no GUI editor for state machines.
+    - Delegation Optiona: Using the vanilla `LimboState`, delegate the implementation to your callback functions, making it perfect for rapid prototyping and game jams.
+    - 🛈 Note: State machine setup and initialization require code; there is no GUI editor.
 
-- **Tested:** Behavior tree tasks and HSM have been covered by unit tests.
+- **Tested:** Behavior tree tasks and HSM are covered by unit tests.
 
 ## Getting LimboAI
 
@@ -73,9 +73,9 @@ All contributions are welcome! Feel free to open issues with bug reports and fea
 Features and improvements that may be implemented in the future:
 - ~~Providing precompiled builds for download.~~ 🗸
 - ~~Tests and CI.~~ 🗸
+- Expanding the library of commonly useful tasks.
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of Behavior Trees in the Visual Debugger.
-- Expanding the library of tasks that can be optionally included in the build.
 - Implementing an ignore list for tasks that users may want to hide in the task panel.
 - GUI editor for state machines.
 - Supporting GDExtension in the future, once it matures.
