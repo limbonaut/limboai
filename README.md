@@ -26,8 +26,8 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - [Create custom tasks](./doc/getting-started.md#creating-custom-tasks-in-gdscript) by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
     - Built-in class documentation. Check out the `BehaviorTree` class documentation to get started.
     - Share data seamlessly between tasks using the `Blackboard`.
+    - Blackboard scopes isolate variable namespaces and enable advanced techniques like sharing data between agents in a group.
     - Use the `BTSubtree` task to execute a tree from a different resource file, promoting organization and reusability.
-    - Blackboard scopes separate namespaces of variables from subtrees and enable advanced techniques like sharing data among agents in a group.
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
     - Monitor tree performance with custom performance monitors.
 
@@ -37,7 +37,7 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - `LimboHSM` is a state itself and can be nested within other `LimboHSM` instances.
     - Event-based: Transitions are associated with events and are triggered by the state machine when the relevant event is dispatched, allowing for better decoupling of transitions from state logic.
     - Combine state machines with behavior trees using `BTState` for advanced reactive AI.
-    - Delegation Optiona: Using the vanilla `LimboState`, delegate the implementation to your callback functions, making it perfect for rapid prototyping and game jams.
+    - Delegation Option: Using the vanilla `LimboState`, delegate the implementation to your callback functions, making it perfect for rapid prototyping and game jams.
     - 🛈 Note: State machine setup and initialization require code; there is no GUI editor.
 
 - **Tested:** Behavior tree tasks and HSM are covered by unit tests.
