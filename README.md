@@ -1,6 +1,10 @@
-LimboAI - Behavior Trees and State Machines for Godot 4
----
-LimboAI is a C++ module for Godot Engine 4 that provides an implementation of Behavior Trees and State Machines, which can be used together to create complex AI behaviors.
+# LimboAI - Behavior Trees and State Machines for Godot 4
+
+<p align="center">
+  <img src="doc/images/logo.svg" width="400" alt="LimboAI logo">
+</p>
+
+**LimboAI** is a C++ module for **Godot Engine 4** that provides an implementation of Behavior Trees and State Machines, which can be used together to create complex AI behaviors.
 
 >**🛈 Supported Godot Engine: 4.2**
 
