@@ -13,6 +13,7 @@
 
 #include "modules/limboai/bt/tasks/bt_task.h"
 
+#include "core/error/error_macros.h"
 #include "core/object/script_language.h"
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
@@ -55,26 +56,41 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 #ifdef TOOLS_ENABLED
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
+	Ref<Theme> theme = EditorNode::get_singleton()->get_editor_theme();
+	ERR_FAIL_COND_V(theme.is_null(), nullptr);
+
 	if (p_class_or_script_path.begins_with("res:")) {
 		Ref<Script> s = ResourceLoader::load(p_class_or_script_path, "Script");
-		return EditorNode::get_singleton()->get_object_icon(s.ptr(), "BTTask");
+		if (s.is_null()) {
+			return theme->get_icon(SNAME("FileBroken"), SNAME("EditorIcons"));
+		}
+
+		EditorData &ed = EditorNode::get_editor_data();
+		Ref<Texture2D> script_icon = ed.get_script_icon(s);
+		if (script_icon.is_valid()) {
+			return script_icon;
+		}
+
+		StringName base_type = s->get_instance_base_type();
+		if (theme->has_icon(base_type, SNAME("EditorIcons"))) {
+			return theme->get_icon(base_type, SNAME("EditorIcons"));
+		}
 	}
 
-	Control *gui_base = EditorNode::get_singleton()->get_gui_base();
-	if (gui_base->has_theme_icon(p_class_or_script_path, SNAME("EditorIcons"))) {
-		return gui_base->get_theme_icon(p_class_or_script_path, SNAME("EditorIcons"));
+	if (theme->has_icon(p_class_or_script_path, SNAME("EditorIcons"))) {
+		return theme->get_icon(p_class_or_script_path, SNAME("EditorIcons"));
 	}
 
 	// Use an icon of one of the base classes: look up max 3 parents.
 	StringName class_name = p_class_or_script_path;
 	for (int i = 0; i < 3; i++) {
 		class_name = ClassDB::get_parent_class(class_name);
-		if (gui_base->has_theme_icon(class_name, SNAME("EditorIcons"))) {
-			return gui_base->get_theme_icon(class_name, SNAME("EditorIcons"));
+		if (theme->has_icon(class_name, SNAME("EditorIcons"))) {
+			return theme->get_icon(class_name, SNAME("EditorIcons"));
 		}
 	}
 	// Return generic resource icon as a fallback.
-	return gui_base->get_theme_icon(SNAME("Resource"), SNAME("EditorIcons"));
+	return theme->get_icon(SNAME("Resource"), SNAME("EditorIcons"));
 #endif // TOOLS_ENABLED
 
 	// * Class icons are not available at runtime as they are part of the editor theme.
