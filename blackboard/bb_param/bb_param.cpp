@@ -18,6 +18,7 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/variant/variant.h"
+#include "core/variant/variant_utility.h"
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
@@ -33,7 +34,13 @@ Variant BBParam::get_saved_value() {
 }
 
 void BBParam::set_saved_value(Variant p_value) {
-	saved_value = p_value;
+	if (p_value.get_type() == get_type()) {
+		saved_value = p_value;
+	} else if (p_value.get_type() == Variant::NIL) {
+		_assign_default_value();
+	} else {
+		saved_value = VariantUtilityFunctions::type_convert(p_value, get_type());
+	}
 	_update_name();
 	emit_changed();
 }
