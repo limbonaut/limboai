@@ -27,32 +27,44 @@ env:
   SCONS_CACHE_LIMIT: 4096
   # With `lto=full` VM seems to run out of ram and build fails
   SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra werror=yes tests=no
-  EM_VERSION: 3.1.18
+  EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
 
 jobs:
+  # Workaround for issue: https://github.com/mymindstorm/setup-emsdk/issues/20
+  init-emscripten:
+    name: Init Emscripten
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: Set up Emscripten
+        uses: mymindstorm/setup-emsdk@v12
+        with:
+          version: ${{env.EM_VERSION}}
+          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
+
   web-builds:
     runs-on: "ubuntu-20.04"
     name: ${{ matrix.name }}
+    needs: init-emscripten
     strategy:
       fail-fast: false
       matrix:
         include:
           - name: Template (release)
             target: template_release
-            dlink_enabled: no
+            dlink_enabled: false
 
           - name: Template (release, dlink_enabled=true)
             target: template_release
-            dlink_enabled: yes
+            dlink_enabled: true
 
           - name: Template (debug)
             target: template_debug
-            dlink_enabled: no
+            dlink_enabled: false
 
           - name: Template (debug, dlink_enabled=true)
             target: template_debug
-            dlink_enabled: yes
+            dlink_enabled: true
 
     env:
       CACHE_NAME: godot.web.${{matrix.target}}${{  matrix.dlink_enabled == true && '.dlink' || ''  }}
@@ -73,7 +85,13 @@ jobs:
       # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
-      - name: Set up Emscripten latest
+      - name: Set up Emscripten cache
+        uses: actions/cache@v3
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{runner.os}}-libs
+
+      - name: Set up Emscripten
         uses: mymindstorm/setup-emsdk@v12
         with:
           version: ${{env.EM_VERSION}}
