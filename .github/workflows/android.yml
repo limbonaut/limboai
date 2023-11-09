@@ -74,13 +74,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
@@ -132,13 +132,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: modules/limboai
           ref: ${{ inputs.limboai-treeish }}
