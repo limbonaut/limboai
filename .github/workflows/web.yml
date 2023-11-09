@@ -85,11 +85,11 @@ jobs:
       # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
-      - name: Set up Emscripten cache
-        uses: actions/cache@v3
-        with:
-          path: ${{env.EM_CACHE_FOLDER}}
-          key: ${{env.EM_VERSION}}-${{runner.os}}-libs
+      # - name: Set up Emscripten cache
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{env.EM_CACHE_FOLDER}}
+      #     key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
         uses: mymindstorm/setup-emsdk@v12
