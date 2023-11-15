@@ -97,7 +97,7 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	return nullptr;
 }
 
-String LimboUtility::get_check_operator_string(CheckType p_check_type) {
+String LimboUtility::get_check_operator_string(CheckType p_check_type) const {
 	switch (p_check_type) {
 		case LimboUtility::CheckType::CHECK_EQUAL: {
 			return "==";
@@ -149,6 +149,88 @@ bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_val
 	}
 }
 
+String LimboUtility::get_operation_string(Operation p_operation) const {
+	switch (p_operation) {
+		case OP_NONE: {
+			return "";
+		} break;
+		case OP_ADDITION: {
+			return "+";
+		} break;
+		case OP_SUBTRACTION: {
+			return "-";
+		} break;
+		case OP_MULTIPLICATION: {
+			return "*";
+		} break;
+		case OP_DIVISION: {
+			return "/";
+		} break;
+		case OP_MODULO: {
+			return "%";
+		} break;
+		case OP_POWER: {
+			return "**";
+		} break;
+		case OP_BIT_SHIFT_LEFT: {
+			return "<<";
+		} break;
+		case OP_BIT_SHIFT_RIGHT: {
+			return ">>";
+		} break;
+		case OP_BIT_AND: {
+			return "&";
+		} break;
+		case OP_BIT_OR: {
+			return "|";
+		} break;
+		case OP_BIT_XOR: {
+			return "^";
+		} break;
+	}
+}
+
+Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
+	switch (p_operation) {
+		case OP_NONE: {
+			return right_value;
+		} break;
+		case OP_ADDITION: {
+			return Variant::evaluate(Variant::OP_ADD, left_value, right_value);
+		} break;
+		case OP_SUBTRACTION: {
+			return Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
+		} break;
+		case OP_MULTIPLICATION: {
+			return Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
+		} break;
+		case OP_DIVISION: {
+			return Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
+		} break;
+		case OP_MODULO: {
+			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+		} break;
+		case OP_POWER: {
+			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+		} break;
+		case OP_BIT_SHIFT_LEFT: {
+			return Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
+		} break;
+		case OP_BIT_SHIFT_RIGHT: {
+			return Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
+		} break;
+		case OP_BIT_AND: {
+			return Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
+		} break;
+		case OP_BIT_OR: {
+			return Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
+		} break;
+		case OP_BIT_XOR: {
+			return Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
+		} break;
+	}
+}
+
 void LimboUtility::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decorate_var", "p_variable"), &LimboUtility::decorate_var);
 	ClassDB::bind_method(D_METHOD("get_status_name", "p_status"), &LimboUtility::get_status_name);
@@ -160,6 +242,19 @@ void LimboUtility::_bind_methods() {
 	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN);
 	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN_OR_EQUAL);
 	BIND_ENUM_CONSTANT(CHECK_NOT_EQUAL);
+
+	BIND_ENUM_CONSTANT(OP_NONE);
+	BIND_ENUM_CONSTANT(OP_ADDITION);
+	BIND_ENUM_CONSTANT(OP_SUBTRACTION);
+	BIND_ENUM_CONSTANT(OP_MULTIPLICATION);
+	BIND_ENUM_CONSTANT(OP_DIVISION);
+	BIND_ENUM_CONSTANT(OP_MODULO);
+	BIND_ENUM_CONSTANT(OP_POWER);
+	BIND_ENUM_CONSTANT(OP_BIT_SHIFT_LEFT);
+	BIND_ENUM_CONSTANT(OP_BIT_SHIFT_RIGHT);
+	BIND_ENUM_CONSTANT(OP_BIT_AND);
+	BIND_ENUM_CONSTANT(OP_BIT_OR);
+	BIND_ENUM_CONSTANT(OP_BIT_XOR);
 }
 
 LimboUtility::LimboUtility() {
