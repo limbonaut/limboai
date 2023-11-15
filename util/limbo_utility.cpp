@@ -211,7 +211,7 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
 		} break;
 		case OPERATION_POWER: {
-			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+			return Variant::evaluate(Variant::OP_POWER, left_value, right_value);
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
 			return Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);

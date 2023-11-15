@@ -15,6 +15,7 @@
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/variant/callable.h"
+#include "core/variant/variant.h"
 
 String BTSetVar::_generate_name() const {
 	if (variable.is_empty()) {
@@ -39,6 +40,7 @@ BT::Status BTSetVar::_tick(double p_delta) {
 		Variant left_value = get_blackboard()->get_var(variable, error_result);
 		ERR_FAIL_COND_V_MSG(left_value == error_result, FAILURE, vformat("BTSetVar: Failed to get \"%s\" blackboard variable. Returning FAILURE.", variable));
 		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
+		ERR_FAIL_COND_V_MSG(result == Variant(), FAILURE, "BTSetVar: Operation not valid. Returning FAILURE.");
 	}
 	get_blackboard()->set_var(variable, result);
 	return SUCCESS;
