@@ -151,40 +151,40 @@ bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_val
 
 String LimboUtility::get_operation_string(Operation p_operation) const {
 	switch (p_operation) {
-		case OP_NONE: {
+		case OPERATION_NONE: {
 			return "";
 		} break;
-		case OP_ADDITION: {
+		case OPERATION_ADDITION: {
 			return "+";
 		} break;
-		case OP_SUBTRACTION: {
+		case OPERATION_SUBTRACTION: {
 			return "-";
 		} break;
-		case OP_MULTIPLICATION: {
+		case OPERATION_MULTIPLICATION: {
 			return "*";
 		} break;
-		case OP_DIVISION: {
+		case OPERATION_DIVISION: {
 			return "/";
 		} break;
-		case OP_MODULO: {
+		case OPERATION_MODULO: {
 			return "%";
 		} break;
-		case OP_POWER: {
+		case OPERATION_POWER: {
 			return "**";
 		} break;
-		case OP_BIT_SHIFT_LEFT: {
+		case OPERATION_BIT_SHIFT_LEFT: {
 			return "<<";
 		} break;
-		case OP_BIT_SHIFT_RIGHT: {
+		case OPERATION_BIT_SHIFT_RIGHT: {
 			return ">>";
 		} break;
-		case OP_BIT_AND: {
+		case OPERATION_BIT_AND: {
 			return "&";
 		} break;
-		case OP_BIT_OR: {
+		case OPERATION_BIT_OR: {
 			return "|";
 		} break;
-		case OP_BIT_XOR: {
+		case OPERATION_BIT_XOR: {
 			return "^";
 		} break;
 	}
@@ -192,40 +192,40 @@ String LimboUtility::get_operation_string(Operation p_operation) const {
 
 Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
 	switch (p_operation) {
-		case OP_NONE: {
+		case OPERATION_NONE: {
 			return right_value;
 		} break;
-		case OP_ADDITION: {
+		case OPERATION_ADDITION: {
 			return Variant::evaluate(Variant::OP_ADD, left_value, right_value);
 		} break;
-		case OP_SUBTRACTION: {
+		case OPERATION_SUBTRACTION: {
 			return Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
 		} break;
-		case OP_MULTIPLICATION: {
+		case OPERATION_MULTIPLICATION: {
 			return Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
 		} break;
-		case OP_DIVISION: {
+		case OPERATION_DIVISION: {
 			return Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
 		} break;
-		case OP_MODULO: {
+		case OPERATION_MODULO: {
 			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
 		} break;
-		case OP_POWER: {
+		case OPERATION_POWER: {
 			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
 		} break;
-		case OP_BIT_SHIFT_LEFT: {
+		case OPERATION_BIT_SHIFT_LEFT: {
 			return Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
 		} break;
-		case OP_BIT_SHIFT_RIGHT: {
+		case OPERATION_BIT_SHIFT_RIGHT: {
 			return Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
 		} break;
-		case OP_BIT_AND: {
+		case OPERATION_BIT_AND: {
 			return Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
 		} break;
-		case OP_BIT_OR: {
+		case OPERATION_BIT_OR: {
 			return Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
 		} break;
-		case OP_BIT_XOR: {
+		case OPERATION_BIT_XOR: {
 			return Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
 		} break;
 	}
@@ -243,18 +243,18 @@ void LimboUtility::_bind_methods() {
 	BIND_ENUM_CONSTANT(CHECK_GREATER_THAN_OR_EQUAL);
 	BIND_ENUM_CONSTANT(CHECK_NOT_EQUAL);
 
-	BIND_ENUM_CONSTANT(OP_NONE);
-	BIND_ENUM_CONSTANT(OP_ADDITION);
-	BIND_ENUM_CONSTANT(OP_SUBTRACTION);
-	BIND_ENUM_CONSTANT(OP_MULTIPLICATION);
-	BIND_ENUM_CONSTANT(OP_DIVISION);
-	BIND_ENUM_CONSTANT(OP_MODULO);
-	BIND_ENUM_CONSTANT(OP_POWER);
-	BIND_ENUM_CONSTANT(OP_BIT_SHIFT_LEFT);
-	BIND_ENUM_CONSTANT(OP_BIT_SHIFT_RIGHT);
-	BIND_ENUM_CONSTANT(OP_BIT_AND);
-	BIND_ENUM_CONSTANT(OP_BIT_OR);
-	BIND_ENUM_CONSTANT(OP_BIT_XOR);
+	BIND_ENUM_CONSTANT(OPERATION_NONE);
+	BIND_ENUM_CONSTANT(OPERATION_ADDITION);
+	BIND_ENUM_CONSTANT(OPERATION_SUBTRACTION);
+	BIND_ENUM_CONSTANT(OPERATION_MULTIPLICATION);
+	BIND_ENUM_CONSTANT(OPERATION_DIVISION);
+	BIND_ENUM_CONSTANT(OPERATION_MODULO);
+	BIND_ENUM_CONSTANT(OPERATION_POWER);
+	BIND_ENUM_CONSTANT(OPERATION_BIT_SHIFT_LEFT);
+	BIND_ENUM_CONSTANT(OPERATION_BIT_SHIFT_RIGHT);
+	BIND_ENUM_CONSTANT(OPERATION_BIT_AND);
+	BIND_ENUM_CONSTANT(OPERATION_BIT_OR);
+	BIND_ENUM_CONSTANT(OPERATION_BIT_XOR);
 }
 
 LimboUtility::LimboUtility() {

@@ -26,7 +26,7 @@ class BTSetVar : public BTAction {
 private:
 	String variable;
 	Ref<BBVariant> value;
-	LimboUtility::Operation operation = LimboUtility::OP_NONE;
+	LimboUtility::Operation operation = LimboUtility::OPERATION_NONE;
 
 protected:
 	static void _bind_methods();

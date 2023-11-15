@@ -33,9 +33,9 @@ BT::Status BTSetVar::_tick(double p_delta) {
 	Variant error_result = SNAME("Error: BTSetVar failed to get value!");
 	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_result);
 	ERR_FAIL_COND_V_MSG(right_value == error_result, FAILURE, "BTSetVar: Failed to get parameter value. Returning FAILURE.");
-	if (operation == LimboUtility::OP_NONE) {
+	if (operation == LimboUtility::OPERATION_NONE) {
 		result = right_value;
-	} else if (operation != LimboUtility::OP_NONE) {
+	} else if (operation != LimboUtility::OPERATION_NONE) {
 		Variant left_value = get_blackboard()->get_var(variable, error_result);
 		ERR_FAIL_COND_V_MSG(left_value == error_result, FAILURE, vformat("BTSetVar: Failed to get \"%s\" blackboard variable. Returning FAILURE.", variable));
 		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
@@ -83,5 +83,5 @@ void BTSetVar::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable"), "set_variable", "get_variable");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "value", PROPERTY_HINT_RESOURCE_TYPE, "BBVariant"), "set_value", "get_value");
-	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Addition,Subtraction,Multiplication,Division,Modulo,Power,Bit Shift Left,Bit Shift Right,Bit AND,Bit OR,Bit XOR"), "set_operation", "get_operation");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Addition,Subtraction,Multiplication,Division,Modulo,Power,Bitwise Shift Left,Bitwise Shift Right,Bitwise AND,Bitwise OR,Bitwise XOR"), "set_operation", "get_operation");
 }

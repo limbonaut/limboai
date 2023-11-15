@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<class name="LimboUtility" inherits="Object" version="4.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+<class name="LimboUtility" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
 		Helper functions for LimboAI.
 	</brief_description>
@@ -48,6 +48,42 @@
 		</constant>
 		<constant name="CHECK_NOT_EQUAL" value="5" enum="CheckType">
 			Inequality Check.
+		</constant>
+		<constant name="OPERATION_NONE" value="0" enum="Operation">
+			No operation.
+		</constant>
+		<constant name="OPERATION_ADDITION" value="1" enum="Operation">
+			Arithmetic addition.
+		</constant>
+		<constant name="OPERATION_SUBTRACTION" value="2" enum="Operation">
+			Arithmetic subtraction.
+		</constant>
+		<constant name="OPERATION_MULTIPLICATION" value="3" enum="Operation">
+			Arithmetic multiplication.
+		</constant>
+		<constant name="OPERATION_DIVISION" value="4" enum="Operation">
+			Arithmetic division.
+		</constant>
+		<constant name="OPERATION_MODULO" value="5" enum="Operation">
+			Produces the remainder of an integer division.
+		</constant>
+		<constant name="OPERATION_POWER" value="6" enum="Operation">
+			Multiply [code]a[/code] by itself [code]b[/code] times.
+		</constant>
+		<constant name="OPERATION_BIT_SHIFT_LEFT" value="7" enum="Operation">
+			Bitwise left shift.
+		</constant>
+		<constant name="OPERATION_BIT_SHIFT_RIGHT" value="8" enum="Operation">
+			Bitwise right shift.
+		</constant>
+		<constant name="OPERATION_BIT_AND" value="9" enum="Operation">
+			Bitwise AND.
+		</constant>
+		<constant name="OPERATION_BIT_OR" value="10" enum="Operation">
+			Bitwise OR.
+		</constant>
+		<constant name="OPERATION_BIT_XOR" value="11" enum="Operation">
+			Bitwise XOR.
 		</constant>
 	</constants>
 </class>
