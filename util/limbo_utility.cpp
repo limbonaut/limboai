@@ -188,6 +188,7 @@ String LimboUtility::get_operation_string(Operation p_operation) const {
 			return "^";
 		} break;
 	}
+	return "";
 }
 
 Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
@@ -229,6 +230,7 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 			return Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
 		} break;
 	}
+	return Variant();
 }
 
 void LimboUtility::_bind_methods() {
