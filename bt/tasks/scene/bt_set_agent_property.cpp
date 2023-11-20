@@ -24,6 +24,11 @@ void BTSetAgentProperty::set_value(Ref<BBVariant> p_value) {
 	}
 }
 
+void BTSetAgentProperty::set_operation(LimboUtility::Operation p_operation) {
+	operation = p_operation;
+	emit_changed();
+}
+
 PackedStringArray BTSetAgentProperty::get_configuration_warnings() const {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (property == StringName()) {
@@ -48,13 +53,22 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(property == StringName(), FAILURE, "BTSetAgentProperty: `property` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 
+	Variant result;
 	StringName error_value = SNAME("ErrorGettingValue");
-	Variant v = value->get_value(get_agent(), get_blackboard(), error_value);
-	ERR_FAIL_COND_V_MSG(v == Variant(error_value), FAILURE, "BTSetAgentProperty: Couldn't get value of value-parameter.");
-
+	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_value);
+	ERR_FAIL_COND_V_MSG(right_value == Variant(error_value), FAILURE, "BTSetAgentProperty: Couldn't get value of value-parameter.");
 	bool r_valid;
-	get_agent()->set(property, v, &r_valid);
-	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, v));
+	if (operation == LimboUtility::OPERATION_NONE) {
+		result = right_value;
+	} else {
+		Variant left_value = get_agent()->get(property, &r_valid);
+		ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Failed to get agent's \"%s\" property. Returning FAILURE.", property));
+		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
+		ERR_FAIL_COND_V_MSG(result == Variant(), FAILURE, "BTSetAgentProperty: Operation not valid. Returning FAILURE.");
+	}
+
+	get_agent()->set(property, result, &r_valid);
+	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, result));
 	return SUCCESS;
 }
 
@@ -63,7 +77,10 @@ void BTSetAgentProperty::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_property"), &BTSetAgentProperty::get_property);
 	ClassDB::bind_method(D_METHOD("set_value", "p_value"), &BTSetAgentProperty::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &BTSetAgentProperty::get_value);
+	ClassDB::bind_method(D_METHOD("set_operation", "p_operation"), &BTSetAgentProperty::set_operation);
+	ClassDB::bind_method(D_METHOD("get_operation"), &BTSetAgentProperty::get_operation);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "property"), "set_property", "get_property");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "value", PROPERTY_HINT_RESOURCE_TYPE, "BBVariant"), "set_value", "get_value");
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "operation", PROPERTY_HINT_ENUM, "None,Addition,Subtraction,Multiplication,Division,Modulo,Power,Bitwise Shift Left,Bitwise Shift Right,Bitwise AND,Bitwise OR,Bitwise XOR"), "set_operation", "get_operation");
 }
