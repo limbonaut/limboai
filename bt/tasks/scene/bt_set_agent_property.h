@@ -15,6 +15,7 @@
 #include "../bt_action.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
+#include "modules/limboai/util/limbo_utility.h"
 
 class BTSetAgentProperty : public BTAction {
 	GDCLASS(BTSetAgentProperty, BTAction);
@@ -23,6 +24,7 @@ class BTSetAgentProperty : public BTAction {
 private:
 	StringName property;
 	Ref<BBVariant> value;
+	LimboUtility::Operation operation = LimboUtility::OPERATION_NONE;
 
 protected:
 	static void _bind_methods();
@@ -38,6 +40,9 @@ public:
 
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
+
+	void set_operation(LimboUtility::Operation p_operation);
+	LimboUtility::Operation get_operation() const { return operation; }
 };
 
 #endif // BT_SET_AGENT_PROPERTY
