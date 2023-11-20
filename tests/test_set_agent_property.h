@@ -31,10 +31,10 @@ TEST_CASE("[Modules][LimboAI] BTSetAgentProperty") {
 	sap->initialize(agent, bb);
 
 	sap->set_property("process_priority"); // * property that will be set by the task
-	Ref<BBVariant> value_param = memnew(BBVariant);
-	value_param->set_value_source(BBParam::SAVED_VALUE);
-	value_param->set_saved_value(7);
-	sap->set_value(value_param);
+	Ref<BBVariant> value = memnew(BBVariant);
+	value->set_value_source(BBParam::SAVED_VALUE);
+	value->set_saved_value(7);
+	sap->set_value(value);
 
 	SUBCASE("With integer") {
 		CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
@@ -59,14 +59,14 @@ TEST_CASE("[Modules][LimboAI] BTSetAgentProperty") {
 		ERR_PRINT_ON;
 	}
 	SUBCASE("With StringName and String") {
-		value_param->set_saved_value("TestName");
+		value->set_saved_value("TestName");
 		sap->set_property("name");
 		CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
 		CHECK(agent->get_name() == "TestName");
 	}
 	SUBCASE("With blackboard variable") {
-		value_param->set_value_source(BBParam::BLACKBOARD_VAR);
-		value_param->set_variable("priority");
+		value->set_value_source(BBParam::BLACKBOARD_VAR);
+		value->set_variable("priority");
 
 		SUBCASE("With proper BB variable") {
 			bb->set_var("priority", 8);
@@ -81,18 +81,103 @@ TEST_CASE("[Modules][LimboAI] BTSetAgentProperty") {
 			CHECK(agent->get_process_priority() == 0);
 		}
 		SUBCASE("When BB variable doesn't exist") {
-			value_param->set_variable("not_found");
+			value->set_variable("not_found");
 			ERR_PRINT_OFF;
 			CHECK(sap->execute(0.01666) == BTTask::FAILURE);
 			ERR_PRINT_ON;
 			CHECK(agent->get_process_priority() == 0);
 		}
 		SUBCASE("When BB variable isn't set") {
-			value_param->set_variable("");
+			value->set_variable("");
 			ERR_PRINT_OFF;
 			CHECK(sap->execute(0.01666) == BTTask::FAILURE);
 			ERR_PRINT_ON;
 			CHECK(agent->get_process_priority() == 0);
+		}
+		SUBCASE("When performing an operation") {
+			agent->set_process_priority(8);
+			value->set_value_source(BBParam::SAVED_VALUE);
+			value->set_saved_value(3);
+
+			SUBCASE("Addition") {
+				sap->set_operation(LimboUtility::OPERATION_ADDITION);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 11);
+			}
+			SUBCASE("Subtraction") {
+				sap->set_operation(LimboUtility::OPERATION_SUBTRACTION);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 5);
+			}
+			SUBCASE("Multiplication") {
+				sap->set_operation(LimboUtility::OPERATION_MULTIPLICATION);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 24);
+			}
+			SUBCASE("Division") {
+				sap->set_operation(LimboUtility::OPERATION_DIVISION);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 2);
+			}
+			SUBCASE("Modulo") {
+				sap->set_operation(LimboUtility::OPERATION_MODULO);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 2);
+			}
+			SUBCASE("Power") {
+				sap->set_operation(LimboUtility::OPERATION_POWER);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 512);
+			}
+			SUBCASE("Bitwise shift left") {
+				sap->set_operation(LimboUtility::OPERATION_BIT_SHIFT_LEFT);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 64);
+			}
+			SUBCASE("Bitwise shift right") {
+				sap->set_operation(LimboUtility::OPERATION_BIT_SHIFT_RIGHT);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 1);
+			}
+			SUBCASE("Bitwise AND") {
+				agent->set_process_priority(6);
+				sap->set_operation(LimboUtility::OPERATION_BIT_AND);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 2);
+			}
+			SUBCASE("Bitwise OR") {
+				agent->set_process_priority(6);
+				sap->set_operation(LimboUtility::OPERATION_BIT_OR);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 7);
+			}
+			SUBCASE("Bitwise XOR") {
+				agent->set_process_priority(6);
+				sap->set_operation(LimboUtility::OPERATION_BIT_XOR);
+				CHECK(sap->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(agent->get_process_priority() == 5);
+			}
+		}
+		SUBCASE("Performing an operation when assigned variable doesn't exist.") {
+			sap->set_property("not_found");
+			value->set_value_source(BBParam::SAVED_VALUE);
+			value->set_saved_value(3);
+			sap->set_operation(LimboUtility::OPERATION_ADDITION);
+
+			ERR_PRINT_OFF;
+			CHECK(sap->execute(0.01666) == BTTask::FAILURE);
+			ERR_PRINT_ON;
+		}
+		SUBCASE("Performing an operation with incompatible operand types.") {
+			agent->set_process_priority(2);
+			value->set_value_source(BBParam::SAVED_VALUE);
+			value->set_saved_value("3"); // String
+			sap->set_operation(LimboUtility::OPERATION_ADDITION);
+
+			ERR_PRINT_OFF;
+			CHECK(sap->execute(0.01666) == BTTask::FAILURE);
+			ERR_PRINT_ON;
+			CHECK(agent->get_process_priority() == 2);
 		}
 	}
 
