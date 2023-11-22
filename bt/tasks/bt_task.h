@@ -20,6 +20,7 @@
 #include "core/object/ref_counted.h"
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
+#include "core/typedefs.h"
 #include "core/variant/array.h"
 #include "core/variant/binder_common.h"
 #include "core/variant/dictionary.h"
@@ -55,13 +56,14 @@ private:
 
 	// Avoid namespace pollution in derived classes.
 	struct Data {
+		int index = -1;
 		String custom_name;
-		Node *agent;
+		Node *agent = nullptr;
 		Ref<Blackboard> blackboard;
-		BTTask *parent;
+		BTTask *parent = nullptr;
 		Vector<Ref<BTTask>> children;
-		Status status;
-		double elapsed;
+		Status status = FRESH;
+		double elapsed = 0.0;
 	} data;
 
 	Array _get_children() const;
@@ -116,7 +118,7 @@ public:
 	void remove_child_at_index(int p_idx);
 	bool has_child(const Ref<BTTask> &p_child) const;
 	bool is_descendant_of(const Ref<BTTask> &p_task) const;
-	int get_child_index(const Ref<BTTask> &p_child) const;
+	_FORCE_INLINE_ int get_index() const { return data.index; }
 	Ref<BTTask> next_sibling() const;
 
 	void print_tree(int p_initial_tabs = 0) const;

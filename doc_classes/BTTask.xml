@@ -108,11 +108,10 @@
 				Returns the number of child tasks not counting [BTComment] tasks.
 			</description>
 		</method>
-		<method name="get_child_index" qualifiers="const">
+		<method name="get_index" qualifiers="const">
 			<return type="int" />
-			<param index="0" name="p_child" type="BTTask" />
 			<description>
-				Returns the child task's index. If [code]p_child[/code] is not a child of the task, [code]-1[/code] is returned instead.
+				Returns the task's position in the behavior tree branch. Returns [code]-1[/code] if the task doesn't belong to a task tree, i.e. doesn't have a parent.
 			</description>
 		</method>
 		<method name="get_parent" qualifiers="const">

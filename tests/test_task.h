@@ -33,6 +33,8 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 		REQUIRE(task->get_child_count() == 2);
 		REQUIRE(task->get_child(0) == child1);
 		REQUIRE(task->get_child(1) == child3);
+		CHECK(child1->get_index() == 0);
+		CHECK(child3->get_index() == 1);
 
 		// * add_child_at_index
 		Ref<BTTask> child2 = memnew(BTTask);
@@ -57,14 +59,14 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 			Ref<BTTask> other = memnew(BTTask);
 			CHECK_FALSE(task->has_child(other));
 		}
-		SUBCASE("Test get_child_index()") {
-			CHECK(task->get_child_index(child1) == 0);
-			CHECK(task->get_child_index(child2) == 1);
-			CHECK(task->get_child_index(child3) == 2);
+		SUBCASE("Test get_index()") {
+			CHECK(child1->get_index() == 0);
+			CHECK(child2->get_index() == 1);
+			CHECK(child3->get_index() == 2);
 		}
-		SUBCASE("Test get_child_index() with an out-of-hierarchy task") {
+		SUBCASE("Test get_index() with an out-of-hierarchy task") {
 			Ref<BTTask> other = memnew(BTTask);
-			CHECK(task->get_child_index(other) == -1);
+			CHECK(other->get_index() == -1);
 		}
 		SUBCASE("Test is_descendant_of()") {
 			Ref<BTTask> grandchild = memnew(BTTask);
@@ -83,13 +85,22 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 			REQUIRE(task->get_child_count() == 2);
 			CHECK(task->get_child(0) == child1);
 			CHECK(task->get_child(1) == child3);
+			CHECK(child1->get_index() == 0);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == 1);
 
 			task->remove_child(child3);
 			REQUIRE(task->get_child_count() == 1);
 			CHECK(task->get_child(0) == child1);
+			CHECK(child1->get_index() == 0);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == -1);
 
 			task->remove_child(child1);
 			REQUIRE(task->get_child_count() == 0);
+			CHECK(child1->get_index() == -1);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == -1);
 		}
 		SUBCASE("Test remove_child() with an out-of-hierarchy task") {
 			Ref<BTTask> other = memnew(BTTask);
@@ -98,18 +109,27 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 			task->remove_child(other);
 			ERR_PRINT_ON;
 		}
-		SUBCASE("Test remove_at_index()") {
+		SUBCASE("Test remove_child_at_index()") {
 			task->remove_child_at_index(1);
 			REQUIRE(task->get_child_count() == 2);
 			CHECK(task->get_child(0) == child1);
 			CHECK(task->get_child(1) == child3);
+			CHECK(child1->get_index() == 0);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == 1);
 
 			task->remove_child_at_index(1);
 			REQUIRE(task->get_child_count() == 1);
 			CHECK(task->get_child(0) == child1);
+			CHECK(child1->get_index() == 0);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == -1);
 
 			task->remove_child_at_index(0);
 			REQUIRE(task->get_child_count() == 0);
+			CHECK(child1->get_index() == -1);
+			CHECK(child2->get_index() == -1);
+			CHECK(child3->get_index() == -1);
 		}
 		SUBCASE("Test remove_child_at_index() with an out-of-bounds index") {
 			// * Must not crash.

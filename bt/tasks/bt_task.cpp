@@ -67,6 +67,7 @@ void BTTask::_set_children(Array p_children) {
 		Variant task_var = p_children[i];
 		Ref<BTTask> task_ref = task_var;
 		task_ref->data.parent = this;
+		task_ref->data.index = i;
 		data.children.set(i, task_var);
 	}
 }
@@ -117,6 +118,7 @@ Ref<BTTask> BTTask::clone() const {
 		Ref<BTTask> c = get_child(i)->clone();
 		if (c.is_valid()) {
 			c->data.parent = inst.ptr();
+			c->data.index = i;
 			inst->data.children.set(i - num_null, c);
 		} else {
 			num_null += 1;
@@ -219,6 +221,7 @@ int BTTask::get_child_count_excluding_comments() const {
 void BTTask::add_child(Ref<BTTask> p_child) {
 	ERR_FAIL_COND_MSG(p_child->get_parent().is_valid(), "p_child already has a parent!");
 	p_child->data.parent = this;
+	p_child->data.index = data.children.size();
 	data.children.push_back(p_child);
 	emit_changed();
 }
@@ -230,23 +233,34 @@ void BTTask::add_child_at_index(Ref<BTTask> p_child, int p_idx) {
 	}
 	data.children.insert(p_idx, p_child);
 	p_child->data.parent = this;
+	p_child->data.index = p_idx;
+	for (int i = p_idx + 1; i < data.children.size(); i++) {
+		get_child(i)->data.index = i;
+	}
 	emit_changed();
 }
 
 void BTTask::remove_child(Ref<BTTask> p_child) {
 	int idx = data.children.find(p_child);
-	if (idx == -1) {
-		ERR_FAIL_MSG("p_child not found!");
-	} else {
-		data.children.remove_at(idx);
-		p_child->data.parent = nullptr;
-		emit_changed();
+	ERR_FAIL_COND_MSG(idx == -1, "p_child not found!");
+	data.children.remove_at(idx);
+	p_child->data.parent = nullptr;
+	p_child->data.index = -1;
+	for (int i = idx; i < data.children.size(); i++) {
+		get_child(i)->data.index = i;
 	}
+	emit_changed();
 }
 
 void BTTask::remove_child_at_index(int p_idx) {
 	ERR_FAIL_INDEX(p_idx, get_child_count());
+	data.children[p_idx]->data.parent = nullptr;
+	data.children[p_idx]->data.index = -1;
 	data.children.remove_at(p_idx);
+	for (int i = p_idx; i < data.children.size(); i++) {
+		get_child(i)->data.index = i;
+	}
+	emit_changed();
 }
 
 bool BTTask::has_child(const Ref<BTTask> &p_child) const {
@@ -264,15 +278,10 @@ bool BTTask::is_descendant_of(const Ref<BTTask> &p_task) const {
 	return false;
 }
 
-int BTTask::get_child_index(const Ref<BTTask> &p_child) const {
-	return data.children.find(p_child);
-}
-
 Ref<BTTask> BTTask::next_sibling() const {
 	if (data.parent != nullptr) {
-		int idx = data.parent->get_child_index(Ref<BTTask>(this));
-		if (idx != -1 && data.parent->get_child_count() > (idx + 1)) {
-			return data.parent->get_child(idx + 1);
+		if (get_index() != -1 && data.parent->get_child_count() > (get_index() + 1)) {
+			return data.parent->get_child(get_index() + 1);
 		}
 	}
 	return Ref<BTTask>();
@@ -316,7 +325,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("remove_child_at_index", "p_idx"), &BTTask::remove_child_at_index);
 	ClassDB::bind_method(D_METHOD("has_child", "p_child"), &BTTask::has_child);
 	ClassDB::bind_method(D_METHOD("is_descendant_of", "p_task"), &BTTask::is_descendant_of);
-	ClassDB::bind_method(D_METHOD("get_child_index", "p_child"), &BTTask::get_child_index);
+	ClassDB::bind_method(D_METHOD("get_index"), &BTTask::get_index);
 	ClassDB::bind_method(D_METHOD("next_sibling"), &BTTask::next_sibling);
 	ClassDB::bind_method(D_METHOD("print_tree", "p_initial_tabs"), &BTTask::print_tree, Variant(0));
 	ClassDB::bind_method(D_METHOD("get_task_name"), &BTTask::get_task_name);
@@ -351,12 +360,6 @@ void BTTask::_bind_methods() {
 }
 
 BTTask::BTTask() {
-	data.custom_name = String();
-	data.agent = nullptr;
-	data.parent = nullptr;
-	data.children = Vector<Ref<BTTask>>();
-	data.status = FRESH;
-	data.elapsed = 0.0;
 }
 
 BTTask::~BTTask() {

@@ -105,7 +105,7 @@ void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
 		undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 	} else {
 		undo_redo->add_do_method(p_task->get_parent().ptr(), SNAME("remove_child"), p_task);
-		undo_redo->add_undo_method(p_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_task->get_parent()->get_child_index(p_task));
+		undo_redo->add_undo_method(p_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_task->get_index());
 	}
 	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
@@ -347,7 +347,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 			Ref<BTTask> sel = task_tree->get_selected();
 			if (sel.is_valid() && sel->get_parent().is_valid()) {
 				Ref<BTTask> parent = sel->get_parent();
-				int idx = parent->get_child_index(sel);
+				int idx = sel->get_index();
 				if (idx > 0 && idx < parent->get_child_count()) {
 					undo_redo->create_action(TTR("Move BT Task"));
 					undo_redo->add_do_method(parent.ptr(), SNAME("remove_child"), sel);
@@ -365,7 +365,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 			Ref<BTTask> sel = task_tree->get_selected();
 			if (sel.is_valid() && sel->get_parent().is_valid()) {
 				Ref<BTTask> parent = sel->get_parent();
-				int idx = parent->get_child_index(sel);
+				int idx = sel->get_index();
 				if (idx >= 0 && idx < (parent->get_child_count() - 1)) {
 					undo_redo->create_action(TTR("Move BT Task"));
 					undo_redo->add_do_method(parent.ptr(), SNAME("remove_child"), sel);
@@ -388,7 +388,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 					parent = sel;
 				}
 				const Ref<BTTask> &sel_dup = sel->clone();
-				undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), sel_dup, parent->get_child_index(sel) + 1);
+				undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), sel_dup, sel->get_index() + 1);
 				undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), sel_dup);
 				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
@@ -408,7 +408,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 				undo_redo->add_do_method(sel.ptr(), SNAME("add_child"), old_root);
 				undo_redo->add_undo_method(sel.ptr(), SNAME("remove_child"), old_root);
 				undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), old_root);
-				undo_redo->add_undo_method(parent.ptr(), SNAME("add_child_at_index"), sel, parent->get_child_index(sel));
+				undo_redo->add_undo_method(parent.ptr(), SNAME("add_child_at_index"), sel, sel->get_index());
 				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
 				undo_redo->commit_action();
@@ -424,7 +424,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 					undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 				} else {
 					undo_redo->add_do_method(sel->get_parent().ptr(), SNAME("remove_child"), sel);
-					undo_redo->add_undo_method(sel->get_parent().ptr(), SNAME("add_child_at_index"), sel, sel->get_parent()->get_child_index(sel));
+					undo_redo->add_undo_method(sel->get_parent().ptr(), SNAME("add_child_at_index"), sel, sel->get_index());
 				}
 				undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 				undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
@@ -442,9 +442,9 @@ void LimboAIEditor::_on_probability_edited(double p_value) {
 	Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
 	ERR_FAIL_COND(probability_selector.is_null());
 	if (percent_mode->is_pressed()) {
-		probability_selector->set_probability(probability_selector->get_child_index(selected), p_value * 0.01);
+		probability_selector->set_probability(selected->get_index(), p_value * 0.01);
 	} else {
-		probability_selector->set_weight(probability_selector->get_child_index(selected), p_value);
+		probability_selector->set_weight(selected->get_index(), p_value);
 	}
 }
 
@@ -453,7 +453,7 @@ void LimboAIEditor::_update_probability_edit() {
 	ERR_FAIL_COND(selected.is_null());
 	Ref<BTProbabilitySelector> prob = selected->get_parent();
 	ERR_FAIL_COND(prob.is_null());
-	double others_weight = prob->get_total_weight() - prob->get_weight(prob->get_child_index(selected));
+	double others_weight = prob->get_total_weight() - prob->get_weight(selected->get_index());
 	bool cannot_edit_percent = others_weight == 0.0;
 	percent_mode->set_disabled(cannot_edit_percent);
 	if (cannot_edit_percent && percent_mode->is_pressed()) {
@@ -611,15 +611,21 @@ void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, 
 	if (p_type == 0) {
 		undo_redo->add_do_method(p_to_task.ptr(), SNAME("add_child"), p_task);
 		undo_redo->add_undo_method(p_to_task.ptr(), SNAME("remove_child"), p_task);
-	} else if (p_type == -1) {
-		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task));
-		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
-	} else if (p_type == 1) {
-		undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, p_to_task->get_parent()->get_child_index(p_to_task) + 1);
-		undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
+	} else {
+		int drop_idx = p_to_task->get_index();
+		if (p_to_task->get_parent() == p_task->get_parent() && drop_idx > p_task->get_index()) {
+			drop_idx -= 1;
+		}
+		if (p_type == -1) {
+			undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, drop_idx);
+			undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
+		} else if (p_type == 1) {
+			undo_redo->add_do_method(p_to_task->get_parent().ptr(), SNAME("add_child_at_index"), p_task, drop_idx + 1);
+			undo_redo->add_undo_method(p_to_task->get_parent().ptr(), SNAME("remove_child"), p_task);
+		}
 	}
 
-	undo_redo->add_undo_method(p_task->get_parent().ptr(), "add_child_at_index", p_task, p_task->get_parent()->get_child_index(p_task));
+	undo_redo->add_undo_method(p_task->get_parent().ptr(), "add_child_at_index", p_task, p_task->get_index());
 
 	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
