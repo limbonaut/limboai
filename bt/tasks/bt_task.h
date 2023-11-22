@@ -88,17 +88,14 @@ protected:
 public:
 	virtual bool editor_can_reload_from_file() override { return false; }
 
-	Node *get_agent() const { return data.agent; }
+	_FORCE_INLINE_ Node *get_agent() const { return data.agent; }
 	void set_agent(Node *p_agent) { data.agent = p_agent; }
 
 	String get_custom_name() const { return data.custom_name; }
 	void set_custom_name(const String &p_name);
 	String get_task_name() const;
 
-	Ref<Blackboard> get_blackboard() const { return data.blackboard; }
-	Ref<BTTask> get_parent() const { return Ref<BTTask>(data.parent); }
 	Ref<BTTask> get_root() const;
-	bool is_root() const { return data.parent == nullptr; }
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
@@ -106,19 +103,30 @@ public:
 
 	Status execute(double p_delta);
 	void abort();
-	Status get_status() const { return data.status; }
-	double get_elapsed_time() const { return data.elapsed; };
 
-	Ref<BTTask> get_child(int p_idx) const;
-	int get_child_count() const;
+	_FORCE_INLINE_ Ref<BTTask> get_parent() const { return Ref<BTTask>(data.parent); }
+	_FORCE_INLINE_ bool is_root() const { return data.parent == nullptr; }
+	_FORCE_INLINE_ Ref<Blackboard> get_blackboard() const { return data.blackboard; }
+	_FORCE_INLINE_ Status get_status() const { return data.status; }
+	_FORCE_INLINE_ double get_elapsed_time() const { return data.elapsed; };
+
+	_FORCE_INLINE_ Ref<BTTask> get_child(int p_idx) const {
+		ERR_FAIL_INDEX_V(p_idx, data.children.size(), nullptr);
+		return data.children.get(p_idx);
+	}
+
+	_FORCE_INLINE_ int get_child_count() const { return data.children.size(); }
 	int get_child_count_excluding_comments() const;
+
 	void add_child(Ref<BTTask> p_child);
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);
 	void remove_child(Ref<BTTask> p_child);
 	void remove_child_at_index(int p_idx);
-	bool has_child(const Ref<BTTask> &p_child) const;
-	bool is_descendant_of(const Ref<BTTask> &p_task) const;
+
+	_FORCE_INLINE_ bool has_child(const Ref<BTTask> &p_child) const { return data.children.find(p_child) != -1; }
 	_FORCE_INLINE_ int get_index() const { return data.index; }
+
+	bool is_descendant_of(const Ref<BTTask> &p_task) const;
 	Ref<BTTask> next_sibling() const;
 
 	void print_tree(int p_initial_tabs = 0) const;

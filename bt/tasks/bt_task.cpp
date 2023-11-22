@@ -199,15 +199,6 @@ void BTTask::abort() {
 	data.elapsed = 0.0;
 }
 
-Ref<BTTask> BTTask::get_child(int p_idx) const {
-	ERR_FAIL_INDEX_V(p_idx, data.children.size(), nullptr);
-	return data.children.get(p_idx);
-}
-
-int BTTask::get_child_count() const {
-	return data.children.size();
-}
-
 int BTTask::get_child_count_excluding_comments() const {
 	int count = 0;
 	for (int i = 0; i < data.children.size(); i++) {
@@ -261,10 +252,6 @@ void BTTask::remove_child_at_index(int p_idx) {
 		get_child(i)->data.index = i;
 	}
 	emit_changed();
-}
-
-bool BTTask::has_child(const Ref<BTTask> &p_child) const {
-	return data.children.find(p_child) != -1;
 }
 
 bool BTTask::is_descendant_of(const Ref<BTTask> &p_task) const {
