@@ -190,6 +190,8 @@ jobs:
           cd ios_xcode
           zip -q -9 -r ${{github.workspace}}/out/templates/ios.zip *
 
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > ${{github.workspace}}/out/templates/version.txt
+
           ls -l ${{github.workspace}}/out/*
 
       - name: Upload template bundle

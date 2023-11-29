@@ -181,6 +181,7 @@ jobs:
         run: |
           mv out/templates/${BIN}.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}.exe
           mv out/templates/${BIN}.console.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}_console.exe
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact

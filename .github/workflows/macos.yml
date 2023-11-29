@@ -265,6 +265,7 @@ jobs:
           rm bin/*
           mkdir -p out/templates/
           mv macos.zip out/templates/macos.zip
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls out/templates/
 
       - uses: geekyeggo/delete-artifact@v2

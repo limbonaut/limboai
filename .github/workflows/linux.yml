@@ -185,6 +185,7 @@ jobs:
           BUILD_TYPE: ${{ endsWith(matrix.target, 'release') && 'release' || 'debug' }}
         run: |
           mv out/templates/${BIN} out/templates/linux_${BUILD_TYPE}.${{matrix.arch}}
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact

@@ -180,6 +180,7 @@ jobs:
 
           mkdir -p out/templates/
           mv bin/android_* out/templates/
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls -l out/*
 
       - name: Delete Android template builds
