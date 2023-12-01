@@ -34,9 +34,9 @@ jobs:
       - name: Cache SHA
         id: cache-sha
         run: |
-          echo "godot-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "godot-sha=$(git describe --tags --exact-match HEAD || git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
           cd modules/limboai
-          echo "limboai-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          echo "limboai-sha=$(git describe --tags --exact-match HEAD || git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   android-build:
     name: 🤖 Android
