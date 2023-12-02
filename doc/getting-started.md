@@ -11,6 +11,7 @@
 
 ## TL;DR
 
+- Next section gives a brief explanation of behavior trees.
 - To create your own actions, extend the `BTAction` class.
 - To create your own conditions, extend the `BTCondition` class.
 - In-editor class documentation is available. Try searching `BTTask` and `BehaviorTree`.
@@ -57,11 +58,11 @@ func _generate_name() -> String:
 func _setup() -> void:
     pass
 
-# Called when task is entered.
+# Called when the task is entered.
 func _enter() -> void:
     pass
 
-# Called when task is exited.
+# Called when the task is exited.
 func _exit() -> void:
     pass
 
@@ -101,7 +102,7 @@ func _setup() -> void:
 	_max_distance_squared = distance_max * distance_max
 
 
-# Called when task is executed.
+# Called when the task is executed.
 func _tick(_delta: float) -> Status:
 	var target: Node2D = blackboard.get_var(target_var, null)
 	if not is_instance_valid(target):

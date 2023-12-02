@@ -16,9 +16,9 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 > 🛈 See also: [Introduction to Behavior Trees](./doc/getting-started.md).
 
-![Textured screenshot](doc/images/behavior-tree-editor.png)
+![Textured screenshot](doc/images/behavior-tree-editor-debugger.png)
 
-![Textured screenshot](doc/images/behavior-tree-debugger.png)
+<!-- ![Textured screenshot](doc/images/behavior-tree-debugger.png) -->
 
 ## Features
 
@@ -79,7 +79,7 @@ Features and improvements that may be implemented in the future:
 - ~~Tests and CI.~~ 🗸
 - Expanding the library of commonly useful tasks.
 - Creating a non-trivial demo project to showcase the capabilities of LimboAI.
-- Exploring the execution history of Behavior Trees in the Visual Debugger.
-- Implementing an ignore list for tasks that users may want to hide in the task panel.
+- Exploring the execution history of behavior trees in the visual debugger.
+- Per-project ignore list for tasks that users may want to hide in the task palette.
 - GUI editor for state machines.
 - Supporting GDExtension in the future, once it matures.
