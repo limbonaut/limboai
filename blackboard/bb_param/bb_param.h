@@ -41,8 +41,6 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual Variant::Type get_type() const { return Variant::NIL; }
-
 	_FORCE_INLINE_ void _assign_default_value() {
 		Callable::CallError err;
 		Variant::construct(get_type(), saved_value, nullptr, 0, err);
@@ -51,6 +49,8 @@ protected:
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
 public:
+	virtual Variant::Type get_type() const { return Variant::NIL; }
+
 	void set_value_source(ValueSource p_value);
 	ValueSource get_value_source() const { return value_source; }
 

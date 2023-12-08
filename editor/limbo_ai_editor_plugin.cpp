@@ -18,6 +18,7 @@
 #include "modules/limboai/bt/tasks/composites/bt_probability_selector.h"
 #include "modules/limboai/bt/tasks/composites/bt_selector.h"
 #include "modules/limboai/editor/debugger/limbo_debugger_plugin.h"
+#include "modules/limboai/editor/editor_property_bb_param.h"
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/config/project_settings.h"
@@ -1157,6 +1158,7 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	EditorNode::get_singleton()->get_main_screen_control()->add_child(limbo_ai_editor);
 	limbo_ai_editor->hide();
 	add_debugger_plugin(memnew(LimboDebuggerPlugin));
+	add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
 }
 
 LimboAIEditorPlugin::~LimboAIEditorPlugin() {

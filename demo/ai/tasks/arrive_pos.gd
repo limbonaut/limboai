@@ -11,7 +11,6 @@
 
 @tool
 @icon("res://icon.png")
-class_name ArrivePos
 extends BTAction
 
 @export var target_position_var := "target_position"
