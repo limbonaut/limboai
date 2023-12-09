@@ -12,6 +12,7 @@
 #include "editor_property_bb_param.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
+#include "modules/limboai/editor/mode_switch_button.h"
 
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -204,7 +205,7 @@ void EditorPropertyBBParam::_value_edited(const String &p_property, Variant p_va
 }
 
 void EditorPropertyBBParam::_mode_changed() {
-	_get_edited_param()->set_value_source(value_mode->is_pressed() ? BBParam::SAVED_VALUE : BBParam::BLACKBOARD_VAR);
+	_get_edited_param()->set_value_source(mode_button->get_mode() == Mode::SPECIFY_VALUE ? BBParam::SAVED_VALUE : BBParam::BLACKBOARD_VAR);
 	update_property();
 }
 
@@ -219,15 +220,13 @@ void EditorPropertyBBParam::update_property() {
 		variable_edit->set_text(param->get_variable());
 		variable_edit->set_editable(true);
 		variable_edit->show();
-		variable_mode->set_pressed_no_signal(true);
-		value_mode->set_pressed_no_signal(false);
+		mode_button->set_mode(Mode::BIND_VAR, true);
 	} else {
 		variable_edit->hide();
 		_create_value_editor(param->get_type());
 		value_editor->show();
 		value_editor->set_object_and_property(param.ptr(), SNAME("saved_value"));
-		value_mode->set_pressed_no_signal(true);
-		variable_mode->set_pressed_no_signal(false);
+		mode_button->set_mode(Mode::SPECIFY_VALUE, true);
 		value_editor->update_property();
 	}
 }
@@ -241,8 +240,13 @@ void EditorPropertyBBParam::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			value_mode->set_icon(get_editor_theme_icon(SNAME("LimboSpecifyValue")));
-			variable_mode->set_icon(get_editor_theme_icon(SNAME("BTSetVar")));
+			int id = mode_button->get_mode();
+			mode_button->clear();
+			mode_button->add_mode(Mode::SPECIFY_VALUE, get_editor_theme_icon(SNAME("LimboSpecifyValue")), TTR("Mode: Specify value.\nClick to switch mode."));
+			mode_button->add_mode(Mode::BIND_VAR, get_editor_theme_icon(SNAME("BTSetVar")), TTR("Mode: Bind blackboard variable.\nClick to switch mode."));
+			if (id >= 0) {
+				mode_button->set_mode(id);
+			}
 		} break;
 	}
 }
@@ -251,28 +255,10 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	hbox = memnew(HBoxContainer);
 	add_child(hbox);
 
-	HBoxContainer *modes = memnew(HBoxContainer);
-	hbox->add_child(modes);
-	modes->add_theme_constant_override("separation", 0);
-
-	Ref<ButtonGroup> modes_group;
-	modes_group.instantiate();
-
-	value_mode = memnew(Button);
-	modes->add_child(value_mode);
-	value_mode->set_focus_mode(FOCUS_NONE);
-	value_mode->set_button_group(modes_group);
-	value_mode->set_toggle_mode(true);
-	value_mode->set_tooltip_text(TTR("Specify value"));
-	value_mode->connect(SNAME("pressed"), callable_mp(this, &EditorPropertyBBParam::_mode_changed));
-
-	variable_mode = memnew(Button);
-	modes->add_child(variable_mode);
-	variable_mode->set_focus_mode(FOCUS_NONE);
-	variable_mode->set_button_group(modes_group);
-	variable_mode->set_toggle_mode(true);
-	variable_mode->set_tooltip_text(TTR("Bind to a blackboard variable"));
-	variable_mode->connect(SNAME("pressed"), callable_mp(this, &EditorPropertyBBParam::_mode_changed));
+	mode_button = memnew(ModeSwitchButton);
+	hbox->add_child(mode_button);
+	mode_button->set_focus_mode(FOCUS_NONE);
+	mode_button->connect(SNAME("mode_changed"), callable_mp(this, &EditorPropertyBBParam::_mode_changed));
 
 	variable_edit = memnew(LineEdit);
 	hbox->add_child(variable_edit);

@@ -16,17 +16,23 @@
 #include "editor/editor_inspector.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
+#include "modules/limboai/editor/mode_switch_button.h"
 
 class EditorPropertyBBParam : public EditorProperty {
 	GDCLASS(EditorPropertyBBParam, EditorProperty);
 
 private:
+	enum Mode {
+		SPECIFY_VALUE,
+		BIND_VAR,
+	};
+
 	StringName param_type;
 	PropertyHint property_hint = PROPERTY_HINT_NONE;
+	Mode mode = Mode::SPECIFY_VALUE;
 
 	HBoxContainer *hbox = nullptr;
-	Button *value_mode = nullptr;
-	Button *variable_mode = nullptr;
+	ModeSwitchButton *mode_button = nullptr;
 	EditorProperty *value_editor = nullptr;
 	LineEdit *variable_edit = nullptr;
 
