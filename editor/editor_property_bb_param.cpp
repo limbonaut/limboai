@@ -254,6 +254,7 @@ void EditorPropertyBBParam::_notification(int p_what) {
 EditorPropertyBBParam::EditorPropertyBBParam() {
 	hbox = memnew(HBoxContainer);
 	add_child(hbox);
+	hbox->add_theme_constant_override(SNAME("separation"), 0);
 
 	mode_button = memnew(ModeSwitchButton);
 	hbox->add_child(mode_button);
