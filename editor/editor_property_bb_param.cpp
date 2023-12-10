@@ -298,6 +298,12 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	mode_button->set_focus_mode(FOCUS_NONE);
 	mode_button->connect(SNAME("mode_changed"), callable_mp(this, &EditorPropertyBBParam::_mode_changed));
 
+	type_choice = memnew(MenuButton);
+	hbox->add_child(type_choice);
+	type_choice->get_popup()->connect(SNAME("id_pressed"), callable_mp(this, &EditorPropertyBBParam::_type_selected));
+	type_choice->set_tooltip_text(TTR("Click to choose type"));
+	type_choice->set_flat(false);
+
 	editor_hbox = memnew(HBoxContainer);
 	hbox->add_child(editor_hbox);
 	editor_hbox->set_h_size_flags(SIZE_EXPAND_FILL);
@@ -308,10 +314,6 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	variable_edit->set_placeholder(TTR("Variable"));
 	variable_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	variable_edit->connect(SNAME("text_changed"), callable_mp(this, &EditorPropertyBBParam::_variable_edited));
-
-	type_choice = memnew(MenuButton);
-	hbox->add_child(type_choice);
-	type_choice->get_popup()->connect(SNAME("id_pressed"), callable_mp(this, &EditorPropertyBBParam::_type_selected));
 
 	param_type = SNAME("BBString");
 }
