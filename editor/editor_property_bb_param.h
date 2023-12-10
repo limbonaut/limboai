@@ -12,11 +12,13 @@
 #ifndef EDITOR_PROPERTY_BB_PARAM_H
 #define EDITOR_PROPERTY_BB_PARAM_H
 
-#include "core/object/object.h"
 #include "editor/editor_inspector.h"
 
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
 #include "modules/limboai/editor/mode_switch_button.h"
+
+#include "scene/gui/box_container.h"
+#include "scene/gui/menu_button.h"
 
 class EditorPropertyBBParam : public EditorProperty {
 	GDCLASS(EditorPropertyBBParam, EditorProperty);
@@ -32,9 +34,11 @@ private:
 	Mode mode = Mode::SPECIFY_VALUE;
 
 	HBoxContainer *hbox = nullptr;
+	HBoxContainer *editor_hbox = nullptr;
 	ModeSwitchButton *mode_button = nullptr;
 	EditorProperty *value_editor = nullptr;
 	LineEdit *variable_edit = nullptr;
+	MenuButton *type_choice = nullptr;
 
 	Ref<BBParam> _get_edited_param();
 
@@ -44,6 +48,7 @@ private:
 	void _value_edited(const String &p_property, Variant p_value, const String &p_name = "", bool p_changing = false);
 	void _variable_edited(const String &p_text);
 	void _mode_changed();
+	void _type_selected(int p_index);
 
 protected:
 	void _notification(int p_what);

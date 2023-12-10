@@ -11,11 +11,14 @@
 
 #include "editor_property_bb_param.h"
 
+#include "core/variant/variant.h"
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
+#include "modules/limboai/blackboard/bb_param/bb_variant.h"
 #include "modules/limboai/editor/mode_switch_button.h"
 
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
+#include "core/object/ref_counted.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
 #include "editor/editor_inspector.h"
@@ -27,6 +30,7 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/menu_button.h"
 
 Ref<BBParam> EditorPropertyBBParam::_get_edited_param() {
 	Ref<BBParam> param = get_edited_property_value();
@@ -47,6 +51,9 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 	}
 
 	switch (p_type) {
+		case Variant::NIL: {
+			value_editor = memnew(EditorPropertyNil);
+		} break;
 		case Variant::BOOL: {
 			value_editor = memnew(EditorPropertyCheck);
 		} break;
@@ -186,7 +193,7 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 		}
 	}
 	value_editor->set_name_split_ratio(0.0);
-	hbox->add_child(value_editor);
+	editor_hbox->add_child(value_editor);
 	value_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 	value_editor->set_meta(SNAME("_param_type"), p_type);
 	value_editor->connect(SNAME("property_changed"), callable_mp(this, &EditorPropertyBBParam::_value_edited));
@@ -194,7 +201,7 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 
 void EditorPropertyBBParam::_remove_value_editor() {
 	if (value_editor) {
-		hbox->remove_child(value_editor);
+		editor_hbox->remove_child(value_editor);
 		value_editor->queue_free();
 		value_editor = nullptr;
 	}
@@ -206,6 +213,16 @@ void EditorPropertyBBParam::_value_edited(const String &p_property, Variant p_va
 
 void EditorPropertyBBParam::_mode_changed() {
 	_get_edited_param()->set_value_source(mode_button->get_mode() == Mode::SPECIFY_VALUE ? BBParam::SAVED_VALUE : BBParam::BLACKBOARD_VAR);
+	update_property();
+}
+
+void EditorPropertyBBParam::_type_selected(int p_index) {
+	Ref<BBVariant> param = _get_edited_param();
+	ERR_FAIL_COND(param.is_null());
+	Variant::Type t = Variant::Type(p_index);
+	param->set_type(t);
+	String type_name = Variant::get_type_name(t);
+	type_choice->set_icon(get_editor_theme_icon(type_name));
 	update_property();
 }
 
@@ -240,12 +257,32 @@ void EditorPropertyBBParam::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			int id = mode_button->get_mode();
+			{
+				String type = Variant::get_type_name(_get_edited_param()->get_type());
+				type_choice->set_icon(get_editor_theme_icon(type));
+			}
+
+			// Initialize mode button.
 			mode_button->clear();
 			mode_button->add_mode(Mode::SPECIFY_VALUE, get_editor_theme_icon(SNAME("LimboSpecifyValue")), TTR("Mode: Specify value.\nClick to switch mode."));
 			mode_button->add_mode(Mode::BIND_VAR, get_editor_theme_icon(SNAME("BTSetVar")), TTR("Mode: Bind blackboard variable.\nClick to switch mode."));
-			if (id >= 0) {
-				mode_button->set_mode(id);
+			mode_button->set_mode(_get_edited_param()->get_value_source() == BBParam::BLACKBOARD_VAR ? Mode::BIND_VAR : Mode::SPECIFY_VALUE);
+
+			Ref<BBVariant> variant_param = _get_edited_param();
+			bool is_variant_param = variant_param.is_valid();
+			if (is_variant_param) {
+				// Initialize type choice.
+				PopupMenu *type_menu = type_choice->get_popup();
+				type_menu->clear();
+				for (int i = 0; i < Variant::VARIANT_MAX; i++) {
+					if (i == Variant::RID || i == Variant::CALLABLE || i == Variant::OBJECT || i == Variant::SIGNAL) {
+						continue;
+					}
+					String type = Variant::get_type_name(Variant::Type(i));
+					type_menu->add_icon_item(get_editor_theme_icon(type), type, i);
+				}
+			} else { // Not a variant param.
+				type_choice->hide();
 			}
 		} break;
 	}
@@ -261,11 +298,20 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	mode_button->set_focus_mode(FOCUS_NONE);
 	mode_button->connect(SNAME("mode_changed"), callable_mp(this, &EditorPropertyBBParam::_mode_changed));
 
+	editor_hbox = memnew(HBoxContainer);
+	hbox->add_child(editor_hbox);
+	editor_hbox->set_h_size_flags(SIZE_EXPAND_FILL);
+	editor_hbox->add_theme_constant_override(SNAME("separation"), 0);
+
 	variable_edit = memnew(LineEdit);
-	hbox->add_child(variable_edit);
+	editor_hbox->add_child(variable_edit);
 	variable_edit->set_placeholder(TTR("Variable"));
 	variable_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	variable_edit->connect(SNAME("text_changed"), callable_mp(this, &EditorPropertyBBParam::_variable_edited));
+
+	type_choice = memnew(MenuButton);
+	hbox->add_child(type_choice);
+	type_choice->get_popup()->connect(SNAME("id_pressed"), callable_mp(this, &EditorPropertyBBParam::_type_selected));
 
 	param_type = SNAME("BBString");
 }

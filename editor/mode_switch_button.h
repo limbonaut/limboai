@@ -30,8 +30,8 @@ private:
 
 	Vector<Mode> modes;
 
-	_FORCE_INLINE_ void _set_mode(int p_id) {
-		current_mode_index = p_id;
+	_FORCE_INLINE_ void _set_mode_by_index(int p_index) {
+		current_mode_index = p_index;
 		set_icon(modes[current_mode_index].icon);
 		if (!modes[current_mode_index].tooltip.is_empty()) {
 			set_tooltip_text(modes[current_mode_index].tooltip);

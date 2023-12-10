@@ -32,7 +32,7 @@ void ModeSwitchButton::add_mode(int p_id, const Ref<Texture2D> &p_icon, const St
 	modes.append(mode);
 
 	if (current_mode_index == -1) {
-		_set_mode(0);
+		_set_mode_by_index(0);
 	}
 }
 
@@ -48,7 +48,7 @@ void ModeSwitchButton::set_mode(int p_id, bool p_no_signal) {
 	}
 	ERR_FAIL_COND_MSG(idx == -1, "Button state not found with such id: " + itos(p_id));
 
-	_set_mode(p_id);
+	_set_mode_by_index(idx);
 	if (!p_no_signal) {
 		emit_signal(SNAME("mode_changed"));
 	}
