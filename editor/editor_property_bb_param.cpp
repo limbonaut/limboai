@@ -229,12 +229,15 @@ void EditorPropertyBBParam::_variable_edited(const String &p_text) {
 
 void EditorPropertyBBParam::update_property() {
 	Ref<BBParam> param = _get_edited_param();
+	bool is_variant_param = param->is_class_ptr(BBVariant::get_class_ptr_static());
+
 	if (param->get_value_source() == BBParam::BLACKBOARD_VAR) {
 		_remove_value_editor();
 		variable_edit->set_text(param->get_variable());
 		variable_edit->set_editable(true);
 		variable_edit->show();
 		mode_button->set_mode(Mode::BIND_VAR, true);
+		type_choice->hide();
 	} else {
 		variable_edit->hide();
 		_create_value_editor(param->get_type());
@@ -242,9 +245,10 @@ void EditorPropertyBBParam::update_property() {
 		value_editor->set_object_and_property(param.ptr(), SNAME("saved_value"));
 		mode_button->set_mode(Mode::SPECIFY_VALUE, true);
 		value_editor->update_property();
+		type_choice->set_visible(is_variant_param);
 	}
 
-	if (param->is_class_ptr(BBVariant::get_class_ptr_static())) {
+	if (is_variant_param) {
 		Variant::Type t = Variant::Type(param->get_type());
 		String type_name = Variant::get_type_name(t);
 		type_choice->set_icon(get_editor_theme_icon(type_name));
@@ -271,8 +275,7 @@ void EditorPropertyBBParam::_notification(int p_what) {
 			mode_button->add_mode(Mode::BIND_VAR, get_editor_theme_icon(SNAME("BTSetVar")), TTR("Mode: Bind blackboard variable.\nClick to switch mode."));
 			mode_button->set_mode(_get_edited_param()->get_value_source() == BBParam::BLACKBOARD_VAR ? Mode::BIND_VAR : Mode::SPECIFY_VALUE);
 
-			Ref<BBVariant> variant_param = _get_edited_param();
-			bool is_variant_param = variant_param.is_valid();
+			bool is_variant_param = _get_edited_param()->is_class_ptr(BBVariant::get_class_ptr_static());
 			if (is_variant_param) {
 				// Initialize type choice.
 				PopupMenu *type_menu = type_choice->get_popup();
