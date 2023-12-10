@@ -17,6 +17,7 @@
 #include "modules/limboai/editor/mode_switch_button.h"
 
 #include "core/error/error_macros.h"
+#include "core/io/marshalls.h"
 #include "core/object/class_db.h"
 #include "core/object/ref_counted.h"
 #include "core/os/memory.h"
@@ -160,14 +161,18 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 		case Variant::NODE_PATH: {
 			value_editor = memnew(EditorPropertyNodePath);
 		} break;
-		// case Variant::RID: {
-		// } break;
-		// case Variant::SIGNAL: {
-		// } break;
-		// case Variant::CALLABLE: {
-		// } break;
-		// case Variant::OBJECT: {
-		// } break;
+			// case Variant::RID: {
+			// } break;
+			// case Variant::SIGNAL: {
+			// } break;
+			// case Variant::CALLABLE: {
+			// } break;
+		case Variant::OBJECT: {
+			// Only resources are supported.
+			EditorPropertyResource *editor = memnew(EditorPropertyResource);
+			editor->setup(_get_edited_param().ptr(), SNAME("saved_value"), "Resource");
+			value_editor = editor;
+		} break;
 		case Variant::DICTIONARY: {
 			value_editor = memnew(EditorPropertyDictionary);
 		} break;
@@ -281,7 +286,7 @@ void EditorPropertyBBParam::_notification(int p_what) {
 				PopupMenu *type_menu = type_choice->get_popup();
 				type_menu->clear();
 				for (int i = 0; i < Variant::VARIANT_MAX; i++) {
-					if (i == Variant::RID || i == Variant::CALLABLE || i == Variant::OBJECT || i == Variant::SIGNAL) {
+					if (i == Variant::RID || i == Variant::CALLABLE || i == Variant::SIGNAL) {
 						continue;
 					}
 					String type = Variant::get_type_name(Variant::Type(i));
