@@ -25,10 +25,10 @@ private:
 protected:
 	static void _bind_methods();
 
+public:
 	virtual Variant::Type get_type() const override;
 	void set_type(Variant::Type p_type);
 
-public:
 	BBVariant();
 };
 
