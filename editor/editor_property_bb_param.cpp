@@ -219,10 +219,7 @@ void EditorPropertyBBParam::_mode_changed() {
 void EditorPropertyBBParam::_type_selected(int p_index) {
 	Ref<BBVariant> param = _get_edited_param();
 	ERR_FAIL_COND(param.is_null());
-	Variant::Type t = Variant::Type(p_index);
-	param->set_type(t);
-	String type_name = Variant::get_type_name(t);
-	type_choice->set_icon(get_editor_theme_icon(type_name));
+	param->set_type(Variant::Type(p_index));
 	update_property();
 }
 
@@ -245,6 +242,12 @@ void EditorPropertyBBParam::update_property() {
 		value_editor->set_object_and_property(param.ptr(), SNAME("saved_value"));
 		mode_button->set_mode(Mode::SPECIFY_VALUE, true);
 		value_editor->update_property();
+	}
+
+	if (param->is_class_ptr(BBVariant::get_class_ptr_static())) {
+		Variant::Type t = Variant::Type(param->get_type());
+		String type_name = Variant::get_type_name(t);
+		type_choice->set_icon(get_editor_theme_icon(type_name));
 	}
 }
 
