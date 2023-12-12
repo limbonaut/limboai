@@ -36,7 +36,8 @@ public:
 #ifdef DEBUG_ENABLED
 private:
 	HashMap<NodePath, Ref<BTTask>> active_trees;
-	NodePath tracked_tree;
+	NodePath tracked_player;
+	String bt_resource_path;
 	bool session_active = false;
 
 	void _track_tree(NodePath p_path);

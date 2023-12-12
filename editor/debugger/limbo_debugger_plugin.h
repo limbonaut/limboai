@@ -45,7 +45,7 @@ private:
 	TextureRect *alert_icon = nullptr;
 	Label *alert_message = nullptr;
 	LineEdit *filter_players = nullptr;
-
+	Button *resource_header = nullptr;
 	Button *make_floating = nullptr;
 	WindowWrapper *window_wrapper = nullptr;
 
@@ -54,6 +54,7 @@ private:
 	void _bt_selected(int p_idx);
 	void _filter_changed(String p_text);
 	void _window_visibility_changed(bool p_visible);
+	void _resource_header_pressed();
 
 protected:
 	void _notification(int p_what);

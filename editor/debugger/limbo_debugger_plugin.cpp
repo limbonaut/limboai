@@ -14,17 +14,21 @@
 #include "limbo_debugger_plugin.h"
 
 #include "limbo_debugger.h"
+#include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/editor/debugger/behavior_tree_data.h"
 #include "modules/limboai/editor/debugger/behavior_tree_view.h"
 
 #include "core/debugger/engine_debugger.h"
+#include "core/error/error_macros.h"
 #include "core/math/math_defs.h"
 #include "core/object/callable_method_pointer.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
 #include "core/string/ustring.h"
 #include "core/variant/array.h"
+#include "editor/editor_interface.h"
 #include "editor/editor_scale.h"
+#include "editor/filesystem_dock.h"
 #include "editor/plugins/editor_debugger_plugin.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
@@ -52,6 +56,8 @@ void LimboDebuggerTab::stop_session() {
 	alert_box->hide();
 	info_message->set_text(TTR("Run project to start debugging."));
 	info_message->show();
+	resource_header->set_disabled(true);
+	resource_header->set_text(TTR("Inactive"));
 	session->send_message("limboai:stop_session", Array());
 }
 
@@ -71,6 +77,8 @@ String LimboDebuggerTab::get_selected_bt_player() {
 }
 
 void LimboDebuggerTab::update_behavior_tree(const BehaviorTreeData &p_data) {
+	resource_header->set_text(p_data.bt_resource_path);
+	resource_header->set_disabled(false);
 	bt_view->update_tree(p_data);
 	info_message->hide();
 }
@@ -122,6 +130,8 @@ void LimboDebuggerTab::_bt_selected(int p_idx) {
 	bt_view->clear();
 	info_message->set_text(TTR("Waiting for behavior tree update."));
 	info_message->show();
+	resource_header->set_text(TTR("Waiting for data"));
+	resource_header->set_disabled(true);
 	NodePath path = bt_player_list->get_item_text(p_idx);
 	Array msg_data;
 	msg_data.push_back(path);
@@ -136,9 +146,21 @@ void LimboDebuggerTab::_window_visibility_changed(bool p_visible) {
 	make_floating->set_visible(!p_visible);
 }
 
+void LimboDebuggerTab::_resource_header_pressed() {
+	String bt_path = resource_header->get_text();
+	if (bt_path.is_empty()) {
+		return;
+	}
+	FileSystemDock::get_singleton()->select_file(bt_path);
+	Ref<BehaviorTree> bt = ResourceLoader::load(bt_path, "BehaviorTree");
+	ERR_FAIL_COND_MSG(!bt.is_valid(), "Failed to load BehaviorTree. Wrong resource path?");
+	EditorInterface::get_singleton()->edit_resource(bt);
+}
+
 void LimboDebuggerTab::_notification(int p_what) {
 	if (p_what == NOTIFICATION_THEME_CHANGED) {
-		alert_icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
+		alert_icon->set_texture(get_editor_theme_icon(SNAME("StatusWarning")));
+		resource_header->set_icon(get_editor_theme_icon(SNAME("BehaviorTree")));
 	}
 }
 
@@ -151,6 +173,16 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowW
 
 	toolbar = memnew(HBoxContainer);
 	root_vb->add_child(toolbar);
+
+	resource_header = memnew(Button);
+	toolbar->add_child(resource_header);
+	resource_header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
+	resource_header->set_focus_mode(FOCUS_NONE);
+	resource_header->add_theme_constant_override("hseparation", 8);
+	resource_header->set_text(TTR("Inactive"));
+	resource_header->set_tooltip_text(TTR("Debugged BehaviorTree resource.\nClick to open."));
+	resource_header->set_disabled(true);
+	resource_header->connect("pressed", callable_mp(this, &LimboDebuggerTab::_resource_header_pressed));
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
