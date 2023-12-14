@@ -323,6 +323,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_edit->grab_focus();
 		} break;
 		case ACTION_CHANGE_TYPE: {
+			change_type_palette->clear_filter();
 			change_type_palette->refresh();
 			Rect2 rect = Rect2(get_global_mouse_position(), Size2(400.0, 600.0) * EDSCALE);
 			change_type_popup->popup(rect);
@@ -1092,6 +1093,7 @@ LimboAIEditor::LimboAIEditor() {
 	add_child(change_type_popup);
 	change_type_palette = memnew(TaskPalette);
 	change_type_popup->add_child(change_type_palette);
+	change_type_palette->use_dialog_mode();
 	change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
 
 	banners = memnew(VBoxContainer);
