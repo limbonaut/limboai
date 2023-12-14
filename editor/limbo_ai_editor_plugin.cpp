@@ -1091,10 +1091,22 @@ LimboAIEditor::LimboAIEditor() {
 
 	change_type_popup = memnew(PopupPanel);
 	add_child(change_type_popup);
-	change_type_palette = memnew(TaskPalette);
-	change_type_popup->add_child(change_type_palette);
-	change_type_palette->use_dialog_mode();
-	change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
+	{
+		VBoxContainer *change_type_vbox = memnew(VBoxContainer);
+		change_type_popup->add_child(change_type_vbox);
+
+		Label *change_type_title = memnew(Label);
+		change_type_vbox->add_child(change_type_title);
+		change_type_title->set_theme_type_variation("HeaderSmall");
+		change_type_title->set_horizontal_alignment(HORIZONTAL_ALIGNMENT_CENTER);
+		change_type_title->set_text(TTR("Choose New Type"));
+
+		change_type_palette = memnew(TaskPalette);
+		change_type_vbox->add_child(change_type_palette);
+		change_type_palette->use_dialog_mode();
+		change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
+		change_type_palette->set_v_size_flags(SIZE_EXPAND_FILL);
+	}
 
 	banners = memnew(VBoxContainer);
 	vbox->add_child(banners);
