@@ -179,6 +179,10 @@ void TaskPalette::_on_task_button_pressed(const String &p_task) {
 }
 
 void TaskPalette::_on_task_button_rmb(const String &p_task) {
+	if (dialog_mode) {
+		return;
+	}
+
 	ERR_FAIL_COND(p_task.is_empty());
 
 	context_task = p_task;
@@ -415,12 +419,18 @@ void TaskPalette::refresh() {
 		sec->connect(SNAME("task_button_pressed"), callable_mp(this, &TaskPalette::_on_task_button_pressed));
 		sec->connect(SNAME("task_button_rmb"), callable_mp(this, &TaskPalette::_on_task_button_rmb));
 		sections->add_child(sec);
-		sec->set_collapsed(collapsed_sections.has(cat));
+		sec->set_collapsed(!dialog_mode && collapsed_sections.has(cat));
 	}
 
-	if (!filter_edit->get_text().is_empty()) {
+	if (!dialog_mode && !filter_edit->get_text().is_empty()) {
 		_apply_filter(filter_edit->get_text());
 	}
+}
+
+void TaskPalette::use_dialog_mode() {
+	tool_filters->hide();
+	tool_refresh->hide();
+	dialog_mode = true;
 }
 
 void TaskPalette::_update_theme_item_cache() {

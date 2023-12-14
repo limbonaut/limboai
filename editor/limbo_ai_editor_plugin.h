@@ -31,6 +31,7 @@
 #include "scene/gui/line_edit.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/panel_container.h"
+#include "scene/gui/popup.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
@@ -42,6 +43,7 @@ class LimboAIEditor : public Control {
 private:
 	enum Action {
 		ACTION_RENAME,
+		ACTION_CHANGE_TYPE,
 		ACTION_EDIT_PROBABILITY,
 		ACTION_EDIT_SCRIPT,
 		ACTION_OPEN_DOC,
@@ -70,6 +72,7 @@ private:
 		Ref<Texture2D> percent_icon;
 		Ref<Texture2D> remove_task_icon;
 		Ref<Texture2D> rename_task_icon;
+		Ref<Texture2D> change_type_icon;
 	} theme_cache;
 
 	Vector<Ref<BehaviorTree>> history;
@@ -91,6 +94,9 @@ private:
 	Button *weight_mode;
 	Button *percent_mode;
 
+	PopupPanel *change_type_popup;
+	TaskPalette *change_type_palette;
+
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
 	Button *history_back;
@@ -110,7 +116,8 @@ private:
 	HashSet<String> disk_changed_files;
 
 	void _add_task(const Ref<BTTask> &p_task);
-	void _add_task_by_class_or_path(String p_class_or_path);
+	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
+	void _add_task_by_class_or_path(const String &p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
 	_FORCE_INLINE_ void _add_task_with_prototype(const Ref<BTTask> &p_prototype) { _add_task(p_prototype->clone()); }
 	void _update_header() const;
@@ -145,6 +152,9 @@ private:
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 	void _on_resources_reload(const Vector<String> &p_resources);
+
+	void _task_type_selected(const String &p_class_or_path);
+	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
 
 	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
 

@@ -118,6 +118,7 @@ private:
 	VBoxContainer *category_list;
 
 	String context_task;
+	bool dialog_mode = false;
 
 	void _menu_action_selected(int p_id);
 	void _on_task_button_pressed(const String &p_task);
@@ -149,6 +150,8 @@ protected:
 
 public:
 	void refresh();
+	void use_dialog_mode();
+	void clear_filter() { filter_edit->set_text(""); }
 
 	TaskPalette();
 	~TaskPalette();
