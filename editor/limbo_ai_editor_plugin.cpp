@@ -68,31 +68,35 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 	_mark_as_dirty(true);
 }
 
-void LimboAIEditor::_add_task_by_class_or_path(String p_class_or_path) {
-	Ref<BTTask> task;
+Ref<BTTask> LimboAIEditor::_create_task_by_class_or_path(const String &p_class_or_path) const {
+	Ref<BTTask> ret;
 
 	if (p_class_or_path.begins_with("res:")) {
 		Ref<Script> s = ResourceLoader::load(p_class_or_path, "Script");
-		ERR_FAIL_COND_MSG(s.is_null() || !s->is_valid(), vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
+		ERR_FAIL_COND_V_MSG(s.is_null() || !s->is_valid(), nullptr, vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
 		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
-		ERR_FAIL_COND_MSG(inst.is_zero(), vformat("LimboAI: Failed to instantiate base type \"%s\".", s->get_instance_base_type()));
+		ERR_FAIL_COND_V_MSG(inst.is_zero(), nullptr, vformat("LimboAI: Failed to instantiate base type \"%s\".", s->get_instance_base_type()));
 
 		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
 			if (!inst.is_ref_counted()) {
 				memdelete((Object *)inst);
 			}
 			ERR_PRINT(vformat("LimboAI: Failed to instantiate task. Script is not a BTTask: %s", p_class_or_path));
-			return;
+			return nullptr;
 		}
 
 		if (inst && s.is_valid()) {
 			((Object *)inst)->set_script(s);
-			task = inst;
+			ret = inst;
 		}
 	} else {
-		task = ClassDB::instantiate(p_class_or_path);
+		ret = ClassDB::instantiate(p_class_or_path);
 	}
-	_add_task(task);
+	return ret;
+}
+
+void LimboAIEditor::_add_task_by_class_or_path(const String &p_class_or_path) {
+	_add_task(_create_task_by_class_or_path(p_class_or_path));
 }
 
 void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
@@ -277,6 +281,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 		menu->add_icon_item(theme_cache.percent_icon, TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
 	}
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, ED_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
+	menu->add_icon_item(theme_cache.change_type_icon, TTR("Change Type"), ACTION_CHANGE_TYPE);
 	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
 	menu->add_icon_item(theme_cache.open_doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
 	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), task->get_script().is_null());
@@ -316,6 +321,11 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_dialog->popup_centered();
 			rename_edit->select_all();
 			rename_edit->grab_focus();
+		} break;
+		case ACTION_CHANGE_TYPE: {
+			change_type_palette->refresh();
+			Rect2 rect = Rect2(get_global_mouse_position(), Size2(400.0, 600.0) * EDSCALE);
+			change_type_popup->popup(rect);
 		} break;
 		case ACTION_EDIT_PROBABILITY: {
 			Rect2 rect = task_tree->get_selected_probability_rect();
@@ -670,6 +680,62 @@ void LimboAIEditor::_on_resources_reload(const Vector<String> &p_resources) {
 	}
 }
 
+void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
+	change_type_popup->hide();
+
+	Ref<BTTask> selected_task = task_tree->get_selected();
+	ERR_FAIL_COND(selected_task.is_null());
+	Ref<BTTask> new_task = _create_task_by_class_or_path(p_class_or_path);
+	ERR_FAIL_COND_MSG(new_task.is_null(), "LimboAI: Unable to construct task.");
+
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
+	undo_redo->create_action(TTR("Change BT task type"));
+	undo_redo->add_do_method(this, SNAME("_replace_task"), selected_task, new_task);
+	undo_redo->add_undo_method(this, SNAME("_replace_task"), new_task, selected_task);
+	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+	undo_redo->commit_action();
+	_mark_as_dirty(true);
+}
+
+void LimboAIEditor::_replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	ERR_FAIL_COND(p_by_task.is_null());
+	ERR_FAIL_COND(p_by_task->get_child_count() > 0);
+	ERR_FAIL_COND(p_by_task->get_parent().is_valid());
+
+	while (p_task->get_child_count() > 0) {
+		Ref<BTTask> child = p_task->get_child(0);
+		p_task->remove_child_at_index(0);
+		p_by_task->add_child(child);
+	}
+	p_by_task->set_custom_name(p_task->get_custom_name());
+
+	Ref<BTTask> parent = p_task->get_parent();
+	if (parent.is_null()) {
+		// Assuming root task is replaced.
+		ERR_FAIL_COND(task_tree->get_bt().is_null());
+		ERR_FAIL_COND(task_tree->get_bt()->get_root_task() != p_task);
+		task_tree->get_bt()->set_root_task(p_by_task);
+	} else {
+		// Non-root task is replaced.
+		int idx = p_task->get_index();
+
+		double weight = 0.0;
+		Ref<BTProbabilitySelector> probability_selector = parent;
+		if (probability_selector.is_valid()) {
+			weight = probability_selector->get_weight(idx);
+		}
+
+		parent->remove_child(p_task);
+		parent->add_child_at_index(p_by_task, idx);
+
+		if (probability_selector.is_valid()) {
+			probability_selector->set_weight(idx, weight);
+		}
+	}
+}
+
 void LimboAIEditor::_reload_modified() {
 	for (const String &fn : disk_changed_files) {
 		Ref<Resource> res = ResourceCache::get_ref(fn);
@@ -807,16 +873,17 @@ void LimboAIEditor::_update_banners() {
 void LimboAIEditor::_update_theme_item_cache() {
 	Control::_update_theme_item_cache();
 
-	theme_cache.duplicate_task_icon = get_theme_icon(SNAME("Duplicate"), SNAME("EditorIcons"));
-	theme_cache.edit_script_icon = get_theme_icon(SNAME("Script"), SNAME("EditorIcons"));
-	theme_cache.make_root_icon = get_theme_icon(SNAME("NewRoot"), SNAME("EditorIcons"));
-	theme_cache.move_task_down_icon = get_theme_icon(SNAME("MoveDown"), SNAME("EditorIcons"));
-	theme_cache.move_task_up_icon = get_theme_icon(SNAME("MoveUp"), SNAME("EditorIcons"));
-	theme_cache.open_debugger_icon = get_theme_icon(SNAME("Debug"), SNAME("EditorIcons"));
-	theme_cache.open_doc_icon = get_theme_icon(SNAME("Help"), SNAME("EditorIcons"));
-	theme_cache.percent_icon = get_theme_icon(SNAME("LimboPercent"), SNAME("EditorIcons"));
-	theme_cache.remove_task_icon = get_theme_icon(SNAME("Remove"), SNAME("EditorIcons"));
-	theme_cache.rename_task_icon = get_theme_icon(SNAME("Rename"), SNAME("EditorIcons"));
+	theme_cache.duplicate_task_icon = get_editor_theme_icon(SNAME("Duplicate"));
+	theme_cache.edit_script_icon = get_editor_theme_icon(SNAME("Script"));
+	theme_cache.make_root_icon = get_editor_theme_icon(SNAME("NewRoot"));
+	theme_cache.move_task_down_icon = get_editor_theme_icon(SNAME("MoveDown"));
+	theme_cache.move_task_up_icon = get_editor_theme_icon(SNAME("MoveUp"));
+	theme_cache.open_debugger_icon = get_editor_theme_icon(SNAME("Debug"));
+	theme_cache.open_doc_icon = get_editor_theme_icon(SNAME("Help"));
+	theme_cache.percent_icon = get_editor_theme_icon(SNAME("LimboPercent"));
+	theme_cache.remove_task_icon = get_editor_theme_icon(SNAME("Remove"));
+	theme_cache.rename_task_icon = get_editor_theme_icon(SNAME("Rename"));
+	theme_cache.change_type_icon = get_editor_theme_icon(SNAME("Reload"));
 }
 
 void LimboAIEditor::_notification(int p_what) {
@@ -862,6 +929,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("edit_bt", "p_behavior_tree", "p_force_refresh"), &LimboAIEditor::edit_bt, Variant(false));
 	ClassDB::bind_method(D_METHOD("_reload_modified"), &LimboAIEditor::_reload_modified);
 	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
+	ClassDB::bind_method(D_METHOD("_replace_task", "p_task", "p_by_task"), &LimboAIEditor::_replace_task);
 }
 
 LimboAIEditor::LimboAIEditor() {
@@ -1019,6 +1087,12 @@ LimboAIEditor::LimboAIEditor() {
 	task_palette->connect("favorite_tasks_changed", callable_mp(this, &LimboAIEditor::_update_favorite_tasks));
 	task_palette->hide();
 	hsc->add_child(task_palette);
+
+	change_type_popup = memnew(PopupPanel);
+	add_child(change_type_popup);
+	change_type_palette = memnew(TaskPalette);
+	change_type_popup->add_child(change_type_palette);
+	change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
 
 	banners = memnew(VBoxContainer);
 	vbox->add_child(banners);
