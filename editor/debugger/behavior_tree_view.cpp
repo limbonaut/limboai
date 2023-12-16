@@ -22,6 +22,7 @@
 #include "core/object/callable_method_pointer.h"
 #include "core/typedefs.h"
 #include "editor/editor_scale.h"
+#include "editor/editor_settings.h"
 #include "scene/resources/style_box.h"
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
@@ -157,6 +158,11 @@ void BehaviorTreeView::_update_theme_item_cache() {
 	theme_cache.sbf_failure->set_bg_color(failure_fill);
 	theme_cache.sbf_failure->set_border_width(SIDE_LEFT, 4.0);
 	theme_cache.sbf_failure->set_border_width(SIDE_RIGHT, 4.0);
+
+	double extra_spacing = EDITOR_GET("interface/theme/additional_spacing");
+	extra_spacing *= 2.0;
+	tree->set_column_custom_minimum_width(1, 18.0 * EDSCALE);
+	tree->set_column_custom_minimum_width(2, (50.0 + extra_spacing) * EDSCALE);
 }
 
 void BehaviorTreeView::_bind_methods() {
@@ -169,15 +175,12 @@ void BehaviorTreeView::_bind_methods() {
 BehaviorTreeView::BehaviorTreeView() {
 	tree = memnew(Tree);
 	add_child(tree);
-	tree->set_columns(3);
+	tree->set_columns(3); // task | status icon | elapsed
 	tree->set_column_expand(0, true);
 	tree->set_column_expand(1, false);
 	tree->set_column_expand(2, false);
-	tree->set_column_custom_minimum_width(1, 18.0 * EDSCALE);
-	tree->set_column_custom_minimum_width(2, 40.0 * EDSCALE);
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
-
 	tree->connect(SNAME("item_collapsed"), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 }
 
