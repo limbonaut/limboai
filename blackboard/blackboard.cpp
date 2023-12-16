@@ -47,12 +47,13 @@ void Blackboard::erase_var(const Variant &p_key) {
 
 void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 	ERR_FAIL_COND(p_node == nullptr);
-	for (int i = 0; i < data.size(); i++) {
-		Variant value = data.get_value_at_index(i);
-		if (value.get_type() == Variant::NODE_PATH) {
-			Node *fetched_node = p_node->get_node_or_null(value);
+	Array keys = data.keys();
+	Array values = data.values();
+	for (int i = 0; i < keys.size(); i++) {
+		if (values[i].get_type() == Variant::NODE_PATH) {
+			Node *fetched_node = p_node->get_node_or_null(values[i]);
 			if (fetched_node != nullptr) {
-				data[data.get_key_at_index(i)] = fetched_node;
+				data[keys[i]] = fetched_node;
 			}
 		}
 	}
