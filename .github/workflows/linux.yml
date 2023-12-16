@@ -179,6 +179,18 @@ jobs:
           mv bin/* ${{env.OUTDIR}}
           ls -R out/
 
+      # Zipping the editor artifact to retain executable bit;
+      # workaround for: https://github.com/actions/upload-artifact/issues/38
+      - name: Zip the editor artifact
+        if: matrix.target == 'editor'
+        shell: bash
+        run: |
+          pushd out/
+          zip -r godot-limboai.editor.linux.zip *
+          rm godot.*
+          echo -e "## Why another ZIP inside?\n\nWorkaround for: https://github.com/actions/upload-artifact/issues/38\n" > README.md
+          popd
+
       - name: Rename templates
         if: startsWith(matrix.target, 'template')
         env:

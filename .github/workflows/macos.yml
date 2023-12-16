@@ -223,6 +223,8 @@ jobs:
           name: macos-editor
           path: bin/
 
+      # Zipping the editor bundle to retain executable bit;
+      # workaround for: https://github.com/actions/upload-artifact/issues/38
       - name: Make editor bundle
         run: |
           ls bin/
@@ -234,6 +236,11 @@ jobs:
           mkdir -p out/editor/Godot.app/Contents/MacOS
           cp bin/godot.macos.editor.universal out/editor/Godot.app/Contents/MacOS/Godot
           chmod +x out/editor/Godot.app/Contents/MacOS/Godot
+          pushd out/editor
+          zip -r Godot.app.zip Godot.app
+          rm -rf Godot.app
+          echo -e "## Why another ZIP inside?\n\nWorkaround for: https://github.com/actions/upload-artifact/issues/38\n" > README.md
+          popd
           ls out/editor/
 
       - name: Upload editor bundle
