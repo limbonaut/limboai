@@ -72,6 +72,12 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 All contributions are welcome! Feel free to open issues with bug reports and feature requests, and submit PRs.
 
+## Social
+
+We have a Discord server: https://discord.gg/N5MGC95GpP
+
+I also write about LimboAI development on the Mastodon: https://mastodon.gamedev.place/@limbo.
+
 ## Roadmap
 
 Features and improvements that may be implemented in the future:
