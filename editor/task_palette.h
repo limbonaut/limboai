@@ -25,6 +25,8 @@ class TaskButton : public Button {
 
 public:
 	virtual Control *make_custom_tooltip(const String &p_text) const override;
+
+	TaskButton();
 };
 
 class TaskPaletteSection : public VBoxContainer {

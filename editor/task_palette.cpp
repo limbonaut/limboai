@@ -41,6 +41,10 @@ Control *TaskButton::make_custom_tooltip(const String &p_text) const {
 	return help_bit;
 }
 
+TaskButton::TaskButton() {
+	set_focus_mode(FOCUS_NONE);
+}
+
 //**** TaskButton ^
 
 //**** TaskPaletteSection
