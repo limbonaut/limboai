@@ -23,6 +23,7 @@
 
 #include "core/config/project_settings.h"
 #include "core/error/error_macros.h"
+#include "core/input/input.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
@@ -49,21 +50,34 @@ void LimboAIEditor::_add_task(const Ref<BTTask> &p_task) {
 		return;
 	}
 	ERR_FAIL_COND(p_task.is_null());
+
 	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
 	undo_redo->create_action(TTR("Add BT Task"));
-	Ref<BTTask> parent = task_tree->get_selected();
+
+	int insert_idx = -1;
+	Ref<BTTask> selected = task_tree->get_selected();
+	Ref<BTTask> parent = selected;
 	if (parent.is_null()) {
+		// When no task is selected, use the root task.
 		parent = task_tree->get_bt()->get_root_task();
+		selected = parent;
 	}
 	if (parent.is_null()) {
+		// When tree is empty.
 		undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), p_task);
 		undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 	} else {
-		undo_redo->add_do_method(parent.ptr(), SNAME("add_child"), p_task);
+		if (Input::get_singleton()->is_key_pressed(Key::SHIFT) && selected->get_parent().is_valid()) {
+			// When shift is pressed, insert task after the currently selected and on the same level.
+			parent = selected->get_parent();
+			insert_idx = selected->get_index() + 1;
+		}
+		undo_redo->add_do_method(parent.ptr(), SNAME("add_child_at_index"), p_task, insert_idx);
 		undo_redo->add_undo_method(parent.ptr(), SNAME("remove_child"), p_task);
 	}
 	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
 	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+
 	undo_redo->commit_action();
 	_mark_as_dirty(true);
 }
