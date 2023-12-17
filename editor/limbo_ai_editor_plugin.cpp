@@ -14,9 +14,11 @@
 #include "limbo_ai_editor_plugin.h"
 
 #include "action_banner.h"
+#include "modules/limboai/bt/behavior_tree.h"
 #include "modules/limboai/bt/tasks/bt_comment.h"
 #include "modules/limboai/bt/tasks/composites/bt_probability_selector.h"
 #include "modules/limboai/bt/tasks/composites/bt_selector.h"
+#include "modules/limboai/bt/tasks/decorators/bt_subtree.h"
 #include "modules/limboai/editor/debugger/limbo_debugger_plugin.h"
 #include "modules/limboai/editor/editor_property_bb_param.h"
 #include "modules/limboai/util/limbo_utility.h"
@@ -244,6 +246,39 @@ void LimboAIEditor::_remove_task_from_favorite(const String &p_task) {
 	ProjectSettings::get_singleton()->save();
 }
 
+void LimboAIEditor::_extract_subtree(const String &p_path) {
+	Ref<BTTask> selected = task_tree->get_selected();
+	ERR_FAIL_COND(selected.is_null());
+
+	EditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();
+	undo_redo->create_action(TTR("Extract Subtree"));
+
+	Ref<BehaviorTree> bt = memnew(BehaviorTree);
+	bt->set_root_task(selected->clone());
+	bt->set_path(p_path);
+	ResourceSaver::save(bt, p_path, ResourceSaver::FLAG_CHANGE_PATH);
+
+	Ref<BTSubtree> subtree = memnew(BTSubtree);
+	subtree->set_subtree(bt);
+
+	if (selected->is_root()) {
+		undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), subtree);
+		undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), selected);
+	} else {
+		int idx = selected->get_index();
+		undo_redo->add_do_method(selected->get_parent().ptr(), SNAME("remove_child"), selected);
+		undo_redo->add_do_method(selected->get_parent().ptr(), SNAME("add_child_at_index"), subtree, idx);
+		undo_redo->add_undo_method(selected->get_parent().ptr(), SNAME("remove_child"), subtree);
+		undo_redo->add_undo_method(selected->get_parent().ptr(), SNAME("add_child_at_index"), selected, idx);
+	}
+	undo_redo->add_do_method(task_tree, SNAME("update_tree"));
+	undo_redo->add_undo_method(task_tree, SNAME("update_tree"));
+
+	undo_redo->commit_action();
+	EditorNode::get_singleton()->edit_resource(task_tree->get_selected());
+	_mark_as_dirty(true);
+}
+
 void LimboAIEditor::shortcut_input(const Ref<InputEvent> &p_event) {
 	if (!p_event->is_pressed()) {
 		return;
@@ -305,6 +340,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->add_icon_shortcut(theme_cache.move_task_down_icon, ED_GET_SHORTCUT("limbo_ai/move_task_down"), ACTION_MOVE_DOWN);
 	menu->add_icon_shortcut(theme_cache.duplicate_task_icon, ED_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
 	menu->add_icon_item(theme_cache.make_root_icon, TTR("Make Root"), ACTION_MAKE_ROOT);
+	menu->add_icon_item(theme_cache.extract_subtree_icon, TTR("Extract Subtree"), ACTION_EXTRACT_SUBTREE);
 
 	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.remove_task_icon, ED_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
@@ -441,11 +477,17 @@ void LimboAIEditor::_action_selected(int p_id) {
 				_mark_as_dirty(true);
 			}
 		} break;
+		case ACTION_EXTRACT_SUBTREE: {
+			Ref<BTTask> sel = task_tree->get_selected();
+			if (sel.is_valid() && !sel->is_class_ptr(BTSubtree::get_class_ptr_static())) {
+				extract_dialog->popup_centered_ratio();
+			}
+		} break;
 		case ACTION_REMOVE: {
 			Ref<BTTask> sel = task_tree->get_selected();
 			if (sel.is_valid()) {
 				undo_redo->create_action(TTR("Remove BT Task"));
-				if (sel->get_parent().is_null()) {
+				if (sel->is_root()) {
 					undo_redo->add_do_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), Variant());
 					undo_redo->add_undo_method(task_tree->get_bt().ptr(), SNAME("set_root_task"), task_tree->get_bt()->get_root_task());
 				} else {
@@ -899,6 +941,7 @@ void LimboAIEditor::_update_theme_item_cache() {
 	theme_cache.remove_task_icon = get_editor_theme_icon(SNAME("Remove"));
 	theme_cache.rename_task_icon = get_editor_theme_icon(SNAME("Rename"));
 	theme_cache.change_type_icon = get_editor_theme_icon(SNAME("Reload"));
+	theme_cache.extract_subtree_icon = get_editor_theme_icon(SNAME("LimboExtractSubtree"));
 }
 
 void LimboAIEditor::_notification(int p_what) {
@@ -966,7 +1009,7 @@ LimboAIEditor::LimboAIEditor() {
 
 	save_dialog = memnew(FileDialog);
 	save_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);
-	save_dialog->set_title("Save Behavior Tree");
+	save_dialog->set_title(TTR("Save Behavior Tree"));
 	save_dialog->add_filter("*.tres");
 	save_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_save_bt));
 	save_dialog->hide();
@@ -974,11 +1017,19 @@ LimboAIEditor::LimboAIEditor() {
 
 	load_dialog = memnew(FileDialog);
 	load_dialog->set_file_mode(FileDialog::FILE_MODE_OPEN_FILE);
-	load_dialog->set_title("Load Behavior Tree");
+	load_dialog->set_title(TTR("Load Behavior Tree"));
 	load_dialog->add_filter("*.tres");
 	load_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_load_bt));
 	load_dialog->hide();
 	add_child(load_dialog);
+
+	extract_dialog = memnew(FileDialog);
+	extract_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);
+	extract_dialog->set_title(TTR("Save Extracted Tree"));
+	extract_dialog->add_filter("*.tres");
+	extract_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_extract_subtree));
+	extract_dialog->hide();
+	add_child(extract_dialog);
 
 	vbox = memnew(VBoxContainer);
 	vbox->set_anchor(SIDE_RIGHT, ANCHOR_END);
@@ -1216,8 +1267,10 @@ LimboAIEditor::LimboAIEditor() {
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR), "");
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR), "");
 
-	save_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
-	load_dialog->set_current_dir(GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir"));
+	String bt_default_dir = GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir");
+	save_dialog->set_current_dir(bt_default_dir);
+	load_dialog->set_current_dir(bt_default_dir);
+	extract_dialog->set_current_dir(bt_default_dir);
 	new_script_btn->connect("pressed", callable_mp(ScriptEditor::get_singleton(), &ScriptEditor::open_script_create_dialog).bind("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task")));
 
 	EditorFileSystem::get_singleton()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));

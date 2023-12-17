@@ -42,15 +42,16 @@ class LimboAIEditor : public Control {
 
 private:
 	enum Action {
+		ACTION_EDIT_PROBABILITY,
 		ACTION_RENAME,
 		ACTION_CHANGE_TYPE,
-		ACTION_EDIT_PROBABILITY,
 		ACTION_EDIT_SCRIPT,
 		ACTION_OPEN_DOC,
 		ACTION_MOVE_UP,
 		ACTION_MOVE_DOWN,
 		ACTION_DUPLICATE,
 		ACTION_MAKE_ROOT,
+		ACTION_EXTRACT_SUBTREE,
 		ACTION_REMOVE,
 	};
 
@@ -73,6 +74,7 @@ private:
 		Ref<Texture2D> remove_task_icon;
 		Ref<Texture2D> rename_task_icon;
 		Ref<Texture2D> change_type_icon;
+		Ref<Texture2D> extract_subtree_icon;
 	} theme_cache;
 
 	Vector<Ref<BehaviorTree>> history;
@@ -99,6 +101,7 @@ private:
 
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
+	FileDialog *extract_dialog;
 	Button *history_back;
 	Button *history_forward;
 
@@ -132,6 +135,7 @@ private:
 	void _create_user_task_dir();
 	void _edit_project_settings();
 	void _remove_task_from_favorite(const String &p_task);
+	void _extract_subtree(const String &p_path);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
