@@ -42,7 +42,6 @@ public:
 	}
 	Ref<BTTask> get_root_task() const { return root_task; }
 
-	// void init();
 	Ref<BehaviorTree> clone() const;
 	Ref<BTTask> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const;
 };

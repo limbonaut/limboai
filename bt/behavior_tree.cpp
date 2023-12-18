@@ -37,7 +37,6 @@ void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_description"), &BehaviorTree::get_description);
 	ClassDB::bind_method(D_METHOD("set_root_task", "p_value"), &BehaviorTree::set_root_task);
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
-	// ClassDB::bind_method(D_METHOD("init"), &BehaviorTree::init);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
 	ClassDB::bind_method(D_METHOD("instantiate", "p_agent", "p_blackboard"), &BehaviorTree::instantiate);
 

@@ -1288,6 +1288,14 @@ void LimboAIEditorPlugin::apply_changes() {
 }
 
 void LimboAIEditorPlugin::_notification(int p_notification) {
+	if (p_notification == NOTIFICATION_ENTER_TREE) {
+		// Add BehaviorTree to the list of resources that should open in a new inspector.
+		PackedStringArray open_in_new_inspector = EDITOR_GET("interface/inspector/resources_to_open_in_new_inspector");
+		if (!open_in_new_inspector.has("BehaviorTree")) {
+			open_in_new_inspector.push_back("BehaviorTree");
+			EditorSettings::get_singleton()->set_setting("interface/inspector/resources_to_open_in_new_inspector", open_in_new_inspector);
+		}
+	}
 }
 
 void LimboAIEditorPlugin::make_visible(bool p_visible) {
