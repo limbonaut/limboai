@@ -36,6 +36,8 @@ Check out the `BTTask` class documentation in the editor, which provides the fou
 
 ## Creating custom tasks in GDScript
 
+By default, user tasks should be placed in the `res://ai/tasks` folder. You can set an alternative location for user tasks in the `Project Settings → Limbo AI` (To see those options, `Advanced Settings` should be enabled in the Project Settings). Each subfolder within the user tasks folder is treated as a category. Therefore, if you create a subfolder named "motion_and_physics," your custom tasks in that folder will automatically be categorized under "Motion And Physics."
+
 >**🛈 Note:** You can add a script template to your project with "Misc → Create script template" menu option.
 
 ### Task anatomy
