@@ -16,6 +16,7 @@
 #include "modules/limboai/util/limbo_string_names.h"
 
 #include "core/config/engine.h"
+#include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/io/resource_loader.h"
 #include "core/object/class_db.h"
@@ -28,7 +29,7 @@ VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
 void BTPlayer::_load_tree() {
 #ifdef DEBUG_ENABLED
-	if (tree_instance.is_valid()) {
+	if (tree_instance.is_valid() && EngineDebugger::is_active()) {
 		LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 	}
 #endif
@@ -40,7 +41,9 @@ void BTPlayer::_load_tree() {
 	}
 	tree_instance = behavior_tree->instantiate(get_owner(), blackboard);
 #ifdef DEBUG_ENABLED
-	LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+	if (EngineDebugger::is_active()) {
+		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+	}
 #endif
 }
 
@@ -152,12 +155,12 @@ void BTPlayer::_notification(int p_notification) {
 		} break;
 #ifdef DEBUG_ENABLED
 		case NOTIFICATION_ENTER_TREE: {
-			if (tree_instance.is_valid()) {
+			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
 				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			if (tree_instance.is_valid()) {
+			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 			}
 		} break;
