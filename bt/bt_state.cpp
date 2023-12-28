@@ -15,6 +15,7 @@
 #include "modules/limboai/hsm/limbo_state.h"
 #include "modules/limboai/util/limbo_string_names.h"
 
+#include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/variant/variant.h"
@@ -24,7 +25,9 @@ void BTState::_setup() {
 	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard());
 
 #ifdef DEBUG_ENABLED
-	LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+	if (tree_instance.is_valid() && EngineDebugger::is_active()) {
+		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+	}
 #endif
 }
 
@@ -48,12 +51,12 @@ void BTState::_update(double p_delta) {
 void BTState::_notification(int p_notification) {
 	switch (p_notification) {
 		case NOTIFICATION_ENTER_TREE: {
-			if (tree_instance.is_valid()) {
+			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
 				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			if (tree_instance.is_valid()) {
+			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 			}
 		} break;
