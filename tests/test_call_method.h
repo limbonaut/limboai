@@ -20,6 +20,7 @@
 #include "modules/limboai/bt/tasks/utility/bt_call_method.h"
 
 #include "core/os/memory.h"
+#include "core/variant/array.h"
 
 namespace TestCallMethod {
 
@@ -63,6 +64,52 @@ TEST_CASE("[Modules][LimboAI] BTCallMethod") {
 		SUBCASE("When method exists") {
 			CHECK(cm->execute(0.01666) == BTTask::SUCCESS);
 			CHECK(callback_counter->num_callbacks == 1);
+		}
+		SUBCASE("With arguments") {
+			cm->set_method("callback_delta");
+
+			SUBCASE("Should fail with 0 arguments") {
+				cm->set_include_delta(false);
+				cm->set_args(Array());
+				ERR_PRINT_OFF;
+				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
+				ERR_PRINT_ON;
+				CHECK(callback_counter->num_callbacks == 0);
+			}
+			SUBCASE("Should fail with too many arguments") {
+				cm->set_include_delta(true);
+				Array args;
+				args.push_back(0.2);
+				cm->set_args(args);
+				ERR_PRINT_OFF;
+				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
+				ERR_PRINT_ON;
+				CHECK(callback_counter->num_callbacks == 0);
+			}
+			SUBCASE("Should fail with a wrong type arg") {
+				cm->set_include_delta(false);
+				Array args;
+				args.push_back("wrong_data");
+				cm->set_args(args);
+				ERR_PRINT_OFF;
+				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
+				ERR_PRINT_ON;
+				CHECK(callback_counter->num_callbacks == 1);
+			}
+			SUBCASE("Should succeed with delta included") {
+				cm->set_include_delta(true);
+				cm->set_args(Array());
+				CHECK(cm->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(callback_counter->num_callbacks == 1);
+			}
+			SUBCASE("Should succeed with one float arg") {
+				cm->set_include_delta(false);
+				Array args;
+				args.push_back(0.2);
+				cm->set_args(args);
+				CHECK(cm->execute(0.01666) == BTTask::SUCCESS);
+				CHECK(callback_counter->num_callbacks == 1);
+			}
 		}
 
 		memdelete(dummy);

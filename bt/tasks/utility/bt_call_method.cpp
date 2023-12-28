@@ -54,15 +54,16 @@ PackedStringArray BTCallMethod::get_configuration_warnings() const {
 }
 
 String BTCallMethod::_generate_name() const {
-	int argument_count = include_delta ? args.size() + 1 : args.size();
-	Array final_args;
-	if (include_delta) {
-		final_args.push_back("delta");
+	String args_str = include_delta ? "delta" : "";
+	if (args.size() > 0) {
+		if (!args_str.is_empty()) {
+			args_str += ", ";
+		}
+		args_str += Variant(args).get_construct_string().trim_prefix("[").trim_suffix("]");
 	}
-	final_args.append_array(args);
 	return vformat("CallMethod %s(%s)  node: %s",
 			(method != StringName() ? method : "???"),
-			(argument_count > 0 ? Variant(final_args).get_construct_string().trim_prefix("[").trim_suffix("]") : ""),
+			args_str,
 			(node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???"));
 }
 
@@ -107,9 +108,14 @@ void BTCallMethod::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_include_delta", "p_include_delta"), &BTCallMethod::set_include_delta);
 	ClassDB::bind_method(D_METHOD("is_delta_included"), &BTCallMethod::is_delta_included);
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "method"), "set_method", "get_method");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "include_delta"), "set_include_delta", "is_delta_included");
-	ADD_PROPERTY_DEFAULT("include_delta", false);
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "method"), "set_method", "get_method");
+	ADD_GROUP("Arguments", "args_");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "args_include_delta"), "set_include_delta", "is_delta_included");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args"), "set_args", "get_args");
+
+	ADD_PROPERTY_DEFAULT("args_include_delta", false);
+}
+
+BTCallMethod::BTCallMethod() {
 }

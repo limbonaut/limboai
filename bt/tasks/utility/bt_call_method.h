@@ -46,6 +46,8 @@ public:
 	bool is_delta_included() const { return include_delta; }
 
 	virtual PackedStringArray get_configuration_warnings() const override;
+
+	BTCallMethod();
 };
 
 #endif // BT_CALL_METHOD
