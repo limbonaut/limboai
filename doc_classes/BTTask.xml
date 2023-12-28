@@ -7,7 +7,7 @@
 		Base class for all [BehaviorTree] tasks. A task is a basic building block in a [BehaviorTree] that represents a specific behavior or control flow. Tasks are used to create complex behaviors by combining and nesting them in a hierarchy.
 		A task can be one of the following types: action, condition, composite, or decorator. Each type of task has its own corresponding subclass: [BTAction], [BTCondition], [BTDecorator], [BTComposite].
 		Tasks perform their work and return their status using the [method _tick] method. Status values are defined in [enum BT.Status]. Tasks can be initialized using the [method _setup] method. See also [method _enter] &amp; [method _exit].
-		[b]Note:[/b] Do not extend [code]BTTask[/code] directly for your own tasks. Instead, extend one of the subtypes mentioned above.
+		[b]Note:[/b] Do not extend [BTTask] directly for your own tasks. Instead, extend one of the subtypes mentioned above.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -62,7 +62,7 @@
 			<return type="void" />
 			<param index="0" name="p_child" type="BTTask" />
 			<description>
-				Adds a child task. The [code]p_child[/code] is placed at the end of the children list.
+				Adds a child task. The [param p_child] is placed at the end of the children list.
 			</description>
 		</method>
 		<method name="add_child_at_index">
@@ -70,7 +70,7 @@
 			<param index="0" name="p_child" type="BTTask" />
 			<param index="1" name="p_idx" type="int" />
 			<description>
-				Adds a child task. The [code]p_child[/code] is placed at [code]p_idx[/code] position in the children list.
+				Adds a child task. The [param p_child] is placed at [param p_idx] position in the children list.
 			</description>
 		</method>
 		<method name="clone" qualifiers="const">
@@ -137,7 +137,7 @@
 			<return type="bool" />
 			<param index="0" name="p_child" type="BTTask" />
 			<description>
-				Returns [code]true[/code] if [code]p_child[/code] is a child of this task.
+				Returns [code]true[/code] if [param p_child] is a child of this task.
 			</description>
 		</method>
 		<method name="initialize">
@@ -153,7 +153,7 @@
 			<return type="bool" />
 			<param index="0" name="p_task" type="BTTask" />
 			<description>
-				Returns [code]true[/code] if this task is a descendant of [code]p_task[/code]. In other words, this task must be a child of [code]p_task[/code] or one of its children or grandchildren.
+				Returns [code]true[/code] if this task is a descendant of [param p_task]. In other words, this task must be a child of [param p_task] or one of its children or grandchildren.
 			</description>
 		</method>
 		<method name="is_root" qualifiers="const">
@@ -180,7 +180,7 @@
 			<return type="void" />
 			<param index="0" name="p_child" type="BTTask" />
 			<description>
-				Removes [code]p_child[/code] task from children.
+				Removes [param p_child] task from children.
 			</description>
 		</method>
 		<method name="remove_child_at_index">
@@ -200,7 +200,7 @@
 			See [Blackboard] for additional info.
 		</member>
 		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
-			User-provided name for the task. If not empty, [code]custom_name[/code] is used by the editor to represent the task. See [method get_task_name].
+			User-provided name for the task. If not empty, it is used by the editor to represent the task. See [method get_task_name].
 		</member>
 		<member name="elapsed_time" type="float" setter="" getter="get_elapsed_time">
 			Elapsed time since the task was "entered". See [method _enter].

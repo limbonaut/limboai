@@ -15,7 +15,7 @@
 			<param index="1" name="p_to_state" type="Node" />
 			<param index="2" name="p_event" type="String" />
 			<description>
-				Establishes a transition from one state to another when [code]p_event[/code] is dispatched. Both [code]p_from_state[/code] and [code]p_to_state[/code] must be immediate children of this state.
+				Establishes a transition from one state to another when [param p_event] is dispatched. Both [param p_from_state] and [param p_to_state] must be immediate children of this state.
 			</description>
 		</method>
 		<method name="get_active_state" qualifiers="const">
@@ -35,7 +35,7 @@
 			<param index="0" name="p_agent" type="Node" />
 			<param index="1" name="p_parent_scope" type="Blackboard" default="null" />
 			<description>
-				Initiates the state and calls [code]_setup[/code] for both itself and all substates.
+				Initiates the state and calls [method LimboState._setup] for both itself and all substates.
 			</description>
 		</method>
 		<method name="set_active">

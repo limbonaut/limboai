@@ -55,14 +55,14 @@
 			<param index="0" name="p_status" type="int" />
 			<description>
 				Emitted when the behavior tree has finished executing and returned [code]SUCCESS[/code] or [code]FAILURE[/code].
-				Argument [code]p_status[/code] holds the status returned by the behavior tree. See [enum BT.Status].
+				Argument [param p_status] holds the status returned by the behavior tree. See [enum BT.Status].
 			</description>
 		</signal>
 		<signal name="updated">
 			<param index="0" name="p_status" type="int" />
 			<description>
 				Emitted when BTPlayer has finished the behavior tree update.
-				Argument [code]p_status[/code] holds the status returned by the behavior tree. See [enum BT.Status].
+				Argument [param p_status] holds the status returned by the behavior tree. See [enum BT.Status].
 			</description>
 		</signal>
 	</signals>
