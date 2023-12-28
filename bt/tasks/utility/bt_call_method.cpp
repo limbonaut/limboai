@@ -26,6 +26,11 @@ void BTCallMethod::set_node_param(Ref<BBNode> p_object) {
 	}
 }
 
+void BTCallMethod::set_include_delta(bool p_include_delta) {
+	include_delta = p_include_delta;
+	emit_changed();
+}
+
 void BTCallMethod::set_args(Array p_args) {
 	args = p_args;
 	emit_changed();
@@ -49,9 +54,15 @@ PackedStringArray BTCallMethod::get_configuration_warnings() const {
 }
 
 String BTCallMethod::_generate_name() const {
+	int argument_count = include_delta ? args.size() + 1 : args.size();
+	Array final_args;
+	if (include_delta) {
+		final_args.push_back("delta");
+	}
+	final_args.append_array(args);
 	return vformat("CallMethod %s(%s)  node: %s",
 			(method != StringName() ? method : "???"),
-			(args.size() > 0 ? Variant(args).get_construct_string().trim_prefix("[").trim_suffix("]") : ""),
+			(argument_count > 0 ? Variant(final_args).get_construct_string().trim_prefix("[").trim_suffix("]") : ""),
 			(node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???"));
 }
 
@@ -61,19 +72,24 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	Object *obj = node_param->get_value(get_agent(), get_blackboard());
 	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get object: " + node_param->to_string());
 
+	const Variant delta = include_delta ? Variant(p_delta) : Variant();
 	const Variant **argptrs = nullptr;
 
-	if (args.size() > 0) {
-		argptrs = (const Variant **)alloca(sizeof(Variant *) * args.size());
+	int argument_count = include_delta ? args.size() + 1 : args.size();
+	if (argument_count > 0) {
+		argptrs = (const Variant **)alloca(sizeof(Variant *) * argument_count);
+		if (include_delta) {
+			argptrs[0] = &delta;
+		}
 		for (int i = 0; i < args.size(); i++) {
-			argptrs[i] = &args[i];
+			argptrs[i + int(include_delta)] = &args[i];
 		}
 	}
 
 	Callable::CallError ce;
-	obj->callp(method, argptrs, args.size(), ce);
+	obj->callp(method, argptrs, argument_count, ce);
 	if (ce.error != Callable::CallError::CALL_OK) {
-		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, args.size(), ce) + ".");
+		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, argument_count, ce) + ".");
 	}
 
 	return SUCCESS;
@@ -88,8 +104,12 @@ void BTCallMethod::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_node_param"), &BTCallMethod::get_node_param);
 	ClassDB::bind_method(D_METHOD("set_args", "p_args"), &BTCallMethod::set_args);
 	ClassDB::bind_method(D_METHOD("get_args"), &BTCallMethod::get_args);
+	ClassDB::bind_method(D_METHOD("set_include_delta", "p_include_delta"), &BTCallMethod::set_include_delta);
+	ClassDB::bind_method(D_METHOD("is_delta_included"), &BTCallMethod::is_delta_included);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "method"), "set_method", "get_method");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "include_delta"), "set_include_delta", "is_delta_included");
+	ADD_PROPERTY_DEFAULT("include_delta", false);
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args"), "set_args", "get_args");
 }

@@ -13,6 +13,9 @@
 		<member name="args" type="Array" setter="set_args" getter="get_args" default="[]">
 			The arguments to be passed when calling the method.
 		</member>
+		<member name="include_delta" type="bool" setter="set_include_delta" getter="is_delta_included" default="false">
+			Include delta as a first parameter and shift the position of the rest of the arguments if any.
+		</member>
 		<member name="method" type="StringName" setter="set_method" getter="get_method" default="&amp;&quot;&quot;">
 			The name of the method to be called.
 		</member>
