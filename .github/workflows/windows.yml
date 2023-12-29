@@ -10,6 +10,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
   workflow_dispatch:
     inputs:
@@ -21,6 +25,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
 # Global Settings
 env:
@@ -33,73 +41,88 @@ env:
 jobs:
   windows-builds:
     runs-on: "windows-latest"
-    name: ${{ matrix.name }}
+    name: ${{ matrix.opts.name }}
     strategy:
       fail-fast: false
       matrix:
-        include:
+        opts:
           - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: false
+            should-build: true
 
           - name: Template (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           # - name: Editor (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: false
+          # should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           - name: Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: true
+            should-build: true
 
           - name: Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           # - name: Editor .NET (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: true
+          # should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
+
+        exclude:
+          - { opts: {should-build: false }}
 
     env:
-      BIN: godot.windows.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+      BIN: godot.windows.${{matrix.opts.target}}.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
 
     steps:
       - name: Clone Godot
@@ -147,17 +170,17 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=windows target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons -j2 platform=windows target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.build-mono}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
-        if: matrix.build-mono && matrix.target == 'editor'
+        if: matrix.opts.build-mono && matrix.opts.target == 'editor'
         env:
           GODOT_VERSION_STATUS: limboai
         run: |
           ./bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
-        if: matrix.build-mono && matrix.target == 'editor'
+        if: matrix.opts.build-mono && matrix.opts.target == 'editor'
         env:
           GODOT_VERSION_STATUS: limboai
         run: |
@@ -166,7 +189,7 @@ jobs:
       - name: Prepare artifact
         shell: bash
         env:
-          OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
+          OUTDIR: ${{ startsWith(matrix.opts.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           rm -f bin/*.{exp,lib,pdb}
           mkdir -p ${{env.OUTDIR}}
@@ -174,21 +197,21 @@ jobs:
           ls -R out/
 
       - name: Rename templates
-        if: startsWith(matrix.target, 'template')
+        if: startsWith(matrix.opts.target, 'template')
         shell: bash
         env:
-          BUILD_TYPE: ${{ endsWith(matrix.target, 'release') && 'release' || 'debug' }}
+          BUILD_TYPE: ${{ endsWith(matrix.opts.target, 'release') && 'release' || 'debug' }}
         run: |
-          mv out/templates/${BIN}.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}.exe
-          mv out/templates/${BIN}.console.exe out/templates/windows_${BUILD_TYPE}_${{matrix.arch}}_console.exe
+          mv out/templates/${BIN}.exe out/templates/windows_${BUILD_TYPE}_${{matrix.opts.arch}}.exe
+          mv out/templates/${BIN}.console.exe out/templates/windows_${BUILD_TYPE}_${{matrix.opts.arch}}_console.exe
           echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.windows.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.opts.target}}.windows.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
+          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.opts.build-mono == true && '.mono' || ''  }}
         with:
-          name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
+          name: ${{ startsWith(matrix.opts.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*

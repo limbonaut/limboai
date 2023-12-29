@@ -10,6 +10,11 @@ on:
       - "**/*.png"
       - "demo/*"
       - "doc/*"
+    inputs:
+      godot-treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: 4.2.1-stable
 
   pull_request:
     branches: [ master ]
@@ -18,80 +23,37 @@ on:
       - "LICENSE"
       - "**/*.png"
       - "demo/*"
-
-# Global settings
-env:
-  GODOT_TREEISH: 4.2-stable
-  SCONSFLAGS: verbose=yes warnings=extra werror=yes
-  SCONS_CACHE_LIMIT: 7168
-  DOTNET_NOLOGO: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
+    inputs:
+      godot-treeish:
+        description: A tag, branch or commit hash in the Godot repository.
+        type: string
+        default: 4.2.1-stable
 
 jobs:
-  linux-test-builds:
+  unit-tests:
+    name: 🧪 Unit tests
     runs-on: "ubuntu-20.04"
-    name: ${{ matrix.name }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - name: 🐧 Unit tests
-            target: editor
-            arch: x86_64
-            production: false
-            dev_build: true
-            tests: true
-            build-mono: false
-            artifact: false
 
-          - name: 🐧 Editor (x86_64, release)
-            target: editor
-            arch: x86_64
-            production: true
-            dev_build: false
-            tests: false
-            build-mono: false
-            artifact: true
-
-          - name: 🐧 Template (x86_64, release)
-            target: template_release
-            arch: x86_64
-            production: true
-            dev_build: false
-            tests: false
-            build-mono: false
-            artifact: true
-
-          - name: 🐧 Template (x86_64, debug)
-            target: template_debug
-            arch: x86_64
-            production: true
-            dev_build: false
-            tests: false
-            build-mono: false
-            artifact: true
-
+    # Settings
     env:
-      BIN: godot.linuxbsd.${{matrix.target}}${{matrix.dev_build == true && '.dev' || ''}}.${{matrix.arch}}${{matrix.build-mono == true && '.mono' || ''}}
+      SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra werror=yes
+      SCONS_CACHE_LIMIT: 7168
+      BIN: godot.linuxbsd.editor.dev.x86_64
 
     steps:
       - name: Clone Godot
         uses: actions/checkout@v4
         with:
           repository: godotengine/godot
-          ref: ${{ env.GODOT_TREEISH }}
+          ref: ${{ inputs.godot-treeish }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@v4
         with:
           path: modules/limboai
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
-      - uses: ./modules/limboai/.github/actions/init-version
-
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Set up buildroot x86_64
-        if: matrix.arch == 'x86_64'
         run: |
           wget https://download.tuxfamily.org/godotengine/toolchains/linux/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
           tar -xjf x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
@@ -101,25 +63,15 @@ jobs:
           ./relocate-sdk.sh
           cd ..
 
-      - name: Set up buildroot x86_32
-        if: matrix.arch == 'x86_32'
-        run: |
-          wget https://download.tuxfamily.org/godotengine/toolchains/linux/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
-          tar -xjf i686-godot-linux-gnu_sdk-buildroot.tar.bz2
-          mv i686-godot-linux-gnu_sdk-buildroot buildroot
-          cd buildroot
-          ./relocate-sdk.sh
-          cd ..
-
       - name: Set up scons cache
         uses: actions/cache@v3
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{env.GODOT_TREEISH}}-${{github.ref}}-${{github.sha}}
+          key: ${{env.BIN}}-${{inputs.godot-treeish}}-${{github.ref}}-${{github.sha}}
           restore-keys: |
-            ${{env.BIN}}-${{env.GODOT_TREEISH}}-${{github.ref}}-${{github.sha}}
-            ${{env.BIN}}-${{env.GODOT_TREEISH}}-${{github.ref}}
-            ${{env.BIN}}-${{env.GODOT_TREEISH}}
+            ${{env.BIN}}-${{inputs.godot-treeish}}-${{github.ref}}-${{github.sha}}
+            ${{env.BIN}}-${{inputs.godot-treeish}}-${{github.ref}}
+            ${{env.BIN}}-${{inputs.godot-treeish}}
         continue-on-error: true
 
       - name: Set up Python 3.x
@@ -135,12 +87,6 @@ jobs:
           python --version
           scons --version
 
-      - name: Set up .NET SDK
-        if: matrix.build-mono
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '6.0.x'
-
       - name: Setup GCC problem matcher
         uses: ammaraskar/gcc-problem-matcher@master
 
@@ -149,46 +95,38 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} production=${{matrix.production}} dev_build=${{matrix.dev_build}} tests=${{matrix.tests}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons ${{env.SCONSFLAGS}}
+
+      - name: Verify build
+        run: |
           ls -l bin/
-
-      - name: Generate C# glue
-        if: matrix.build-mono
-        run: |
-          bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
-
-      - name: Build .NET solutions
-        if: matrix.build-mono
-        run: |
-          ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=linuxbsd
-
-      # Execute unit tests for the editor
-      - name: Unit tests
-        if: matrix.tests
-        run: |
           bin/${{ env.BIN }} --version
           bin/${{ env.BIN }} --help
+
+      - name: Unit tests
+        run: |
           bin/${{ env.BIN }} --test --headless
 
-      - name: Strip binaries
-        if: matrix.dev_build == false
-        run: strip ./bin/godot.*
+  linux-test-build:
+    name: 🐧 Linux test build
+    uses: ./.github/workflows/linux.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ github.sha }}
+      test-build: true
 
-      - name: Prepare artifact
-        if: matrix.artifact
-        env:
-          OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
-        run: |
-          chmod +x ./bin/godot.*
-          mkdir -p ${{env.OUTDIR}}
-          mv ./bin/godot.* ${{env.OUTDIR}}
+  windows-test-build:
+    name: 🪟 Windows test build
+    uses: ./.github/workflows/windows.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ github.sha }}
+      test-build: true
 
-      - name: Upload artifact
-        if: matrix.artifact
-        uses: actions/upload-artifact@v3
-        env:
-          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}${{matrix.dev_build == true && '.dev' || ''}}.linux.${{matrix.arch}}${{matrix.build-mono == true && '.mono' || ''}}
-          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{matrix.build-mono == true && '.mono' || ''}}
-        with:
-          name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
-          path: out/*
+  macos-test-build:
+    name: 🍎 macOS test build
+    uses: ./.github/workflows/macos.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ github.sha }}
+      test-build: true

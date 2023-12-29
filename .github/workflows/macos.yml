@@ -10,6 +10,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
   workflow_dispatch:
     inputs:
@@ -21,6 +25,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
 
 # Global Settings
@@ -33,49 +41,55 @@ env:
 jobs:
   macos-builds:
     runs-on: "macos-latest"
-    name: ${{ matrix.name }}
+    name: ${{ matrix.opts.name }}
 
     strategy:
       fail-fast: false
       matrix:
-        include:
+        opts:
           - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: false
             artifact-name: macos-editor
+            should-build: true
 
           - name: Template (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: false
             artifact-name: macos-templates
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: false
             artifact-name: macos-templates
+            should-build: ${{ !inputs.test-build }}
 
           - name: Editor (arm64, release)
             target: editor
             arch: arm64
             build-mono: false
             artifact-name: macos-editor
+            should-build: true
 
           - name: Template (arm64, release)
             target: template_release
             arch: arm64
             build-mono: false
             artifact-name: macos-templates
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template (arm64, debug)
             target: template_debug
             arch: arm64
             build-mono: false
             artifact-name: macos-templates
+            should-build: ${{ !inputs.test-build }}
 
-          # ! Disabled for now: .NET version fail to build
+          # ! Disabled for now: .NET version fails to build
 
           # - name: .NET Editor (x86_64, release)
           #   target: editor
@@ -83,18 +97,21 @@ jobs:
           #   build-mono: true
           #   artifact-name: macos-mono-editor
           #   cache-name: macos-editor
+          #   should-build: ${{ !inputs.test-build }}
 
           # - name: .NET Template (x86_64, release)
           #   target: template_release
           #   arch: x86_64
           #   build-mono: true
           #   artifact-name: macos-mono-templates
+          #   should-build: ${{ !inputs.test-build }}
 
           # - name: .NET Template (x86_64, debug)
           #   target: template_debug
           #   arch: x86_64
           #   build-mono: true
           #   artifact-name: macos-mono-templates
+          #   should-build: ${{ !inputs.test-build }}
 
           # - name: .NET Editor (arm64, release)
           #   target: editor
@@ -102,21 +119,27 @@ jobs:
           #   build-mono: true
           #   artifact-name: macos-mono-editor
           #   cache-name: macos-editor
+          #   should-build: ${{ !inputs.test-build }}
 
           # - name: .NET Template (arm64, release)
           #   target: template_release
           #   arch: arm64
           #   build-mono: true
           #   artifact-name: macos-mono-templates
+          #   should-build: ${{ !inputs.test-build }}
 
           # - name: .NET Template (arm64, debug)
           #   target: template_debug
           #   arch: arm64
           #   build-mono: true
           #   artifact-name: macos-mono-templates
+          #   should-build: ${{ !inputs.test-build }}
+
+        exclude:
+          - { opts: {should-build: false }}
 
     env:
-      BIN: godot.macos.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+      BIN: godot.macos.${{matrix.opts.target}}.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
 
     steps:
 
@@ -170,17 +193,17 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=macos target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons -j2 platform=macos target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.build-mono}} ${{env.SCONSFLAGS}}
 
       # ! Disabled for now: .NET version fail to build
 
       # - name: Generate C# glue
-      #   if: matrix.build-mono && matrix.target == 'editor'
+      #   if: matrix.opts.build-mono && matrix.opts.target == 'editor'
       #   run: |
       #     ./bin/$BIN --headless --generate-mono-glue ./modules/mono/glue || true
 
       # - name: Build .NET solutions
-      #   if: matrix.build-mono && matrix.target == 'editor'
+      #   if: matrix.opts.build-mono && matrix.opts.target == 'editor'
       #   run: |
       #     ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=macos
 
@@ -192,7 +215,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.artifact-name }}
+          name: ${{ matrix.opts.artifact-name }}
           path: bin/*
 
   make-macos-bundle:
@@ -250,12 +273,14 @@ jobs:
           path: out/editor/*
 
       - name: Download templates artifact
+        if: ${{ !inputs.test-build }}
         uses: actions/download-artifact@v3
         with:
           name: macos-templates
           path: bin/
 
       - name: Make templates bundle
+        if: ${{ !inputs.test-build }}
         run: |
           rm -rf out/
           ls bin/
@@ -282,6 +307,7 @@ jobs:
             failOnError: false
 
       - name: Upload templates bundle
+        if: ${{ !inputs.test-build }}
         uses: actions/upload-artifact@v3
         with:
           name: ${{env.NAME_PREFIX}}.export-templates

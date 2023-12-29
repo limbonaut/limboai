@@ -10,6 +10,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
   workflow_dispatch:
     inputs:
@@ -21,6 +25,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      test-build:
+        description: Should we perform only a limited number of test builds?
+        type: boolean
+        default: false
 
 # Global Settings
 env:
@@ -32,73 +40,88 @@ env:
 jobs:
   linux-builds:
     runs-on: "ubuntu-20.04"
-    name: ${{ matrix.name }}
+    name: ${{ matrix.opts.name }}
     strategy:
       fail-fast: false
       matrix:
-        include:
+        opts:
           - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: false
+            should-build: true
 
           - name: Template (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: false
+            should-build: true
 
           - name: Template (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           # - name: Editor (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: false
+          #   should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: false
+            should-build: ${{ !inputs.test-build }}
 
           - name: Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_64, debug)
             target: template_debug
             arch: x86_64
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           # - name: Editor .NET (x86_32, release)
           #   target: editor
           #   arch: x86_32
           #   build-mono: true
+          #   should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, release)
             target: template_release
             arch: x86_32
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, debug)
             target: template_debug
             arch: x86_32
             build-mono: true
+            should-build: ${{ !inputs.test-build }}
+
+        exclude:
+          - { opts: {should-build: false }}
 
     env:
-      BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
+      BIN: godot.linuxbsd.${{matrix.opts.target}}.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
 
     steps:
       - name: Clone Godot
@@ -118,7 +141,7 @@ jobs:
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Set up buildroot x86_64
-        if: matrix.arch == 'x86_64'
+        if: matrix.opts.arch == 'x86_64'
         run: |
           wget https://download.tuxfamily.org/godotengine/toolchains/linux/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
           tar -xjf x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
@@ -129,7 +152,7 @@ jobs:
           cd ..
 
       - name: Set up buildroot x86_32
-        if: matrix.arch == 'x86_32'
+        if: matrix.opts.arch == 'x86_32'
         run: |
           wget https://download.tuxfamily.org/godotengine/toolchains/linux/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
           tar -xjf i686-godot-linux-gnu_sdk-buildroot.tar.bz2
@@ -153,17 +176,17 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.build-mono}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.build-mono}} ${{env.SCONSFLAGS}}
 
       - name: Generate C# glue
-        if: matrix.build-mono && matrix.target == 'editor'
+        if: matrix.opts.build-mono && matrix.opts.target == 'editor'
         env:
           GODOT_VERSION_STATUS: limboai
         run: |
           ./bin/$BIN --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
-        if: matrix.build-mono && matrix.target == 'editor'
+        if: matrix.opts.build-mono && matrix.opts.target == 'editor'
         env:
           GODOT_VERSION_STATUS: limboai
         run: |
@@ -171,7 +194,7 @@ jobs:
 
       - name: Prepare artifact
         env:
-          OUTDIR: ${{ startsWith(matrix.target, 'template') && 'out/templates' || 'out/' }}
+          OUTDIR: ${{ startsWith(matrix.opts.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           strip ./bin/godot.*
           chmod +x ./bin/godot.*
@@ -182,7 +205,7 @@ jobs:
       # Zipping the editor artifact to retain executable bit;
       # workaround for: https://github.com/actions/upload-artifact/issues/38
       - name: Zip the editor artifact
-        if: matrix.target == 'editor'
+        if: matrix.opts.target == 'editor'
         shell: bash
         run: |
           pushd out/
@@ -192,19 +215,19 @@ jobs:
           popd
 
       - name: Rename templates
-        if: startsWith(matrix.target, 'template')
+        if: startsWith(matrix.opts.target, 'template')
         env:
-          BUILD_TYPE: ${{ endsWith(matrix.target, 'release') && 'release' || 'debug' }}
+          BUILD_TYPE: ${{ endsWith(matrix.opts.target, 'release') && 'release' || 'debug' }}
         run: |
-          mv out/templates/${BIN} out/templates/linux_${BUILD_TYPE}.${{matrix.arch}}
+          mv out/templates/${BIN} out/templates/linux_${BUILD_TYPE}.${{matrix.opts.arch}}
           echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.target}}.linux.${{matrix.arch}}${{  matrix.build-mono == true && '.mono' || ''  }}
-          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.build-mono == true && '.mono' || ''  }}
+          NAME_EDITOR: ${{env.NAME_PREFIX}}.${{matrix.opts.target}}.linux.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
+          NAME_TEMPLATES: ${{env.NAME_PREFIX}}.export-templates${{  matrix.opts.build-mono == true && '.mono' || ''  }}
         with:
-          name: ${{ startsWith(matrix.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
+          name: ${{ startsWith(matrix.opts.target, 'template') && env.NAME_TEMPLATES || env.NAME_EDITOR  }}
           path: out/*
