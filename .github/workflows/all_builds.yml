@@ -77,6 +77,7 @@ jobs:
     with:
       godot-treeish: ${{ needs.cache-sha.outputs.godot-sha }}
       limboai-treeish: ${{ needs.cache-sha.outputs.limboai-sha }}
+      test-build: false
 
   web-build:
     name: 🌐 Web
