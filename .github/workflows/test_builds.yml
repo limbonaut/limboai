@@ -38,7 +38,7 @@ jobs:
     env:
       SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra werror=yes
       SCONS_CACHE_LIMIT: 7168
-      BIN: godot.linuxbsd.editor.dev
+      BIN: godot.linuxbsd.editor.dev.x86_64
 
     steps:
       - name: Clone Godot
@@ -95,11 +95,11 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd ${{env.SCONSFLAGS}}
-          ls -l bin/
+          scons ${{env.SCONSFLAGS}}
 
       - name: Verify build
         run: |
+          ls -l bin/
           bin/${{ env.BIN }} --version
           bin/${{ env.BIN }} --help
 
@@ -123,7 +123,7 @@ jobs:
       limboai-treeish: ${{ github.sha }}
       test-build: true
 
-  macos-build:
+  macos-test-build:
     name: 🍎 macOS test build
     uses: ./.github/workflows/macos.yml
     with:
