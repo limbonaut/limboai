@@ -122,3 +122,11 @@ jobs:
       godot-treeish: ${{ inputs.godot-treeish }}
       limboai-treeish: ${{ github.sha }}
       test-build: true
+
+  macos-build:
+    name: 🍎 macOS test build
+    uses: ./.github/workflows/macos.yml
+    with:
+      godot-treeish: ${{ inputs.godot-treeish }}
+      limboai-treeish: ${{ github.sha }}
+      test-build: true
