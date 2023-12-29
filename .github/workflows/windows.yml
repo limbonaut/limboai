@@ -11,7 +11,7 @@ on:
         type: string
         default: master
       test-build:
-        description: Is this a test build? In other words, should we only build a classical editor?
+        description: Should we perform only a limited number of test builds?
         type: boolean
         default: false
 
@@ -26,7 +26,7 @@ on:
         type: string
         default: master
       test-build:
-        description: Is this a test build? In other words, should we only build a classical editor?
+        description: Should we perform only a limited number of test builds?
         type: boolean
         default: false
 
@@ -86,7 +86,7 @@ jobs:
             target: editor
             arch: x86_64
             build-mono: true
-            should-build: ${{ !inputs.test-build }}
+            should-build: true
 
           - name: Template .NET (x86_64, release)
             target: template_release
