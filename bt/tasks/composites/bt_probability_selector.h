@@ -12,11 +12,16 @@
 #ifndef BT_PROBABILITY_SELECTOR_H
 #define BT_PROBABILITY_SELECTOR_H
 
-#include "modules/limboai/bt/tasks/bt_comment.h"
-#include "modules/limboai/bt/tasks/bt_composite.h"
+#include "../bt_comment.h"
+#include "../bt_composite.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/core_string_names.h"
 #include "core/typedefs.h"
+#endif // LIMBOAI_MODULE
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/templates/hash_set.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 class BTProbabilitySelector : public BTComposite {
 	GDCLASS(BTProbabilitySelector, BTComposite);
@@ -28,17 +33,17 @@ private:
 	bool abort_on_failure = false;
 
 	void _select_task();
-
-	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(SNAME("_weight_"), 1.0); }
-	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(SNAME("_weight_"), 1.0); }
+#define SNAME(m_arg) ([]() -> const StringName & { static StringName sname = _scs_create(m_arg, true); return sname; })()
+	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(LSNAME(_weight_), 1.0); }
+	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(LSNAME(_weight_), 1.0); }
 	_FORCE_INLINE_ void _set_weight(int p_index, double p_weight) {
-		get_child(p_index)->set_meta(SNAME("_weight_"), Variant(p_weight));
-		get_child(p_index)->emit_signal(CoreStringNames::get_singleton()->changed);
+		get_child(p_index)->set_meta(LSNAME(_weight_), Variant(p_weight));
+		get_child(p_index)->emit_signal(LSNAME(changed));
 	}
 	_FORCE_INLINE_ double _get_total_weight() const {
 		double total = 0.0;
 		for (int i = 0; i < get_child_count(); i++) {
-			if (!get_child(i)->is_class_ptr(BTComment::get_class_ptr_static())) {
+			if (!IS_CLASS(get_child(i), BTComment)) {
 				total += _get_weight(i);
 			}
 		}

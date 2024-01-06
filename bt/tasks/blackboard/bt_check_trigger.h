@@ -14,8 +14,6 @@
 
 #include "../bt_condition.h"
 
-#include "core/string/ustring.h"
-
 class BTCheckTrigger : public BTCondition {
 	GDCLASS(BTCheckTrigger, BTCondition);
 	TASK_CATEGORY(Blackboard);
@@ -26,14 +24,14 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual Status _tick(double p_delta) override;
 
 public:
 	void set_variable(String p_variable);
 	String get_variable() const { return variable; }
 
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
 #endif // BT_CHECK_TRIGGER

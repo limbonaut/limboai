@@ -287,16 +287,9 @@ void BTTask::abort() {
 int BTTask::get_child_count_excluding_comments() const {
 	int count = 0;
 	for (int i = 0; i < data.children.size(); i++) {
-#ifdef LIMBOAI_MODULE
-		if (!data.children[i]->is_class_ptr(BTComment::get_class_ptr_static())) {
+		if (!IS_CLASS(data.children[i], BTComment)) {
 			count += 1;
 		}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-		if (data.children[i]->get_class_static() != BTComment::get_class_static()) {
-			count += 1;
-		}
-#endif
 	}
 	return count;
 }

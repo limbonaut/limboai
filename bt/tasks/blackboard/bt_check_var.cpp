@@ -11,10 +11,6 @@
 
 #include "bt_check_var.h"
 
-#include "modules/limboai/util/limbo_utility.h"
-
-#include "core/variant/callable.h"
-
 void BTCheckVar::set_variable(String p_variable) {
 	variable = p_variable;
 	emit_changed();
@@ -29,11 +25,11 @@ void BTCheckVar::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
 	}
 }
 
-PackedStringArray BTCheckVar::get_configuration_warnings() const {
+PackedStringArray BTCheckVar::get_configuration_warnings() {
 	PackedStringArray warnings = BTCondition::get_configuration_warnings();
 	if (variable.is_empty()) {
 		warnings.append("`variable` should be assigned.");
@@ -44,7 +40,7 @@ PackedStringArray BTCheckVar::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTCheckVar::_generate_name() const {
+String BTCheckVar::_generate_name() {
 	if (variable.is_empty()) {
 		return "CheckVar ???";
 	}

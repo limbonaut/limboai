@@ -28,4 +28,10 @@ LimboStringNames::LimboStringNames() {
 	_update = StringName("_update");
 	state_changed = StringName("state_changed");
 	_get_configuration_warning = StringName("_get_configuration_warning");
+	changed = StringName("changed");
+	changed = StringName("emit_changed");
+	_weight_ = StringName("_weight_");
+	error_value = StringName("error_value");
+
+	repeat_forever.parse_utf8("Repeat ∞");
 }

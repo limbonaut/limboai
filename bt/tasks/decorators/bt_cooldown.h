@@ -14,7 +14,12 @@
 
 #include "../bt_decorator.h"
 
+#ifdef LIMBOAI_MODULE
 #include "scene/main/scene_tree.h"
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/scene_tree_timer.hpp>
+#endif
 
 class BTCooldown : public BTDecorator {
 	GDCLASS(BTCooldown, BTDecorator);
@@ -35,7 +40,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual void _setup() override;
 	virtual Status _tick(double p_delta) override;
 

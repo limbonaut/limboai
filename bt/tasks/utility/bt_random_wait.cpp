@@ -11,16 +11,14 @@
 
 #include "bt_random_wait.h"
 
-#include "core/math/math_funcs.h"
-
-String BTRandomWait::_generate_name() const {
+String BTRandomWait::_generate_name() {
 	return vformat("Wait %s to %s sec",
 			Math::snapped(min_duration, 0.001),
 			Math::snapped(max_duration, 0.001));
 }
 
 void BTRandomWait::_enter() {
-	duration = Math::random(min_duration, max_duration);
+	duration = RAND_RANGE(min_duration, max_duration);
 }
 
 BT::Status BTRandomWait::_tick(double p_delta) {

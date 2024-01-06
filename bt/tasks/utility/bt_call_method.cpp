@@ -22,7 +22,7 @@ void BTCallMethod::set_node_param(Ref<BBNode> p_object) {
 	node_param = p_object;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && node_param.is_valid()) {
-		node_param->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		node_param->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
 	}
 }
 
@@ -38,14 +38,14 @@ void BTCallMethod::set_args(Array p_args) {
 
 //**** Task Implementation
 
-PackedStringArray BTCallMethod::get_configuration_warnings() const {
+PackedStringArray BTCallMethod::get_configuration_warnings() {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (method == StringName()) {
 		warnings.append("Method Name is not set.");
 	}
 	if (node_param.is_null()) {
 		warnings.append("Node parameter is not set.");
-	} else if (node_param->get_value_source() == BBParam::SAVED_VALUE && node_param->get_saved_value().is_zero()) {
+	} else if (node_param->get_value_source() == BBParam::SAVED_VALUE && node_param->get_saved_value() == Variant()) {
 		warnings.append("Path to node is not set.");
 	} else if (node_param->get_value_source() == BBParam::BLACKBOARD_VAR && node_param->get_variable() == StringName()) {
 		warnings.append("Node blackboard variable is not set.");
@@ -53,13 +53,13 @@ PackedStringArray BTCallMethod::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTCallMethod::_generate_name() const {
+String BTCallMethod::_generate_name() {
 	String args_str = include_delta ? "delta" : "";
 	if (args.size() > 0) {
 		if (!args_str.is_empty()) {
 			args_str += ", ";
 		}
-		args_str += Variant(args).get_construct_string().trim_prefix("[").trim_suffix("]");
+		args_str += vformat("%s", args).trim_prefix("[").trim_suffix("]");
 	}
 	return vformat("CallMethod %s(%s)  node: %s",
 			(method != StringName() ? method : "???"),
@@ -73,6 +73,7 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	Object *obj = node_param->get_value(get_agent(), get_blackboard());
 	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get object: " + node_param->to_string());
 
+#ifdef LIMBOAI_MODULE
 	const Variant delta = include_delta ? Variant(p_delta) : Variant();
 	const Variant **argptrs = nullptr;
 
@@ -92,6 +93,19 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	if (ce.error != Callable::CallError::CALL_OK) {
 		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, argument_count, ce) + ".");
 	}
+#endif // LIMBOAI_MODULE
+#ifdef LIMBOAI_GDEXTENSION
+	Array call_args;
+	if (include_delta) {
+		call_args.push_back(Variant(p_delta));
+		call_args.append_array(args);
+	} else {
+		call_args = args;
+	}
+
+	// TODO: Unsure how to detect call error, so we return SUCCESS for now...
+	obj->callv(method, call_args);
+#endif // LIMBOAI_GDEXTENSION
 
 	return SUCCESS;
 }
@@ -114,7 +128,7 @@ void BTCallMethod::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "args_include_delta"), "set_include_delta", "is_delta_included");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args"), "set_args", "get_args");
 
-	ADD_PROPERTY_DEFAULT("args_include_delta", false);
+	// ADD_PROPERTY_DEFAULT("args_include_delta", false);
 }
 
 BTCallMethod::BTCallMethod() {

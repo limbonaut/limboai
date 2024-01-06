@@ -14,7 +14,7 @@
 
 #include "../bt_action.h"
 
-#include "modules/limboai/blackboard/bb_param/bb_node.h"
+#include "../../limboai/blackboard/bb_param/bb_node.h"
 
 class BTCallMethod : public BTAction {
 	GDCLASS(BTCallMethod, BTAction);
@@ -29,7 +29,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual Status _tick(double p_delta) override;
 
 public:
@@ -45,7 +45,7 @@ public:
 	void set_include_delta(bool p_include_delta);
 	bool is_delta_included() const { return include_delta; }
 
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 
 	BTCallMethod();
 };

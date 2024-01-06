@@ -14,8 +14,8 @@
 
 #include "../bt_action.h"
 
-#include "modules/limboai/blackboard/bb_param/bb_variant.h"
-#include "modules/limboai/util/limbo_utility.h"
+#include "../../../blackboard/bb_param/bb_variant.h"
+#include "../../../util/limbo_utility.h"
 
 class BTSetAgentProperty : public BTAction {
 	GDCLASS(BTSetAgentProperty, BTAction);
@@ -29,11 +29,11 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual Status _tick(double p_delta) override;
 
 public:
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 
 	void set_property(StringName p_prop);
 	StringName get_property() const { return property; }

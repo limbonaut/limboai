@@ -11,12 +11,12 @@
 
 #include "bt_for_each.h"
 
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_utility.h"
+#include "../../../blackboard/blackboard.h"
+#include "../../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_list.h"
-#include "core/error/error_macros.h"
-#include "core/variant/variant.h"
+#endif
 
 //**** Setters / Getters
 
@@ -32,7 +32,7 @@ void BTForEach::set_save_var(String p_value) {
 
 //**** Task Implementation
 
-String BTForEach::_generate_name() const {
+String BTForEach::_generate_name() {
 	return vformat("ForEach %s in %s",
 			LimboUtility::get_singleton()->decorate_var(save_var),
 			LimboUtility::get_singleton()->decorate_var(array_var));
@@ -51,7 +51,7 @@ BT::Status BTForEach::_tick(double p_delta) {
 	if (arr.size() == 0) {
 		return SUCCESS;
 	}
-	Variant elem = arr.get(current_idx);
+	Variant elem = arr[current_idx];
 	get_blackboard()->set_var(save_var, elem);
 
 	Status status = get_child(0)->execute(p_delta);

@@ -16,7 +16,7 @@ void BTRandomSelector::_enter() {
 	if (indicies.size() != get_child_count()) {
 		indicies.resize(get_child_count());
 		for (int i = 0; i < get_child_count(); i++) {
-			indicies.set(i, i);
+			indicies[i] = i;
 		}
 	}
 	indicies.shuffle();

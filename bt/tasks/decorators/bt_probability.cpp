@@ -16,13 +16,13 @@ void BTProbability::set_run_chance(float p_value) {
 	emit_changed();
 }
 
-String BTProbability::_generate_name() const {
+String BTProbability::_generate_name() {
 	return vformat("Probability %.1f%%", run_chance);
 }
 
 BT::Status BTProbability::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BT decorator has no child.");
-	if (get_child(0)->get_status() == RUNNING || Math::randf() <= run_chance) {
+	if (get_child(0)->get_status() == RUNNING || RANDF() <= run_chance) {
 		return get_child(0)->execute(p_delta);
 	}
 	return FAILURE;

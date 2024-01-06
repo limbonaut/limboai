@@ -11,10 +11,7 @@
 
 #include "bt_wait_ticks.h"
 
-#include "core/object/object.h"
-#include "core/variant/variant.h"
-
-String BTWaitTicks::_generate_name() const {
+String BTWaitTicks::_generate_name() {
 	return vformat("WaitTicks x%d", num_ticks);
 }
 

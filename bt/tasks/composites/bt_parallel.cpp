@@ -11,8 +11,6 @@
 
 #include "bt_parallel.h"
 
-#include "core/object/class_db.h"
-
 void BTParallel::_enter() {
 	for (int i = 0; i < get_child_count(); i++) {
 		get_child(i)->abort();

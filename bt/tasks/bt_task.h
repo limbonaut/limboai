@@ -14,11 +14,16 @@
 
 #ifdef LIMBOAI_MODULE
 #include "modules/limboai/blackboard/blackboard.h"
+#include "modules/limboai/util/limbo_string_names.h"
 #include "modules/limboai/util/limbo_task_db.h"
 
+#include "core/config/engine.h"
+#include "core/error/error_macros.h"
 #include "core/io/resource.h"
+#include "core/math/math_funcs.h"
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
+#include "core/os/memory.h"
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
 #include "core/typedefs.h"
@@ -30,8 +35,11 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include "blackboard/blackboard.h"
+#include "util/limbo_def.h"
+#include "util/limbo_string_names.h"
 #include "util/limbo_task_db.h"
 
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/vector.hpp>

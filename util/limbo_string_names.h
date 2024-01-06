@@ -53,6 +53,14 @@ public:
 	StringName _update;
 	StringName state_changed;
 	StringName _get_configuration_warning;
+	StringName changed;
+	StringName emit_changed;
+	StringName _weight_;
+	StringName error_value;
+
+	String repeat_forever;
 };
+
+#define LSNAME(m_arg) LimboStringNames::get_singleton()->m_arg
 
 #endif // LIMBO_STRING_NAMES_H

@@ -29,7 +29,7 @@ protected:
 
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual void _enter() override;
 	virtual Status _tick(double p_delta) override;
 
@@ -42,6 +42,8 @@ public:
 
 	void set_abort_on_failure(bool p_value);
 	bool get_abort_on_failure() const { return abort_on_failure; }
+
+	BTRepeat();
 };
 
 #endif // BT_REPEAT_H

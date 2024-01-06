@@ -11,10 +11,7 @@
 
 #include "bt_console_print.h"
 
-#include "core/object/object.h"
-#include "core/string/print_string.h"
-
-String BTConsolePrint::_generate_name() const {
+String BTConsolePrint::_generate_name() {
 	String tx = text;
 	if (text.length() > 30) {
 		tx = text.substr(0, 30) + "...";
@@ -32,29 +29,29 @@ String BTConsolePrint::_generate_name() const {
 BT::Status BTConsolePrint::_tick(double p_delta) {
 	switch (bb_format_parameters.size()) {
 		case 0: {
-			print_line(text);
+			PRINT_LINE(text);
 		} break;
 		case 1: {
-			print_line(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], "")));
+			PRINT_LINE(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], "")));
 		} break;
 		case 2: {
-			print_line(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
+			PRINT_LINE(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
 					get_blackboard()->get_var(bb_format_parameters[1], "")));
 		} break;
 		case 3: {
-			print_line(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
+			PRINT_LINE(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
 					get_blackboard()->get_var(bb_format_parameters[1], ""),
 					get_blackboard()->get_var(bb_format_parameters[2], "")));
 		} break;
 		case 4: {
-			print_line(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
+			PRINT_LINE(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
 					get_blackboard()->get_var(bb_format_parameters[1], ""),
 					get_blackboard()->get_var(bb_format_parameters[2], ""),
 					get_blackboard()->get_var(bb_format_parameters[3], "")));
 		} break;
 		case 5:
 		default: {
-			print_line(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
+			PRINT_LINE(vformat(text, get_blackboard()->get_var(bb_format_parameters[0], ""),
 					get_blackboard()->get_var(bb_format_parameters[1], ""),
 					get_blackboard()->get_var(bb_format_parameters[2], ""),
 					get_blackboard()->get_var(bb_format_parameters[3], ""),
@@ -64,7 +61,7 @@ BT::Status BTConsolePrint::_tick(double p_delta) {
 	return SUCCESS;
 }
 
-PackedStringArray BTConsolePrint::get_configuration_warnings() const {
+PackedStringArray BTConsolePrint::get_configuration_warnings() {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (bb_format_parameters.size() > 5) {
 		warnings.append("ConsolePrint supports up to 5 format arguments.");

@@ -20,7 +20,7 @@ void BTSetAgentProperty::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
 	}
 }
 
@@ -29,7 +29,7 @@ void BTSetAgentProperty::set_operation(LimboUtility::Operation p_operation) {
 	emit_changed();
 }
 
-PackedStringArray BTSetAgentProperty::get_configuration_warnings() const {
+PackedStringArray BTSetAgentProperty::get_configuration_warnings() {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (property == StringName()) {
 		warnings.append("`property` should be assigned.");
@@ -40,7 +40,7 @@ PackedStringArray BTSetAgentProperty::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTSetAgentProperty::_generate_name() const {
+String BTSetAgentProperty::_generate_name() {
 	if (property == StringName()) {
 		return "SetAgentProperty ???";
 	}
@@ -54,21 +54,31 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 
 	Variant result;
-	StringName error_value = SNAME("ErrorGettingValue");
+	StringName error_value = LSNAME(error_value);
 	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_value);
 	ERR_FAIL_COND_V_MSG(right_value == Variant(error_value), FAILURE, "BTSetAgentProperty: Couldn't get value of value-parameter.");
 	bool r_valid;
 	if (operation == LimboUtility::OPERATION_NONE) {
 		result = right_value;
 	} else {
+#ifdef LIMBOAI_MODULE
 		Variant left_value = get_agent()->get(property, &r_valid);
 		ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Failed to get agent's \"%s\" property. Returning FAILURE.", property));
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+		Variant left_value = get_agent()->get(property);
+#endif
 		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
 		ERR_FAIL_COND_V_MSG(result == Variant(), FAILURE, "BTSetAgentProperty: Operation not valid. Returning FAILURE.");
 	}
 
+#ifdef LIMBOAI_MODULE
 	get_agent()->set(property, result, &r_valid);
 	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, result));
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+	get_agent()->set(property, result);
+#endif
 	return SUCCESS;
 }
 

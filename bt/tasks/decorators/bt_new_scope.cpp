@@ -11,12 +11,6 @@
 
 #include "bt_new_scope.h"
 
-#include "modules/limboai/blackboard/blackboard.h"
-
-#include "core/error/error_macros.h"
-#include "core/os/memory.h"
-#include "core/string/ustring.h"
-
 void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);

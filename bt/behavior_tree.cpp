@@ -11,10 +11,14 @@
 
 #include "behavior_tree.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/templates/list.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
+#ifdef LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 Ref<BehaviorTree> BehaviorTree::clone() const {
 	Ref<BehaviorTree> copy = duplicate(false);

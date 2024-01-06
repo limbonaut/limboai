@@ -16,7 +16,7 @@ void BTRunLimit::set_run_limit(int p_value) {
 	emit_changed();
 }
 
-String BTRunLimit::_generate_name() const {
+String BTRunLimit::_generate_name() {
 	return vformat("RunLimit x%d", run_limit);
 }
 

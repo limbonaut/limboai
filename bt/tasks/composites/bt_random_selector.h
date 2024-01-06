@@ -14,8 +14,6 @@
 
 #include "../bt_composite.h"
 
-#include "core/templates/vector.h"
-
 class BTRandomSelector : public BTComposite {
 	GDCLASS(BTRandomSelector, BTComposite);
 	TASK_CATEGORY(Composites);

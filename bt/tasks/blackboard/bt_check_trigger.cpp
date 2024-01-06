@@ -11,16 +11,14 @@
 
 #include "bt_check_trigger.h"
 
-#include "modules/limboai/util/limbo_utility.h"
-
-#include "core/variant/variant.h"
+#include "../../../util/limbo_utility.h"
 
 void BTCheckTrigger::set_variable(String p_variable) {
 	variable = p_variable;
 	emit_changed();
 }
 
-PackedStringArray BTCheckTrigger::get_configuration_warnings() const {
+PackedStringArray BTCheckTrigger::get_configuration_warnings() {
 	PackedStringArray warnings = BTCondition::get_configuration_warnings();
 	if (variable.is_empty()) {
 		warnings.append("Variable is not set.");
@@ -28,7 +26,7 @@ PackedStringArray BTCheckTrigger::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTCheckTrigger::_generate_name() const {
+String BTCheckTrigger::_generate_name() {
 	if (variable.is_empty()) {
 		return "CheckTrigger ???";
 	}

@@ -11,10 +11,6 @@
 
 #include "bt_check_agent_property.h"
 
-#include "modules/limboai/util/limbo_utility.h"
-
-#include "core/variant/callable.h"
-
 void BTCheckAgentProperty::set_property(StringName p_prop) {
 	property = p_prop;
 	emit_changed();
@@ -29,11 +25,11 @@ void BTCheckAgentProperty::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
 	}
 }
 
-PackedStringArray BTCheckAgentProperty::get_configuration_warnings() const {
+PackedStringArray BTCheckAgentProperty::get_configuration_warnings() {
 	PackedStringArray warnings = BTCondition::get_configuration_warnings();
 	if (property == StringName()) {
 		warnings.append("`property` should be assigned.");
@@ -44,7 +40,7 @@ PackedStringArray BTCheckAgentProperty::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTCheckAgentProperty::_generate_name() const {
+String BTCheckAgentProperty::_generate_name() {
 	if (property == StringName()) {
 		return "CheckAgentProperty ???";
 	}
@@ -58,9 +54,14 @@ BT::Status BTCheckAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(property == StringName(), FAILURE, "BTCheckAgentProperty: `property` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTCheckAgentProperty: `value` is not set.");
 
+#ifdef LIMBOAI_MODULE
 	bool r_valid;
 	Variant left_value = get_agent()->get(property, &r_valid);
 	ERR_FAIL_COND_V_MSG(r_valid == false, FAILURE, vformat("BTCheckAgentProperty: Agent has no property named \"%s\"", property));
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+	Variant left_value = get_agent()->get(property);
+#endif
 
 	Variant right_value = value->get_value(get_agent(), get_blackboard());
 
