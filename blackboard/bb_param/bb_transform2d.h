@@ -13,7 +13,6 @@
 #define BB_TRANSFORM2D_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBTransform2D : public BBParam {
 	GDCLASS(BBTransform2D, BBParam);

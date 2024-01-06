@@ -13,7 +13,6 @@
 #define BB_COLOR_ARRAY_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBColorArray : public BBParam {
 	GDCLASS(BBColorArray, BBParam);

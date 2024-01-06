@@ -11,6 +11,7 @@
 
 #include "bb_param.h"
 
+#ifdef LIMBOAI_MODULE
 #include "modules/limboai/util/limbo_utility.h"
 
 #include "core/core_bind.h"
@@ -19,6 +20,13 @@
 #include "core/object/object.h"
 #include "core/variant/variant.h"
 #include "core/variant/variant_utility.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "util/limbo_utility.h"
+
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
@@ -49,6 +57,7 @@ void BBParam::set_variable(const String &p_value) {
 	emit_changed();
 }
 
+#ifdef LIMBOAI_MODULE
 String BBParam::to_string() {
 	if (value_source == SAVED_VALUE) {
 		String s = saved_value.stringify();
@@ -70,6 +79,7 @@ String BBParam::to_string() {
 		return LimboUtility::get_singleton()->decorate_var(variable);
 	}
 }
+#endif // LIMBOAI_MODULE
 
 Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
 	ERR_FAIL_COND_V(!p_blackboard.is_valid(), p_default);

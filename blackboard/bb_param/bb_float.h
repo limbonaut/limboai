@@ -13,7 +13,6 @@
 #define BB_FLOAT_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBFloat : public BBParam {
 	GDCLASS(BBFloat, BBParam);

@@ -13,8 +13,6 @@
 #define BB_VARIANT_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
-#include "core/variant/variant.h"
 
 class BBVariant : public BBParam {
 	GDCLASS(BBVariant, BBParam);

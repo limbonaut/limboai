@@ -13,7 +13,6 @@
 #define BB_RECT2_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBRect2 : public BBParam {
 	GDCLASS(BBRect2, BBParam);

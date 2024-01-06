@@ -13,7 +13,6 @@
 #define BB_BYTE_ARRAY_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBByteArray : public BBParam {
 	GDCLASS(BBByteArray, BBParam);

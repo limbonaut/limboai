@@ -13,7 +13,6 @@
 #define BB_BOOL_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBBool : public BBParam {
 	GDCLASS(BBBool, BBParam);
