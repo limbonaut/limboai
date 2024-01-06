@@ -11,8 +11,16 @@
 
 #include "limbo_task_db.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
 #include "core/io/dir_access.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/dir_access.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 HashMap<String, List<String>> LimboTaskDB::core_tasks;
 HashMap<String, List<String>> LimboTaskDB::tasks_cache;
@@ -21,7 +29,14 @@ _FORCE_INLINE_ void _populate_scripted_tasks_from_dir(String p_path, List<String
 	if (p_path.is_empty()) {
 		return;
 	}
+
+#ifdef LIMBOAI_MODULE
 	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+	Ref<DirAccess> dir = memnew(DirAccess);
+#endif
+
 	if (dir->change_dir(p_path) == OK) {
 		dir->list_dir_begin();
 		String fn = dir->get_next();
@@ -42,7 +57,14 @@ _FORCE_INLINE_ void _populate_from_user_dir(String p_path, HashMap<String, List<
 	if (p_path.is_empty()) {
 		return;
 	}
+
+#ifdef LIMBOAI_MODULE
 	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+	Ref<DirAccess> dir = memnew(DirAccess);
+#endif
+
 	if (dir->change_dir(p_path) == OK) {
 		dir->list_dir_begin();
 		String fn = dir->get_next();
@@ -80,7 +102,7 @@ void LimboTaskDB::scan_user_tasks() {
 	}
 
 	for (int i = 1; i < 4; i++) {
-		String dir1 = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_" + itos(i));
+		String dir1 = ProjectSettings::get_singleton()->get_setting_with_override("limbo_ai/behavior_tree/user_task_dir_" + itos(i));
 		_populate_from_user_dir(dir1, &tasks_cache);
 	}
 

@@ -10,23 +10,22 @@
  */
 
 #include "limbo_string_names.h"
-
-#include "core/string/string_name.h"
+#include "godot_cpp/variant/string_name.hpp"
 
 LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
-	_generate_name = StaticCString::create("_generate_name");
-	_setup = StaticCString::create("_setup");
-	_enter = StaticCString::create("_enter");
-	_exit = StaticCString::create("_exit");
-	_tick = StaticCString::create("_tick");
-	behavior_tree_finished = StaticCString::create("behavior_tree_finished");
-	setup = StaticCString::create("setup");
-	entered = StaticCString::create("entered");
-	exited = StaticCString::create("exited");
-	updated = StaticCString::create("updated");
-	_update = StaticCString::create("_update");
-	state_changed = StaticCString::create("state_changed");
-	_get_configuration_warning = StaticCString::create("_get_configuration_warning");
+	_generate_name = StringName("_generate_name");
+	_setup = StringName("_setup");
+	_enter = StringName("_enter");
+	_exit = StringName("_exit");
+	_tick = StringName("_tick");
+	behavior_tree_finished = StringName("behavior_tree_finished");
+	setup = StringName("setup");
+	entered = StringName("entered");
+	exited = StringName("exited");
+	updated = StringName("updated");
+	_update = StringName("_update");
+	state_changed = StringName("state_changed");
+	_get_configuration_warning = StringName("_get_configuration_warning");
 }

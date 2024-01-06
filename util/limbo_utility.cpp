@@ -11,6 +11,8 @@
 
 #include "limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
+
 #include "modules/limboai/bt/tasks/bt_task.h"
 
 #include "core/error/error_macros.h"
@@ -21,6 +23,14 @@
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"
 #endif // TOOLS_ENABLED
+
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "bt/tasks/bt_task.h"
+
+#include <godot_cpp/core/error_macros.hpp>
+#endif
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -124,29 +134,60 @@ String LimboUtility::get_check_operator_string(CheckType p_check_type) const {
 }
 
 bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_value, const Variant &right_value) {
+	Variant ret;
+#ifdef LIMBOAI_MODULE
 	switch (p_check_type) {
 		case LimboUtility::CheckType::CHECK_EQUAL: {
-			return Variant::evaluate(Variant::OP_EQUAL, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_EQUAL, left_value, right_value);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN: {
-			return Variant::evaluate(Variant::OP_LESS, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_LESS, left_value, right_value);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
-			return Variant::evaluate(Variant::OP_GREATER, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_GREATER, left_value, right_value);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value);
 		} break;
 		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
-			return Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value);
+		} break;
+		default: {
+			ret = false;
+		} break;
+	}
+#endif
+#ifdef LIMBOAI_GDEXTENSION
+	bool valid;
+	switch (p_check_type) {
+		case LimboUtility::CheckType::CHECK_EQUAL: {
+			Variant::evaluate(Variant::OP_LESS, left_value, right_value, ret, valid);
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN: {
+			Variant::evaluate(Variant::OP_LESS, left_value, right_value, ret, valid);
+		} break;
+		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
+			Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value, ret, valid);
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
+			Variant::evaluate(Variant::OP_GREATER, left_value, right_value, ret, valid);
+		} break;
+		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
+			Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value, ret, valid);
+		} break;
+		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
+			Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value, ret, valid);
 		} break;
 		default: {
 			return false;
 		} break;
 	}
+#endif
+
+	return ret;
 }
 
 String LimboUtility::get_operation_string(Operation p_operation) const {
@@ -192,44 +233,91 @@ String LimboUtility::get_operation_string(Operation p_operation) const {
 }
 
 Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
+	Variant ret;
+#ifdef LIMBOAI_MODULE
 	switch (p_operation) {
 		case OPERATION_NONE: {
-			return right_value;
+			ret = right_value;
 		} break;
 		case OPERATION_ADDITION: {
-			return Variant::evaluate(Variant::OP_ADD, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_ADD, left_value, right_value);
 		} break;
 		case OPERATION_SUBTRACTION: {
-			return Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
 		} break;
 		case OPERATION_MULTIPLICATION: {
-			return Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
 		} break;
 		case OPERATION_DIVISION: {
-			return Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
 		} break;
 		case OPERATION_MODULO: {
-			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
 		} break;
 		case OPERATION_POWER: {
-			return Variant::evaluate(Variant::OP_POWER, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_POWER, left_value, right_value);
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
-			return Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
 		} break;
 		case OPERATION_BIT_SHIFT_RIGHT: {
-			return Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
 		} break;
 		case OPERATION_BIT_AND: {
-			return Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
 		} break;
 		case OPERATION_BIT_OR: {
-			return Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
 		} break;
 		case OPERATION_BIT_XOR: {
-			return Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
+			ret = Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
 		} break;
 	}
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+	bool valid;
+	switch (p_operation) {
+		case OPERATION_NONE: {
+			ret = right_value;
+		} break;
+		case OPERATION_ADDITION: {
+			Variant::evaluate(Variant::OP_ADD, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_SUBTRACTION: {
+			Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_MULTIPLICATION: {
+			Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_DIVISION: {
+			Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_MODULO: {
+			Variant::evaluate(Variant::OP_MODULE, left_value, right_value, ret, valid);
+		} break;
+		// TODO: Uncomment when https://github.com/godotengine/godot-cpp/issues/1348 is fixed.
+		// case OPERATION_POWER: {
+		// 	Variant::evaluate(Variant::OP_POWER, left_value, right_value, ret, valid);
+		// } break;
+		case OPERATION_BIT_SHIFT_LEFT: {
+			Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_BIT_SHIFT_RIGHT: {
+			Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_BIT_AND: {
+			Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_BIT_OR: {
+			Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value, ret, valid);
+		} break;
+		case OPERATION_BIT_XOR: {
+			Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value, ret, valid);
+		} break;
+	}
+#endif // LIMBOAI_GDEXTENSION
+
 	return Variant();
 }
 

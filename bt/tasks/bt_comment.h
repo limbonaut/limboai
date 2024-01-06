@@ -20,7 +20,7 @@ class BTComment : public BTTask {
 
 public:
 	virtual Ref<BTTask> clone() const override;
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
 #endif // BT_COMMENT

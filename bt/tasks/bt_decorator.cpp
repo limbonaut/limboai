@@ -11,7 +11,7 @@
 
 #include "bt_decorator.h"
 
-PackedStringArray BTDecorator::get_configuration_warnings() const {
+PackedStringArray BTDecorator::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count_excluding_comments() != 1) {
 		warnings.append("Decorator should have a single child task.");

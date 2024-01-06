@@ -18,7 +18,7 @@ class BTComposite : public BTTask {
 	GDCLASS(BTComposite, BTTask);
 
 public:
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
 #endif // BT_COMPOSITE_H

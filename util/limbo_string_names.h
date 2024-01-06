@@ -12,10 +12,16 @@
 #ifndef LIMBO_STRING_NAMES_H
 #define LIMBO_STRING_NAMES_H
 
-#include "modules/register_module_types.h"
-
+#ifdef LIMBOAI_MODULE
 #include "core/string/string_name.h"
 #include "core/typedefs.h"
+#include "modules/register_module_types.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/variant/string_name.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboStringNames {
 	friend void initialize_limboai_module(ModuleInitializationLevel p_level);
