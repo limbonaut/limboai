@@ -51,6 +51,8 @@ LimboStringNames::LimboStringNames() {
 	bold = SN("bold");
 	EditorFonts = SN("EditorFonts");
 	item_collapsed = SN("item_collapsed");
+	pressed = SN("pressed");
+	StatusWarning = SN("StatusWarning");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");

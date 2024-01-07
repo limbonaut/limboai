@@ -15,6 +15,7 @@
 #ifdef LIMBOAI_GDEXTENSION
 
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/translation_server.hpp>
 
 using namespace godot;
 
@@ -24,4 +25,12 @@ Variant _EDITOR_GET(const String &p_setting) {
 	return es->get(p_setting);
 }
 
-#endif
+String TTR(const String &p_text, const String &p_context) {
+	if (TranslationServer::get_singleton()) {
+		return TranslationServer::get_singleton()->translate(p_text, p_context);
+	}
+
+	return p_text;
+}
+
+#endif // LIMBOAI_GDEXTENSION

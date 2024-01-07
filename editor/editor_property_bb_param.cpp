@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef LIMBOAI_MODULE
+
 #include "editor_property_bb_param.h"
 
 #include "core/variant/variant.h"
@@ -345,3 +347,5 @@ bool EditorInspectorPluginBBParam::parse_property(Object *p_object, const Varian
 	}
 	return false;
 }
+
+#endif // LIMBOAI_MODULE

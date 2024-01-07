@@ -70,6 +70,8 @@ public:
 	StringName bold;
 	StringName EditorFonts;
 	StringName item_collapsed;
+	StringName pressed;
+	StringName StatusWarning;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

@@ -9,6 +9,9 @@
  * =============================================================================
  */
 
+#ifndef LIMBO_DEF_H
+#define LIMBO_DEF_H
+
 #ifdef LIMBOAI_MODULE
 
 #include "core/string/print_string.h"
@@ -46,4 +49,8 @@ Variant _EDITOR_GET(const String &p_setting);
 
 #define EDSCALE ((int)EDITOR_GET("interface/editor/display_scale"))
 
+String TTR(const String &p_text, const String &p_context = "");
+
 #endif // LIMBOAI_GDEXTENSION
+
+#endif // LIMBO_DEF_H

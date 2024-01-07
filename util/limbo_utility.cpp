@@ -105,6 +105,8 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	return theme->get_icon(SNAME("Resource"), SNAME("EditorIcons"));
 #endif // TOOLS_ENABLED
 
+	// TODO: GDExtension needs the icons too.
+
 	// * Class icons are not available at runtime as they are part of the editor theme.
 	return nullptr;
 }
