@@ -19,7 +19,9 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/variant/string.hpp"
 #include <godot_cpp/variant/string_name.hpp>
+
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -58,6 +60,16 @@ public:
 	StringName _weight_;
 	StringName error_value;
 	StringName behavior_tree;
+	StringName _draw_success_status;
+	StringName _draw_failure_status;
+	StringName _draw_running_status;
+	StringName LimboExtraClock;
+	StringName EditorIcons;
+	StringName BTAlwaysSucceed;
+	StringName BTAlwaysFail;
+	StringName bold;
+	StringName EditorFonts;
+	StringName item_collapsed;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

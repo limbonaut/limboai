@@ -29,6 +29,8 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include "bt/tasks/bt_task.h"
 
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/core/error_macros.hpp>
 #endif
 
@@ -63,7 +65,7 @@ String LimboUtility::get_status_name(int p_status) const {
 }
 
 Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const {
-#ifdef TOOLS_ENABLED
+#if defined(TOOLS_ENABLED) && defined(LIMBOAI_MODULE)
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
 	Ref<Theme> theme = EditorNode::get_singleton()->get_editor_theme();

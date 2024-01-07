@@ -41,6 +41,16 @@ LimboStringNames::LimboStringNames() {
 	_weight_ = SN("_weight_");
 	error_value = SN("error_value");
 	behavior_tree = SN("behavior_tree");
+	_draw_success_status = SN("_draw_success_status");
+	_draw_failure_status = SN("_draw_failure_status");
+	_draw_running_status = SN("_draw_running_status");
+	LimboExtraClock = SN("LimboExtraClock");
+	EditorIcons = SN("EditorIcons");
+	BTAlwaysSucceed = SN("BTAlwaysSucceed");
+	BTAlwaysFail = SN("BTAlwaysFail");
+	bold = SN("bold");
+	EditorFonts = SN("EditorFonts");
+	item_collapsed = SN("item_collapsed");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");

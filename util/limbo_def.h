@@ -26,7 +26,11 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 
+#include <godot_cpp/variant/string.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
+#include <godot_cpp/variant/variant.hpp>
+
+using namespace godot;
 
 #define IS_CLASS(m_obj, m_class) (m_obj->get_class_static() == m_class::get_class_static())
 #define RAND_RANGE(m_from, m_to) (UtilityFunctions::randf_range(m_from, m_to))
@@ -36,5 +40,10 @@
 #define GET_SCENE_TREE() ((SceneTree *)(Engine::get_singleton()->get_main_loop()))
 #define VCALL(m_name) (call(LSNAME(m_name)))
 #define VCALL_ARGS(m_name, ...) (call(LSNAME(m_name), __VA_ARGS__))
+
+#define EDITOR_GET(m_var) _EDITOR_GET(m_var)
+Variant _EDITOR_GET(const String &p_setting);
+
+#define EDSCALE ((int)EDITOR_GET("interface/editor/display_scale"))
 
 #endif // LIMBOAI_GDEXTENSION
