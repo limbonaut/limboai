@@ -17,6 +17,8 @@
 #define RAND_RANGE(m_from, m_to) (Math::random(m_from, m_to))
 #define RANDF() (Math::randf())
 #define PRINT_LINE(...) (print_line(__VA_ARGS__))
+#define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
+#define GET_SCENE_TREE() (SceneTree::get_singleton())
 
 #endif // LIMBOAI_MODULE
 
@@ -28,5 +30,7 @@
 #define RAND_RANGE(m_from, m_to) (UtilityFunctions::randf_range(m_from, m_to))
 #define RANDF() (UtilityFunctions::randf())
 #define PRINT_LINE(...) (UtilityFunctions::print(__VA_ARGS__))
+#define IS_DEBUGGER_ACTIVE() (EngineDebugger::get_singleton()->is_active())
+#define GET_SCENE_TREE() ((SceneTree *)(Engine::get_singleton()->get_main_loop()))
 
 #endif // LIMBOAI_GDEXTENSION

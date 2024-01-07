@@ -12,10 +12,16 @@
 #ifndef BT_PLAYER_H
 #define BT_PLAYER_H
 
+#ifdef LIMBOAI_MODULE
 #include "scene/main/node.h"
+#endif
 
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
+#endif
+
+#include "../blackboard/blackboard.h"
 #include "behavior_tree.h"
-#include "modules/limboai/blackboard/blackboard.h"
 #include "tasks/bt_task.h"
 
 class BTPlayer : public Node {

@@ -57,6 +57,7 @@ public:
 	StringName emit_changed;
 	StringName _weight_;
 	StringName error_value;
+	StringName behavior_tree;
 
 	String repeat_forever;
 };

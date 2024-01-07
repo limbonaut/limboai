@@ -32,6 +32,7 @@ LimboStringNames::LimboStringNames() {
 	changed = StringName("emit_changed");
 	_weight_ = StringName("_weight_");
 	error_value = StringName("error_value");
+	behavior_tree = StringName("behavior_tree");
 
 	repeat_forever.parse_utf8("Repeat ∞");
 }
