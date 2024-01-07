@@ -72,6 +72,8 @@ public:
 	StringName item_collapsed;
 	StringName pressed;
 	StringName StatusWarning;
+	StringName mode_changed;
+	StringName connect;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

@@ -53,6 +53,8 @@ LimboStringNames::LimboStringNames() {
 	item_collapsed = SN("item_collapsed");
 	pressed = SN("pressed");
 	StatusWarning = SN("StatusWarning");
+	mode_changed = SN("mode_changed");
+	connect = SN("connect");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");

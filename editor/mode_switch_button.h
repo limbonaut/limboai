@@ -12,10 +12,25 @@
 #ifndef MODE_SWITCH_BUTTON
 #define MODE_SWITCH_BUTTON
 
+#ifdef LIMBOAI_MODULE
 #include "scene/gui/button.h"
 
 #include "core/typedefs.h"
 #include "scene/resources/texture.h"
+
+#define SET_ICON(m_tex) set_icon(m_tex)
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/templates/vector.hpp>
+
+using namespace godot;
+
+#define SET_BUTTON_ICON(m_tex) set_button_icon(m_tex)
+
+#endif // LIMBOAI_GDEXTENSION
 
 class ModeSwitchButton : public Button {
 	GDCLASS(ModeSwitchButton, Button);
@@ -32,7 +47,7 @@ private:
 
 	_FORCE_INLINE_ void _set_mode_by_index(int p_index) {
 		current_mode_index = p_index;
-		set_icon(modes[current_mode_index].icon);
+		SET_BUTTON_ICON(modes[current_mode_index].icon);
 		if (!modes[current_mode_index].tooltip.is_empty()) {
 			set_tooltip_text(modes[current_mode_index].tooltip);
 		}
