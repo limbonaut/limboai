@@ -12,9 +12,11 @@
 #ifndef LIMBO_STATE_H
 #define LIMBO_STATE_H
 
-#include "modules/limboai/blackboard/blackboard.h"
+#include "../blackboard/blackboard.h"
 
-#include "core/object/class_db.h"
+#include "../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
 #include "core/object/gdvirtual.gen.inc"
 #include "core/object/object.h"
 #include "core/string/string_name.h"
@@ -23,6 +25,11 @@
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/templates/hash_map.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboHSM;
 
@@ -54,16 +61,16 @@ protected:
 	virtual void _exit();
 	virtual void _update(double p_delta);
 
+#ifdef LIMBOAI_MODULE
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1(_update, double);
+#endif // LIMBOAI_MODULE
 
 	void add_event_handler(const String &p_event, const Callable &p_handler);
 
 public:
-	static const String EVENT_FINISHED;
-
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 
 	Node *get_agent() const { return agent; }
@@ -76,7 +83,7 @@ public:
 	LimboState *call_on_exit(const Callable &p_callable);
 	LimboState *call_on_update(const Callable &p_callable);
 
-	_FORCE_INLINE_ String event_finished() const { return EVENT_FINISHED; }
+	_FORCE_INLINE_ String event_finished() const { return LSNAME(EVENT_FINISHED); }
 	LimboState *get_root() const;
 	bool is_active() const { return active; }
 

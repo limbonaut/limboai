@@ -19,6 +19,8 @@
 #define PRINT_LINE(...) (print_line(__VA_ARGS__))
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
 #define GET_SCENE_TREE() (SceneTree::get_singleton())
+#define VCALL(m_method) (GDVIRTUAL_CALL(method))
+#define VCALL_ARGS(method, ...) (call(LSNAME(method), __VA_ARGS__))
 
 #endif // LIMBOAI_MODULE
 
@@ -32,5 +34,7 @@
 #define PRINT_LINE(...) (UtilityFunctions::print(__VA_ARGS__))
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::get_singleton()->is_active())
 #define GET_SCENE_TREE() ((SceneTree *)(Engine::get_singleton()->get_main_loop()))
+#define VCALL(m_name) (call(LSNAME(m_name)))
+#define VCALL_ARGS(m_name, ...) (call(LSNAME(m_name), __VA_ARGS__))
 
 #endif // LIMBOAI_GDEXTENSION

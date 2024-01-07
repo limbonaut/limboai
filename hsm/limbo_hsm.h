@@ -14,10 +14,6 @@
 
 #include "limbo_state.h"
 
-#include "core/object/object.h"
-#include "core/templates/hash_map.h"
-#include "core/variant/variant.h"
-
 class LimboHSM : public LimboState {
 	GDCLASS(LimboHSM, LimboState);
 

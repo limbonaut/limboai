@@ -11,10 +11,7 @@
 
 #include "limbo_hsm.h"
 
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/hsm/limbo_state.h"
-#include "modules/limboai/util/limbo_string_names.h"
-
+#ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -22,6 +19,7 @@
 #include "core/typedefs.h"
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
 
 VARIANT_ENUM_CAST(LimboHSM::UpdateMode);
 
@@ -160,12 +158,20 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		if (to_state != nullptr) {
 			bool permitted = true;
 			if (to_state->guard_callable.is_valid()) {
-				Callable::CallError ce;
 				Variant ret;
+
+#ifdef LIMBOAI_MODULE
+				Callable::CallError ce;
 				to_state->guard_callable.callp(nullptr, 0, ret, ce);
 				if (unlikely(ce.error != Callable::CallError::CALL_OK)) {
 					ERR_PRINT_ONCE("LimboHSM: Error calling substate's guard callable: " + Variant::get_callable_error_text(to_state->guard_callable, nullptr, 0, ce));
 				}
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+				ret = to_state->guard_callable.call();
+#endif // LIMBOAI_GDEXTENSION
+
 				if (unlikely(ret.get_type() != Variant::BOOL)) {
 					ERR_PRINT_ONCE(vformat("State guard callable %s returned non-boolean value (%s).", to_state->guard_callable, to_state));
 				} else {
@@ -179,7 +185,7 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		}
 	}
 
-	if (!event_consumed && p_event == EVENT_FINISHED && !(get_parent() && get_parent()->is_class("LimboState"))) {
+	if (!event_consumed && p_event == LSNAME(EVENT_FINISHED) && !(get_parent() && get_parent()->is_class("LimboState"))) {
 		_exit();
 	}
 

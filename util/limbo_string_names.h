@@ -59,6 +59,7 @@ public:
 	StringName error_value;
 	StringName behavior_tree;
 
+	String EVENT_FINISHED;
 	String repeat_forever;
 };
 

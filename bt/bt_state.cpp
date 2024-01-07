@@ -11,21 +11,27 @@
 
 #include "bt_state.h"
 
-#include "modules/limboai/editor/debugger/limbo_debugger.h"
-#include "modules/limboai/hsm/limbo_state.h"
-#include "modules/limboai/util/limbo_string_names.h"
+#include "../editor/debugger/limbo_debugger.h"
+#include "../util/limbo_def.h"
+#include "../util/limbo_string_names.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine_debugger.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 void BTState::_setup() {
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
 	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard());
 
 #ifdef DEBUG_ENABLED
-	if (tree_instance.is_valid() && EngineDebugger::is_active()) {
+	if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 	}
 #endif
@@ -51,12 +57,12 @@ void BTState::_update(double p_delta) {
 void BTState::_notification(int p_notification) {
 	switch (p_notification) {
 		case NOTIFICATION_ENTER_TREE: {
-			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
+			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			if (tree_instance.is_valid() && EngineDebugger::is_active()) {
+			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 			}
 		} break;

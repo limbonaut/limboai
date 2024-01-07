@@ -12,27 +12,36 @@
 #include "limbo_string_names.h"
 #include "godot_cpp/variant/string_name.hpp"
 
+#ifdef LIMBOAI_MODULE
+#define SN(m_arg) (StaticCString::create(m_arg))
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#define SN(m_arg) (StringName(m_arg))
+#endif // LIMBOAI_GDEXTENSION
+
 LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
-	_generate_name = StringName("_generate_name");
-	_setup = StringName("_setup");
-	_enter = StringName("_enter");
-	_exit = StringName("_exit");
-	_tick = StringName("_tick");
-	behavior_tree_finished = StringName("behavior_tree_finished");
-	setup = StringName("setup");
-	entered = StringName("entered");
-	exited = StringName("exited");
-	updated = StringName("updated");
-	_update = StringName("_update");
-	state_changed = StringName("state_changed");
-	_get_configuration_warning = StringName("_get_configuration_warning");
-	changed = StringName("changed");
-	changed = StringName("emit_changed");
-	_weight_ = StringName("_weight_");
-	error_value = StringName("error_value");
-	behavior_tree = StringName("behavior_tree");
+	_generate_name = SN("_generate_name");
+	_setup = SN("_setup");
+	_enter = SN("_enter");
+	_exit = SN("_exit");
+	_tick = SN("_tick");
+	behavior_tree_finished = SN("behavior_tree_finished");
+	setup = SN("setup");
+	entered = SN("entered");
+	exited = SN("exited");
+	updated = SN("updated");
+	_update = SN("_update");
+	state_changed = SN("state_changed");
+	_get_configuration_warning = SN("_get_configuration_warning");
+	changed = SN("changed");
+	changed = SN("emit_changed");
+	_weight_ = SN("_weight_");
+	error_value = SN("error_value");
+	behavior_tree = SN("behavior_tree");
 
+	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");
 }
