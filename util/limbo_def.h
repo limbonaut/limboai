@@ -33,6 +33,7 @@
 		EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);)
 
 #define MBTN_RIGHT MouseButton::RIGHT
+#define MBTN_LEFT MouseButton::LEFT
 
 #endif // LIMBOAI_MODULE
 
@@ -59,6 +60,7 @@ using namespace godot;
 #define SHOW_DOC(m_doc) EditorInterface::get_singleton()->get_script_editor()->get_current_editor()->emit_signal("go_to_help", m_doc)
 
 #define MBTN_RIGHT MouseButton::MOUSE_BUTTON_RIGHT
+#define MBTN_LEFT MouseButton::MOUSE_BUTTON_LEFT
 
 // Missing definitions
 

@@ -11,12 +11,18 @@
 
 #include "task_tree.h"
 
-#include "modules/limboai/bt/tasks/bt_comment.h"
-#include "modules/limboai/bt/tasks/composites/bt_probability_selector.h"
-#include "modules/limboai/util/limbo_utility.h"
+#include "../bt/tasks/bt_comment.h"
+#include "../bt/tasks/composites/bt_probability_selector.h"
+#include "../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
 #include "editor/editor_scale.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 //**** TaskTree
 
@@ -40,7 +46,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	if (p_item->get_parent()) {
 		Ref<BTProbabilitySelector> sel = p_item->get_parent()->get_metadata(0);
 		if (sel.is_valid() && sel->has_probability(p_item->get_index())) {
-			p_item->set_custom_draw(0, this, SNAME("_draw_probability"));
+			p_item->set_custom_draw(0, this, LSNAME(_draw_probability));
 			p_item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
 		}
 	}
@@ -48,7 +54,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	Ref<BTTask> task = p_item->get_metadata(0);
 	ERR_FAIL_COND_MSG(!task.is_valid(), "Invalid task reference in metadata.");
 	p_item->set_text(0, task->get_task_name());
-	if (task->is_class_ptr(BTComment::get_class_ptr_static())) {
+	if (IS_CLASS(task, BTComment)) {
 		p_item->set_custom_font(0, theme_cache.comment_font);
 		p_item->set_custom_color(0, theme_cache.comment_color);
 	} else if (task->get_custom_name().is_empty()) {
@@ -59,9 +65,10 @@ void TaskTree::_update_item(TreeItem *p_item) {
 		// p_item->set_custom_color(0, get_theme_color(SNAME("warning_color"), SNAME("Editor")));
 	}
 	String type_arg;
-	if (task->get_script_instance() && !task->get_script_instance()->get_script()->get_path().is_empty()) {
-		type_arg = task->get_script_instance()->get_script()->get_path();
-	} else {
+	if (task->get_script() != Variant()) {
+		type_arg = task->get_path();
+	}
+	if (type_arg.is_empty()) {
 		type_arg = task->get_class();
 	}
 	p_item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(type_arg));
@@ -126,13 +133,13 @@ TreeItem *TaskTree::_find_item(const Ref<BTTask> &p_task) const {
 }
 
 void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, MouseButton p_button_index) {
-	if (p_button_index == MouseButton::LEFT) {
+	if (p_button_index == MBTN_LEFT) {
 		Rect2 rect = get_selected_probability_rect();
 		if (rect != Rect2() && rect.has_point(p_pos)) {
-			emit_signal(SNAME("probability_clicked"));
+			emit_signal(LSNAME(probability_clicked));
 		}
-	} else if (p_button_index == MouseButton::RIGHT) {
-		emit_signal(SNAME("rmb_pressed"), get_screen_position() + p_pos);
+	} else if (p_button_index == MBTN_RIGHT) {
+		emit_signal(LSNAME(rmb_pressed), get_screen_position() + p_pos);
 	}
 }
 
@@ -140,17 +147,17 @@ void TaskTree::_on_item_selected() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
 	if (last_selected.is_valid()) {
 		update_task(last_selected);
-		if (last_selected->is_connected(SNAME("changed"), on_task_changed)) {
-			last_selected->disconnect(SNAME("changed"), on_task_changed);
+		if (last_selected->is_connected(LSNAME(changed), on_task_changed)) {
+			last_selected->disconnect(LSNAME(changed), on_task_changed);
 		}
 	}
 	last_selected = get_selected();
-	last_selected->connect(SNAME("changed"), on_task_changed);
-	emit_signal(SNAME("task_selected"), last_selected);
+	last_selected->connect(LSNAME(changed), on_task_changed);
+	emit_signal(LSNAME(task_selected), last_selected);
 }
 
 void TaskTree::_on_item_activated() {
-	emit_signal(SNAME("task_activated"));
+	emit_signal(LSNAME(task_activated));
 }
 
 void TaskTree::_on_task_changed() {
@@ -161,8 +168,8 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "Tried to load a null tree.");
 
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
-		last_selected->disconnect("changed", on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
+		last_selected->disconnect(LSNAME(changed), on_task_changed);
 	}
 
 	bt = p_behavior_tree;
@@ -175,8 +182,8 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 
 void TaskTree::unload() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
-		last_selected->disconnect("changed", on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
+		last_selected->disconnect(LSNAME(changed), on_task_changed);
 	}
 
 	bt->unreference();
@@ -210,7 +217,7 @@ Rect2 TaskTree::get_selected_probability_rect() const {
 		return Rect2();
 	}
 
-	ObjectID key = tree->get_selected()->get_instance_id();
+	RECT_CACHE_KEY key = tree->get_selected()->get_instance_id();
 	if (unlikely(!probability_rect_cache.has(key))) {
 		return Rect2();
 	} else {
@@ -237,7 +244,7 @@ double TaskTree::get_selected_probability_percent() const {
 bool TaskTree::selected_has_probability() const {
 	bool result = false;
 	Ref<BTTask> selected = get_selected();
-	if (selected.is_valid() && !selected->is_class_ptr(BTComment::get_class_ptr_static())) {
+	if (selected.is_valid() && !IS_CLASS(selected, BTComment)) {
 		Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
 		result = probability_selector.is_valid();
 	}
@@ -291,7 +298,7 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	TreeItem *item = tree->get_item_at_position(p_point);
 	if (item && d.has("task")) {
 		Ref<BTTask> task = d["task"];
-		emit_signal(SNAME("task_dragged"), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+		emit_signal(LSNAME(task_dragged), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
 	}
 }
 
@@ -327,30 +334,29 @@ void TaskTree::_draw_probability(Object *item_obj, Rect2 rect) {
 			prob_rect.size.x, theme_cache.probability_font_size, theme_cache.probability_font_color);
 }
 
-void TaskTree::_update_theme_item_cache() {
-	Control::_update_theme_item_cache();
+void TaskTree::_do_update_theme_item_cache() {
+	theme_cache.name_font = get_theme_font(LSNAME(font));
+	theme_cache.custom_name_font = get_theme_font(LSNAME(bold), LSNAME(EditorFonts));
+	theme_cache.comment_font = get_theme_font(LSNAME(doc_italic), LSNAME(EditorFonts));
+	theme_cache.probability_font = get_theme_font(LSNAME(font));
 
-	theme_cache.name_font = get_theme_font(SNAME("font"));
-	theme_cache.custom_name_font = get_theme_font(SNAME("bold"), SNAME("EditorFonts"));
-	theme_cache.comment_font = get_theme_font(SNAME("doc_italic"), SNAME("EditorFonts"));
-	theme_cache.probability_font = get_theme_font(SNAME("font"));
+	theme_cache.name_font_size = get_theme_font_size(LSNAME(font_size));
+	theme_cache.probability_font_size = Math::floor(get_theme_font_size(LSNAME(font_size)) * 0.9);
 
-	theme_cache.name_font_size = get_theme_font_size("font_size");
-	theme_cache.probability_font_size = Math::floor(get_theme_font_size("font_size") * 0.9);
+	theme_cache.task_warning_icon = get_theme_icon(LSNAME(NodeWarning), LSNAME(EditorIcons));
 
-	theme_cache.task_warning_icon = get_theme_icon(SNAME("NodeWarning"), SNAME("EditorIcons"));
-
-	theme_cache.comment_color = get_theme_color(SNAME("disabled_font_color"), SNAME("Editor"));
-	theme_cache.probability_font_color = get_theme_color(SNAME("font_color"), SNAME("Editor"));
+	theme_cache.comment_color = get_theme_color(LSNAME(disabled_font_color), LSNAME(Editor));
+	theme_cache.probability_font_color = get_theme_color(LSNAME(font_color), LSNAME(Editor));
 
 	theme_cache.probability_bg.instantiate();
-	theme_cache.probability_bg->set_bg_color(get_theme_color(SNAME("accent_color"), SNAME("Editor")) * Color(1, 1, 1, 0.25));
+	theme_cache.probability_bg->set_bg_color(get_theme_color(LSNAME(accent_color), LSNAME(Editor)) * Color(1, 1, 1, 0.25));
 	theme_cache.probability_bg->set_corner_radius_all(12.0 * EDSCALE);
 }
 
 void TaskTree::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
+			_do_update_theme_item_cache();
 			_update_tree();
 		} break;
 	}

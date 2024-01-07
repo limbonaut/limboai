@@ -96,6 +96,18 @@ public:
 	StringName LimboDeselectAll;
 	StringName Search;
 	StringName refresh;
+	StringName _draw_probability;
+	StringName probability_clicked;
+	StringName rmb_pressed;
+	StringName task_activated;
+	StringName task_dragged;
+	StringName doc_italic;
+	StringName NodeWarning;
+	StringName Editor;
+	StringName disabled_font_color;
+	StringName font_color;
+	StringName accent_color;
+	StringName font_size;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

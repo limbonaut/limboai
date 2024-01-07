@@ -9,11 +9,26 @@
  * =============================================================================
  */
 
-#include "modules/limboai/bt/behavior_tree.h"
+#include "../bt/behavior_tree.h"
 
+#ifdef LIMBOAI_MODULE
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/style_box_flat.h"
+
+#define RECT_CACHE_KEY ObjectID
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/font.hpp>
+#include <godot_cpp/classes/style_box_flat.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/tree.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
+
+#define RECT_CACHE_KEY uint64_t
+#endif // LIMBOAI_GDEXTENSION
 
 class TaskTree : public Control {
 	GDCLASS(TaskTree, Control);
@@ -23,7 +38,7 @@ private:
 	Ref<BehaviorTree> bt;
 	Ref<BTTask> last_selected;
 	bool editable;
-	HashMap<ObjectID, Rect2> probability_rect_cache;
+	HashMap<RECT_CACHE_KEY, Rect2> probability_rect_cache;
 
 	struct ThemeCache {
 		Ref<Font> comment_font;
@@ -60,7 +75,7 @@ private:
 	void _draw_probability(Object *item_obj, Rect2 rect);
 
 protected:
-	virtual void _update_theme_item_cache() override;
+	virtual void _do_update_theme_item_cache();
 
 	void _notification(int p_what);
 	static void _bind_methods();

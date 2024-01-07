@@ -77,6 +77,18 @@ LimboStringNames::LimboStringNames() {
 	LimboDeselectAll = SN("LimboDeselectAll");
 	Search = SN("Search");
 	refresh = SN("refresh");
+	_draw_probability = SN("_draw_probability");
+	probability_clicked = SN("probability_clicked");
+	rmb_pressed = SN("rmb_pressed");
+	task_activated = SN("task_activated");
+	task_dragged = SN("task_dragged");
+	doc_italic = SN("doc_italic");
+	NodeWarning = SN("NodeWarning");
+	Editor = SN("Editor");
+	disabled_font_color = SN("disabled_font_color");
+	font_color = SN("font_color");
+	accent_color = SN("accent_color");
+	font_size = SN("font_size");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");
