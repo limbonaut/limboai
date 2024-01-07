@@ -24,6 +24,15 @@
 #define GET_SCENE_TREE() (SceneTree::get_singleton())
 #define VCALL(m_method) (GDVIRTUAL_CALL(method))
 #define VCALL_ARGS(method, ...) (call(LSNAME(method), __VA_ARGS__))
+#define BUTTON_SET_ICON(m_btn, m_icon) m_btn->set_icon(m_icon)
+#define RESOURCE_LOAD(m_path, m_hint) ResourceLoader::load(m_path, m_hint)
+#define GET_PROJECT_SETTINGS_DIR() EditorPaths::get_singleton()->get_project_settings_dir()
+
+#define SHOW_DOC(m_doc) (                                \
+		ScriptEditor::get_singleton()->goto_help(m_doc); \
+		EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);)
+
+#define MBTN_RIGHT MouseButton::RIGHT
 
 #endif // LIMBOAI_MODULE
 
@@ -43,14 +52,32 @@ using namespace godot;
 #define GET_SCENE_TREE() ((SceneTree *)(Engine::get_singleton()->get_main_loop()))
 #define VCALL(m_name) (call(LSNAME(m_name)))
 #define VCALL_ARGS(m_name, ...) (call(LSNAME(m_name), __VA_ARGS__))
+#define BUTTON_SET_ICON(m_btn, m_icon) m_btn->set_button_icon(m_icon)
+#define RESOURCE_LOAD(m_path, m_hint) ResourceLoader::get_singleton()->load(m_path, m_hint)
+#define GET_PROJECT_SETTINGS_DIR() EditorInterface::get_singleton()->get_editor_paths()->get_project_settings_dir()
+
+#define SHOW_DOC(m_doc) EditorInterface::get_singleton()->get_script_editor()->get_current_editor()->emit_signal("go_to_help", m_doc)
+
+#define MBTN_RIGHT MouseButton::MOUSE_BUTTON_RIGHT
+
+// Missing definitions
 
 #define EDITOR_GET(m_var) _EDITOR_GET(m_var)
 Variant _EDITOR_GET(const String &p_setting);
+
+#define GLOBAL_GET(m_var) ProjectSettings::get_singleton()->get_setting_with_override(m_var)
 
 #define EDSCALE ((int)EDITOR_GET("interface/editor/display_scale"))
 
 String TTR(const String &p_text, const String &p_context = "");
 
 #endif // LIMBOAI_GDEXTENSION
+
+// ! Shared definitions.
+
+void EDIT_SCRIPT(const String &p_path);
+
+#define VARIANT_IS_ARRAY(m_variant) (m_variant.get_type() >= Variant::ARRAY)
+#define VARIANT_IS_NUM(m_variant) (m_variant.get_type() == Variant::INT || m_variant.get_type() == Variant::FLOAT)
 
 #endif // LIMBO_DEF_H

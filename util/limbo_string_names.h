@@ -74,6 +74,28 @@ public:
 	StringName StatusWarning;
 	StringName mode_changed;
 	StringName connect;
+	StringName task_button_pressed;
+	StringName gui_input;
+	StringName icon_max_width;
+	StringName GuiTreeArrowDown;
+	StringName GuiTreeArrowRight;
+	StringName font;
+	StringName task_button_rmb;
+	StringName favorite_tasks_changed;
+	StringName task_selected;
+	StringName toggled;
+	StringName Favorites;
+	StringName Script;
+	StringName Help;
+	StringName NonFavorite;
+	StringName normal;
+	StringName LineEdit;
+	StringName AnimationFilter;
+	StringName Reload;
+	StringName LimboSelectAll;
+	StringName LimboDeselectAll;
+	StringName Search;
+	StringName refresh;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

@@ -10,11 +10,23 @@
  */
 
 #include "limbo_def.h"
-#include "godot_cpp/classes/editor_interface.hpp"
+
+#ifdef LIMBOAI_MODULE
+
+void EDIT_SCRIPT(const String &p_path) {
+	Ref<Resource> res = ScriptEditor::get_singleton()->open_file(p_path);
+	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
+	EditorNode::get_singleton()->edit_resource(res);
+}
+
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 
+#include "godot_cpp/classes/editor_interface.hpp"
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/translation_server.hpp>
 
 using namespace godot;
@@ -31,6 +43,12 @@ String TTR(const String &p_text, const String &p_context) {
 	}
 
 	return p_text;
+}
+
+void EDIT_SCRIPT(const String &p_path) {
+	Ref<Script> res = RESOURCE_LOAD(p_path, "Script");
+	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
+	EditorInterface::get_singleton()->edit_script(res);
 }
 
 #endif // LIMBOAI_GDEXTENSION

@@ -55,6 +55,28 @@ LimboStringNames::LimboStringNames() {
 	StatusWarning = SN("StatusWarning");
 	mode_changed = SN("mode_changed");
 	connect = SN("connect");
+	task_button_pressed = SN("task_button_pressed");
+	gui_input = SN("gui_input");
+	icon_max_width = SN("icon_max_width");
+	GuiTreeArrowDown = SN("GuiTreeArrowDown");
+	GuiTreeArrowRight = SN("GuiTreeArrowRight");
+	font = SN("font");
+	task_button_rmb = SN("task_button_rmb");
+	favorite_tasks_changed = SN("favorite_tasks_changed");
+	task_selected = SN("task_selected");
+	toggled = SN("toggled");
+	Favorites = SN("Favorites");
+	Script = SN("Script");
+	Help = SN("Help");
+	NonFavorite = SN("NonFavorite");
+	normal = SN("normal");
+	LineEdit = SN("LineEdit");
+	AnimationFilter = SN("AnimationFilter");
+	Reload = SN("Reload");
+	LimboSelectAll = SN("LimboSelectAll");
+	LimboDeselectAll = SN("LimboDeselectAll");
+	Search = SN("Search");
+	refresh = SN("refresh");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");
