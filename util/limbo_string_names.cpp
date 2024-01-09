@@ -72,7 +72,7 @@ LimboStringNames::LimboStringNames() {
 	font = SN("font");
 	font_color = SN("font_color");
 	font_size = SN("font_size");
-	Forward = SN("Tools");
+	Forward = SN("Forward");
 	gui_input = SN("gui_input");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");

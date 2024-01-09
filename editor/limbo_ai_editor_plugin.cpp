@@ -44,27 +44,28 @@
 #endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/classes/editor_interface.hpp"
-#include "godot_cpp/classes/editor_paths.hpp"
-#include "godot_cpp/classes/ref_counted.hpp"
 #include <godot_cpp/classes/button_group.hpp>
 #include <godot_cpp/classes/config_file.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/display_server.hpp>
 #include <godot_cpp/classes/editor_file_system.hpp>
 #include <godot_cpp/classes/editor_inspector.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/editor_paths.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
+#include <godot_cpp/core/error_macros.hpp>
 #endif // ! LIMBOAI_GDEXTENSION
 
 //**** LimboAIEditor
@@ -178,7 +179,7 @@ void LimboAIEditor::_update_header() const {
 
 void LimboAIEditor::_update_history_buttons() {
 	history_back->set_disabled(idx_history == 0);
-	history_forward->set_disabled(idx_history == (history.size() - 1));
+	history_forward->set_disabled(idx_history >= (history.size() - 1));
 }
 
 void LimboAIEditor::_new_bt() {
@@ -691,11 +692,13 @@ void LimboAIEditor::_on_save_pressed() {
 }
 
 void LimboAIEditor::_on_history_back() {
+	ERR_FAIL_COND(history.size() == 0);
 	idx_history = MAX(idx_history - 1, 0);
 	EDIT_RESOURCE(history[idx_history]);
 }
 
 void LimboAIEditor::_on_history_forward() {
+	ERR_FAIL_COND(history.size() == 0);
 	idx_history = MIN(idx_history + 1, history.size() - 1);
 	EDIT_RESOURCE(history[idx_history]);
 }
@@ -1038,6 +1041,9 @@ void LimboAIEditor::_notification(int p_what) {
 			new_script_btn->connect(LW_NAME(pressed), callable_mp(SCRIPT_EDITOR(), &ScriptEditor::open_script_create_dialog).bind("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task")));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
+
+			_update_history_buttons();
+			_update_header();
 
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
