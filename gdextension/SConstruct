@@ -34,14 +34,14 @@ sources += (Glob("limboai/util/*.cpp"))
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "demo/bin/liblimboai.{}.{}.framework/liblimboai.{}.{}".format(
+        "demo/addons/limboai/liblimboai.{}.{}.framework/liblimboai.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "demo/bin/liblimboai{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        "demo/addons/limboai/bin/liblimboai{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 
