@@ -144,7 +144,7 @@ bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_val
 	Variant ret;
 	switch (p_check_type) {
 		case LimboUtility::CheckType::CHECK_EQUAL: {
-			VARIANT_EVALUATE(Variant::OP_LESS, left_value, right_value, ret);
+			VARIANT_EVALUATE(Variant::OP_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN: {
 			VARIANT_EVALUATE(Variant::OP_LESS, left_value, right_value, ret);
