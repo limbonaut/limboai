@@ -20,7 +20,7 @@
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/popup.h"
-#endif // LIMBOAI_MODULE
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
@@ -35,7 +35,7 @@
 #include <godot_cpp/templates/hash_set.hpp>
 
 using namespace godot;
-#endif // LIMBOAI_GDEXTENSION
+#endif // ! LIMBOAI_GDEXTENSION
 
 class TaskButton : public Button {
 	GDCLASS(TaskButton, Button);
@@ -74,10 +74,11 @@ private:
 	void _on_header_pressed();
 
 protected:
-	virtual void _do_update_theme_item_cache();
+	static void _bind_methods();
 
 	void _notification(int p_what);
-	static void _bind_methods();
+
+	virtual void _do_update_theme_item_cache();
 
 public:
 	void set_filter(String p_filter);
@@ -87,10 +88,9 @@ public:
 	bool is_collapsed() const;
 
 	String get_category_name() const { return section_header->get_text(); }
+	void set_category_name(const String &p_cat) { section_header->set_text(p_cat); }
 
-	TaskPaletteSection() :
-			TaskPaletteSection("") {}
-	TaskPaletteSection(String p_category_name);
+	TaskPaletteSection();
 	~TaskPaletteSection();
 };
 

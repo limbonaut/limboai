@@ -1,0 +1,27 @@
+[configuration]
+
+entry_symbol = "limboai_init"
+compatibility_minimum = "4.2"
+
+[libraries]
+
+macos.debug = "res://bin/liblimboai.macos.editor.framework"
+macos.release = "res://bin/liblimboai.macos.template_release.framework"
+windows.debug.x86_32 = "res://bin/liblimboai.windows.editor.x86_32.dll"
+windows.release.x86_32 = "res://bin/liblimboai.windows.template_release.x86_32.dll"
+windows.debug.x86_64 = "res://bin/liblimboai.windows.editor.x86_64.dll"
+windows.release.x86_64 = "res://bin/liblimboai.windows.template_release.x86_64.dll"
+linux.debug.x86_64 = "liblimboai.linux.editor.dev.x86_64.so"
+linux.release.x86_64 = "res://bin/liblimboai.linux.template_release.x86_64.so"
+linux.debug.arm64 = "res://bin/liblimboai.linux.editor.arm64.so"
+linux.release.arm64 = "res://bin/liblimboai.linux.template_release.arm64.so"
+linux.debug.rv64 = "res://bin/liblimboai.linux.editor.rv64.so"
+linux.release.rv64 = "res://bin/liblimboai.linux.template_release.rv64.so"
+android.debug.x86_64 = "res://bin/liblimboai.android.template_debug.x86_64.so"
+android.release.x86_64 = "res://bin/liblimboai.android.template_release.x86_64.so"
+android.debug.arm64 = "res://bin/liblimboai.android.template_debug.arm64.so"
+android.release.arm64 = "res://bin/liblimboai.android.template_release.arm64.so"
+
+[icons]
+
+GDExample = "res://icons/gd_example.svg"

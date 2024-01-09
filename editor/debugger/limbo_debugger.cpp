@@ -129,7 +129,7 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 		_untrack_tree();
 	}
 
-	Node *node = GET_SCENE_TREE()->get_root()->get_node_or_null(p_path);
+	Node *node = SCENE_TREE()->get_root()->get_node_or_null(p_path);
 	ERR_FAIL_COND(node == nullptr);
 
 	tracked_player = p_path;
@@ -164,7 +164,7 @@ void LimboDebugger::_untrack_tree() {
 	NodePath was_tracking = tracked_player;
 	tracked_player = NodePath();
 
-	Node *node = GET_SCENE_TREE()->get_root()->get_node_or_null(was_tracking);
+	Node *node = SCENE_TREE()->get_root()->get_node_or_null(was_tracking);
 	ERR_FAIL_COND(node == nullptr);
 
 	if (node->is_class("BTPlayer")) {

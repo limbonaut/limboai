@@ -11,6 +11,8 @@
 
 #include "limbo_task_db.h"
 
+#include "limbo_compat.h"
+
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
 #include "core/io/dir_access.h"
@@ -19,6 +21,7 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
+
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -30,12 +33,7 @@ _FORCE_INLINE_ void _populate_scripted_tasks_from_dir(String p_path, List<String
 		return;
 	}
 
-#ifdef LIMBOAI_MODULE
-	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	Ref<DirAccess> dir = memnew(DirAccess);
-#endif
+	Ref<DirAccess> dir = DIR_ACCESS_CREATE();
 
 	if (dir->change_dir(p_path) == OK) {
 		dir->list_dir_begin();
@@ -58,12 +56,7 @@ _FORCE_INLINE_ void _populate_from_user_dir(String p_path, HashMap<String, List<
 		return;
 	}
 
-#ifdef LIMBOAI_MODULE
-	Ref<DirAccess> dir = DirAccess::create(DirAccess::ACCESS_RESOURCES);
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	Ref<DirAccess> dir = memnew(DirAccess);
-#endif
+	Ref<DirAccess> dir = DIR_ACCESS_CREATE();
 
 	if (dir->change_dir(p_path) == OK) {
 		dir->list_dir_begin();

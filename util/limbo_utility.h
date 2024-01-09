@@ -12,9 +12,12 @@
 #ifndef LIMBO_UTILITY_H
 #define LIMBO_UTILITY_H
 
+#include "limbo_compat.h"
+
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 
+#include "core/input/shortcut.h"
 #include "core/object/class_db.h"
 #include "core/variant/binder_common.h"
 #include "core/variant/variant.h"
@@ -24,9 +27,12 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/object.hpp>
 
+#include <godot_cpp/classes/shortcut.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/core/binder_common.hpp>
 #include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
+
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -34,6 +40,9 @@ using namespace godot;
 
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
+
+private:
+	HashMap<String, Ref<Shortcut>> shortcuts;
 
 public:
 	enum CheckType : unsigned int {
@@ -77,11 +86,19 @@ public:
 	String get_operation_string(Operation p_operation) const;
 	Variant perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value);
 
+	Ref<Shortcut> add_shortcut(const String &p_path, const String &p_name, Key p_keycode = LW_KEY(NONE));
+	bool is_shortcut(const String &p_path, const Ref<InputEvent> &p_event) const;
+	Ref<Shortcut> get_shortcut(const String &p_path) const;
+
 	LimboUtility();
 	~LimboUtility();
 };
 
 VARIANT_ENUM_CAST(LimboUtility::CheckType);
 VARIANT_ENUM_CAST(LimboUtility::Operation);
+
+#define LW_SHORTCUT(m_path, m_name, m_keycode) (LimboUtility::get_singleton()->add_shortcut(m_path, m_name, m_keycode))
+#define LW_IS_SHORTCUT(m_path, m_event) (LimboUtility::get_singleton()->is_shortcut(m_path, m_event))
+#define LW_GET_SHORTCUT(m_path) (LimboUtility::get_singleton()->get_shortcut(m_path))
 
 #endif // LIMBO_UTILITY_H

@@ -85,7 +85,7 @@ void BTCooldown::_chill() {
 		SceneTree *st = (SceneTree *)Engine::get_singleton()->get_main_loop();
 		timer = st->create_timer(duration, process_pause);
 #endif
-		timer->connect("timeout", callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
+		timer->connect(LSNAME(timeout), callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }
 

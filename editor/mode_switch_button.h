@@ -56,6 +56,8 @@ private:
 protected:
 	static void _bind_methods();
 
+	void _notification(int p_what);
+
 public:
 	void add_mode(int p_id, const Ref<Texture2D> &p_icon, const String &p_tooltip = "");
 	int get_mode() const { return modes.size() > 0 ? modes[current_mode_index].id : -1; }

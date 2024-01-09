@@ -10,85 +10,121 @@
  */
 
 #include "limbo_string_names.h"
-#include "godot_cpp/variant/string_name.hpp"
 
 #ifdef LIMBOAI_MODULE
+
 #define SN(m_arg) (StaticCString::create(m_arg))
-#endif // LIMBOAI_MODULE
+
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/variant/string_name.hpp"
+
 #define SN(m_arg) (StringName(m_arg))
-#endif // LIMBOAI_GDEXTENSION
+
+#endif // ! LIMBOAI_GDEXTENSION
 
 LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
-	_generate_name = SN("_generate_name");
-	_setup = SN("_setup");
+	_draw_failure_status = SN("_draw_failure_status");
+	_draw_probability = SN("_draw_probability");
+	_draw_running_status = SN("_draw_running_status");
+	_draw_success_status = SN("_draw_success_status");
 	_enter = SN("_enter");
 	_exit = SN("_exit");
-	_tick = SN("_tick");
-	behavior_tree_finished = SN("behavior_tree_finished");
-	setup = SN("setup");
-	entered = SN("entered");
-	exited = SN("exited");
-	updated = SN("updated");
-	_update = SN("_update");
-	state_changed = SN("state_changed");
+	_generate_name = SN("_generate_name");
 	_get_configuration_warning = SN("_get_configuration_warning");
-	changed = SN("changed");
-	changed = SN("emit_changed");
+	_replace_task = SN("_replace_task");
+	_setup = SN("_setup");
+	_tick = SN("_tick");
+	_update = SN("_update");
+	_update_banners = SN("_update_banners");
 	_weight_ = SN("_weight_");
-	error_value = SN("error_value");
+	accent_color = SN("accent_color");
+	add_child = SN("add_child");
+	add_child_at_index = SN("add_child_at_index");
+	AnimationFilter = SN("AnimationFilter");
+	Back = SN("Back");
 	behavior_tree = SN("behavior_tree");
-	_draw_success_status = SN("_draw_success_status");
-	_draw_failure_status = SN("_draw_failure_status");
-	_draw_running_status = SN("_draw_running_status");
-	LimboExtraClock = SN("LimboExtraClock");
-	EditorIcons = SN("EditorIcons");
-	BTAlwaysSucceed = SN("BTAlwaysSucceed");
-	BTAlwaysFail = SN("BTAlwaysFail");
+	behavior_tree_finished = SN("behavior_tree_finished");
+	BehaviorTree = SN("BehaviorTree");
 	bold = SN("bold");
-	EditorFonts = SN("EditorFonts");
-	item_collapsed = SN("item_collapsed");
-	pressed = SN("pressed");
-	StatusWarning = SN("StatusWarning");
-	mode_changed = SN("mode_changed");
+	BTAlwaysFail = SN("BTAlwaysFail");
+	BTAlwaysSucceed = SN("BTAlwaysSucceed");
+	changed = SN("changed");
 	connect = SN("connect");
-	task_button_pressed = SN("task_button_pressed");
+	Debug = SN("Debug");
+	disabled_font_color = SN("disabled_font_color");
+	doc_italic = SN("doc_italic");
+	draw = SN("draw");
+	Duplicate = SN("Duplicate");
+	Editor = SN("Editor");
+	EditorFonts = SN("EditorFonts");
+	EditorIcons = SN("EditorIcons");
+	emit_changed = SN("emit_changed");
+	entered = SN("entered");
+	error_value = SN("error_value");
+	exited = SN("exited");
+	favorite_tasks_changed = SN("favorite_tasks_changed");
+	Favorites = SN("Favorites");
+	font = SN("font");
+	font_color = SN("font_color");
+	font_size = SN("font_size");
+	Forward = SN("Tools");
 	gui_input = SN("gui_input");
-	icon_max_width = SN("icon_max_width");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
-	font = SN("font");
-	task_button_rmb = SN("task_button_rmb");
-	favorite_tasks_changed = SN("favorite_tasks_changed");
-	task_selected = SN("task_selected");
-	toggled = SN("toggled");
-	Favorites = SN("Favorites");
-	Script = SN("Script");
 	Help = SN("Help");
+	icon_max_width = SN("icon_max_width");
+	id_pressed = SN("id_pressed");
+	item_collapsed = SN("item_collapsed");
+	LimboDeselectAll = SN("LimboDeselectAll");
+	LimboExtraClock = SN("LimboExtraClock");
+	LimboPercent = SN("LimboPercent");
+	LimboSelectAll = SN("LimboSelectAll");
+	LineEdit = SN("LineEdit");
+	Load = SN("Load");
+	managed = SN("managed");
+	mode_changed = SN("mode_changed");
+	MoveDown = SN("MoveDown");
+	MoveUp = SN("MoveUp");
+	New = SN("New");
+	NewRoot = SN("NewRoot");
+	NodeWarning = SN("NodeWarning");
 	NonFavorite = SN("NonFavorite");
 	normal = SN("normal");
-	LineEdit = SN("LineEdit");
-	AnimationFilter = SN("AnimationFilter");
-	Reload = SN("Reload");
-	LimboSelectAll = SN("LimboSelectAll");
-	LimboDeselectAll = SN("LimboDeselectAll");
-	Search = SN("Search");
-	refresh = SN("refresh");
-	_draw_probability = SN("_draw_probability");
+	popup_hide = SN("popup_hide");
+	pressed = SN("pressed");
 	probability_clicked = SN("probability_clicked");
+	refresh = SN("refresh");
+	Reload = SN("Reload");
+	Remove = SN("Remove");
+	remove_child = SN("remove_child");
+	Rename = SN("Rename");
 	rmb_pressed = SN("rmb_pressed");
+	Save = SN("Save");
+	Script = SN("Script");
+	ScriptCreate = SN("ScriptCreate");
+	Search = SN("Search");
+	set_custom_name = SN("set_custom_name");
+	set_root_task = SN("set_root_task");
+	setup = SN("setup");
+	state_changed = SN("state_changed");
+	StatusWarning = SN("StatusWarning");
 	task_activated = SN("task_activated");
+	task_button_pressed = SN("task_button_pressed");
+	task_button_rmb = SN("task_button_rmb");
 	task_dragged = SN("task_dragged");
-	doc_italic = SN("doc_italic");
-	NodeWarning = SN("NodeWarning");
-	Editor = SN("Editor");
-	disabled_font_color = SN("disabled_font_color");
-	font_color = SN("font_color");
-	accent_color = SN("accent_color");
-	font_size = SN("font_size");
+	task_meta = SN("task_meta");
+	task_selected = SN("task_selected");
+	text_changed = SN("text_changed");
+	timeout = SN("timeout");
+	toggled = SN("toggled");
+	update_task = SN("update_task");
+	update_tree = SN("update_tree");
+	updated = SN("updated");
+	visibility_changed = SN("visibility_changed");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");

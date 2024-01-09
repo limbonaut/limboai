@@ -12,7 +12,7 @@
 #include "bt_state.h"
 
 #include "../editor/debugger/limbo_debugger.h"
-#include "../util/limbo_def.h"
+#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE

@@ -52,6 +52,7 @@ public:
 	Ref<BTTask> get_root_task() const { return root_task; }
 
 	Ref<BehaviorTree> clone() const;
+	void copy_from(const Ref<BehaviorTree> &p_other);
 	Ref<BTTask> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const;
 };
 

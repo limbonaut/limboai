@@ -35,7 +35,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include "blackboard/blackboard.h"
-#include "util/limbo_def.h"
+#include "util/limbo_compat.h"
 #include "util/limbo_string_names.h"
 #include "util/limbo_task_db.h"
 

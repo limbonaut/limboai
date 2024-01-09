@@ -29,10 +29,13 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include "bt/tasks/bt_task.h"
 
+#include "godot_cpp/classes/input_event_key.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/core/error_macros.hpp>
-#endif
+
+#endif // LIMBOAI_GDEXTENSION
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -139,57 +142,29 @@ String LimboUtility::get_check_operator_string(CheckType p_check_type) const {
 
 bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_value, const Variant &right_value) {
 	Variant ret;
-#ifdef LIMBOAI_MODULE
 	switch (p_check_type) {
 		case LimboUtility::CheckType::CHECK_EQUAL: {
-			ret = Variant::evaluate(Variant::OP_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_LESS, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN: {
-			ret = Variant::evaluate(Variant::OP_LESS, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_LESS, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			ret = Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_LESS_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
-			ret = Variant::evaluate(Variant::OP_GREATER, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_GREATER, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			ret = Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_GREATER_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
-			ret = Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value);
-		} break;
-		default: {
-			ret = false;
-		} break;
-	}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	bool valid;
-	switch (p_check_type) {
-		case LimboUtility::CheckType::CHECK_EQUAL: {
-			Variant::evaluate(Variant::OP_LESS, left_value, right_value, ret, valid);
-		} break;
-		case LimboUtility::CheckType::CHECK_LESS_THAN: {
-			Variant::evaluate(Variant::OP_LESS, left_value, right_value, ret, valid);
-		} break;
-		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value, ret, valid);
-		} break;
-		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
-			Variant::evaluate(Variant::OP_GREATER, left_value, right_value, ret, valid);
-		} break;
-		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value, ret, valid);
-		} break;
-		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
-			Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value, ret, valid);
+			VARIANT_EVALUATE(Variant::OP_NOT_EQUAL, left_value, right_value, ret);
 		} break;
 		default: {
 			return false;
 		} break;
 	}
-#endif
 
 	return ret;
 }
@@ -238,91 +213,76 @@ String LimboUtility::get_operation_string(Operation p_operation) const {
 
 Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
 	Variant ret;
-#ifdef LIMBOAI_MODULE
 	switch (p_operation) {
 		case OPERATION_NONE: {
 			ret = right_value;
 		} break;
 		case OPERATION_ADDITION: {
-			ret = Variant::evaluate(Variant::OP_ADD, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_ADD, left_value, right_value, ret);
 		} break;
 		case OPERATION_SUBTRACTION: {
-			ret = Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SUBTRACT, left_value, right_value, ret);
 		} break;
 		case OPERATION_MULTIPLICATION: {
-			ret = Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_MULTIPLY, left_value, right_value, ret);
 		} break;
 		case OPERATION_DIVISION: {
-			ret = Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_DIVIDE, left_value, right_value, ret);
 		} break;
 		case OPERATION_MODULO: {
-			ret = Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_MODULE, left_value, right_value, ret);
 		} break;
 		case OPERATION_POWER: {
-			ret = Variant::evaluate(Variant::OP_POWER, left_value, right_value);
+			// TODO: Fix when godot-cpp https://github.com/godotengine/godot-cpp/issues/1348 is resolved.
+			// 	Variant::evaluate(Variant::OP_POWER, left_value, right_value, ret, valid);
+			ERR_PRINT("LimboUtility: Operation POWER is not available due to https://github.com/godotengine/godot-cpp/issues/1348");
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
-			ret = Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SHIFT_LEFT, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_SHIFT_RIGHT: {
-			ret = Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SHIFT_RIGHT, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_AND: {
-			ret = Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_AND, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_OR: {
-			ret = Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_OR, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_XOR: {
-			ret = Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_XOR, left_value, right_value, ret);
 		} break;
 	}
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
-	bool valid;
-	switch (p_operation) {
-		case OPERATION_NONE: {
-			ret = right_value;
-		} break;
-		case OPERATION_ADDITION: {
-			Variant::evaluate(Variant::OP_ADD, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_SUBTRACTION: {
-			Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_MULTIPLICATION: {
-			Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_DIVISION: {
-			Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_MODULO: {
-			Variant::evaluate(Variant::OP_MODULE, left_value, right_value, ret, valid);
-		} break;
-		// TODO: Uncomment when https://github.com/godotengine/godot-cpp/issues/1348 is fixed.
-		// case OPERATION_POWER: {
-		// 	Variant::evaluate(Variant::OP_POWER, left_value, right_value, ret, valid);
-		// } break;
-		case OPERATION_BIT_SHIFT_LEFT: {
-			Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_BIT_SHIFT_RIGHT: {
-			Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_BIT_AND: {
-			Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_BIT_OR: {
-			Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value, ret, valid);
-		} break;
-		case OPERATION_BIT_XOR: {
-			Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value, ret, valid);
-		} break;
-	}
-#endif // LIMBOAI_GDEXTENSION
-
 	return Variant();
+}
+
+Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_name, Key p_keycode) {
+	Ref<Shortcut> sc = memnew(Shortcut);
+	sc->set_name(p_name);
+
+	Array events;
+	Ref<InputEventKey> ev = memnew(InputEventKey);
+	ev->set_keycode(p_keycode);
+	events.append(ev);
+	sc->set_events(events);
+
+	shortcuts[p_path] = sc;
+
+	return sc;
+}
+
+bool LimboUtility::is_shortcut(const String &p_path, const Ref<InputEvent> &p_event) const {
+	HashMap<String, Ref<Shortcut>>::ConstIterator E = shortcuts.find(p_path);
+	ERR_FAIL_COND_V_MSG(!E, false, vformat("LimboUtility: Shortcut not found: %s.", p_path));
+	return E->value->matches_event(p_event);
+}
+
+Ref<Shortcut> LimboUtility::get_shortcut(const String &p_path) const {
+	HashMap<String, Ref<Shortcut>>::ConstIterator SC = shortcuts.find(p_path);
+	if (SC) {
+		return SC->value;
+	}
+	return nullptr;
 }
 
 void LimboUtility::_bind_methods() {

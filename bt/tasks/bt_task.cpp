@@ -382,12 +382,7 @@ void BTTask::print_tree(int p_initial_tabs) {
 		tabs += "--";
 	}
 
-#ifdef LIMBOAI_MODULE
-	print_line(vformat("%s Name: %s Instance: %s", tabs, get_task_name(), Ref<BTTask>(this)));
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	UtilityFunctions::print(vformat("%s Name: %s Instance: %s", tabs, get_task_name(), Ref<BTTask>(this)));
-#endif
+	PRINT_LINE(vformat("%s Name: %s Instance: %s", tabs, get_task_name(), Ref<BTTask>(this)));
 
 	for (int i = 0; i < get_child_count(); i++) {
 		get_child(i)->print_tree(p_initial_tabs + 1);
@@ -445,6 +440,7 @@ void BTTask::_bind_methods() {
 	GDVIRTUAL_BIND(_get_configuration_warning);
 #endif // LIMBOAI_MODULE
 #ifdef LIMBOAI_GDEXTENSION
+	// TODO: Until virtual functions are implemented in godot-cpp, we do this. Replace this code when possible.
 	ClassDB::bind_method(D_METHOD("_setup"), &BTTask::_setup);
 	ClassDB::bind_method(D_METHOD("_enter"), &BTTask::_enter);
 	ClassDB::bind_method(D_METHOD("_exit"), &BTTask::_exit);

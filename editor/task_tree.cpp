@@ -13,6 +13,7 @@
 
 #include "../bt/tasks/bt_comment.h"
 #include "../bt/tasks/composites/bt_probability_selector.h"
+#include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
@@ -21,6 +22,8 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_interface.hpp>
+
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -30,7 +33,6 @@ TreeItem *TaskTree::_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, 
 	ERR_FAIL_COND_V(p_task.is_null(), nullptr);
 	TreeItem *item = tree->create_item(p_parent, p_idx);
 	item->set_metadata(0, p_task);
-	// p_task->connect("changed"...)
 	for (int i = 0; i < p_task->get_child_count(); i++) {
 		_create_tree(p_task->get_child(i), item);
 	}
@@ -133,12 +135,12 @@ TreeItem *TaskTree::_find_item(const Ref<BTTask> &p_task) const {
 }
 
 void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, MouseButton p_button_index) {
-	if (p_button_index == MBTN_LEFT) {
+	if (p_button_index == LW_MBTN(LEFT)) {
 		Rect2 rect = get_selected_probability_rect();
 		if (rect != Rect2() && rect.has_point(p_pos)) {
 			emit_signal(LSNAME(probability_clicked));
 		}
-	} else if (p_button_index == MBTN_RIGHT) {
+	} else if (p_button_index == LW_MBTN(RIGHT)) {
 		emit_signal(LSNAME(rmb_pressed), get_screen_position() + p_pos);
 	}
 }
@@ -355,6 +357,11 @@ void TaskTree::_do_update_theme_item_cache() {
 
 void TaskTree::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_READY: {
+			tree->connect("item_mouse_selected", callable_mp(this, &TaskTree::_on_item_mouse_selected));
+			tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected));
+			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
+		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
 			_update_tree();
@@ -397,16 +404,13 @@ TaskTree::TaskTree() {
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	tree->set_allow_rmb_select(true);
-	tree->connect("item_mouse_selected", callable_mp(this, &TaskTree::_on_item_mouse_selected));
-	tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected));
-	tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 
 	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
 }
 
 TaskTree::~TaskTree() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected("changed", on_task_changed)) {
-		last_selected->disconnect("changed", on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
+		last_selected->disconnect(LSNAME(changed), on_task_changed);
 	}
 }

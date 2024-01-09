@@ -14,6 +14,7 @@
 #include "behavior_tree_view.h"
 
 #include "../../bt/tasks/bt_task.h"
+#include "../../util/limbo_compat.h"
 #include "../../util/limbo_utility.h"
 #include "behavior_tree_data.h"
 
@@ -26,6 +27,11 @@
 #include "editor/editor_settings.h"
 #include "scene/resources/style_box.h"
 #endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_interface.hpp>
+
+#endif // LIMBOAI_GDEXTENSION
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
 	p_rect = p_rect.grow_side(SIDE_LEFT, p_rect.get_position().x);
@@ -167,6 +173,9 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 
 void BehaviorTreeView::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_READY: {
+			tree->connect(LSNAME(item_collapsed), callable_mp(this, &BehaviorTreeView::_item_collapsed));
+		} break;
 		case NOTIFICATION_POSTINITIALIZE:
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
 		case NOTIFICATION_TRANSLATION_CHANGED:
@@ -192,7 +201,6 @@ BehaviorTreeView::BehaviorTreeView() {
 	tree->set_column_expand(2, false);
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
-	tree->connect(LSNAME(item_collapsed), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 }
 
 #endif // TOOLS_ENABLED

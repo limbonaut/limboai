@@ -11,7 +11,7 @@
 
 #include "limbo_state.h"
 
-#include "../util/limbo_def.h"
+#include "../util/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"

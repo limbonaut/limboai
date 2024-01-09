@@ -63,6 +63,14 @@ void ModeSwitchButton::clear() {
 	modes.clear();
 }
 
+void ModeSwitchButton::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_READY: {
+			connect(LSNAME(pressed), callable_mp(this, &ModeSwitchButton::next_mode));
+		} break;
+	}
+}
+
 void ModeSwitchButton::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("add_mode", "p_id", "p_icon", "p_tooltip"), &ModeSwitchButton::add_mode);
 	ClassDB::bind_method(D_METHOD("get_mode"), &ModeSwitchButton::get_mode);
@@ -73,5 +81,4 @@ void ModeSwitchButton::_bind_methods() {
 }
 
 ModeSwitchButton::ModeSwitchButton() {
-	call_deferred(LSNAME(connect), LSNAME(pressed), callable_mp(this, &ModeSwitchButton::next_mode));
 }
