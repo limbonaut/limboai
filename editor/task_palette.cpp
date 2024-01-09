@@ -390,7 +390,7 @@ void TaskPalette::refresh() {
 		// Restore collapsed state from config.
 		Ref<ConfigFile> cf;
 		cf.instantiate();
-		String conf_path = GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg");
+		String conf_path = PROJECT_CONFIG_FILE();
 		if (cf->load(conf_path) == OK) {
 			Variant value = cf->get_value("task_palette", "collapsed_sections", Array());
 			if (VARIANT_IS_ARRAY(value)) {
@@ -525,7 +525,7 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			if (cf->load(conf_path) == OK) {
 				Variant value = cf->get_value("task_palette", "type_filter", FilterSettings::TypeFilter(0));
 				if (VARIANT_IS_NUM(value)) {
@@ -552,7 +552,7 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			cf->load(conf_path);
 
 			Array collapsed_sections;

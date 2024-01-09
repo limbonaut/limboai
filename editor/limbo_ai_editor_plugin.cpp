@@ -985,7 +985,7 @@ void LimboAIEditor::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			if (cf->load(conf_path) == OK) {
 				hsc->set_split_offset(cf->get_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset()));
 			}
@@ -993,7 +993,7 @@ void LimboAIEditor::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			cf->load(conf_path);
 			cf->set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
 			cf->save(conf_path);

@@ -149,4 +149,6 @@ inline void VARIANT_DELETE_IF_OBJECT(Variant m_variant) {
 	}
 }
 
+#define PROJECT_CONFIG_FILE() GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg")
+
 #endif // LIMBO_COMPAT_H
