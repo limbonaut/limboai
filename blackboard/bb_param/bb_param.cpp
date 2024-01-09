@@ -59,17 +59,20 @@ void BBParam::set_variable(const String &p_value) {
 
 #ifdef LIMBOAI_MODULE
 String BBParam::to_string() {
+#else // LIMBOAI_GDEXTENSION
+String BBParam::_to_string() {
+#endif // LIMBOAI_MODULE
 	if (value_source == SAVED_VALUE) {
 		String s = saved_value.stringify();
 		switch (get_type()) {
 			case Variant::STRING: {
-				s = s.c_escape().quote();
+				s = "\"" + s.c_escape() + "\"";
 			} break;
 			case Variant::STRING_NAME: {
-				s = "&" + s.c_escape().quote();
+				s = "&\"" + s.c_escape() + "\"";
 			} break;
 			case Variant::NODE_PATH: {
-				s = "^" + s.c_escape().quote();
+				s = "^\"" + s.c_escape() + "\"";
 			} break;
 			default: {
 			} break;
@@ -79,7 +82,6 @@ String BBParam::to_string() {
 		return LimboUtility::get_singleton()->decorate_var(variable);
 	}
 }
-#endif // LIMBOAI_MODULE
 
 Variant BBParam::get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
 	ERR_FAIL_COND_V(!p_blackboard.is_valid(), p_default);
@@ -109,6 +111,7 @@ void BBParam::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_variable"), &BBParam::get_variable);
 	ClassDB::bind_method(D_METHOD("get_type"), &BBParam::get_type);
 	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
+	ClassDB::bind_method(D_METHOD("_to_string"), &BBParam::_to_string);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value,Blackboard Var"), "set_value_source", "get_value_source");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");

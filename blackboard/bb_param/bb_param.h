@@ -79,6 +79,8 @@ public:
 
 #ifdef LIMBOAI_MODULE
 	virtual String to_string() override;
+#else // LIMBOAI_GDEXTENSION
+	virtual String _to_string();
 #endif
 
 	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
