@@ -34,11 +34,11 @@ private:
 
 	void _select_task();
 #define SNAME(m_arg) ([]() -> const StringName & { static StringName sname = _scs_create(m_arg, true); return sname; })()
-	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(LSNAME(_weight_), 1.0); }
-	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(LSNAME(_weight_), 1.0); }
+	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(LW_NAME(_weight_), 1.0); }
+	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(LW_NAME(_weight_), 1.0); }
 	_FORCE_INLINE_ void _set_weight(int p_index, double p_weight) {
-		get_child(p_index)->set_meta(LSNAME(_weight_), Variant(p_weight));
-		get_child(p_index)->emit_signal(LSNAME(changed));
+		get_child(p_index)->set_meta(LW_NAME(_weight_), Variant(p_weight));
+		get_child(p_index)->emit_signal(LW_NAME(changed));
 	}
 	_FORCE_INLINE_ double _get_total_weight() const {
 		double total = 0.0;

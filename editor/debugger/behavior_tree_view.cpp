@@ -103,13 +103,13 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 		item->set_icon_max_width(0, 16 * EDSCALE); // Force user icon size.
 
 		if (task_data.status == BTTask::SUCCESS) {
-			item->set_custom_draw(0, this, LSNAME(_draw_success_status));
+			item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
 			item->set_icon(1, theme_cache.icon_success);
 		} else if (task_data.status == BTTask::FAILURE) {
-			item->set_custom_draw(0, this, LSNAME(_draw_failure_status));
+			item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
 			item->set_icon(1, theme_cache.icon_failure);
 		} else if (task_data.status == BTTask::RUNNING) {
-			item->set_custom_draw(0, this, LSNAME(_draw_running_status));
+			item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
 			item->set_icon(1, theme_cache.icon_running);
 		}
 
@@ -134,11 +134,11 @@ void BehaviorTreeView::clear() {
 }
 
 void BehaviorTreeView::_do_update_theme_item_cache() {
-	theme_cache.icon_running = get_theme_icon(LSNAME(LimboExtraClock), LSNAME(EditorIcons));
-	theme_cache.icon_success = get_theme_icon(LSNAME(BTAlwaysSucceed), LSNAME(EditorIcons));
-	theme_cache.icon_failure = get_theme_icon(LSNAME(BTAlwaysFail), LSNAME(EditorIcons));
+	theme_cache.icon_running = get_theme_icon(LW_NAME(LimboExtraClock), LW_NAME(EditorIcons));
+	theme_cache.icon_success = get_theme_icon(LW_NAME(BTAlwaysSucceed), LW_NAME(EditorIcons));
+	theme_cache.icon_failure = get_theme_icon(LW_NAME(BTAlwaysFail), LW_NAME(EditorIcons));
 
-	theme_cache.font_custom_name = get_theme_font(LSNAME(bold), LSNAME(EditorFonts));
+	theme_cache.font_custom_name = get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts));
 
 	Color running_border = Color::html("#fea900");
 	Color running_fill = Color(running_border, 0.1);
@@ -174,7 +174,7 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 void BehaviorTreeView::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			tree->connect(LSNAME(item_collapsed), callable_mp(this, &BehaviorTreeView::_item_collapsed));
+			tree->connect(LW_NAME(item_collapsed), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 		} break;
 		case NOTIFICATION_POSTINITIALIZE:
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:

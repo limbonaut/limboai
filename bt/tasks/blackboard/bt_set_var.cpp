@@ -25,7 +25,7 @@ BT::Status BTSetVar::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTSetVar: `variable` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetVar: `value` is not set.");
 	Variant result;
-	Variant error_result = LSNAME(error_value);
+	Variant error_result = LW_NAME(error_value);
 	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_result);
 	ERR_FAIL_COND_V_MSG(right_value == error_result, FAILURE, "BTSetVar: Failed to get parameter value. Returning FAILURE.");
 	if (operation == LimboUtility::OPERATION_NONE) {
@@ -49,7 +49,7 @@ void BTSetVar::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
+		value->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 

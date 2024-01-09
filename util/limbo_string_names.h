@@ -147,6 +147,6 @@ public:
 	String repeat_forever;
 };
 
-#define LSNAME(m_arg) LimboStringNames::get_singleton()->m_arg
+#define LW_NAME(m_arg) LimboStringNames::get_singleton()->m_arg
 
 #endif // LIMBO_STRING_NAMES_H

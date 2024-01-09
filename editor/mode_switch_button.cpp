@@ -54,7 +54,7 @@ void ModeSwitchButton::set_mode(int p_id, bool p_no_signal) {
 
 	_set_mode_by_index(idx);
 	if (!p_no_signal) {
-		emit_signal(LSNAME(mode_changed));
+		emit_signal(LW_NAME(mode_changed));
 	}
 }
 
@@ -66,7 +66,7 @@ void ModeSwitchButton::clear() {
 void ModeSwitchButton::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			connect(LSNAME(pressed), callable_mp(this, &ModeSwitchButton::next_mode));
+			connect(LW_NAME(pressed), callable_mp(this, &ModeSwitchButton::next_mode));
 		} break;
 	}
 }

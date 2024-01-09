@@ -25,7 +25,7 @@ void BTCheckAgentProperty::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
+		value->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 

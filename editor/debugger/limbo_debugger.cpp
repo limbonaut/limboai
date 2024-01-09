@@ -137,10 +137,10 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 	Ref<Resource> bt;
 #ifdef LIMBOAI_MODULE
 	bool r_valid = false;
-	bt = node->get(LSNAME(behavior_tree), &r_valid);
+	bt = node->get(LW_NAME(behavior_tree), &r_valid);
 #endif
 #ifdef LIMBOAI_GDEXTENSION
-	bt = node->get(LSNAME(behavior_tree));
+	bt = node->get(LW_NAME(behavior_tree));
 #endif
 
 	if (bt.is_valid()) {
@@ -150,9 +150,9 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 	}
 
 	if (node->is_class("BTPlayer")) {
-		node->connect(LSNAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated).bind(p_path));
+		node->connect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated).bind(p_path));
 	} else if (node->is_class("BTState")) {
-		node->connect(LSNAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated).bind(p_path));
+		node->connect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated).bind(p_path));
 	}
 }
 
@@ -168,9 +168,9 @@ void LimboDebugger::_untrack_tree() {
 	ERR_FAIL_COND(node == nullptr);
 
 	if (node->is_class("BTPlayer")) {
-		node->disconnect(LSNAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated));
+		node->disconnect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated));
 	} else if (node->is_class("BTState")) {
-		node->disconnect(LSNAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated));
+		node->disconnect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated));
 	}
 }
 

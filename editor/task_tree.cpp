@@ -48,7 +48,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	if (p_item->get_parent()) {
 		Ref<BTProbabilitySelector> sel = p_item->get_parent()->get_metadata(0);
 		if (sel.is_valid() && sel->has_probability(p_item->get_index())) {
-			p_item->set_custom_draw(0, this, LSNAME(_draw_probability));
+			p_item->set_custom_draw(0, this, LW_NAME(_draw_probability));
 			p_item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
 		}
 	}
@@ -138,10 +138,10 @@ void TaskTree::_on_item_mouse_selected(const Vector2 &p_pos, MouseButton p_butto
 	if (p_button_index == LW_MBTN(LEFT)) {
 		Rect2 rect = get_selected_probability_rect();
 		if (rect != Rect2() && rect.has_point(p_pos)) {
-			emit_signal(LSNAME(probability_clicked));
+			emit_signal(LW_NAME(probability_clicked));
 		}
 	} else if (p_button_index == LW_MBTN(RIGHT)) {
-		emit_signal(LSNAME(rmb_pressed), get_screen_position() + p_pos);
+		emit_signal(LW_NAME(rmb_pressed), get_screen_position() + p_pos);
 	}
 }
 
@@ -149,17 +149,17 @@ void TaskTree::_on_item_selected() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
 	if (last_selected.is_valid()) {
 		update_task(last_selected);
-		if (last_selected->is_connected(LSNAME(changed), on_task_changed)) {
-			last_selected->disconnect(LSNAME(changed), on_task_changed);
+		if (last_selected->is_connected(LW_NAME(changed), on_task_changed)) {
+			last_selected->disconnect(LW_NAME(changed), on_task_changed);
 		}
 	}
 	last_selected = get_selected();
-	last_selected->connect(LSNAME(changed), on_task_changed);
-	emit_signal(LSNAME(task_selected), last_selected);
+	last_selected->connect(LW_NAME(changed), on_task_changed);
+	emit_signal(LW_NAME(task_selected), last_selected);
 }
 
 void TaskTree::_on_item_activated() {
-	emit_signal(LSNAME(task_activated));
+	emit_signal(LW_NAME(task_activated));
 }
 
 void TaskTree::_on_task_changed() {
@@ -170,8 +170,8 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "Tried to load a null tree.");
 
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
-		last_selected->disconnect(LSNAME(changed), on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LW_NAME(changed), on_task_changed)) {
+		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
 
 	bt = p_behavior_tree;
@@ -184,8 +184,8 @@ void TaskTree::load_bt(const Ref<BehaviorTree> &p_behavior_tree) {
 
 void TaskTree::unload() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
-		last_selected->disconnect(LSNAME(changed), on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LW_NAME(changed), on_task_changed)) {
+		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
 
 	bt->unreference();
@@ -300,7 +300,7 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	TreeItem *item = tree->get_item_at_position(p_point);
 	if (item && d.has("task")) {
 		Ref<BTTask> task = d["task"];
-		emit_signal(LSNAME(task_dragged), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+		emit_signal(LW_NAME(task_dragged), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
 	}
 }
 
@@ -337,21 +337,21 @@ void TaskTree::_draw_probability(Object *item_obj, Rect2 rect) {
 }
 
 void TaskTree::_do_update_theme_item_cache() {
-	theme_cache.name_font = get_theme_font(LSNAME(font));
-	theme_cache.custom_name_font = get_theme_font(LSNAME(bold), LSNAME(EditorFonts));
-	theme_cache.comment_font = get_theme_font(LSNAME(doc_italic), LSNAME(EditorFonts));
-	theme_cache.probability_font = get_theme_font(LSNAME(font));
+	theme_cache.name_font = get_theme_font(LW_NAME(font));
+	theme_cache.custom_name_font = get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts));
+	theme_cache.comment_font = get_theme_font(LW_NAME(doc_italic), LW_NAME(EditorFonts));
+	theme_cache.probability_font = get_theme_font(LW_NAME(font));
 
-	theme_cache.name_font_size = get_theme_font_size(LSNAME(font_size));
-	theme_cache.probability_font_size = Math::floor(get_theme_font_size(LSNAME(font_size)) * 0.9);
+	theme_cache.name_font_size = get_theme_font_size(LW_NAME(font_size));
+	theme_cache.probability_font_size = Math::floor(get_theme_font_size(LW_NAME(font_size)) * 0.9);
 
-	theme_cache.task_warning_icon = get_theme_icon(LSNAME(NodeWarning), LSNAME(EditorIcons));
+	theme_cache.task_warning_icon = get_theme_icon(LW_NAME(NodeWarning), LW_NAME(EditorIcons));
 
-	theme_cache.comment_color = get_theme_color(LSNAME(disabled_font_color), LSNAME(Editor));
-	theme_cache.probability_font_color = get_theme_color(LSNAME(font_color), LSNAME(Editor));
+	theme_cache.comment_color = get_theme_color(LW_NAME(disabled_font_color), LW_NAME(Editor));
+	theme_cache.probability_font_color = get_theme_color(LW_NAME(font_color), LW_NAME(Editor));
 
 	theme_cache.probability_bg.instantiate();
-	theme_cache.probability_bg->set_bg_color(get_theme_color(LSNAME(accent_color), LSNAME(Editor)) * Color(1, 1, 1, 0.25));
+	theme_cache.probability_bg->set_bg_color(get_theme_color(LW_NAME(accent_color), LW_NAME(Editor)) * Color(1, 1, 1, 0.25));
 	theme_cache.probability_bg->set_corner_radius_all(12.0 * EDSCALE);
 }
 
@@ -410,7 +410,7 @@ TaskTree::TaskTree() {
 
 TaskTree::~TaskTree() {
 	Callable on_task_changed = callable_mp(this, &TaskTree::_on_task_changed);
-	if (last_selected.is_valid() && last_selected->is_connected(LSNAME(changed), on_task_changed)) {
-		last_selected->disconnect(LSNAME(changed), on_task_changed);
+	if (last_selected.is_valid() && last_selected->is_connected(LW_NAME(changed), on_task_changed)) {
+		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
 }

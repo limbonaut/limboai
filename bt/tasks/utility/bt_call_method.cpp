@@ -22,7 +22,7 @@ void BTCallMethod::set_node_param(Ref<BBNode> p_object) {
 	node_param = p_object;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && node_param.is_valid()) {
-		node_param->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
+		node_param->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 

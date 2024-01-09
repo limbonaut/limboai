@@ -14,7 +14,7 @@
 
 String BTRepeat::_generate_name() {
 	if (forever) {
-		return LSNAME(repeat_forever);
+		return LW_NAME(repeat_forever);
 	}
 	return vformat("Repeat x%s", times);
 }

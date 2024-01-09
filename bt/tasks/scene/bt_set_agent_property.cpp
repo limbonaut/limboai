@@ -20,7 +20,7 @@ void BTSetAgentProperty::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(LSNAME(changed), Callable(this, LSNAME(emit_changed)));
+		value->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 
@@ -54,7 +54,7 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetAgentProperty: `value` is not set.");
 
 	Variant result;
-	StringName error_value = LSNAME(error_value);
+	StringName error_value = LW_NAME(error_value);
 	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_value);
 	ERR_FAIL_COND_V_MSG(right_value == Variant(error_value), FAILURE, "BTSetAgentProperty: Couldn't get value of value-parameter.");
 	bool r_valid;

@@ -185,7 +185,7 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		}
 	}
 
-	if (!event_consumed && p_event == LSNAME(EVENT_FINISHED) && !(get_parent() && get_parent()->is_class("LimboState"))) {
+	if (!event_consumed && p_event == LW_NAME(EVENT_FINISHED) && !(get_parent() && get_parent()->is_class("LimboState"))) {
 		_exit();
 	}
 

@@ -83,7 +83,7 @@ public:
 	LimboState *call_on_exit(const Callable &p_callable);
 	LimboState *call_on_update(const Callable &p_callable);
 
-	_FORCE_INLINE_ String event_finished() const { return LSNAME(EVENT_FINISHED); }
+	_FORCE_INLINE_ String event_finished() const { return LW_NAME(EVENT_FINISHED); }
 	LimboState *get_root() const;
 	bool is_active() const { return active; }
 
