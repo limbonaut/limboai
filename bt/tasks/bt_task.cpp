@@ -67,7 +67,7 @@ String BTTask::_generate_name() {
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-	if (!get_path().is_empty()) {
+	if (IS_RESOURCE_FILE(get_path())) {
 		return get_path().get_basename().get_file().trim_prefix("BT").to_pascal_case();
 	}
 	return get_class().trim_prefix("BT");
