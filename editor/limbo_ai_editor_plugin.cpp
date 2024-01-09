@@ -588,15 +588,18 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			SHOW_DOC("class_name:BehaviorTree");
 		} break;
 		case MISC_OPEN_DEBUGGER: {
-			// TODO: Fix debugger.
-			// ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
-			// if (LimboDebuggerPlugin::get_singleton()->get_session_tab()->get_window_enabled()) {
-			// 	LimboDebuggerPlugin::get_singleton()->get_session_tab()->set_window_enabled(true);
-			// } else {
-			// 	EditorNode::get_singleton()->make_bottom_panel_item_visible(EditorDebuggerNode::get_singleton());
-			// 	EditorDebuggerNode::get_singleton()->get_default_debugger()->switch_to_debugger(
-			// 			LimboDebuggerPlugin::get_singleton()->get_session_tab_index());
-			// }
+			ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
+			if (LimboDebuggerPlugin::get_singleton()->get_session_tab()->get_window_enabled()) {
+				LimboDebuggerPlugin::get_singleton()->get_session_tab()->set_window_enabled(true);
+			} else {
+#ifdef LIMBOAI_MODULE
+				EditorNode::get_singleton()->make_bottom_panel_item_visible(EditorDebuggerNode::get_singleton());
+				EditorDebuggerNode::get_singleton()->get_default_debugger()->switch_to_debugger(
+						LimboDebuggerPlugin::get_singleton()->get_session_tab_index());
+#else // LIMBOAI_GDEXTENSION
+	  // TODO: Unsure how to switch to debugger pane with GDExtension.
+#endif // LIMBOAI_MODULE
+			}
 		} break;
 		case MISC_PROJECT_SETTINGS: {
 			_edit_project_settings();
@@ -921,7 +924,10 @@ void LimboAIEditor::_update_misc_menu() {
 	misc_menu->add_icon_item(theme_cache.open_doc_icon, TTR("Introduction"), MISC_INTRODUCTION);
 
 	misc_menu->add_separator();
+#ifdef LIMBOAI_MODULE
+	// * Not sure how to switch to debugger pane with GDExtension.
 	misc_menu->add_icon_shortcut(theme_cache.open_debugger_icon, LW_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
+#endif // LIMBOAI_MODULE
 	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 
 	misc_menu->add_separator();
