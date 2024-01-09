@@ -18,9 +18,9 @@
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../bt/tasks/composites/bt_selector.h"
 #include "../bt/tasks/decorators/bt_subtree.h"
-#include "../util/limbo_compat.h"
-// #include "../editor/debugger/limbo_debugger_plugin.h" // TODO: reenable when debugger is ready.
+#include "../editor/debugger/limbo_debugger_plugin.h"
 #include "../editor/editor_property_bb_param.h"
+#include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
 #include "action_banner.h"
 
@@ -1334,14 +1334,22 @@ void LimboAIEditorPlugin::_apply_changes() {
 	limbo_ai_editor->apply_changes();
 }
 
+void LimboAIEditorPlugin::_bind_methods() {
+}
+
 void LimboAIEditorPlugin::_notification(int p_notification) {
-	if (p_notification == NOTIFICATION_ENTER_TREE) {
-		// Add BehaviorTree to the list of resources that should open in a new inspector.
-		PackedStringArray open_in_new_inspector = EDITOR_GET("interface/inspector/resources_to_open_in_new_inspector");
-		if (!open_in_new_inspector.has("BehaviorTree")) {
-			open_in_new_inspector.push_back("BehaviorTree");
-			EDITOR_SETTINGS()->set_setting("interface/inspector/resources_to_open_in_new_inspector", open_in_new_inspector);
-		}
+	switch (p_notification) {
+		case NOTIFICATION_READY: {
+			add_debugger_plugin(memnew(LimboDebuggerPlugin));
+		} break;
+		case NOTIFICATION_ENTER_TREE: {
+			// Add BehaviorTree to the list of resources that should open in a new inspector.
+			PackedStringArray open_in_new_inspector = EDITOR_GET("interface/inspector/resources_to_open_in_new_inspector");
+			if (!open_in_new_inspector.has("BehaviorTree")) {
+				open_in_new_inspector.push_back("BehaviorTree");
+				EDITOR_SETTINGS()->set_setting("interface/inspector/resources_to_open_in_new_inspector", open_in_new_inspector);
+			}
+		} break;
 	}
 }
 
@@ -1381,7 +1389,6 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor->hide();
 	limbo_ai_editor->set_plugin(this);
 
-// add_debugger_plugin(memnew(LimboDebuggerPlugin)); // TODO: disabled for now
 #ifdef LIMBOAI_MODULE
 	// ! Only used in the module version.
 	add_inspector_plugin(memnew(EditorInspectorPluginBBParam));

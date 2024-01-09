@@ -77,6 +77,7 @@ public:
 	StringName Editor;
 	StringName EditorFonts;
 	StringName EditorIcons;
+	StringName EditorStyles;
 	StringName emit_changed;
 	StringName entered;
 	StringName error_value;
@@ -94,6 +95,7 @@ public:
 	StringName icon_max_width;
 	StringName id_pressed;
 	StringName item_collapsed;
+	StringName item_selected;
 	StringName LimboDeselectAll;
 	StringName LimboExtraClock;
 	StringName LimboExtractSubtree;
@@ -118,6 +120,7 @@ public:
 	StringName remove_child;
 	StringName Remove;
 	StringName Rename;
+	StringName request_open_in_screen;
 	StringName rmb_pressed;
 	StringName Save;
 	StringName Script;
@@ -126,8 +129,10 @@ public:
 	StringName set_custom_name;
 	StringName set_root_task;
 	StringName setup;
+	StringName started;
 	StringName state_changed;
 	StringName StatusWarning;
+	StringName stopped;
 	StringName task_activated;
 	StringName task_button_pressed;
 	StringName task_button_rmb;
@@ -142,6 +147,7 @@ public:
 	StringName update_tree;
 	StringName updated;
 	StringName visibility_changed;
+	StringName window_visibility_changed;
 
 	String EVENT_FINISHED;
 	String repeat_forever;

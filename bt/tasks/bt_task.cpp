@@ -10,12 +10,6 @@
  */
 
 #include "bt_task.h"
-#include "godot_cpp/classes/global_constants.hpp"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/string_name.hpp"
-#include "godot_cpp/variant/typed_array.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
-#include "godot_cpp/variant/variant.hpp"
 
 #ifdef LIMBOAI_MODULE
 #include "bt_comment.h"
@@ -39,6 +33,13 @@
 #include "bt/tasks/bt_comment.h"
 #include "util/limbo_string_names.h"
 
+#include "godot_cpp/classes/global_constants.hpp"
+#include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/string_name.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
+#include "godot_cpp/variant/variant.hpp"
 #include <godot_cpp/classes/ref.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
@@ -447,6 +448,12 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_tick", "p_delta"), &BTTask::_tick);
 	ClassDB::bind_method(D_METHOD("_generate_name"), &BTTask::_generate_name);
 	ClassDB::bind_method(D_METHOD("_get_configuration_warnings"), &BTTask::get_configuration_warnings);
+	// BIND_VIRTUAL_METHOD(BTTask, _setup);
+	// BIND_VIRTUAL_METHOD(BTTask, _enter);
+	// BIND_VIRTUAL_METHOD(BTTask, _exit);
+	// BIND_VIRTUAL_METHOD(BTTask, _tick);
+	// BIND_VIRTUAL_METHOD(BTTask, _generate_name);
+	// BIND_VIRTUAL_METHOD(BTTask, get_configuration_warnings);
 #endif
 }
 

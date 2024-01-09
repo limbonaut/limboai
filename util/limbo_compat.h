@@ -30,6 +30,7 @@
 #define MAIN_SCREEN_CONTROL(EditorNode::get_singleton()->get_main_screen_control())
 #define SCENE_TREE() (SceneTree::get_singleton())
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
+#define FS_DOCK_SELECT_FILE(m_path) FileSystemDock::get_singleton()->select_file(m_path)
 
 #define PRINT_LINE(...) (print_line(__VA_ARGS__))
 #define IS_CLASS(m_obj, m_class) (m_obj->is_class_ptr(m_class::get_class_ptr_static()))
@@ -78,6 +79,7 @@ using namespace godot;
 #define MAIN_SCREEN_CONTROL() (EditorInterface::get_singleton()->get_editor_main_screen())
 #define SCENE_TREE() ((SceneTree *)(Engine::get_singleton()->get_main_loop()))
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::get_singleton()->is_active())
+#define FS_DOCK_SELECT_FILE(m_path) EditorInterface::get_singleton()->get_file_system_dock()->navigate_to_path(m_path)
 
 #define PRINT_LINE(...) (UtilityFunctions::print(__VA_ARGS__))
 #define IS_CLASS(m_obj, m_class) (m_obj->get_class_static() == m_class::get_class_static())

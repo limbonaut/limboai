@@ -62,6 +62,7 @@ LimboStringNames::LimboStringNames() {
 	Editor = SN("Editor");
 	EditorFonts = SN("EditorFonts");
 	EditorIcons = SN("EditorIcons");
+	EditorStyles = SN("EditorStyles");
 	emit_changed = SN("emit_changed");
 	entered = SN("entered");
 	error_value = SN("error_value");
@@ -79,6 +80,7 @@ LimboStringNames::LimboStringNames() {
 	icon_max_width = SN("icon_max_width");
 	id_pressed = SN("id_pressed");
 	item_collapsed = SN("item_collapsed");
+	item_selected = SN("item_selected");
 	LimboDeselectAll = SN("LimboDeselectAll");
 	LimboExtraClock = SN("LimboExtraClock");
 	LimboPercent = SN("LimboPercent");
@@ -102,6 +104,7 @@ LimboStringNames::LimboStringNames() {
 	Remove = SN("Remove");
 	remove_child = SN("remove_child");
 	Rename = SN("Rename");
+	request_open_in_screen = SN("request_open_in_screen");
 	rmb_pressed = SN("rmb_pressed");
 	Save = SN("Save");
 	Script = SN("Script");
@@ -110,8 +113,10 @@ LimboStringNames::LimboStringNames() {
 	set_custom_name = SN("set_custom_name");
 	set_root_task = SN("set_root_task");
 	setup = SN("setup");
+	started = SN("started");
 	state_changed = SN("state_changed");
 	StatusWarning = SN("StatusWarning");
+	stopped = SN("stopped");
 	task_activated = SN("task_activated");
 	task_button_pressed = SN("task_button_pressed");
 	task_button_rmb = SN("task_button_rmb");
@@ -125,6 +130,7 @@ LimboStringNames::LimboStringNames() {
 	update_tree = SN("update_tree");
 	updated = SN("updated");
 	visibility_changed = SN("visibility_changed");
+	window_visibility_changed = SN("window_visibility_changed");
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");

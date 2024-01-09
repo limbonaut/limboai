@@ -221,7 +221,7 @@ private:
 	LimboAIEditor *limbo_ai_editor;
 
 protected:
-	static void _bind_methods() {}
+	static void _bind_methods();
 	void _notification(int p_notification);
 
 public:

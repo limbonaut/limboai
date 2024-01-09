@@ -93,6 +93,7 @@
 #include "editor/action_banner.h"
 #include "editor/debugger/behavior_tree_data.h"
 #include "editor/debugger/limbo_debugger.h"
+#include "editor/debugger/limbo_debugger_plugin.h"
 #include "editor/mode_switch_button.h"
 #include "hsm/limbo_hsm.h"
 #include "hsm/limbo_state.h"
@@ -227,20 +228,28 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 #ifdef LIMBOAI_MODULE
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
+#else // LIMBOAI_GDEXTENSION
+		Engine::get_singleton()->register_singleton("LimboUtility", LimboUtility::get_singleton());
 #endif
+
 		LimboStringNames::create();
 	}
 
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 #ifdef LIMBOAI_GDEXTENSION
-		// GDREGISTER_CLASS(BehaviorTreeView);
 		GDREGISTER_CLASS(TaskTree);
 		GDREGISTER_CLASS(TaskButton);
 		GDREGISTER_CLASS(TaskPaletteSection);
 		GDREGISTER_CLASS(TaskPalette);
 		GDREGISTER_CLASS(ActionBanner);
 		GDREGISTER_CLASS(ModeSwitchButton);
+		GDREGISTER_CLASS(CompatShortcutBin);
+		GDREGISTER_CLASS(CompatScreenSelect);
+		GDREGISTER_CLASS(CompatWindowWrapper);
+		GDREGISTER_CLASS(BehaviorTreeView);
+		GDREGISTER_CLASS(LimboDebuggerTab);
+		GDREGISTER_CLASS(LimboDebuggerPlugin);
 		GDREGISTER_CLASS(LimboAIEditor);
 		GDREGISTER_CLASS(LimboAIEditorPlugin);
 #endif // ! LIMBOAI_GDEXTENSION

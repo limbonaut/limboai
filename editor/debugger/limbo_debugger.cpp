@@ -42,7 +42,7 @@ LimboDebugger::LimboDebugger() {
 	EngineDebugger::register_message_capture("limboai", EngineDebugger::Capture(nullptr, LimboDebugger::parse_message));
 #endif
 #if defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
-	// EngineDebugger::get_singleton()->register_message_capture("limboai", callable_mp(this, &LimboDebugger::parse_message));
+	EngineDebugger::get_singleton()->register_message_capture("limboai", callable_mp(this, &LimboDebugger::parse_message_gdext));
 #endif
 }
 
@@ -89,9 +89,9 @@ Error LimboDebugger::parse_message(void *p_user, const String &p_msg, const Arra
 }
 
 bool LimboDebugger::parse_message_gdext(const String &p_msg, const Array &p_args) {
-	bool ret;
-	LimboDebugger::parse_message(nullptr, p_msg, p_args, ret);
-	return ret;
+	bool r_captured;
+	LimboDebugger::parse_message(nullptr, p_msg, p_args, r_captured);
+	return r_captured;
 }
 
 void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
@@ -134,14 +134,7 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 
 	tracked_player = p_path;
 
-	Ref<Resource> bt;
-#ifdef LIMBOAI_MODULE
-	bool r_valid = false;
-	bt = node->get(LW_NAME(behavior_tree), &r_valid);
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	bt = node->get(LW_NAME(behavior_tree));
-#endif
+	Ref<Resource> bt = node->get(LW_NAME(behavior_tree));
 
 	if (bt.is_valid()) {
 		bt_resource_path = bt->get_path();
