@@ -24,10 +24,14 @@ void EDIT_SCRIPT(const String &p_path) {
 #ifdef LIMBOAI_GDEXTENSION
 
 #include "godot_cpp/classes/editor_interface.hpp"
+#include "godot_cpp/core/error_macros.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/script_editor.hpp>
+#include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/translation_server.hpp>
 
 using namespace godot;
@@ -83,4 +87,17 @@ Variant _GLOBAL_DEF(const PropertyInfo &p_info, const Variant &p_default, bool p
 	return ret;
 }
 
-#endif // LIMBOAI_GDEXTENSION
+void SHOW_DOC(const String &p_topic) {
+#ifdef LIMBOAI_MODULE
+	ScriptEditor::get_singleton()->goto_help(m_doc);
+	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+#else // LIMBOAI_GDEXTENSION
+	TypedArray<ScriptEditorBase> open_editors = EditorInterface::get_singleton()->get_script_editor()->get_open_script_editors();
+	ERR_FAIL_COND_MSG(open_editors.size() == 0, "Can't open help page. Need at least one script open in the script editor.");
+	ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(open_editors.front());
+	ERR_FAIL_NULL(seb);
+	seb->emit_signal("go_to_help", p_topic);
+#endif // ! LIMBOAI_MODULE
+}
+
+#endif // ! LIMBOAI_GDEXTENSION

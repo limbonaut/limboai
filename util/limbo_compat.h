@@ -51,10 +51,6 @@
 #define FILE_EXISTS(m_path) FileAccess::exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::create(DirAccess::ACCESS_RESOURCES)
 
-#define SHOW_DOC(m_doc) (                                \
-		ScriptEditor::get_singleton()->goto_help(m_doc); \
-		EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);)
-
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 
 // * Enum
@@ -104,8 +100,6 @@ void EDIT_SCRIPT(const String &p_path); // TODO: need a module version!
 #define FILE_EXISTS(m_path) FileAccess::file_exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::open("res://")
 
-#define SHOW_DOC(m_doc) EditorInterface::get_singleton()->get_script_editor()->get_current_editor()->emit_signal("go_to_help", m_doc)
-
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret)            \
 	{                                                                \
 		bool r_valid;                                                \
@@ -150,5 +144,7 @@ inline void VARIANT_DELETE_IF_OBJECT(Variant m_variant) {
 }
 
 #define PROJECT_CONFIG_FILE() GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg")
+
+void SHOW_DOC(const String &p_topic);
 
 #endif // LIMBO_COMPAT_H
