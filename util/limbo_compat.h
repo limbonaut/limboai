@@ -82,7 +82,9 @@ using namespace godot;
 #define FS_DOCK_SELECT_FILE(m_path) EditorInterface::get_singleton()->get_file_system_dock()->navigate_to_path(m_path)
 
 #define PRINT_LINE(...) (UtilityFunctions::print(__VA_ARGS__))
-#define IS_CLASS(m_obj, m_class) (m_obj->get_class_static() == m_class::get_class_static())
+// TODO: Use this def if https://github.com/godotengine/godot-cpp/pull/1356 gets merged:
+// #define IS_CLASS(m_obj, m_class) (m_obj->is_class_static(m_class::get_class_static()))
+#define IS_CLASS(m_obj, m_class) (m_obj->is_class(#m_class))
 #define RAND_RANGE(m_from, m_to) (UtilityFunctions::randf_range(m_from, m_to))
 #define RANDF() (UtilityFunctions::randf())
 #define VCALL(m_name) (call(LW_NAME(m_name)))
