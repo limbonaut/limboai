@@ -23,6 +23,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/script.hpp>
 
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
@@ -68,7 +69,10 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	}
 	String type_arg;
 	if (task->get_script() != Variant()) {
-		type_arg = task->get_path();
+		Ref<Script> sc = task->get_script();
+		if (sc.is_valid()) {
+			type_arg = sc->get_path();
+		}
 	}
 	if (type_arg.is_empty()) {
 		type_arg = task->get_class();

@@ -30,8 +30,11 @@
 #include "bt/tasks/bt_task.h"
 
 #include "godot_cpp/classes/input_event_key.hpp"
+#include "godot_cpp/classes/project_settings.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/core/error_macros.hpp>
@@ -112,8 +115,21 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 #ifdef LIMBOAI_GDEXTENSION
 	String path;
 	if (p_class_or_script_path.begins_with("res://")) {
-		path = p_class_or_script_path;
+		TypedArray<Dictionary> classes = ProjectSettings::get_singleton()->get_global_class_list();
+		for (int i = 0; i < classes.size(); i++) {
+			if (classes[i].get("path") == p_class_or_script_path) {
+				path = classes[i].get("icon");
+				break;
+			}
+		}
+		if (path.is_empty()) {
+			Ref<Script> sc = RESOURCE_LOAD(p_class_or_script_path, "Script");
+			if (sc.is_valid()) {
+				path = "res://addons/limboai/icons/" + sc->get_instance_base_type() + ".svg";
+			}
+		}
 	} else {
+		// Assuming global class.
 		path = "res://addons/limboai/icons/" + p_class_or_script_path + ".svg";
 	}
 
