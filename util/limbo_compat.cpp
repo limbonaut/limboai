@@ -54,6 +54,7 @@ void EDIT_SCRIPT(const String &p_path) {
 	Ref<Script> res = RESOURCE_LOAD(p_path, "Script");
 	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
 	EditorInterface::get_singleton()->edit_script(res);
+	EditorInterface::get_singleton()->set_main_screen_editor("Script");
 }
 
 Variant _GLOBAL_DEF(const String &p_var, const Variant &p_default, bool p_restart_if_changed, bool p_ignore_value_in_docs, bool p_basic, bool p_internal) {

@@ -611,7 +611,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 
 			if (!FILE_EXISTS(template_path)) {
 				if (!DirAccess::dir_exists_absolute(template_dir)) {
-					Error err = DirAccess::make_dir_absolute(template_dir);
+					Error err = DirAccess::make_dir_recursive_absolute(template_dir);
 					ERR_FAIL_COND(err != OK);
 				}
 
@@ -644,12 +644,18 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 						"\n\n"
 						"# Called each time this task is ticked (aka executed).\n"
 						"func _tick(delta: float) -> Status:\n"
-						"_TS_return SUCCESS\n";
+						"_TS_return SUCCESS\n"
+						"\n\n"
+						"# Strings returned from this method are displayed as warnings in the behavior tree editor (requires @tool).\n"
+						"func _get_configuration_warnings() -> PackedStringArray:\n"
+						"_TS_var warnings := PackedStringArray()\n"
+						"_TS_return warnings\n";
 
 				f->store_string(script_template);
 				f->close();
 			}
 
+			EDITOR_FILE_SYSTEM()->scan();
 			EDIT_SCRIPT(template_path);
 		} break;
 	}
