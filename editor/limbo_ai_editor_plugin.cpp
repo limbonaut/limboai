@@ -753,8 +753,6 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 			continue;
 		}
 
-		// TODO: check if exists() workaround works in GDExtesnion.
-		// TODO: check if the resource isn't replaced automatically.
 		if (RESOURCE_EXISTS(res_path, "BehaviorTree")) {
 			Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
 			if (res.is_valid()) {
@@ -768,6 +766,9 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 		}
 	}
 
+	// TODO: Find a way to allow resaving trees when they change outside of Godot.
+	// * Currently, editor reloads them without asking in GDExtension. There is no Resource::editor_can_reload_from_file().
+#ifdef LIMBOAI_MODULE
 	if (disk_changed_files.size() > 0) {
 		disk_changed_list->clear();
 		disk_changed_list->set_hide_root(true);
@@ -782,6 +783,9 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 		}
 		disk_changed->call_deferred("popup_centered_ratio", 0.5);
 	}
+#else //LIMBOAI_GDEXTENSION
+	task_tree->update_tree();
+#endif // LIMBOAI_MODULE
 }
 
 void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
@@ -842,7 +846,6 @@ void LimboAIEditor::_replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &
 
 void LimboAIEditor::_reload_modified() {
 	for (const String &res_path : disk_changed_files) {
-		// TODO: check if the resource isn't replaced automatically.
 		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
 		if (res.is_valid()) {
 			Ref<BehaviorTree> reloaded = RESOURCE_LOAD_NO_CACHE(res_path, "BehaviorTree");
@@ -853,17 +856,18 @@ void LimboAIEditor::_reload_modified() {
 		}
 	}
 	disk_changed_files.clear();
+	task_tree->update_tree();
 }
 
 void LimboAIEditor::_resave_modified(String _str) {
 	for (const String &res_path : disk_changed_files) {
-		// TODO: check if the resource isn't replaced automatically.
 		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
 		if (res.is_valid()) {
 			ERR_FAIL_COND(!res->is_class("BehaviorTree"));
 			RESOURCE_SAVE(res, res->get_path(), 0);
 		}
 	}
+	task_tree->update_tree();
 	disk_changed->hide();
 	disk_changed_files.clear();
 }
