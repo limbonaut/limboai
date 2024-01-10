@@ -10,7 +10,8 @@
  */
 
 #include "bt_probability_selector.h"
-#include "godot_cpp/variant/utility_functions.hpp"
+
+#include "../../../util/limbo_compat.h"
 
 double BTProbabilitySelector::get_weight(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);

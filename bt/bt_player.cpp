@@ -12,6 +12,7 @@
 #include "bt_player.h"
 
 #include "../editor/debugger/limbo_debugger.h"
+#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
@@ -130,7 +131,7 @@ void BTPlayer::_set_monitor_performance(bool p_monitor_performance) {
 					String(itos(get_instance_id())).md5_text().substr(0, 4));
 		}
 		if (!perf->has_custom_monitor(monitor_id)) {
-			perf->add_custom_monitor(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec));
+			PERFORMANCE_ADD_CUSTOM_MONITOR(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec));
 		}
 	} else if (monitor_id != StringName() && perf->has_custom_monitor(monitor_id)) {
 		perf->remove_custom_monitor(monitor_id);

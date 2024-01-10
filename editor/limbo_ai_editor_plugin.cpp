@@ -191,7 +191,11 @@ void LimboAIEditor::_new_bt() {
 void LimboAIEditor::_save_bt(String p_path) {
 	ERR_FAIL_COND_MSG(p_path.is_empty(), "Empty p_path");
 	ERR_FAIL_COND_MSG(task_tree->get_bt().is_null(), "Behavior Tree is null.");
+#ifdef LIMBOAI_MODULE
+	task_tree->get_bt()->set_path(p_path, true);
+#else // LIMBOAI_GDEXTENSION
 	task_tree->get_bt()->take_over_path(p_path);
+#endif // LIMBOAI_MODULE
 	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
 	_update_header();
 	_mark_as_dirty(false);
@@ -760,7 +764,7 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 					disk_changed_files.insert(res_path);
 				} else {
 					Ref<BehaviorTree> reloaded = RESOURCE_LOAD_NO_CACHE(res_path, "BehaviorTree");
-					res->copy_from(reloaded);
+					res->copy_other(reloaded);
 				}
 			}
 		}
@@ -849,7 +853,7 @@ void LimboAIEditor::_reload_modified() {
 		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
 		if (res.is_valid()) {
 			Ref<BehaviorTree> reloaded = RESOURCE_LOAD_NO_CACHE(res_path, "BehaviorTree");
-			res->copy_from(reloaded);
+			res->copy_other(reloaded);
 			if (idx_history >= 0 && history.get(idx_history) == res) {
 				edit_bt(res, true);
 			}

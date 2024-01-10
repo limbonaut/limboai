@@ -14,7 +14,7 @@
 
 #include "../bt_action.h"
 
-#include "../../limboai/blackboard/bb_param/bb_node.h"
+#include "../../../limboai/blackboard/bb_param/bb_node.h"
 
 class BTCallMethod : public BTAction {
 	GDCLASS(BTCallMethod, BTAction);

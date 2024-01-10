@@ -30,12 +30,21 @@
 
 // * This is a port of a WindowWrapper from the Godot Engine to use with godot-cpp.
 
-#ifdef LIMBOAI_GDEXTENSION
-
 #ifndef COMPAT_WINDOW_WRAPPER_H
 #define COMPAT_WINDOW_WRAPPER_H
 
+#ifdef LIMBOAI_MODULE
+#include "editor/window_wrapper.h"
+
+#define CompatWindowWrapper WindowWrapper
+#define CompatShortcutBin ShortcutBin
+#define CompatScreenSelect ScreenSelect
+
+#endif // ! LIMBOAI_MODULE
+
 // TODO: Need to compile this as module too!!!
+
+#ifdef LIMBOAI_GDEXTENSION
 
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/input_event.hpp>
@@ -133,6 +142,6 @@ public:
 	CompatScreenSelect();
 };
 
-#endif // ! COMPAT_WINDOW_WRAPPER_H
-
 #endif // ! LIMBOAI_GDEXTENSION
+
+#endif // ! COMPAT_WINDOW_WRAPPER_H

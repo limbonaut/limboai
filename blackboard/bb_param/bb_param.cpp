@@ -111,7 +111,6 @@ void BBParam::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_variable"), &BBParam::get_variable);
 	ClassDB::bind_method(D_METHOD("get_type"), &BBParam::get_type);
 	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
-	ClassDB::bind_method(D_METHOD("_to_string"), &BBParam::_to_string);
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value,Blackboard Var"), "set_value_source", "get_value_source");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");

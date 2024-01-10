@@ -11,6 +11,8 @@
 
 #include "bt_call_method.h"
 
+#include "../../../util/limbo_compat.h"
+
 //**** Setters / Getters
 
 void BTCallMethod::set_method(StringName p_method_name) {

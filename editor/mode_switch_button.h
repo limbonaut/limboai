@@ -12,6 +12,8 @@
 #ifndef MODE_SWITCH_BUTTON
 #define MODE_SWITCH_BUTTON
 
+#include "../util/limbo_compat.h"
+
 #ifdef LIMBOAI_MODULE
 #include "scene/gui/button.h"
 
@@ -27,8 +29,6 @@
 #include <godot_cpp/templates/vector.hpp>
 
 using namespace godot;
-
-#define SET_BUTTON_ICON(m_tex) set_button_icon(m_tex)
 
 #endif // LIMBOAI_GDEXTENSION
 
@@ -47,7 +47,7 @@ private:
 
 	_FORCE_INLINE_ void _set_mode_by_index(int p_index) {
 		current_mode_index = p_index;
-		SET_BUTTON_ICON(modes[current_mode_index].icon);
+		BUTTON_SET_ICON(this, modes[current_mode_index].icon);
 		if (!modes[current_mode_index].tooltip.is_empty()) {
 			set_tooltip_text(modes[current_mode_index].tooltip);
 		}

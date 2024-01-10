@@ -12,11 +12,12 @@
 #ifndef BTTASK_H
 #define BTTASK_H
 
-#ifdef LIMBOAI_MODULE
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_string_names.h"
-#include "modules/limboai/util/limbo_task_db.h"
+#include "../../blackboard/blackboard.h"
+#include "../../util/limbo_compat.h"
+#include "../../util/limbo_string_names.h"
+#include "../../util/limbo_task_db.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
 #include "core/io/resource.h"
@@ -31,21 +32,16 @@
 #include "core/variant/binder_common.h"
 #include "core/variant/dictionary.h"
 #include "scene/resources/texture.h"
-#endif // LIMBOAI_MODULE
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "blackboard/blackboard.h"
-#include "util/limbo_compat.h"
-#include "util/limbo_string_names.h"
-#include "util/limbo_task_db.h"
-
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/vector.hpp>
 
 using namespace godot;
-#endif // LIMBOAI_GDEXTENSION
+#endif // ! LIMBOAI_GDEXTENSION
 
 /**
  * Base class for BTTask.

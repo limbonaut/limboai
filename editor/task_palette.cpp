@@ -16,7 +16,7 @@
 #include "../util/limbo_task_db.h"
 #include "../util/limbo_utility.h"
 
-#ifdef LIMBO_MODULE
+#ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
 #include "core/error/error_macros.h"
 #include "editor/editor_help.h"
@@ -29,7 +29,6 @@
 #endif // LIMBO_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/core/error_macros.hpp"
 #include <godot_cpp/classes/button_group.hpp>
 #include <godot_cpp/classes/check_box.hpp>
 #include <godot_cpp/classes/config_file.hpp>
@@ -48,6 +47,7 @@
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/style_box.hpp>
+#include <godot_cpp/core/error_macros.hpp>
 
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION

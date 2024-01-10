@@ -12,6 +12,7 @@
 #include "limbo_debugger.h"
 
 #include "../../bt/tasks/bt_task.h"
+#include "../../util/limbo_compat.h"
 #include "behavior_tree_data.h"
 
 #ifdef LIMBOAI_MODULE
@@ -88,11 +89,13 @@ Error LimboDebugger::parse_message(void *p_user, const String &p_msg, const Arra
 	return OK;
 }
 
+#ifdef LIMBOAI_GDEXTENSION
 bool LimboDebugger::parse_message_gdext(const String &p_msg, const Array &p_args) {
 	bool r_captured;
 	LimboDebugger::parse_message(nullptr, p_msg, p_args, r_captured);
 	return r_captured;
 }
+#endif // LIMBOAI_MODULE
 
 void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
 	ERR_FAIL_COND(p_instance.is_null());

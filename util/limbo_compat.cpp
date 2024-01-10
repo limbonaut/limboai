@@ -13,13 +13,11 @@
 
 #ifdef LIMBOAI_MODULE
 
-void EDIT_SCRIPT(const String &p_path) {
-	Ref<Resource> res = ScriptEditor::get_singleton()->open_file(p_path);
-	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
-	EditorNode::get_singleton()->edit_resource(res);
-}
+#include "core/io/resource.h"
+#include "editor/editor_node.h"
+#include "editor/plugins/script_editor_plugin.h"
 
-#endif // LIMBOAI_MODULE
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 
@@ -51,10 +49,6 @@ String TTR(const String &p_text, const String &p_context) {
 }
 
 void EDIT_SCRIPT(const String &p_path) {
-	Ref<Script> res = RESOURCE_LOAD(p_path, "Script");
-	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
-	EditorInterface::get_singleton()->edit_script(res);
-	EditorInterface::get_singleton()->set_main_screen_editor("Script");
 }
 
 Variant _GLOBAL_DEF(const String &p_var, const Variant &p_default, bool p_restart_if_changed, bool p_ignore_value_in_docs, bool p_basic, bool p_internal) {
@@ -88,9 +82,13 @@ Variant _GLOBAL_DEF(const PropertyInfo &p_info, const Variant &p_default, bool p
 	return ret;
 }
 
+#endif // ! LIMBOAI_GDEXTENSION
+
+// **** Shared
+
 void SHOW_DOC(const String &p_topic) {
 #ifdef LIMBOAI_MODULE
-	ScriptEditor::get_singleton()->goto_help(m_doc);
+	ScriptEditor::get_singleton()->goto_help(p_topic);
 	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
 #else // LIMBOAI_GDEXTENSION
 	TypedArray<ScriptEditorBase> open_editors = EditorInterface::get_singleton()->get_script_editor()->get_open_script_editors();
@@ -98,7 +96,20 @@ void SHOW_DOC(const String &p_topic) {
 	ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(open_editors.front());
 	ERR_FAIL_NULL(seb);
 	seb->emit_signal("go_to_help", p_topic);
-#endif // ! LIMBOAI_MODULE
+#endif // ! LIMBOAI_GDEXTENSION
 }
 
-#endif // ! LIMBOAI_GDEXTENSION
+void EDIT_SCRIPT(const String &p_path) {
+#ifdef LIMBOAI_MODULE
+	Ref<Resource> res = ScriptEditor::get_singleton()->open_file(p_path);
+	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
+	EditorNode::get_singleton()->edit_resource(res);
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+	Ref<Script> res = RESOURCE_LOAD(p_path, "Script");
+	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
+	EditorInterface::get_singleton()->edit_script(res);
+	EditorInterface::get_singleton()->set_main_screen_editor("Script");
+#endif // LIMBOAI_GDEXTENSION
+}

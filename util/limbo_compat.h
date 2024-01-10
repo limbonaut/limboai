@@ -19,6 +19,7 @@
 
 #ifdef LIMBOAI_MODULE
 
+#include "core/object/ref_counted.h"
 #include "core/string/print_string.h"
 
 // * API abstractions: Module edition
@@ -27,7 +28,7 @@
 #define EDITOR_FILE_SYSTEM() (EditorFileSystem::get_singleton())
 #define EDITOR_SETTINGS() (EditorSettings::get_singleton())
 #define BASE_CONTROL() (EditorNode::get_singleton()->get_gui_base())
-#define MAIN_SCREEN_CONTROL(EditorNode::get_singleton()->get_main_screen_control())
+#define MAIN_SCREEN_CONTROL() (EditorNode::get_singleton()->get_main_screen_control())
 #define SCENE_TREE() (SceneTree::get_singleton())
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
 #define FS_DOCK_SELECT_FILE(m_path) FileSystemDock::get_singleton()->select_file(m_path)
@@ -36,11 +37,11 @@
 #define IS_CLASS(m_obj, m_class) (m_obj->is_class_ptr(m_class::get_class_ptr_static()))
 #define RAND_RANGE(m_from, m_to) (Math::random(m_from, m_to))
 #define RANDF() (Math::randf())
-#define VCALL(m_method) (GDVIRTUAL_CALL(method))
+#define VCALL(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
 #define VCALL_ARGS(method, ...) (call(LW_NAME(method), __VA_ARGS__))
 #define BUTTON_SET_ICON(m_btn, m_icon) m_btn->set_icon(m_icon)
 #define RESOURCE_LOAD(m_path, m_hint) ResourceLoader::load(m_path, m_hint)
-#define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::load(m_path, m_hint, ResourceLoader::CACHE_MODE_IGNORE)
+#define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::load(m_path, m_hint, ResourceFormatLoader::CACHE_MODE_IGNORE)
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::save(m_res, m_path, m_flags)
 #define RESOURCE_IS_CACHED(m_path) (ResourceCache::has(m_path))
 #define RESOURCE_GET_TYPE(m_path) (ResourceLoader::get_resource_type(m_path))
@@ -51,13 +52,14 @@
 #define SET_MAIN_SCREEN_EDITOR(m_name) (EditorNode::get_singleton()->select_editor_by_name(m_name))
 #define FILE_EXISTS(m_path) FileAccess::exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::create(DirAccess::ACCESS_RESOURCES)
+#define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable, Variant()))
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 
 // * Enum
 
 #define LW_KEY(key) (Key::key)
-#define LW_KEY_MASK(mask) (KeyModifierMask::##mask)
+#define LW_KEY_MASK(mask) (KeyModifierMask::mask)
 #define LW_MBTN(key) (MouseButton::key)
 
 #endif // ! LIMBOAI_MODULE
@@ -98,11 +100,11 @@ using namespace godot;
 #define RESOURCE_EXISTS(m_path, m_type_hint) (ResourceLoader::get_singleton()->exists(m_path, m_type_hint))
 #define GET_PROJECT_SETTINGS_DIR() EditorInterface::get_singleton()->get_editor_paths()->get_project_settings_dir()
 #define EDIT_RESOURCE(m_res) EditorInterface::get_singleton()->edit_resource(m_res)
-void EDIT_SCRIPT(const String &p_path); // TODO: need a module version!
 #define INSPECTOR_GET_EDITED_OBJECT() (EditorInterface::get_singleton()->get_inspector()->get_edited_object())
 #define SET_MAIN_SCREEN_EDITOR(m_name) (EditorInterface::get_singleton()->set_main_screen_editor(m_name))
 #define FILE_EXISTS(m_path) FileAccess::file_exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::open("res://")
+#define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable))
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret)            \
 	{                                                                \
@@ -151,5 +153,6 @@ inline void VARIANT_DELETE_IF_OBJECT(Variant m_variant) {
 #define IS_RESOURCE_FILE(m_path) (m_path.begins_with("res://") && m_path.find("::") == -1)
 
 void SHOW_DOC(const String &p_topic);
+void EDIT_SCRIPT(const String &p_path);
 
 #endif // LIMBO_COMPAT_H

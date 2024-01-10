@@ -11,6 +11,8 @@
 
 #include "bt_console_print.h"
 
+#include "../../../util/limbo_compat.h"
+
 String BTConsolePrint::_generate_name() {
 	String tx = text;
 	if (text.length() > 30) {

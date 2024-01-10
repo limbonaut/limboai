@@ -31,7 +31,7 @@ Ref<BehaviorTree> BehaviorTree::clone() const {
 	return copy;
 }
 
-void BehaviorTree::copy_from(const Ref<BehaviorTree> &p_other) {
+void BehaviorTree::copy_other(const Ref<BehaviorTree> &p_other) {
 	ERR_FAIL_COND(p_other.is_null());
 	description = p_other->get_description();
 	root_task = p_other->get_root_task();
@@ -50,7 +50,7 @@ void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_root_task", "p_value"), &BehaviorTree::set_root_task);
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
-	ClassDB::bind_method(D_METHOD("copy_from", "p_other"), &BehaviorTree::copy_from);
+	ClassDB::bind_method(D_METHOD("copy_other", "p_other"), &BehaviorTree::copy_other);
 	ClassDB::bind_method(D_METHOD("instantiate", "p_agent", "p_blackboard"), &BehaviorTree::instantiate);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");

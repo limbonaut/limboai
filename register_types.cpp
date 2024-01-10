@@ -279,5 +279,5 @@ GDExtensionBool GDE_EXPORT limboai_init(GDExtensionInterfaceGetProcAddress p_get
 
 	return init_obj.init();
 }
-#endif // ! LIMBOAI_GDEXTENSION
 }
+#endif // ! LIMBOAI_GDEXTENSION

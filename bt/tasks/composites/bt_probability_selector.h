@@ -12,6 +12,7 @@
 #ifndef BT_PROBABILITY_SELECTOR_H
 #define BT_PROBABILITY_SELECTOR_H
 
+#include "../../../util/limbo_compat.h"
 #include "../bt_comment.h"
 #include "../bt_composite.h"
 
