@@ -580,10 +580,11 @@ void TaskPalette::_notification(int p_what) {
 
 			BUTTON_SET_ICON(tool_filters, get_theme_icon(LW_NAME(AnimationFilter), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(tool_refresh, get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(select_all, get_theme_icon(LW_NAME(LimboSelectAll), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(deselect_all, get_theme_icon(LW_NAME(LimboDeselectAll), LW_NAME(EditorIcons)));
 
 			filter_edit->set_right_icon(get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons)));
+
+			BUTTON_SET_ICON(select_all, LimboUtility::get_singleton()->get_task_icon("LimboSelectAll"));
+			BUTTON_SET_ICON(deselect_all, LimboUtility::get_singleton()->get_task_icon("LimboDeselectAll"));
 
 			category_choice->queue_redraw();
 

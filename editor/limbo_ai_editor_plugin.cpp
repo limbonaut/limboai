@@ -981,12 +981,13 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.move_task_up_icon = get_theme_icon(LW_NAME(MoveUp), LW_NAME(EditorIcons));
 	theme_cache.open_debugger_icon = get_theme_icon(LW_NAME(Debug), LW_NAME(EditorIcons));
 	theme_cache.open_doc_icon = get_theme_icon(LW_NAME(Help), LW_NAME(EditorIcons));
-	theme_cache.percent_icon = get_theme_icon(LW_NAME(LimboPercent), LW_NAME(EditorIcons));
 	theme_cache.remove_task_icon = get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons));
 	theme_cache.rename_task_icon = get_theme_icon(LW_NAME(Rename), LW_NAME(EditorIcons));
 	theme_cache.change_type_icon = get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons));
-	theme_cache.extract_subtree_icon = get_theme_icon(LW_NAME(LimboExtractSubtree), LW_NAME(EditorIcons));
-	theme_cache.behavior_tree_icon = get_theme_icon(LW_NAME(BehaviorTree), LW_NAME(EditorIcons));
+
+	theme_cache.behavior_tree_icon = LimboUtility::get_singleton()->get_task_icon("BehaviorTree");
+	theme_cache.percent_icon = LimboUtility::get_singleton()->get_task_icon("LimboPercent");
+	theme_cache.extract_subtree_icon = LimboUtility::get_singleton()->get_task_icon("LimboExtractSubtree");
 }
 
 void LimboAIEditor::_notification(int p_what) {
@@ -1393,6 +1394,12 @@ bool LimboAIEditorPlugin::_handles(Object *p_object) const {
 	}
 	return false;
 }
+
+#ifdef LIMBOAI_GDEXTENSION
+Ref<Texture2D> LimboAIEditorPlugin::_get_plugin_icon() const {
+	return LimboUtility::get_singleton()->get_task_icon("LimboAI");
+}
+#endif // LIMBOAI_GDEXTENSION
 
 LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor = memnew(LimboAIEditor());

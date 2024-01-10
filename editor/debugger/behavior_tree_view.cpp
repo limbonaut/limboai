@@ -134,9 +134,9 @@ void BehaviorTreeView::clear() {
 }
 
 void BehaviorTreeView::_do_update_theme_item_cache() {
-	theme_cache.icon_running = get_theme_icon(LW_NAME(LimboExtraClock), LW_NAME(EditorIcons));
-	theme_cache.icon_success = get_theme_icon(LW_NAME(BTAlwaysSucceed), LW_NAME(EditorIcons));
-	theme_cache.icon_failure = get_theme_icon(LW_NAME(BTAlwaysFail), LW_NAME(EditorIcons));
+	theme_cache.icon_running = LimboUtility::get_singleton()->get_task_icon("LimboExtraClock");
+	theme_cache.icon_success = LimboUtility::get_singleton()->get_task_icon("BTAlwaysSucceed");
+	theme_cache.icon_failure = LimboUtility::get_singleton()->get_task_icon("BTAlwaysFail");
 
 	theme_cache.font_custom_name = get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts));
 

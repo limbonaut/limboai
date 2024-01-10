@@ -243,6 +243,7 @@ public:
 	virtual void _apply_changes() override;
 	virtual void _edit(Object *p_object) override;
 	virtual bool _handles(Object *p_object) const override;
+	virtual Ref<Texture2D> _get_plugin_icon() const override;
 #endif // LIMBOAI_GDEXTENSION
 
 	LimboAIEditorPlugin();

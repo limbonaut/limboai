@@ -32,6 +32,7 @@
 #include "godot_cpp/classes/input_event_key.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/core/error_macros.hpp>
 
@@ -106,7 +107,19 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	}
 	// Return generic resource icon as a fallback.
 	return theme->get_icon(SNAME("Resource"), SNAME("EditorIcons"));
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED && LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+	String path;
+	if (p_class_or_script_path.begins_with("res://")) {
+		path = p_class_or_script_path;
+	} else {
+		path = "res://addons/limboai/icons/" + p_class_or_script_path + ".svg";
+	}
+
+	Ref<Texture2D> icon = RESOURCE_LOAD(path, "Texture2D");
+	return icon;
+#endif // LIMBOAI_GDEXTENSION
 
 	// TODO: GDExtension needs the icons too.
 

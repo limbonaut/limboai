@@ -126,6 +126,7 @@ LimboStringNames::LimboStringNames() {
 	text_changed = SN("text_changed");
 	timeout = SN("timeout");
 	toggled = SN("toggled");
+	Tools = SN("Tools");
 	update_task = SN("update_task");
 	update_tree = SN("update_tree");
 	updated = SN("updated");

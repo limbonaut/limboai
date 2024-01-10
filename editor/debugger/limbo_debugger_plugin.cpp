@@ -16,6 +16,7 @@
 #include "../../bt/behavior_tree.h"
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
+#include "../../util/limbo_utility.h"
 #include "limbo_debugger.h"
 
 #ifdef LIMBOAI_MODULE
@@ -183,7 +184,7 @@ void LimboDebuggerTab::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			alert_icon->set_texture(get_theme_icon(LW_NAME(StatusWarning), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(resource_header, get_theme_icon(LW_NAME(BehaviorTree), LW_NAME(EditorIcons)));
+			BUTTON_SET_ICON(resource_header, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
 		} break;
 	}
 }
