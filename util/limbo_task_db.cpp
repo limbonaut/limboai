@@ -57,12 +57,11 @@ _FORCE_INLINE_ void _populate_from_user_dir(String p_path, HashMap<String, List<
 	}
 
 	Ref<DirAccess> dir = DIR_ACCESS_CREATE();
-
 	if (dir->change_dir(p_path) == OK) {
 		dir->list_dir_begin();
 		String fn = dir->get_next();
 		while (!fn.is_empty()) {
-			if (dir->current_is_dir() && fn != "..") {
+			if (dir->current_is_dir() && !fn.begins_with(".")) {
 				String full_path;
 				String category;
 				if (fn == ".") {
@@ -82,6 +81,9 @@ _FORCE_INLINE_ void _populate_from_user_dir(String p_path, HashMap<String, List<
 			fn = dir->get_next();
 		}
 		dir->list_dir_end();
+
+		_populate_scripted_tasks_from_dir(p_path, &p_categories->get(LimboTaskDB::get_misc_category()));
+
 	} else {
 		ERR_FAIL_MSG(vformat("Failed to list \"%s\" directory.", p_path));
 	}
