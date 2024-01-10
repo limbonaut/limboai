@@ -12,10 +12,10 @@
 #ifndef BB_PARAM_H
 #define BB_PARAM_H
 
-#ifdef LIMBOAI_MODULE
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_utility.h"
+#include "../../blackboard/blackboard.h"
+#include "../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/io/resource.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
@@ -23,9 +23,6 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "blackboard/blackboard.h"
-#include "util/limbo_utility.h"
-
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/type_info.hpp>

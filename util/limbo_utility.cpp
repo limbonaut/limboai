@@ -262,9 +262,13 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 			VARIANT_EVALUATE(Variant::OP_MODULE, left_value, right_value, ret);
 		} break;
 		case OPERATION_POWER: {
-			// TODO: Fix when godot-cpp https://github.com/godotengine/godot-cpp/issues/1348 is resolved.
-			// 	Variant::evaluate(Variant::OP_POWER, left_value, right_value, ret, valid);
+// TODO: Fix when godot-cpp https://github.com/godotengine/godot-cpp/issues/1348 is resolved.
+#ifdef LIMBOAI_MODULE
+			VARIANT_EVALUATE(Variant::OP_POWER, left_value, right_value, ret);
+#else // LIMBOAI_GDEXTENSION
 			ERR_PRINT("LimboUtility: Operation POWER is not available due to https://github.com/godotengine/godot-cpp/issues/1348");
+			ret = left_value;
+#endif // LIMBOAI_MODULE
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
 			VARIANT_EVALUATE(Variant::OP_SHIFT_LEFT, left_value, right_value, ret);
@@ -282,7 +286,7 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 			VARIANT_EVALUATE(Variant::OP_BIT_XOR, left_value, right_value, ret);
 		} break;
 	}
-	return Variant();
+	return ret;
 }
 
 Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_name, Key p_keycode) {

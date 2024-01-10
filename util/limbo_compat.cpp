@@ -13,9 +13,11 @@
 
 #ifdef LIMBOAI_MODULE
 
+#ifdef TOOLS_ENABLED
 #include "core/io/resource.h"
 #include "editor/editor_node.h"
 #include "editor/plugins/script_editor_plugin.h"
+#endif // ! TOOLS_ENABLED
 
 #endif // ! LIMBOAI_MODULE
 
@@ -46,9 +48,6 @@ String TTR(const String &p_text, const String &p_context) {
 	}
 
 	return p_text;
-}
-
-void EDIT_SCRIPT(const String &p_path) {
 }
 
 Variant _GLOBAL_DEF(const String &p_var, const Variant &p_default, bool p_restart_if_changed, bool p_ignore_value_in_docs, bool p_basic, bool p_internal) {
@@ -86,6 +85,8 @@ Variant _GLOBAL_DEF(const PropertyInfo &p_info, const Variant &p_default, bool p
 
 // **** Shared
 
+#ifdef TOOLS_ENABLED
+
 void SHOW_DOC(const String &p_topic) {
 #ifdef LIMBOAI_MODULE
 	ScriptEditor::get_singleton()->goto_help(p_topic);
@@ -113,3 +114,5 @@ void EDIT_SCRIPT(const String &p_path) {
 	EditorInterface::get_singleton()->set_main_screen_editor("Script");
 #endif // LIMBOAI_GDEXTENSION
 }
+
+#endif // ! TOOLS_ENABLED

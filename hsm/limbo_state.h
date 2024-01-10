@@ -71,6 +71,8 @@ protected:
 	void add_event_handler(const String &p_event, const Callable &p_handler);
 
 public:
+	static String EVENT_FINISHED() { return LW_NAME(EVENT_FINISHED); }
+
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 
 	Node *get_agent() const { return agent; }

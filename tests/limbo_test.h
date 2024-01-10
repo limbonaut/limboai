@@ -12,6 +12,8 @@
 #ifndef LIMBO_TEST_H
 #define LIMBO_TEST_H
 
+#define LIMBOAI_MODULE
+
 #include "core/object/ref_counted.h"
 #include "tests/test_macros.h"
 

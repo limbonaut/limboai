@@ -67,6 +67,6 @@ public:
 	void register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
 	void unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
 
-#endif // DEBUG_ENABLED
+#endif // ! DEBUG_ENABLED
 };
-#endif // LIMBO_DEBUGGER
+#endif // ! LIMBO_DEBUGGER

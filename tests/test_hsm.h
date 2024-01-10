@@ -136,7 +136,7 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK(beta_updates->num_callbacks == 2);
 		CHECK(beta_exits->num_callbacks == 1);
 
-		hsm->dispatch(LimboState::EVENT_FINISHED);
+		hsm->dispatch(LimboState::EVENT_FINISHED());
 		CHECK(alpha_entries->num_callbacks == 2);
 		CHECK(alpha_updates->num_callbacks == 3);
 		CHECK(alpha_exits->num_callbacks == 2); // * exited

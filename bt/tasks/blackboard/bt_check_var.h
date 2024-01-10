@@ -15,7 +15,7 @@
 #include "../bt_condition.h"
 
 #include "../../../blackboard/bb_param/bb_variant.h"
-#include "../../../limboai/util/limbo_utility.h"
+#include "../../../util/limbo_utility.h"
 
 class BTCheckVar : public BTCondition {
 	GDCLASS(BTCheckVar, BTCondition);

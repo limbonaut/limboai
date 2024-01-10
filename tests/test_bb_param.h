@@ -12,11 +12,11 @@
 #ifndef TEST_BB_PARAM_H
 #define TEST_BB_PARAM_H
 
+#include "limbo_test.h"
+
 #include "core/object/ref_counted.h"
 #include "core/string/node_path.h"
 #include "core/variant/variant.h"
-#include "limbo_test.h"
-
 #include "modules/limboai/blackboard/bb_param/bb_node.h"
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
 #include "modules/limboai/blackboard/blackboard.h"

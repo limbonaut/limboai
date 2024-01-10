@@ -64,11 +64,14 @@ void LimboDebugger::deinitialize() {
 }
 
 void LimboDebugger::_bind_methods() {
+#ifdef DEBUG_ENABLED
+
 #ifdef LIMBOAI_GDEXTENSION
 	ClassDB::bind_method(D_METHOD("parse_message_gdext"), &LimboDebugger::parse_message_gdext);
 #endif
 	ClassDB::bind_method(D_METHOD("_on_bt_updated", "p_status", "p_path"), &LimboDebugger::_on_bt_updated);
 	ClassDB::bind_method(D_METHOD("_on_state_updated", "p_delta", "p_path"), &LimboDebugger::_on_state_updated);
+#endif // ! DEBUG_ENABLED
 }
 
 #ifdef DEBUG_ENABLED

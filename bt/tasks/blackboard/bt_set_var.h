@@ -15,7 +15,7 @@
 #include "../bt_action.h"
 
 #include "../../../blackboard/bb_param/bb_variant.h"
-#include "../../../limboai/util/limbo_utility.h"
+#include "../../../util/limbo_utility.h"
 
 class BTSetVar : public BTAction {
 	GDCLASS(BTSetVar, BTAction);
