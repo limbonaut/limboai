@@ -15,6 +15,10 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: 4.2.1-stable
+      godot-cpp-version:
+        description: Ref in the godot-cpp repository.
+        type: string
+        default: 4.2
 
   pull_request:
     branches: [ master ]
@@ -28,6 +32,10 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: 4.2.1-stable
+      godot-cpp-version:
+        description: Ref in the godot-cpp repository.
+        type: string
+        default: 4.2
 
 jobs:
   unit-tests:
@@ -130,3 +138,10 @@ jobs:
       godot-treeish: ${{ inputs.godot-treeish }}
       limboai-treeish: ${{ github.sha }}
       test-build: true
+
+  gdextension:
+    name: 🔌 GDExtension test build
+    uses: ./.github/workflows/gdextension_linux.yml
+    with:
+      godot-cpp-version: 4.2
+      limboai-treeish: ${{ github.sha }}

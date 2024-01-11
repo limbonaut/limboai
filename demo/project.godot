@@ -16,6 +16,10 @@ run/main_scene="res://examples/waypoints/example_waypoints.tscn"
 config/features=PackedStringArray("4.2")
 config/icon="res://icon.png"
 
+[debug]
+
+gdscript/warnings/native_method_override=1
+
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true

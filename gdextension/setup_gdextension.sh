@@ -99,6 +99,15 @@ else
     highlight -- Skipping limboai.gdextension. File already exists!
 fi
 
+if [ ! -e "${PWD}/demo/addons/limboai/icons/" ]; then
+    pushd demo/addons/limboai/ > /dev/null
+    ln -s ../../../icons icons
+    popd > /dev/null
+    highlight -- Linked icons.
+else
+    highlight -- Skipping linking icons. File already exists!
+fi
+
 ${PYTHON} limboai/gdextension/update_icons.py --silent
 highlight -- Icon declarations updated.
 
