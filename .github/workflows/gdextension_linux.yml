@@ -74,7 +74,7 @@ jobs:
           ref: ${{ inputs.limboai-treeish }}
 
       # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
-      - uses: ./limboai/.github/actions/init-version
+      - uses: ./limboai/.github/actions/init-version-gdext
 
       # About sed see: https://github.com/godotengine/buildroot/issues/6
       - name: Set up buildroot x86_64
