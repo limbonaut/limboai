@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "../bt/behavior_tree.h"
 
 #ifdef LIMBOAI_MODULE
@@ -99,3 +101,5 @@ public:
 	TaskTree();
 	~TaskTree();
 };
+
+#endif // ! TOOLS_ENABLED

@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "action_banner.h"
 
 #include "../util/limbo_compat.h"
@@ -93,3 +95,5 @@ ActionBanner::ActionBanner() {
 	spacer->set_custom_minimum_size(Size2(0, 16));
 	hbox->add_child(spacer);
 }
+
+#endif // ! TOOLS_ENABLED

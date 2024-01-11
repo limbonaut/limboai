@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #ifndef EDITOR_PROPERTY_BB_PARAM_H
 #define EDITOR_PROPERTY_BB_PARAM_H
 
@@ -70,6 +72,8 @@ public:
 	virtual bool parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide = false) override;
 };
 
-#endif // LIMBOAI_MODULE
+#endif // ! LIMBOAI_MODULE
 
-#endif // EDITOR_PROPERTY_BB_PARAM_H
+#endif // ! EDITOR_PROPERTY_BB_PARAM_H
+
+#endif // ! TOOLS_ENABLED

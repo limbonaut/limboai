@@ -199,4 +199,4 @@ void LimboDebugger::_on_state_updated(float _delta, NodePath p_path) {
 	EngineDebugger::get_singleton()->send_message("limboai:bt_update", arr);
 }
 
-#endif // DEBUG_ENABLED
+#endif // ! DEBUG_ENABLED

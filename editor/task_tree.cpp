@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "task_tree.h"
 
 #include "../bt/tasks/bt_comment.h"
@@ -418,3 +420,5 @@ TaskTree::~TaskTree() {
 		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
 }
+
+#endif // ! TOOLS_ENABLED

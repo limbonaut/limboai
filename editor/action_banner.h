@@ -10,6 +10,8 @@
  */
 /* action_banner.h */
 
+#ifdef TOOLS_ENABLED
+
 #ifndef ACTION_BANNER_H
 #define ACTION_BANNER_H
 
@@ -56,3 +58,5 @@ public:
 };
 
 #endif // ! ACTION_BANNER
+
+#endif // ! TOOLS_ENABLED

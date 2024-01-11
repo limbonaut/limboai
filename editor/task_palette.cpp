@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "task_palette.h"
 
 #include "../util/limbo_compat.h"
@@ -750,3 +752,5 @@ TaskPalette::TaskPalette() {
 
 TaskPalette::~TaskPalette() {
 }
+
+#endif // ! TOOLS_ENABLED

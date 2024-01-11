@@ -8,6 +8,9 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
+
+#ifdef TOOLS_ENABLED
+
 #ifndef TASK_PALETTE_H
 #define TASK_PALETTE_H
 
@@ -189,4 +192,6 @@ public:
 	~TaskPalette();
 };
 
-#endif // TASK_PALETTE
+#endif // ! TASK_PALETTE_H
+
+#endif // ! TOOLS_ENABLED

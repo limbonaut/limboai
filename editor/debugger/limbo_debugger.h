@@ -69,4 +69,4 @@ public:
 
 #endif // ! DEBUG_ENABLED
 };
-#endif // ! LIMBO_DEBUGGER
+#endif // ! LIMBO_DEBUGGER_H

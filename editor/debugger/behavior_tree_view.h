@@ -69,6 +69,6 @@ public:
 	BehaviorTreeView();
 };
 
-#endif // BEHAVIOR_TREE_VIEW
+#endif // ! BEHAVIOR_TREE_VIEW_H
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

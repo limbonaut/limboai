@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "mode_switch_button.h"
 
 #include "../util/limbo_string_names.h"
@@ -82,3 +84,5 @@ void ModeSwitchButton::_bind_methods() {
 
 ModeSwitchButton::ModeSwitchButton() {
 }
+
+#endif // ! TOOLS_ENABLED

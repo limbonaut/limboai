@@ -1431,4 +1431,4 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 LimboAIEditorPlugin::~LimboAIEditorPlugin() {
 }
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

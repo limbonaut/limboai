@@ -9,10 +9,10 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #ifndef LIMBO_DEBUGGER_PLUGIN_H
 #define LIMBO_DEBUGGER_PLUGIN_H
-
-#ifdef TOOLS_ENABLED
 
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
@@ -129,6 +129,6 @@ public:
 	~LimboDebuggerPlugin();
 };
 
-#endif // ! TOOLS_ENABLED
-
 #endif // ! LIMBO_DEBUGGER_PLUGIN_H
+
+#endif // ! TOOLS_ENABLED

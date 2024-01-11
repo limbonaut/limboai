@@ -358,4 +358,4 @@ LimboDebuggerPlugin::~LimboDebuggerPlugin() {
 	singleton = nullptr;
 }
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

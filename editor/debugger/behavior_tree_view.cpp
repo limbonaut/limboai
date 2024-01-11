@@ -203,4 +203,4 @@ BehaviorTreeView::BehaviorTreeView() {
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 }
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

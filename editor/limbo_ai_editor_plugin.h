@@ -250,6 +250,6 @@ public:
 	~LimboAIEditorPlugin();
 };
 
-#endif // LIMBO_AI_EDITOR_PLUGIN_H
+#endif // ! LIMBO_AI_EDITOR_PLUGIN_H
 
 #endif // ! TOOLS_ENABLED
