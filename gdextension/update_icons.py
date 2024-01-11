@@ -1,13 +1,50 @@
 #!/usr/bin/python
+"""
+Usage: update_icons.py [--silent]
+Update icon declarations in limboai.gdextension file.
+
+Options:
+  -s, --silent      Don't print anything.
+  -h, --help        Print this message.
+
+Dependencies: python3.
+
+Use of this source code is governed by an MIT-style
+license that can be found in the LICENSE file or at
+https://opensource.org/licenses/MIT.
+"""
 
 import os
 import glob
+import sys
+import getopt
+
+
+def usage():
+    print(__doc__.strip())
+
 
 def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
 
 
 def main():
+    silent = False
+    try:
+        opts, args = getopt.getopt(sys.argv[1:],
+            "s", ["silent"])
+    except getopt.GetoptError as e:
+        print('%s: %s!\n' % (os.path.basename(__file__), e.msg,))
+        usage()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ('-h', '--help'):
+            usage()
+            sys.exit(0)
+        elif opt in ('-s','--silent'):
+            silent = True
+
     config_dir = get_script_dir()
     config_path = os.path.join(config_dir, "limboai.gdextension")
     content = ""
@@ -30,9 +67,9 @@ def main():
     f.write(content)
     f.close()
 
-    print(content)
-    print("--------------------------------------------------------------------------------------")
-    print("Done!")
+    if not silent:
+        print(content)
+        print("======= Icon declarations updated =======")
 
 
 if __name__ == "__main__":
