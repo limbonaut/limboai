@@ -88,21 +88,22 @@ fi
 #     exit 2
 # fi
 
-if [ ! -e "${PWD}/demo/addons/limboai/bin/limboai.gdextension" ]; then
-    mkdir -p demo/addons/limboai/bin/
-    # cp limboai/gdextension/limboai.gdextension demo/addons/limboai/bin/limboai.gdextension
-    pushd demo/addons/limboai/bin/ > /dev/null
-    ln -s ../../../../gdextension/limboai.gdextension limboai.gdextension
-    popd > /dev/null
+if [ ! -e "${PWD}/limboai/demo/addons/limboai/bin/limboai.gdextension" ]; then
+    ls -l
+    mkdir -p ./limboai/demo/addons/limboai/bin/
+    cd ./limboai/demo/addons/limboai/bin/
+    ln -s ../../../../gdextension/limboai.gdextension limboai.gdextension || ln -s ../../../../limboai/gdextension/limboai.gdextension limboai.gdextension
+    ls -l
+    cd -
     highlight -- Linked limboai.gdextension.
 else
     highlight -- Skipping limboai.gdextension. File already exists!
 fi
 
-if [ ! -e "${PWD}/demo/addons/limboai/icons/" ]; then
-    pushd demo/addons/limboai/ > /dev/null
-    ln -s ../../../icons icons
-    popd > /dev/null
+if [ ! -e "${PWD}/limboai/demo/addons/limboai/icons/" ]; then
+    cd ./limboai/demo/addons/limboai/
+    ln -s ../../../icons icons || ln -s ../../../limboai/icons icons
+    cd -
     highlight -- Linked icons.
 else
     highlight -- Skipping linking icons. File already exists!

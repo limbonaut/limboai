@@ -27,6 +27,7 @@ on:
       - "LICENSE"
       - "**/*.png"
       - "demo/*"
+      - "doc/*"
     inputs:
       godot-treeish:
         description: A tag, branch or commit hash in the Godot repository.
@@ -116,7 +117,7 @@ jobs:
           bin/${{ env.BIN }} --test --headless
 
   linux-test-build:
-    name: 🐧 Linux test build
+    name: 🐧 Linux
     uses: ./.github/workflows/linux.yml
     with:
       godot-treeish: ${{ inputs.godot-treeish }}
@@ -124,7 +125,7 @@ jobs:
       test-build: true
 
   windows-test-build:
-    name: 🪟 Windows test build
+    name: 🪟 Windows
     uses: ./.github/workflows/windows.yml
     with:
       godot-treeish: ${{ inputs.godot-treeish }}
@@ -132,7 +133,7 @@ jobs:
       test-build: true
 
   macos-test-build:
-    name: 🍎 macOS test build
+    name: 🍎 macOS
     uses: ./.github/workflows/macos.yml
     with:
       godot-treeish: ${{ inputs.godot-treeish }}
@@ -140,8 +141,9 @@ jobs:
       test-build: true
 
   gdextension:
-    name: 🔌 GDExtension test build
-    uses: ./.github/workflows/gdextension_linux.yml
+    name: 🔌 GDExtension
+    uses: ./.github/workflows/gdextension.yml
     with:
-      godot-cpp-version: 4.2
+      godot-cpp-treeish: 4.2
       limboai-treeish: ${{ github.sha }}
+      test-build: true
