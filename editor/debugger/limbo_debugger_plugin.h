@@ -16,7 +16,7 @@
 
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
-#include "../../gdextension/window_wrapper.h"
+#include "../../util/compat_window_wrapper.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"

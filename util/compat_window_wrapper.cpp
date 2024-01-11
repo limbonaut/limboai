@@ -1,5 +1,5 @@
 /**************************************************************************/
-/*  window_wrapper.cpp                                                    */
+/*  compat_window_wrapper.cpp                                                    */
 /**************************************************************************/
 /*                         This file is part of:                          */
 /*                             GODOT ENGINE                               */
@@ -28,7 +28,7 @@
 /* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */
 /**************************************************************************/
 
-#include "window_wrapper.h"
+#include "compat_window_wrapper.h"
 
 #ifdef LIMBOAI_GDEXTENSION
 
