@@ -64,6 +64,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: godotengine/godot-cpp
+          fetch-tags: true
           path: godot-cpp
           ref: ${{ inputs.godot-cpp-version }}
 
@@ -133,7 +134,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         env:
-          NAME: ${{env.NAME_PREFIX}}.gdextension
+          NAME: ${{env.NAME_PREFIX}}
         with:
           name: ${{ env.NAME }}
           path: out/*
