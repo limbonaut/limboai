@@ -49,9 +49,9 @@ void LimboHSM::set_active(bool p_active) {
 	set_process_input(p_active);
 
 	if (active) {
-		_enter();
+		_do_enter();
 	} else {
-		_exit();
+		_do_exit();
 	}
 }
 
@@ -60,43 +60,41 @@ void LimboHSM::_change_state(LimboState *p_state) {
 	ERR_FAIL_COND(p_state->get_parent() != this);
 
 	if (active_state) {
-		active_state->_exit();
+		active_state->_do_exit();
 	}
 
 	active_state = p_state;
-	active_state->_enter();
+	active_state->_do_enter();
 
 	emit_signal(LimboStringNames::get_singleton()->state_changed, active_state);
 }
 
-void LimboHSM::_enter() {
+void LimboHSM::_do_enter() {
 	ERR_FAIL_COND_MSG(get_child_count() == 0, "LimboHSM has no candidate for initial substate.");
 	ERR_FAIL_COND(active_state != nullptr);
+	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Initial state is not set.");
 
-	LimboState::_enter();
-
-	if (initial_state == nullptr) {
-		initial_state = Object::cast_to<LimboState>(get_child(0));
-	}
-
-	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Failed to acquire initial state.");
-
+	LimboState::_do_enter();
 	_change_state(initial_state);
 }
 
-void LimboHSM::_exit() {
+void LimboHSM::_do_exit() {
 	ERR_FAIL_COND(active_state == nullptr);
-	active_state->_exit();
+	active_state->_do_exit();
 	active_state = nullptr;
-	LimboState::_exit();
+	LimboState::_do_exit();
 }
 
-void LimboHSM::_update(double p_delta) {
+void LimboHSM::_do_update(double p_delta) {
 	if (active) {
 		ERR_FAIL_COND(active_state == nullptr);
-		LimboState::_update(p_delta);
-		active_state->_update(p_delta);
+		LimboState::_do_update(p_delta);
+		active_state->_do_update(p_delta);
 	}
+}
+
+void LimboHSM::update(double p_delta) {
+	_do_update(p_delta);
 }
 
 void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String &p_event) {
@@ -186,7 +184,7 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 	}
 
 	if (!event_consumed && p_event == LW_NAME(EVENT_FINISHED) && !(get_parent() && get_parent()->is_class("LimboState"))) {
-		_exit();
+		_do_exit();
 	}
 
 	return event_consumed;
@@ -198,6 +196,10 @@ void LimboHSM::initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope) 
 		blackboard->set_parent_scope(p_parent_scope);
 	}
 	_initialize(p_agent, nullptr);
+
+	if (initial_state == nullptr) {
+		initial_state = Object::cast_to<LimboState>(get_child(0));
+	}
 }
 
 void LimboHSM::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
@@ -227,10 +229,10 @@ void LimboHSM::_notification(int p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
 		} break;
 		case NOTIFICATION_PROCESS: {
-			_update(get_process_delta_time());
+			_do_update(get_process_delta_time());
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			_update(get_physics_process_delta_time());
+			_do_update(get_physics_process_delta_time());
 		} break;
 	}
 }

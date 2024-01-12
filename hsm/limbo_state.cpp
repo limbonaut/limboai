@@ -39,18 +39,13 @@ LimboState *LimboState::named(String p_name) {
 	return this;
 };
 
-void LimboState::_setup() {
-	VCALL(_setup);
-	emit_signal(LimboStringNames::get_singleton()->setup);
-};
-
-void LimboState::_enter() {
+void LimboState::_do_enter() {
 	active = true;
 	VCALL(_enter);
 	emit_signal(LimboStringNames::get_singleton()->entered);
 };
 
-void LimboState::_exit() {
+void LimboState::_do_exit() {
 	if (!active) {
 		return;
 	}
@@ -59,14 +54,13 @@ void LimboState::_exit() {
 	active = false;
 };
 
-void LimboState::_update(double p_delta) {
+void LimboState::_do_update(double p_delta) {
 	VCALL_ARGS(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 };
 
 void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
-
 	agent = p_agent;
 
 	if (!p_blackboard.is_null()) {
@@ -77,8 +71,14 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 		}
 	}
 
-	_setup();
-};
+	VCALL(_setup);
+	emit_signal(LimboStringNames::get_singleton()->setup);
+}
+
+void LimboState::_setup() {}
+void LimboState::_enter() {}
+void LimboState::_exit() {}
+void LimboState::_update(double p_delta) {}
 
 bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event.is_empty(), false);
