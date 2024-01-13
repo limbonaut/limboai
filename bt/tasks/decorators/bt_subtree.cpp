@@ -11,20 +11,12 @@
 
 #include "bt_subtree.h"
 
-#include "bt_new_scope.h"
-#include "modules/limboai/blackboard/blackboard.h"
-
-#include "core/config/engine.h"
-#include "core/error/error_macros.h"
-#include "core/typedefs.h"
-#include "core/variant/variant.h"
-
 void BTSubtree::set_subtree(const Ref<BehaviorTree> &p_value) {
 	subtree = p_value;
 	emit_changed();
 }
 
-String BTSubtree::_generate_name() const {
+String BTSubtree::_generate_name() {
 	String s;
 	if (subtree.is_null()) {
 		s = "(unassigned)";
@@ -51,7 +43,7 @@ BT::Status BTSubtree::_tick(double p_delta) {
 	return get_child(0)->execute(p_delta);
 }
 
-PackedStringArray BTSubtree::get_configuration_warnings() const {
+PackedStringArray BTSubtree::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings(); // ! BTDecorator skipped intentionally
 	if (subtree.is_null()) {
 		warnings.append("Subtree needs to be assigned.");

@@ -11,8 +11,9 @@
 
 #include "limbo_utility.h"
 
-#include "modules/limboai/bt/tasks/bt_task.h"
+#include "../bt/tasks/bt_task.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/script_language.h"
 #include "core/variant/variant.h"
@@ -21,6 +22,20 @@
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"
 #endif // TOOLS_ENABLED
+
+#endif // ! LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/classes/input_event_key.hpp"
+#include "godot_cpp/classes/project_settings.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/theme.hpp>
+#include <godot_cpp/core/error_macros.hpp>
+#endif // ! LIMBOAI_GDEXTENSION
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -53,7 +68,7 @@ String LimboUtility::get_status_name(int p_status) const {
 }
 
 Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const {
-#ifdef TOOLS_ENABLED
+#if defined(TOOLS_ENABLED) && defined(LIMBOAI_MODULE)
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
 	Ref<Theme> theme = EditorNode::get_singleton()->get_editor_theme();
@@ -91,7 +106,34 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 	}
 	// Return generic resource icon as a fallback.
 	return theme->get_icon(SNAME("Resource"), SNAME("EditorIcons"));
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED && LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+	String path;
+	if (p_class_or_script_path.begins_with("res://")) {
+		TypedArray<Dictionary> classes = ProjectSettings::get_singleton()->get_global_class_list();
+		for (int i = 0; i < classes.size(); i++) {
+			if (classes[i].get("path") == p_class_or_script_path) {
+				path = classes[i].get("icon");
+				break;
+			}
+		}
+		if (path.is_empty()) {
+			Ref<Script> sc = RESOURCE_LOAD(p_class_or_script_path, "Script");
+			if (sc.is_valid()) {
+				path = "res://addons/limboai/icons/" + sc->get_instance_base_type() + ".svg";
+			}
+		}
+	} else {
+		// Assuming global class.
+		path = "res://addons/limboai/icons/" + p_class_or_script_path + ".svg";
+	}
+
+	Ref<Texture2D> icon = RESOURCE_LOAD(path, "Texture2D");
+	return icon;
+#endif // LIMBOAI_GDEXTENSION
+
+	// TODO: GDExtension needs the icons too.
 
 	// * Class icons are not available at runtime as they are part of the editor theme.
 	return nullptr;
@@ -124,29 +166,32 @@ String LimboUtility::get_check_operator_string(CheckType p_check_type) const {
 }
 
 bool LimboUtility::perform_check(CheckType p_check_type, const Variant &left_value, const Variant &right_value) {
+	Variant ret;
 	switch (p_check_type) {
 		case LimboUtility::CheckType::CHECK_EQUAL: {
-			return Variant::evaluate(Variant::OP_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN: {
-			return Variant::evaluate(Variant::OP_LESS, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_LESS, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_LESS_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_LESS_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_LESS_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN: {
-			return Variant::evaluate(Variant::OP_GREATER, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_GREATER, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_GREATER_THAN_OR_EQUAL: {
-			return Variant::evaluate(Variant::OP_GREATER_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_GREATER_EQUAL, left_value, right_value, ret);
 		} break;
 		case LimboUtility::CheckType::CHECK_NOT_EQUAL: {
-			return Variant::evaluate(Variant::OP_NOT_EQUAL, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_NOT_EQUAL, left_value, right_value, ret);
 		} break;
 		default: {
 			return false;
 		} break;
 	}
+
+	return ret;
 }
 
 String LimboUtility::get_operation_string(Operation p_operation) const {
@@ -192,45 +237,81 @@ String LimboUtility::get_operation_string(Operation p_operation) const {
 }
 
 Variant LimboUtility::perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value) {
+	Variant ret;
 	switch (p_operation) {
 		case OPERATION_NONE: {
-			return right_value;
+			ret = right_value;
 		} break;
 		case OPERATION_ADDITION: {
-			return Variant::evaluate(Variant::OP_ADD, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_ADD, left_value, right_value, ret);
 		} break;
 		case OPERATION_SUBTRACTION: {
-			return Variant::evaluate(Variant::OP_SUBTRACT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SUBTRACT, left_value, right_value, ret);
 		} break;
 		case OPERATION_MULTIPLICATION: {
-			return Variant::evaluate(Variant::OP_MULTIPLY, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_MULTIPLY, left_value, right_value, ret);
 		} break;
 		case OPERATION_DIVISION: {
-			return Variant::evaluate(Variant::OP_DIVIDE, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_DIVIDE, left_value, right_value, ret);
 		} break;
 		case OPERATION_MODULO: {
-			return Variant::evaluate(Variant::OP_MODULE, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_MODULE, left_value, right_value, ret);
 		} break;
 		case OPERATION_POWER: {
-			return Variant::evaluate(Variant::OP_POWER, left_value, right_value);
+// TODO: Fix when godot-cpp https://github.com/godotengine/godot-cpp/issues/1348 is resolved.
+#ifdef LIMBOAI_MODULE
+			VARIANT_EVALUATE(Variant::OP_POWER, left_value, right_value, ret);
+#elif LIMBOAI_GDEXTENSION
+			ERR_PRINT("LimboUtility: Operation POWER is not available due to https://github.com/godotengine/godot-cpp/issues/1348");
+			ret = left_value;
+#endif
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
-			return Variant::evaluate(Variant::OP_SHIFT_LEFT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SHIFT_LEFT, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_SHIFT_RIGHT: {
-			return Variant::evaluate(Variant::OP_SHIFT_RIGHT, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_SHIFT_RIGHT, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_AND: {
-			return Variant::evaluate(Variant::OP_BIT_AND, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_AND, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_OR: {
-			return Variant::evaluate(Variant::OP_BIT_OR, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_OR, left_value, right_value, ret);
 		} break;
 		case OPERATION_BIT_XOR: {
-			return Variant::evaluate(Variant::OP_BIT_XOR, left_value, right_value);
+			VARIANT_EVALUATE(Variant::OP_BIT_XOR, left_value, right_value, ret);
 		} break;
 	}
-	return Variant();
+	return ret;
+}
+
+Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_name, Key p_keycode) {
+	Ref<Shortcut> sc = memnew(Shortcut);
+	sc->set_name(p_name);
+
+	Array events;
+	Ref<InputEventKey> ev = memnew(InputEventKey);
+	ev->set_keycode(p_keycode);
+	events.append(ev);
+	sc->set_events(events);
+
+	shortcuts[p_path] = sc;
+
+	return sc;
+}
+
+bool LimboUtility::is_shortcut(const String &p_path, const Ref<InputEvent> &p_event) const {
+	HashMap<String, Ref<Shortcut>>::ConstIterator E = shortcuts.find(p_path);
+	ERR_FAIL_COND_V_MSG(!E, false, vformat("LimboUtility: Shortcut not found: %s.", p_path));
+	return E->value->matches_event(p_event);
+}
+
+Ref<Shortcut> LimboUtility::get_shortcut(const String &p_path) const {
+	HashMap<String, Ref<Shortcut>>::ConstIterator SC = shortcuts.find(p_path);
+	if (SC) {
+		return SC->value;
+	}
+	return nullptr;
 }
 
 void LimboUtility::_bind_methods() {

@@ -13,11 +13,13 @@
 
 #include "limbo_debugger_plugin.h"
 
+#include "../../bt/behavior_tree.h"
+#include "../../editor/debugger/behavior_tree_data.h"
+#include "../../editor/debugger/behavior_tree_view.h"
+#include "../../util/limbo_utility.h"
 #include "limbo_debugger.h"
-#include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/editor/debugger/behavior_tree_data.h"
-#include "modules/limboai/editor/debugger/behavior_tree_view.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/math/math_defs.h"
@@ -38,8 +40,26 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/file_system_dock.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/tab_container.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 //**** LimboDebuggerTab
+
+void LimboDebuggerTab::_reset_controls() {
+	bt_player_list->clear();
+	bt_view->clear();
+	alert_box->hide();
+	info_message->set_text(TTR("Run project to start debugging."));
+	info_message->show();
+	resource_header->set_disabled(true);
+	resource_header->set_text(TTR("Inactive"));
+}
 
 void LimboDebuggerTab::start_session() {
 	bt_player_list->clear();
@@ -51,13 +71,7 @@ void LimboDebuggerTab::start_session() {
 }
 
 void LimboDebuggerTab::stop_session() {
-	bt_player_list->clear();
-	bt_view->clear();
-	alert_box->hide();
-	info_message->set_text(TTR("Run project to start debugging."));
-	info_message->show();
-	resource_header->set_disabled(true);
-	resource_header->set_text(TTR("Inactive"));
+	_reset_controls();
 	session->send_message("limboai:stop_session", Array());
 }
 
@@ -92,7 +106,7 @@ void LimboDebuggerTab::_update_bt_player_list(const List<String> &p_node_paths, 
 	// Remember selected item.
 	String selected_player = "";
 	if (bt_player_list->is_anything_selected()) {
-		selected_player = bt_player_list->get_item_text(bt_player_list->get_selected_items().get(0));
+		selected_player = bt_player_list->get_item_text(bt_player_list->get_selected_items()[0]);
 	}
 
 	bt_player_list->clear();
@@ -151,23 +165,47 @@ void LimboDebuggerTab::_resource_header_pressed() {
 	if (bt_path.is_empty()) {
 		return;
 	}
-	FileSystemDock::get_singleton()->select_file(bt_path);
-	Ref<BehaviorTree> bt = ResourceLoader::load(bt_path, "BehaviorTree");
+	FS_DOCK_SELECT_FILE(bt_path);
+	Ref<BehaviorTree> bt = RESOURCE_LOAD(bt_path, "BehaviorTree");
 	ERR_FAIL_COND_MSG(!bt.is_valid(), "Failed to load BehaviorTree. Wrong resource path?");
 	EditorInterface::get_singleton()->edit_resource(bt);
 }
 
+void LimboDebuggerTab::_bind_methods() {
+}
+
 void LimboDebuggerTab::_notification(int p_what) {
-	if (p_what == NOTIFICATION_THEME_CHANGED) {
-		alert_icon->set_texture(get_editor_theme_icon(SNAME("StatusWarning")));
-		resource_header->set_icon(get_editor_theme_icon(SNAME("BehaviorTree")));
+	switch (p_what) {
+		case NOTIFICATION_READY: {
+			resource_header->connect(LW_NAME(pressed), callable_mp(this, &LimboDebuggerTab::_resource_header_pressed));
+			filter_players->connect(LW_NAME(text_changed), callable_mp(this, &LimboDebuggerTab::_filter_changed));
+			bt_player_list->connect(LW_NAME(item_selected), callable_mp(this, &LimboDebuggerTab::_bt_selected));
+		} break;
+		case NOTIFICATION_THEME_CHANGED: {
+			alert_icon->set_texture(get_theme_icon(LW_NAME(StatusWarning), LW_NAME(EditorIcons)));
+			BUTTON_SET_ICON(resource_header, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
+		} break;
 	}
 }
 
-LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowWrapper *p_wrapper) {
+void LimboDebuggerTab::setup(Ref<EditorDebuggerSession> p_session, CompatWindowWrapper *p_wrapper) {
 	session = p_session;
 	window_wrapper = p_wrapper;
 
+	if (p_wrapper->is_window_available()) {
+		make_floating = memnew(CompatScreenSelect);
+		make_floating->set_flat(true);
+		make_floating->set_h_size_flags(Control::SIZE_EXPAND | Control::SIZE_SHRINK_END);
+		make_floating->set_tooltip_text(TTR("Make the LimboAI Debugger floating."));
+		make_floating->connect(LW_NAME(request_open_in_screen), callable_mp(window_wrapper, &CompatWindowWrapper::enable_window_on_screen).bind(true));
+		toolbar->add_child(make_floating);
+		p_wrapper->connect(LW_NAME(window_visibility_changed), callable_mp(this, &LimboDebuggerTab::_window_visibility_changed));
+	}
+
+	_reset_controls();
+}
+
+LimboDebuggerTab::LimboDebuggerTab() {
 	root_vb = memnew(VBoxContainer);
 	add_child(root_vb);
 
@@ -182,7 +220,6 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowW
 	resource_header->set_text(TTR("Inactive"));
 	resource_header->set_tooltip_text(TTR("Debugged BehaviorTree resource.\nClick to open."));
 	resource_header->set_disabled(true);
-	resource_header->connect("pressed", callable_mp(this, &LimboDebuggerTab::_resource_header_pressed));
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(Control::SIZE_EXPAND_FILL);
@@ -192,26 +229,14 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowW
 	VBoxContainer *list_box = memnew(VBoxContainer);
 	hsc->add_child(list_box);
 
-	if (p_wrapper->is_window_available()) {
-		make_floating = memnew(ScreenSelect);
-		make_floating->set_flat(true);
-		make_floating->set_h_size_flags(Control::SIZE_EXPAND | Control::SIZE_SHRINK_END);
-		make_floating->set_tooltip_text(TTR("Make the LimboAI Debugger floating."));
-		make_floating->connect(SNAME("request_open_in_screen"), callable_mp(window_wrapper, &WindowWrapper::enable_window_on_screen).bind(true));
-		toolbar->add_child(make_floating);
-		p_wrapper->connect(SNAME("window_visibility_changed"), callable_mp(this, &LimboDebuggerTab::_window_visibility_changed));
-	}
-
 	filter_players = memnew(LineEdit);
 	filter_players->set_placeholder(TTR("Filter Players"));
-	filter_players->connect(SNAME("text_changed"), callable_mp(this, &LimboDebuggerTab::_filter_changed));
 	list_box->add_child(filter_players);
 
 	bt_player_list = memnew(ItemList);
 	bt_player_list->set_custom_minimum_size(Size2(240.0 * EDSCALE, 0.0));
 	bt_player_list->set_h_size_flags(SIZE_FILL);
 	bt_player_list->set_v_size_flags(SIZE_EXPAND_FILL);
-	bt_player_list->connect(SNAME("item_selected"), callable_mp(this, &LimboDebuggerTab::_bt_selected));
 	list_box->add_child(bt_player_list);
 
 	view_box = memnew(VBoxContainer);
@@ -242,8 +267,6 @@ LimboDebuggerTab::LimboDebuggerTab(Ref<EditorDebuggerSession> p_session, WindowW
 	info_message->set_anchors_and_offsets_preset(PRESET_FULL_RECT, PRESET_MODE_KEEP_SIZE, 8 * EDSCALE);
 
 	bt_view->add_child(info_message);
-
-	stop_session();
 }
 
 //**** LimboDebuggerPlugin
@@ -253,7 +276,11 @@ LimboDebuggerPlugin *LimboDebuggerPlugin::singleton = nullptr;
 void LimboDebuggerPlugin::_window_visibility_changed(bool p_visible) {
 }
 
+#ifdef LIMBOAI_MODULE
 void LimboDebuggerPlugin::setup_session(int p_idx) {
+#elif LIMBOAI_GDEXTENSION
+void LimboDebuggerPlugin::_setup_session(int32_t p_idx) {
+#endif
 	Ref<EditorDebuggerSession> session = get_session(p_idx);
 
 	if (tab != nullptr) {
@@ -261,31 +288,36 @@ void LimboDebuggerPlugin::setup_session(int p_idx) {
 		window_wrapper->queue_free();
 	}
 
-	window_wrapper = memnew(WindowWrapper);
+	window_wrapper = memnew(CompatWindowWrapper);
 	window_wrapper->set_window_title(vformat(TTR("%s - Godot Engine"), TTR("LimboAI Debugger")));
 	window_wrapper->set_margins_enabled(true);
-	window_wrapper->set_name("LimboAI");
 
-	tab = memnew(LimboDebuggerTab(session, window_wrapper));
+	tab = memnew(LimboDebuggerTab());
+	tab->setup(session, window_wrapper);
 	tab->set_name("LimboAI");
 	window_wrapper->set_wrapped_control(tab);
+	window_wrapper->set_name("LimboAI");
 
 	window_wrapper->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	window_wrapper->connect(SNAME("window_visibility_changed"), callable_mp(this, &LimboDebuggerPlugin::_window_visibility_changed));
+	window_wrapper->connect(LW_NAME(window_visibility_changed), callable_mp(this, &LimboDebuggerPlugin::_window_visibility_changed));
 
-	session->connect(SNAME("started"), callable_mp(tab, &LimboDebuggerTab::start_session));
-	session->connect(SNAME("stopped"), callable_mp(tab, &LimboDebuggerTab::stop_session));
+	session->connect(LW_NAME(started), callable_mp(tab, &LimboDebuggerTab::start_session));
+	session->connect(LW_NAME(stopped), callable_mp(tab, &LimboDebuggerTab::stop_session));
 	session->add_session_tab(window_wrapper);
 }
 
+#ifdef LIMBOAI_MODULE
 bool LimboDebuggerPlugin::capture(const String &p_message, const Array &p_data, int p_session) {
+#elif LIMBOAI_GDEXTENSION
+bool LimboDebuggerPlugin::_capture(const String &p_message, const Array &p_data, int32_t p_session) {
+#endif
 	bool captured = true;
 	if (p_message == "limboai:active_bt_players") {
 		tab->update_active_bt_players(p_data);
 	} else if (p_message == "limboai:bt_update") {
 		BehaviorTreeData data = BehaviorTreeData();
 		data.deserialize(p_data);
-		if (data.bt_player_path == tab->get_selected_bt_player()) {
+		if (data.bt_player_path == NodePath(tab->get_selected_bt_player())) {
 			tab->update_behavior_tree(data);
 		}
 	} else {
@@ -294,11 +326,15 @@ bool LimboDebuggerPlugin::capture(const String &p_message, const Array &p_data, 
 	return captured;
 }
 
+#ifdef LIMBOAI_MODULE
 bool LimboDebuggerPlugin::has_capture(const String &p_capture) const {
+#elif LIMBOAI_GDEXTENSION
+bool LimboDebuggerPlugin::_has_capture(const String &p_capture) const {
+#endif
 	return p_capture == "limboai";
 }
 
-WindowWrapper *LimboDebuggerPlugin::get_session_tab() const {
+CompatWindowWrapper *LimboDebuggerPlugin::get_session_tab() const {
 	return window_wrapper;
 }
 
@@ -306,6 +342,10 @@ int LimboDebuggerPlugin::get_session_tab_index() const {
 	TabContainer *c = Object::cast_to<TabContainer>(window_wrapper->get_parent());
 	ERR_FAIL_COND_V(c == nullptr, -1);
 	return c->get_tab_idx_from_control(window_wrapper);
+}
+
+void LimboDebuggerPlugin::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_window_visibility_changed"), &LimboDebuggerPlugin::_window_visibility_changed);
 }
 
 LimboDebuggerPlugin::LimboDebuggerPlugin() {
@@ -317,4 +357,4 @@ LimboDebuggerPlugin::~LimboDebuggerPlugin() {
 	singleton = nullptr;
 }
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

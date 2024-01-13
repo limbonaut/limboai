@@ -11,12 +11,7 @@
 
 #include "bt_wait.h"
 
-#include "core/math/math_funcs.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/variant/variant.h"
-
-String BTWait::_generate_name() const {
+String BTWait::_generate_name() {
 	return vformat("Wait %s sec", Math::snapped(duration, 0.001));
 }
 

@@ -9,11 +9,16 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "task_palette.h"
 
-#include "modules/limboai/util/limbo_task_db.h"
-#include "modules/limboai/util/limbo_utility.h"
+#include "../util/limbo_compat.h"
+#include "../util/limbo_string_names.h"
+#include "../util/limbo_task_db.h"
+#include "../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
 #include "core/error/error_macros.h"
 #include "editor/editor_help.h"
@@ -22,10 +27,38 @@
 #include "editor/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "scene/gui/check_box.h"
+#endif // LIMBO_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/button_group.hpp>
+#include <godot_cpp/classes/check_box.hpp>
+#include <godot_cpp/classes/config_file.hpp>
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/editor_paths.hpp>
+#include <godot_cpp/classes/font.hpp>
+#include <godot_cpp/classes/global_constants.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/h_flow_container.hpp>
+#include <godot_cpp/classes/input_event_mouse_button.hpp>
+#include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
+#include <godot_cpp/classes/resource_loader.hpp>
+#include <godot_cpp/classes/script_editor.hpp>
+#include <godot_cpp/classes/script_editor_base.hpp>
+#include <godot_cpp/classes/style_box.hpp>
+#include <godot_cpp/core/error_macros.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 //**** TaskButton
 
-Control *TaskButton::make_custom_tooltip(const String &p_text) const {
+void TaskButton::_bind_methods() {
+}
+
+Control *TaskButton::_do_make_tooltip(const String &p_text) const {
+#ifdef LIMBOAI_MODULE
 	EditorHelpBit *help_bit = memnew(EditorHelpBit);
 	help_bit->get_rich_text()->set_custom_minimum_size(Size2(360 * EDSCALE, 1));
 
@@ -39,6 +72,13 @@ Control *TaskButton::make_custom_tooltip(const String &p_text) const {
 	help_bit->set_text(help_text);
 
 	return help_bit;
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+	// TODO: When we figure out how to retrieve documentation in GDEXTENSION, should add a tooltip control here.
+#endif // LIMBOAI_GDEXTENSION
+
+	return nullptr;
 }
 
 TaskButton::TaskButton() {
@@ -50,7 +90,7 @@ TaskButton::TaskButton() {
 //**** TaskPaletteSection
 
 void TaskPaletteSection::_on_task_button_pressed(const String &p_task) {
-	emit_signal(SNAME("task_button_pressed"), p_task);
+	emit_signal(LW_NAME(task_button_pressed), p_task);
 }
 
 void TaskPaletteSection::_on_task_button_gui_input(const Ref<InputEvent> &p_event, const String &p_task) {
@@ -59,8 +99,8 @@ void TaskPaletteSection::_on_task_button_gui_input(const Ref<InputEvent> &p_even
 	}
 
 	Ref<InputEventMouseButton> mb = p_event;
-	if (mb.is_valid() && mb->get_button_index() == MouseButton::RIGHT) {
-		emit_signal(SNAME("task_button_rmb"), p_task);
+	if (mb.is_valid() && mb->get_button_index() == LW_MBTN(RIGHT)) {
+		emit_signal(LW_NAME(task_button_rmb), p_task);
 	}
 }
 
@@ -88,34 +128,38 @@ void TaskPaletteSection::set_filter(String p_filter_text) {
 void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_tooltip, Variant p_meta) {
 	TaskButton *btn = memnew(TaskButton);
 	btn->set_text(p_name);
-	btn->set_icon(icon);
+	BUTTON_SET_ICON(btn, icon);
 	btn->set_tooltip_text(p_tooltip);
-	btn->add_theme_constant_override(SNAME("icon_max_width"), 16 * EDSCALE); // Force user icons to  be of the proper size.
-	btn->connect(SNAME("pressed"), callable_mp(this, &TaskPaletteSection::_on_task_button_pressed).bind(p_meta));
-	btn->connect(SNAME("gui_input"), callable_mp(this, &TaskPaletteSection::_on_task_button_gui_input).bind(p_meta));
+	btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to  be of the proper size.
+	btn->connect(LW_NAME(pressed), callable_mp(this, &TaskPaletteSection::_on_task_button_pressed).bind(p_meta));
+	btn->connect(LW_NAME(gui_input), callable_mp(this, &TaskPaletteSection::_on_task_button_gui_input).bind(p_meta));
 	tasks_container->add_child(btn);
 }
 
 void TaskPaletteSection::set_collapsed(bool p_collapsed) {
 	tasks_container->set_visible(!p_collapsed);
-	section_header->set_icon(p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon);
+	BUTTON_SET_ICON(section_header, (p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
 }
 
 bool TaskPaletteSection::is_collapsed() const {
 	return !tasks_container->is_visible();
 }
 
-void TaskPaletteSection::_update_theme_item_cache() {
-	VBoxContainer::_update_theme_item_cache();
-
-	theme_cache.arrow_down_icon = get_theme_icon(SNAME("GuiTreeArrowDown"), SNAME("EditorIcons"));
-	theme_cache.arrow_right_icon = get_theme_icon(SNAME("GuiTreeArrowRight"), SNAME("EditorIcons"));
+void TaskPaletteSection::_do_update_theme_item_cache() {
+	theme_cache.arrow_down_icon = get_theme_icon(LW_NAME(GuiTreeArrowDown), LW_NAME(EditorIcons));
+	theme_cache.arrow_right_icon = get_theme_icon(LW_NAME(GuiTreeArrowRight), LW_NAME(EditorIcons));
 }
 
 void TaskPaletteSection::_notification(int p_what) {
-	if (p_what == NOTIFICATION_THEME_CHANGED) {
-		section_header->set_icon(is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon);
-		section_header->add_theme_font_override(SNAME("font"), get_theme_font(SNAME("bold"), SNAME("EditorFonts")));
+	switch (p_what) {
+		case NOTIFICATION_READY: {
+			section_header->connect(LW_NAME(pressed), callable_mp(this, &TaskPaletteSection::_on_header_pressed));
+		} break;
+		case NOTIFICATION_THEME_CHANGED: {
+			_do_update_theme_item_cache();
+			BUTTON_SET_ICON(section_header, (is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
+			section_header->add_theme_font_override(LW_NAME(font), get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts)));
+		} break;
 	}
 }
 
@@ -124,12 +168,10 @@ void TaskPaletteSection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_button_rmb"));
 }
 
-TaskPaletteSection::TaskPaletteSection(String p_category_name) {
+TaskPaletteSection::TaskPaletteSection() {
 	section_header = memnew(Button);
 	add_child(section_header);
-	section_header->set_text(p_category_name);
 	section_header->set_focus_mode(FOCUS_NONE);
-	section_header->connect("pressed", callable_mp(this, &TaskPaletteSection::_on_header_pressed));
 
 	tasks_container = memnew(HFlowContainer);
 	add_child(tasks_container);
@@ -148,38 +190,36 @@ void TaskPalette::_menu_action_selected(int p_id) {
 		case MENU_OPEN_DOC: {
 			String help_class;
 			if (context_task.begins_with("res://")) {
-				Ref<Script> s = ResourceLoader::load(context_task, "Script");
-				help_class = s->get_language()->get_global_class_name(context_task);
-			}
-			if (help_class.is_empty()) {
+				help_class = "\"" + context_task.get_basename().to_pascal_case() + "\"";
+			} else {
 				// Assuming context task is core class.
 				help_class = context_task;
 			}
-			ScriptEditor::get_singleton()->goto_help("class_name:" + help_class);
-			EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+			SHOW_DOC("class_name:" + help_class);
 		} break;
 		case MENU_EDIT_SCRIPT: {
 			ERR_FAIL_COND(!context_task.begins_with("res://"));
-			Ref<Resource> res = ScriptEditor::get_singleton()->open_file(context_task);
-			ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + context_task);
-			EditorNode::get_singleton()->edit_resource(res);
+			EDIT_SCRIPT(context_task);
 		} break;
 		case MENU_FAVORITE: {
 			PackedStringArray favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
 			if (favorite_tasks.has(context_task)) {
-				favorite_tasks.erase(context_task);
+				int idx = favorite_tasks.find(context_task);
+				if (idx >= 0) {
+					favorite_tasks.remove_at(idx);
+				}
 			} else {
 				favorite_tasks.append(context_task);
 			}
 			ProjectSettings::get_singleton()->set_setting("limbo_ai/behavior_tree/favorite_tasks", favorite_tasks);
 			ProjectSettings::get_singleton()->save();
-			emit_signal(SNAME("favorite_tasks_changed"));
+			emit_signal(LW_NAME(favorite_tasks_changed));
 		} break;
 	}
 }
 
 void TaskPalette::_on_task_button_pressed(const String &p_task) {
-	emit_signal(SNAME("task_selected"), p_task);
+	emit_signal(LW_NAME(task_selected), p_task);
 }
 
 void TaskPalette::_on_task_button_rmb(const String &p_task) {
@@ -212,7 +252,7 @@ void TaskPalette::_on_task_button_rmb(const String &p_task) {
 void TaskPalette::_apply_filter(const String &p_text) {
 	for (int i = 0; i < sections->get_child_count(); i++) {
 		TaskPaletteSection *sec = Object::cast_to<TaskPaletteSection>(sections->get_child(i));
-		ERR_FAIL_COND(sec == nullptr);
+		ERR_FAIL_NULL(sec);
 		sec->set_filter(p_text);
 	}
 }
@@ -254,7 +294,7 @@ void TaskPalette::_update_filter_popup() {
 		category_item->set_pressed_no_signal(LOGICAL_XOR(
 				filter_settings.excluded_categories.has(cat),
 				filter_settings.category_filter == FilterSettings::CategoryFilter::CATEGORY_INCLUDE));
-		category_item->connect(SNAME("toggled"), callable_mp(this, &TaskPalette::_category_item_toggled).bind(cat));
+		category_item->connect(LW_NAME(toggled), callable_mp(this, &TaskPalette::_category_item_toggled).bind(cat));
 		category_list->add_child(category_item);
 	}
 
@@ -272,7 +312,9 @@ void TaskPalette::_show_filter_popup() {
 
 	tool_filters->set_pressed_no_signal(true);
 
-	Rect2i rect = tool_filters->get_screen_rect();
+	Transform2D xform = tool_filters->get_screen_transform();
+	Rect2i rect = Rect2(xform.get_origin(), xform.get_scale() * tool_filters->get_size());
+
 	rect.position.y += rect.size.height;
 	rect.size.height = 0;
 	filter_popup->reset_size();
@@ -328,7 +370,7 @@ void TaskPalette::_category_item_toggled(bool p_pressed, const String &p_categor
 }
 
 void TaskPalette::_filter_data_changed() {
-	call_deferred(SNAME("refresh"));
+	call_deferred(LW_NAME(refresh));
 	_update_filter_button();
 }
 
@@ -348,10 +390,10 @@ void TaskPalette::refresh() {
 		// Restore collapsed state from config.
 		Ref<ConfigFile> cf;
 		cf.instantiate();
-		String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+		String conf_path = PROJECT_CONFIG_FILE();
 		if (cf->load(conf_path) == OK) {
 			Variant value = cf->get_value("task_palette", "collapsed_sections", Array());
-			if (value.is_array()) {
+			if (VARIANT_IS_ARRAY(value)) {
 				Array arr = value;
 				for (int i = 0; i < arr.size(); i++) {
 					if (arr[i].get_type() == Variant::STRING) {
@@ -363,6 +405,7 @@ void TaskPalette::refresh() {
 	} else {
 		for (int i = 0; i < sections->get_child_count(); i++) {
 			TaskPaletteSection *sec = Object::cast_to<TaskPaletteSection>(sections->get_child(i));
+			ERR_FAIL_NULL(sec);
 			if (sec->is_collapsed()) {
 				collapsed_sections.insert(sec->get_category_name());
 			}
@@ -384,31 +427,42 @@ void TaskPalette::refresh() {
 			continue;
 		}
 
-		TaskPaletteSection *sec = memnew(TaskPaletteSection(cat));
+		TaskPaletteSection *sec = memnew(TaskPaletteSection());
+		sec->set_category_name(cat);
 		for (String task_meta : tasks) {
 			Ref<Texture2D> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
 
 			String tname;
-			DocTools *dd = EditorHelp::get_doc_data();
-			HashMap<String, DocData::ClassDoc>::Iterator E;
+			String descr;
+
 			if (task_meta.begins_with("res:")) {
 				if (filter_settings.type_filter == FilterSettings::TYPE_CORE) {
 					continue;
 				}
 				tname = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
-				E = dd->class_list.find(vformat("\"%s\"", task_meta.trim_prefix("res://")));
-				if (!E) {
-					E = dd->class_list.find(tname);
-				}
 			} else {
 				if (filter_settings.type_filter == FilterSettings::TYPE_USER) {
 					continue;
 				}
 				tname = task_meta.trim_prefix("BT");
-				E = dd->class_list.find(task_meta);
 			}
 
-			String descr;
+#ifdef LIMBOAI_MODULE
+			// Get documentation.
+			DocTools *dd = EditorHelp::get_doc_data();
+			HashMap<String, DocData::ClassDoc>::Iterator E;
+			// Try-find core class.
+			E = dd->class_list.find(task_meta);
+			if (!E) {
+				// Try to find by script filename.
+				E = dd->class_list.find(vformat("\"%s\"", task_meta.trim_prefix("res://")));
+			}
+			if (!E) {
+				// Try-find global script class.
+				String maybe_class_name = task_meta.get_file().get_basename().to_pascal_case();
+				E = dd->class_list.find(maybe_class_name);
+			}
+
 			if (E) {
 				if (E->value.description.is_empty() || E->value.description.length() > 1400) {
 					descr = DTR(E->value.brief_description);
@@ -416,12 +470,15 @@ void TaskPalette::refresh() {
 					descr = DTR(E->value.description);
 				}
 			}
+#endif // LIMBOAI_MODULE
+
+			// TODO: Documentation tooltips are only available in the module. Find a way to show em in GDExtension.
 
 			sec->add_task_button(tname, icon, descr, task_meta);
 		}
 		sec->set_filter("");
-		sec->connect(SNAME("task_button_pressed"), callable_mp(this, &TaskPalette::_on_task_button_pressed));
-		sec->connect(SNAME("task_button_rmb"), callable_mp(this, &TaskPalette::_on_task_button_rmb));
+		sec->connect(LW_NAME(task_button_pressed), callable_mp(this, &TaskPalette::_on_task_button_pressed));
+		sec->connect(LW_NAME(task_button_rmb), callable_mp(this, &TaskPalette::_on_task_button_rmb));
 		sections->add_child(sec);
 		sec->set_collapsed(!dialog_mode && collapsed_sections.has(cat));
 	}
@@ -437,36 +494,51 @@ void TaskPalette::use_dialog_mode() {
 	dialog_mode = true;
 }
 
-void TaskPalette::_update_theme_item_cache() {
-	PanelContainer::_update_theme_item_cache();
+void TaskPalette::_do_update_theme_item_cache() {
+	theme_cache.add_to_favorites_icon = get_theme_icon(LW_NAME(Favorites), LW_NAME(EditorIcons));
+	theme_cache.edit_script_icon = get_theme_icon(LW_NAME(Script), LW_NAME(EditorIcons));
+	theme_cache.open_doc_icon = get_theme_icon(LW_NAME(Help), LW_NAME(EditorIcons));
+	theme_cache.remove_from_favorites_icon = get_theme_icon(LW_NAME(NonFavorite), LW_NAME(EditorIcons));
 
-	theme_cache.add_to_favorites_icon = get_theme_icon(SNAME("Favorites"), SNAME("EditorIcons"));
-	theme_cache.edit_script_icon = get_theme_icon(SNAME("Script"), SNAME("EditorIcons"));
-	theme_cache.open_doc_icon = get_theme_icon(SNAME("Help"), SNAME("EditorIcons"));
-	theme_cache.remove_from_favorites_icon = get_theme_icon(SNAME("NonFavorite"), SNAME("EditorIcons"));
-
-	theme_cache.category_choice_background = get_theme_stylebox(SNAME("normal"), SNAME("LineEdit"));
+	theme_cache.category_choice_background = get_theme_stylebox(LW_NAME(normal), LW_NAME(LineEdit));
 }
 
 void TaskPalette::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_READY: {
+			// **** Signals
+			tool_filters->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_show_filter_popup));
+			filter_edit->connect(LW_NAME(text_changed), callable_mp(this, &TaskPalette::_apply_filter));
+			tool_refresh->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::refresh));
+			menu->connect(LW_NAME(id_pressed), callable_mp(this, &TaskPalette::_menu_action_selected));
+			type_all->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_type_filter_changed));
+			type_core->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_type_filter_changed));
+			type_user->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_type_filter_changed));
+			category_all->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_category_filter_changed));
+			category_include->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_category_filter_changed));
+			category_exclude->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_category_filter_changed));
+			category_choice->connect(LW_NAME(draw), callable_mp(this, &TaskPalette::_draw_filter_popup_background));
+			select_all->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(true));
+			deselect_all->connect(LW_NAME(pressed), callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(false));
+			filter_popup->connect(LW_NAME(popup_hide), callable_mp(this, &TaskPalette::_update_filter_button));
+		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			if (cf->load(conf_path) == OK) {
 				Variant value = cf->get_value("task_palette", "type_filter", FilterSettings::TypeFilter(0));
-				if (value.is_num()) {
+				if (VARIANT_IS_NUM(value)) {
 					filter_settings.type_filter = (FilterSettings::TypeFilter)(int)value;
 				}
 
 				value = cf->get_value("task_palette", "category_filter", FilterSettings::CategoryFilter(0));
-				if (value.is_num()) {
+				if (VARIANT_IS_NUM(value)) {
 					filter_settings.category_filter = (FilterSettings::CategoryFilter)(int)value;
 				}
 
 				value = cf->get_value("task_palette", "excluded_categories", Array());
-				if (value.is_array()) {
+				if (VARIANT_IS_ARRAY(value)) {
 					Array arr = value;
 					for (int i = 0; i < arr.size(); i++) {
 						if (arr[i].get_type() == Variant::STRING) {
@@ -480,7 +552,7 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = EditorPaths::get_singleton()->get_project_settings_dir().path_join("limbo_ai.cfg");
+			String conf_path = PROJECT_CONFIG_FILE();
 			cf->load(conf_path);
 
 			Array collapsed_sections;
@@ -504,12 +576,15 @@ void TaskPalette::_notification(int p_what) {
 			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
-			tool_filters->set_icon(get_theme_icon(SNAME("AnimationFilter"), SNAME("EditorIcons")));
-			tool_refresh->set_icon(get_theme_icon(SNAME("Reload"), SNAME("EditorIcons")));
-			select_all->set_icon(get_theme_icon(SNAME("LimboSelectAll"), SNAME("EditorIcons")));
-			deselect_all->set_icon(get_theme_icon(SNAME("LimboDeselectAll"), SNAME("EditorIcons")));
+			_do_update_theme_item_cache();
 
-			filter_edit->set_right_icon(get_theme_icon(SNAME("Search"), SNAME("EditorIcons")));
+			BUTTON_SET_ICON(tool_filters, get_theme_icon(LW_NAME(AnimationFilter), LW_NAME(EditorIcons)));
+			BUTTON_SET_ICON(tool_refresh, get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons)));
+
+			filter_edit->set_right_icon(get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons)));
+
+			BUTTON_SET_ICON(select_all, LimboUtility::get_singleton()->get_task_icon("LimboSelectAll"));
+			BUTTON_SET_ICON(deselect_all, LimboUtility::get_singleton()->get_task_icon("LimboDeselectAll"));
 
 			category_choice->queue_redraw();
 
@@ -539,13 +614,11 @@ TaskPalette::TaskPalette() {
 	tool_filters->set_flat(true);
 	tool_filters->set_toggle_mode(true);
 	tool_filters->set_focus_mode(FocusMode::FOCUS_NONE);
-	tool_filters->connect("pressed", callable_mp(this, &TaskPalette::_show_filter_popup));
 	hb->add_child(tool_filters);
 
 	filter_edit = memnew(LineEdit);
 	filter_edit->set_clear_button_enabled(true);
 	filter_edit->set_placeholder(TTR("Filter tasks"));
-	filter_edit->connect("text_changed", callable_mp(this, &TaskPalette::_apply_filter));
 	filter_edit->set_h_size_flags(SIZE_EXPAND_FILL);
 	hb->add_child(filter_edit);
 
@@ -553,7 +626,6 @@ TaskPalette::TaskPalette() {
 	tool_refresh->set_tooltip_text(TTR("Refresh tasks"));
 	tool_refresh->set_flat(true);
 	tool_refresh->set_focus_mode(FocusMode::FOCUS_NONE);
-	tool_refresh->connect("pressed", callable_mp(this, &TaskPalette::refresh));
 	hb->add_child(tool_refresh);
 
 	ScrollContainer *sc = memnew(ScrollContainer);
@@ -568,7 +640,6 @@ TaskPalette::TaskPalette() {
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
-	menu->connect("id_pressed", callable_mp(this, &TaskPalette::_menu_action_selected));
 
 	filter_popup = memnew(PopupPanel);
 	{
@@ -593,7 +664,6 @@ TaskPalette::TaskPalette() {
 		type_all->set_focus_mode(FocusMode::FOCUS_NONE);
 		type_all->set_button_group(type_filter_group);
 		type_all->set_pressed(true);
-		type_all->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
 		type_filter->add_child(type_all);
 
 		type_core = memnew(Button);
@@ -602,7 +672,6 @@ TaskPalette::TaskPalette() {
 		type_core->set_toggle_mode(true);
 		type_core->set_focus_mode(FocusMode::FOCUS_NONE);
 		type_core->set_button_group(type_filter_group);
-		type_core->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
 		type_filter->add_child(type_core);
 
 		type_user = memnew(Button);
@@ -611,7 +680,6 @@ TaskPalette::TaskPalette() {
 		type_user->set_toggle_mode(true);
 		type_user->set_focus_mode(FocusMode::FOCUS_NONE);
 		type_user->set_button_group(type_filter_group);
-		type_user->connect("pressed", callable_mp(this, &TaskPalette::_type_filter_changed));
 		type_filter->add_child(type_user);
 
 		Control *space1 = memnew(Control);
@@ -636,7 +704,6 @@ TaskPalette::TaskPalette() {
 		category_all->set_focus_mode(FocusMode::FOCUS_NONE);
 		category_all->set_pressed(true);
 		category_all->set_button_group(category_filter_group);
-		category_all->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
 		category_filter->add_child(category_all);
 
 		category_include = memnew(Button);
@@ -645,7 +712,6 @@ TaskPalette::TaskPalette() {
 		category_include->set_toggle_mode(true);
 		category_include->set_focus_mode(FocusMode::FOCUS_NONE);
 		category_include->set_button_group(category_filter_group);
-		category_include->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
 		category_filter->add_child(category_include);
 
 		category_exclude = memnew(Button);
@@ -654,11 +720,9 @@ TaskPalette::TaskPalette() {
 		category_exclude->set_toggle_mode(true);
 		category_exclude->set_focus_mode(FocusMode::FOCUS_NONE);
 		category_exclude->set_button_group(category_filter_group);
-		category_exclude->connect("pressed", callable_mp(this, &TaskPalette::_category_filter_changed));
 		category_filter->add_child(category_exclude);
 
 		category_choice = memnew(VBoxContainer);
-		category_choice->connect("draw", callable_mp(this, &TaskPalette::_draw_filter_popup_background));
 		vbox->add_child(category_choice);
 
 		HBoxContainer *selection_controls = memnew(HBoxContainer);
@@ -668,13 +732,11 @@ TaskPalette::TaskPalette() {
 		select_all = memnew(Button);
 		select_all->set_tooltip_text(TTR("Select all categories"));
 		select_all->set_focus_mode(FocusMode::FOCUS_NONE);
-		select_all->connect("pressed", callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(true));
 		selection_controls->add_child(select_all);
 
 		deselect_all = memnew(Button);
 		deselect_all->set_tooltip_text(TTR("Deselect all categories"));
 		deselect_all->set_focus_mode(FocusMode::FOCUS_NONE);
-		deselect_all->connect("pressed", callable_mp(this, &TaskPalette::_set_all_filter_categories).bind(false));
 		selection_controls->add_child(deselect_all);
 
 		category_scroll = memnew(ScrollContainer);
@@ -684,8 +746,9 @@ TaskPalette::TaskPalette() {
 		category_scroll->add_child(category_list);
 	}
 	add_child(filter_popup);
-	filter_popup->connect("popup_hide", callable_mp(this, &TaskPalette::_update_filter_button));
 }
 
 TaskPalette::~TaskPalette() {
 }
+
+#endif // ! TOOLS_ENABLED

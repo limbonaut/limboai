@@ -10,8 +10,6 @@
  */
 
 #include "bb_variant.h"
-#include "core/object/object.h"
-#include "core/variant/variant.h"
 
 void BBVariant::set_type(Variant::Type p_type) {
 	if (type != p_type) {

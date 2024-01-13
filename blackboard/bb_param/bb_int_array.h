@@ -13,7 +13,6 @@
 #define BB_INT_ARRAY_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBIntArray : public BBParam {
 	GDCLASS(BBIntArray, BBParam);

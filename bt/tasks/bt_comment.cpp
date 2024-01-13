@@ -13,6 +13,11 @@
 
 #include "bt_task.h"
 
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+using namespace godot;
+#endif
+
 Ref<BTTask> BTComment::clone() const {
 	if (Engine::get_singleton()->is_editor_hint()) {
 		return BTTask::clone();
@@ -20,7 +25,7 @@ Ref<BTTask> BTComment::clone() const {
 	return nullptr;
 }
 
-PackedStringArray BTComment::get_configuration_warnings() const {
+PackedStringArray BTComment::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count_excluding_comments() > 0) {
 		warnings.append("Can only have other comment tasks as children.");

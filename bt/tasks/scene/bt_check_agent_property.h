@@ -14,10 +14,8 @@
 
 #include "../bt_condition.h"
 
-#include "modules/limboai/blackboard/bb_param/bb_variant.h"
-#include "modules/limboai/util/limbo_utility.h"
-
-#include "core/string/string_name.h"
+#include "../../../blackboard/bb_param/bb_variant.h"
+#include "../../../util/limbo_utility.h"
 
 class BTCheckAgentProperty : public BTCondition {
 	GDCLASS(BTCheckAgentProperty, BTCondition);
@@ -31,7 +29,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual Status _tick(double p_delta) override;
 
 public:
@@ -44,7 +42,7 @@ public:
 	void set_value(Ref<BBVariant> p_value);
 	Ref<BBVariant> get_value() const { return value; }
 
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_CHECK_AGENT_PROPERTY
+#endif // BT_CHECK_AGENT_PROPERTY_H

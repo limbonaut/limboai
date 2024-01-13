@@ -11,9 +11,20 @@
 
 #include "blackboard.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/core/object.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+using namespace godot;
+#endif
 
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);
@@ -25,7 +36,7 @@ Ref<Blackboard> Blackboard::top() const {
 
 Variant Blackboard::get_var(const Variant &p_key, const Variant &p_default) const {
 	if (data.has(p_key)) {
-		return data.get_valid(p_key);
+		return data.get(p_key, Variant());
 	} else if (parent.is_valid()) {
 		return parent->get_var(p_key, p_default);
 	} else {
@@ -57,7 +68,7 @@ void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 			}
 		}
 	}
-};
+}
 
 void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_data"), &Blackboard::get_data);

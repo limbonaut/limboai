@@ -14,9 +14,15 @@
 
 #include "../bt_action.h"
 
-#include "modules/limboai/blackboard/bb_param/bb_node.h"
+#include "../../../blackboard/bb_param/bb_node.h"
 
+#ifdef LIMBOAI_MODULE
 #include "scene/animation/animation_player.h"
+#endif
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/animation_player.hpp>
+#endif
 
 class BTPlayAnimation : public BTAction {
 	GDCLASS(BTPlayAnimation, BTAction);
@@ -36,7 +42,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual void _setup() override;
 	virtual void _enter() override;
 	virtual Status _tick(double p_delta) override;
@@ -60,7 +66,7 @@ public:
 	void set_from_end(bool p_from_end);
 	bool get_from_end() const { return from_end; }
 
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_PLAY_ANIMATION
+#endif // BT_PLAY_ANIMATION_H

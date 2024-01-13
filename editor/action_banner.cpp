@@ -9,9 +9,20 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "action_banner.h"
 
+#include "../util/limbo_compat.h"
+#include "../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
 #include "scene/gui/button.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/button.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 void ActionBanner::set_text(const String &p_text) {
 	message->set_text(p_text);
@@ -28,14 +39,18 @@ void ActionBanner::close() {
 void ActionBanner::add_action(const String &p_name, const Callable &p_action, bool p_auto_close) {
 	Button *action_btn = memnew(Button);
 	action_btn->set_text(p_name);
-	action_btn->connect(SNAME("pressed"), callable_mp(this, &ActionBanner::_execute_action).bind(p_action, p_auto_close));
+	action_btn->connect(LW_NAME(pressed), callable_mp(this, &ActionBanner::_execute_action).bind(p_action, p_auto_close));
 	hbox->add_child(action_btn);
 }
 
 void ActionBanner::_execute_action(const Callable &p_action, bool p_auto_close) {
+#ifdef LIMBOAI_MODULE
 	Callable::CallError ce;
 	Variant ret;
 	p_action.callp(nullptr, 0, ret, ce);
+#elif LIMBOAI_GDEXTENSION
+	p_action.call();
+#endif
 
 	if (p_auto_close) {
 		queue_free();
@@ -45,12 +60,13 @@ void ActionBanner::_execute_action(const Callable &p_action, bool p_auto_close) 
 void ActionBanner::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
-			icon->set_texture(get_theme_icon(SNAME("StatusWarning"), SNAME("EditorIcons")));
+			icon->set_texture(get_theme_icon(LW_NAME(StatusWarning), LW_NAME(EditorIcons)));
 		} break;
 	}
 }
 
 void ActionBanner::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("_execute_action", "p_action", "p_auto_close"), &ActionBanner::_execute_action);
 }
 
 ActionBanner::ActionBanner() {
@@ -77,3 +93,5 @@ ActionBanner::ActionBanner() {
 	spacer->set_custom_minimum_size(Size2(0, 16));
 	hbox->add_child(spacer);
 }
+
+#endif // TOOLS_ENABLED

@@ -11,18 +11,9 @@
 
 #include "bt_repeat.h"
 
-#include "core/object/object.h"
-#include "core/string/ustring.h"
-#include "core/variant/variant.h"
-
-static String repeat_forever_str;
-
-String BTRepeat::_generate_name() const {
+String BTRepeat::_generate_name() {
 	if (forever) {
-		if (repeat_forever_str.is_empty()) {
-			repeat_forever_str.parse_utf8("Repeat ∞");
-		}
-		return repeat_forever_str;
+		return LW_NAME(repeat_forever);
 	}
 	return vformat("Repeat x%s", times);
 }
@@ -80,4 +71,7 @@ void BTRepeat::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "forever"), "set_forever", "get_forever");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "times", PROPERTY_HINT_RANGE, "1,65535", PROPERTY_USAGE_NONE), "set_times", "get_times");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "abort_on_failure", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "set_abort_on_failure", "get_abort_on_failure");
+}
+
+BTRepeat::BTRepeat() {
 }

@@ -13,7 +13,6 @@
 #define BB_DICTIONARY_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBDictionary : public BBParam {
 	GDCLASS(BBDictionary, BBParam);

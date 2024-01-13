@@ -10,14 +10,16 @@
  */
 
 #ifdef TOOLS_ENABLED
+
 #ifndef LIMBO_AI_EDITOR_PLUGIN_H
 #define LIMBO_AI_EDITOR_PLUGIN_H
 
-#include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/tasks/bt_task.h"
+#include "../bt/behavior_tree.h"
+#include "../bt/tasks/bt_task.h"
 #include "task_palette.h"
 #include "task_tree.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
@@ -36,6 +38,31 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/texture.h"
+
+#define GET_UNDO_REDO() EditorUndoRedoManager::get_singleton()
+
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/editor_plugin.hpp>
+#include <godot_cpp/classes/editor_spin_slider.hpp>
+#include <godot_cpp/classes/file_dialog.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/h_split_container.hpp>
+#include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/menu_button.hpp>
+#include <godot_cpp/classes/panel.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/variant/packed_string_array.hpp>
+#include <godot_cpp/variant/variant.hpp>
+
+using namespace godot;
+
+#define GET_UNDO_REDO() plugin->get_undo_redo()
+
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboAIEditor : public Control {
 	GDCLASS(LimboAIEditor, Control);
@@ -75,8 +102,10 @@ private:
 		Ref<Texture2D> rename_task_icon;
 		Ref<Texture2D> change_type_icon;
 		Ref<Texture2D> extract_subtree_icon;
+		Ref<Texture2D> behavior_tree_icon;
 	} theme_cache;
 
+	EditorPlugin *plugin;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	HashSet<Ref<BehaviorTree>> dirty;
@@ -133,15 +162,15 @@ private:
 	void _load_bt(String p_path);
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
-	void _edit_project_settings();
 	void _remove_task_from_favorite(const String &p_task);
 	void _extract_subtree(const String &p_path);
+	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
+	void _popup_file_dialog(FileDialog *p_dialog) { p_dialog->popup_centered_clamped(Size2i(700, 500), 0.8f); }
 
 	void _rename_task_confirmed();
-
 	void _on_tree_rmb(const Vector2 &p_menu_pos);
 	void _action_selected(int p_id);
 	void _misc_option_selected(int p_id);
@@ -155,23 +184,31 @@ private:
 	void _on_history_back();
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
-	void _on_resources_reload(const Vector<String> &p_resources);
-
+	void _on_resources_reload(const PackedStringArray &p_resources);
 	void _task_type_selected(const String &p_class_or_path);
-	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
 
-	virtual void shortcut_input(const Ref<InputEvent> &p_event) override;
+	void _edit_project_settings();
+	void _process_shortcut_input(const Ref<InputEvent> &p_event);
+
+#ifdef LIMBOAI_MODULE
+	virtual void shortcut_input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
+#endif // LIMBOAI_MODULE
 
 protected:
-	virtual void _update_theme_item_cache() override;
+	virtual void _do_update_theme_item_cache();
 
 	void _notification(int p_what);
 	static void _bind_methods();
 
 public:
+	void set_plugin(EditorPlugin *p_plugin) { plugin = p_plugin; };
 	void edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh = false);
 
 	void apply_changes();
+
+#ifdef LIMBOAI_GDEXTENSION
+	virtual void _shortcut_input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
+#endif
 
 	LimboAIEditor();
 	~LimboAIEditor();
@@ -184,15 +221,29 @@ private:
 	LimboAIEditor *limbo_ai_editor;
 
 protected:
+	static void _bind_methods();
 	void _notification(int p_notification);
 
 public:
-	virtual String get_name() const override { return "LimboAI"; }
+#ifdef LIMBOAI_MODULE
 	bool has_main_screen() const override { return true; }
+
+	virtual String get_name() const override { return "LimboAI"; }
 	virtual void make_visible(bool p_visible) override;
 	virtual void apply_changes() override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
+
+#elif LIMBOAI_GDEXTENSION
+	bool _has_main_screen() const override { return true; }
+
+	virtual String _get_plugin_name() const override { return "LimboAI"; }
+	virtual void _make_visible(bool p_visible) override;
+	virtual void _apply_changes() override;
+	virtual void _edit(Object *p_object) override;
+	virtual bool _handles(Object *p_object) const override;
+	virtual Ref<Texture2D> _get_plugin_icon() const override;
+#endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	LimboAIEditorPlugin();
 	~LimboAIEditorPlugin();
@@ -200,4 +251,4 @@ public:
 
 #endif // LIMBO_AI_EDITOR_PLUGIN_H
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

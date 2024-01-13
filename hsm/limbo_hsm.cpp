@@ -11,10 +11,7 @@
 
 #include "limbo_hsm.h"
 
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/hsm/limbo_state.h"
-#include "modules/limboai/util/limbo_string_names.h"
-
+#ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -22,6 +19,7 @@
 #include "core/typedefs.h"
 #include "core/variant/callable.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
 
 VARIANT_ENUM_CAST(LimboHSM::UpdateMode);
 
@@ -51,9 +49,9 @@ void LimboHSM::set_active(bool p_active) {
 	set_process_input(p_active);
 
 	if (active) {
-		_enter();
+		_do_enter();
 	} else {
-		_exit();
+		_do_exit();
 	}
 }
 
@@ -62,47 +60,44 @@ void LimboHSM::_change_state(LimboState *p_state) {
 	ERR_FAIL_COND(p_state->get_parent() != this);
 
 	if (active_state) {
-		active_state->_exit();
+		active_state->_do_exit();
 	}
 
 	active_state = p_state;
-	active_state->_enter();
+	active_state->_do_enter();
 
 	emit_signal(LimboStringNames::get_singleton()->state_changed, active_state);
 }
 
-void LimboHSM::_enter() {
+void LimboHSM::_do_enter() {
 	ERR_FAIL_COND_MSG(get_child_count() == 0, "LimboHSM has no candidate for initial substate.");
 	ERR_FAIL_COND(active_state != nullptr);
+	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Initial state is not set.");
 
-	LimboState::_enter();
-
-	if (initial_state == nullptr) {
-		initial_state = Object::cast_to<LimboState>(get_child(0));
-	}
-
-	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Failed to acquire initial state.");
-
+	LimboState::_do_enter();
 	_change_state(initial_state);
 }
 
-void LimboHSM::_exit() {
+void LimboHSM::_do_exit() {
 	ERR_FAIL_COND(active_state == nullptr);
-	active_state->_exit();
+	active_state->_do_exit();
 	active_state = nullptr;
-	LimboState::_exit();
+	LimboState::_do_exit();
 }
 
-void LimboHSM::_update(double p_delta) {
+void LimboHSM::_do_update(double p_delta) {
 	if (active) {
 		ERR_FAIL_COND(active_state == nullptr);
-		LimboState::_update(p_delta);
-		active_state->_update(p_delta);
+		LimboState::_do_update(p_delta);
+		active_state->_do_update(p_delta);
 	}
 }
 
+void LimboHSM::update(double p_delta) {
+	_do_update(p_delta);
+}
+
 void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String &p_event) {
-	// ERR_FAIL_COND(p_from_state == nullptr);
 	ERR_FAIL_COND(p_from_state != nullptr && p_from_state->get_parent() != this);
 	ERR_FAIL_COND(p_from_state != nullptr && !p_from_state->is_class("LimboState"));
 	ERR_FAIL_COND(p_to_state == nullptr);
@@ -160,12 +155,18 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		if (to_state != nullptr) {
 			bool permitted = true;
 			if (to_state->guard_callable.is_valid()) {
-				Callable::CallError ce;
 				Variant ret;
+
+#ifdef LIMBOAI_MODULE
+				Callable::CallError ce;
 				to_state->guard_callable.callp(nullptr, 0, ret, ce);
 				if (unlikely(ce.error != Callable::CallError::CALL_OK)) {
 					ERR_PRINT_ONCE("LimboHSM: Error calling substate's guard callable: " + Variant::get_callable_error_text(to_state->guard_callable, nullptr, 0, ce));
 				}
+#elif LIMBOAI_GDEXTENSION
+				ret = to_state->guard_callable.call();
+#endif
+
 				if (unlikely(ret.get_type() != Variant::BOOL)) {
 					ERR_PRINT_ONCE(vformat("State guard callable %s returned non-boolean value (%s).", to_state->guard_callable, to_state));
 				} else {
@@ -179,8 +180,8 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 		}
 	}
 
-	if (!event_consumed && p_event == EVENT_FINISHED && !(get_parent() && get_parent()->is_class("LimboState"))) {
-		_exit();
+	if (!event_consumed && p_event == LW_NAME(EVENT_FINISHED) && !(get_parent() && get_parent()->is_class("LimboState"))) {
+		_do_exit();
 	}
 
 	return event_consumed;
@@ -192,6 +193,10 @@ void LimboHSM::initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope) 
 		blackboard->set_parent_scope(p_parent_scope);
 	}
 	_initialize(p_agent, nullptr);
+
+	if (initial_state == nullptr) {
+		initial_state = Object::cast_to<LimboState>(get_child(0));
+	}
 }
 
 void LimboHSM::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
@@ -221,10 +226,10 @@ void LimboHSM::_notification(int p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
 		} break;
 		case NOTIFICATION_PROCESS: {
-			_update(get_process_delta_time());
+			_do_update(get_process_delta_time());
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			_update(get_physics_process_delta_time());
+			_do_update(get_physics_process_delta_time());
 		} break;
 	}
 }

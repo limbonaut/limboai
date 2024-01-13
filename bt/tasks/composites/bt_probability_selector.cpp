@@ -11,25 +11,23 @@
 
 #include "bt_probability_selector.h"
 
-#include "modules/limboai/bt/tasks/bt_task.h"
-
-#include "core/error/error_macros.h"
+#include "../../../util/limbo_compat.h"
 
 double BTProbabilitySelector::get_weight(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);
-	ERR_FAIL_COND_V(get_child(p_index)->is_class_ptr(BTComment::get_class_ptr_static()), 0.0);
+	ERR_FAIL_COND_V(IS_CLASS(get_child(p_index), BTComment), 0.0);
 	return _get_weight(p_index);
 }
 
 void BTProbabilitySelector::set_weight(int p_index, double p_weight) {
 	ERR_FAIL_INDEX(p_index, get_child_count());
-	ERR_FAIL_COND(get_child(p_index)->is_class_ptr(BTComment::get_class_ptr_static()));
+	ERR_FAIL_COND(IS_CLASS(get_child(p_index), BTComment));
 	_set_weight(p_index, p_weight);
 }
 
 double BTProbabilitySelector::get_probability(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);
-	ERR_FAIL_COND_V(get_child(p_index)->is_class_ptr(BTComment::get_class_ptr_static()), 0.0);
+	ERR_FAIL_COND_V(IS_CLASS(get_child(p_index), BTComment), 0.0);
 	double total = _get_total_weight();
 	return total == 0.0 ? 0.0 : _get_weight(p_index) / total;
 }
@@ -38,7 +36,7 @@ void BTProbabilitySelector::set_probability(int p_index, double p_probability) {
 	ERR_FAIL_INDEX(p_index, get_child_count());
 	ERR_FAIL_COND(p_probability < 0.0);
 	ERR_FAIL_COND(p_probability >= 1.0);
-	ERR_FAIL_COND(get_child(p_index)->is_class_ptr(BTComment::get_class_ptr_static()));
+	ERR_FAIL_COND(IS_CLASS(get_child(p_index), BTComment));
 
 	double others_total = _get_total_weight() - _get_weight(p_index);
 	double others_probability = 1.0 - p_probability;
@@ -52,7 +50,7 @@ void BTProbabilitySelector::set_probability(int p_index, double p_probability) {
 
 bool BTProbabilitySelector::has_probability(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), false);
-	return !get_child(p_index)->is_class_ptr(BTComment::get_class_ptr_static());
+	return !IS_CLASS(get_child(p_index), BTComment);
 }
 
 void BTProbabilitySelector::set_abort_on_failure(bool p_abort_on_failure) {
@@ -98,7 +96,7 @@ void BTProbabilitySelector::_select_task() {
 		remaining_tasks_weight -= _get_weight(task);
 	}
 
-	double roll = Math::random(0.0, remaining_tasks_weight);
+	double roll = RAND_RANGE(0.0, remaining_tasks_weight);
 	for (int i = 0; i < get_child_count(); i++) {
 		Ref<BTTask> task = get_child(i);
 		if (failed_tasks.has(task)) {

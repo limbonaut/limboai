@@ -13,7 +13,6 @@
 #define BB_INT_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBInt : public BBParam {
 	GDCLASS(BBInt, BBParam);

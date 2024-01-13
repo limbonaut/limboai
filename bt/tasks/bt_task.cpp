@@ -11,11 +11,12 @@
 
 #include "bt_task.h"
 
+#include "../../blackboard/blackboard.h"
+#include "../../util/limbo_string_names.h"
+#include "../../util/limbo_utility.h"
 #include "bt_comment.h"
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_string_names.h"
-#include "modules/limboai/util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/io/resource.h"
 #include "core/object/class_db.h"
@@ -25,6 +26,19 @@
 #include "core/string/ustring.h"
 #include "core/templates/hash_map.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/classes/global_constants.hpp"
+#include "godot_cpp/core/class_db.hpp"
+#include "godot_cpp/variant/dictionary.hpp"
+#include "godot_cpp/variant/string_name.hpp"
+#include "godot_cpp/variant/typed_array.hpp"
+#include "godot_cpp/variant/utility_functions.hpp"
+#include "godot_cpp/variant/variant.hpp"
+#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/script.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 void BT::_bind_methods() {
 	BIND_ENUM_CONSTANT(FRESH);
@@ -33,19 +47,21 @@ void BT::_bind_methods() {
 	BIND_ENUM_CONSTANT(SUCCESS);
 }
 
-String BTTask::_generate_name() const {
-	if (get_script_instance()) {
-		if (get_script_instance()->has_method(LimboStringNames::get_singleton()->_generate_name)) {
-			ERR_FAIL_COND_V_MSG(!get_script_instance()->get_script()->is_tool(), "ERROR: not a tool script", "Task script should be a \"tool\" script!");
-			return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
-		}
-		String script_path = get_script_instance()->get_script()->get_path();
-		if (!script_path.is_empty()) {
-			// Generate name based on script file
-			return script_path.get_basename().get_file().trim_prefix("BT").to_pascal_case();
-		}
+String BTTask::_generate_name() {
+	String ret;
+
+	// Generate name based on script path.
+	Ref<Script> sc = GET_SCRIPT(this);
+	if (sc.is_valid() && sc->get_path().is_absolute_path()) {
+		ret = sc->get_path().get_basename().get_file().to_pascal_case();
 	}
-	return get_class().trim_prefix("BT");
+
+	// Generate name based on core class name.
+	if (ret.is_empty()) {
+		ret = get_class();
+	}
+
+	return ret.trim_prefix("BT");
 }
 
 Array BTTask::_get_children() const {
@@ -72,9 +88,20 @@ void BTTask::_set_children(Array p_children) {
 	}
 }
 
-String BTTask::get_task_name() const {
+String BTTask::get_task_name() {
 	if (data.custom_name.is_empty()) {
+#ifdef LIMBOAI_MODULE
+		if (get_script_instance() && get_script_instance()->has_method(LW_NAME(_generate_name))) {
+			if (unlikely(!get_script_instance()->get_script()->is_tool())) {
+				ERR_PRINT(vformat("BTTask: Task script should be a \"tool\" script!"));
+			} else {
+				return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
+			}
+		}
 		return _generate_name();
+#elif LIMBOAI_GDEXTENSION
+		return call(LimboStringNames::get_singleton()->_generate_name);
+#endif
 	}
 	return data.custom_name;
 }
@@ -103,9 +130,7 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 		get_child(i)->initialize(p_agent, p_blackboard);
 	}
 
-	if (!GDVIRTUAL_CALL(_setup)) {
-		_setup();
-	}
+	VCALL_OR_NATIVE(_setup);
 }
 
 Ref<BTTask> BTTask::clone() const {
@@ -129,6 +154,7 @@ Ref<BTTask> BTTask::clone() const {
 		inst->data.children.resize(data.children.size() - num_null);
 	}
 
+#ifdef LIMBOAI_MODULE
 	// Make BBParam properties unique.
 	List<PropertyInfo> props;
 	inst->get_property_list(&props);
@@ -154,6 +180,34 @@ Ref<BTTask> BTTask::clone() const {
 			}
 		}
 	}
+#elif LIMBOAI_GDEXTENSION
+	// Make BBParam properties unique.
+	TypedArray<Dictionary> props = inst->get_property_list();
+	HashMap<Ref<Resource>, Ref<Resource>> duplicates;
+	for (int i = 0; i < props.size(); i++) {
+		Dictionary prop = props[i];
+		if (!(int(prop["usage"]) & PROPERTY_USAGE_STORAGE)) {
+			continue;
+		}
+
+		StringName prop_name = prop["name"];
+		Variant v = inst->get(prop_name);
+
+		if (v.get_type() == Variant::OBJECT && int(prop["hint"]) == PROPERTY_HINT_RESOURCE_TYPE) {
+			Ref<RefCounted> ref = v;
+			if (ref.is_valid()) {
+				Ref<Resource> res = ref;
+				if (res.is_valid() && res->is_class("BBParam")) {
+					if (!duplicates.has(res)) {
+						duplicates[res] = res->duplicate();
+					}
+					res = duplicates[res];
+					inst->set(prop_name, res);
+				}
+			}
+		}
+	}
+#endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	return inst;
 }
@@ -166,21 +220,22 @@ BT::Status BTTask::execute(double p_delta) {
 				data.children.get(i)->abort();
 			}
 		}
-		if (!GDVIRTUAL_CALL(_enter)) {
-			_enter();
-		}
+
+		VCALL_OR_NATIVE(_enter);
 	} else {
 		data.elapsed += p_delta;
 	}
 
+#ifdef LIMBOAI_MODULE
 	if (!GDVIRTUAL_CALL(_tick, p_delta, data.status)) {
 		data.status = _tick(p_delta);
 	}
+#elif LIMBOAI_GDEXTENSION
+	data.status = (Status)(int)call(LimboStringNames::get_singleton()->_tick, p_delta);
+#endif
 
 	if (data.status != RUNNING) {
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
+		VCALL_OR_NATIVE(_exit);
 		data.elapsed = 0.0;
 	}
 	return data.status;
@@ -191,9 +246,7 @@ void BTTask::abort() {
 		get_child(i)->abort();
 	}
 	if (data.status == RUNNING) {
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
+		VCALL_OR_NATIVE(_exit);
 	}
 	data.status = FRESH;
 	data.elapsed = 0.0;
@@ -202,7 +255,7 @@ void BTTask::abort() {
 int BTTask::get_child_count_excluding_comments() const {
 	int count = 0;
 	for (int i = 0; i < data.children.size(); i++) {
-		if (!data.children[i]->is_class_ptr(BTComment::get_class_ptr_static())) {
+		if (!IS_CLASS(data.children[i], BTComment)) {
 			count += 1;
 		}
 	}
@@ -274,23 +327,28 @@ Ref<BTTask> BTTask::next_sibling() const {
 	return Ref<BTTask>();
 }
 
-PackedStringArray BTTask::get_configuration_warnings() const {
+PackedStringArray BTTask::_get_configuration_warnings() {
+	return PackedStringArray();
+}
+
+PackedStringArray BTTask::get_configuration_warnings() {
 	PackedStringArray ret;
 
 	PackedStringArray warnings;
-	if (GDVIRTUAL_CALL(_get_configuration_warning, warnings)) {
-		ret.append_array(warnings);
-	}
+	VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
+	ret.append_array(warnings);
 
 	return ret;
 }
 
-void BTTask::print_tree(int p_initial_tabs) const {
+void BTTask::print_tree(int p_initial_tabs) {
 	String tabs = "--";
 	for (int i = 0; i < p_initial_tabs; i++) {
 		tabs += "--";
 	}
-	print_line(vformat("%s Name: %s Instance: %s", tabs, get_task_name(), Ref<BTTask>(this)));
+
+	PRINT_LINE(vformat("%s Name: %s Instance: %s", tabs, get_task_name(), Ref<BTTask>(this)));
+
 	for (int i = 0; i < get_child_count(); i++) {
 		get_child(i)->print_tree(p_initial_tabs + 1);
 	}
@@ -333,17 +391,26 @@ void BTTask::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", PROPERTY_USAGE_NONE), "", "get_blackboard");
-	// ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_status");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_elapsed_time");
 
+#ifdef LIMBOAI_MODULE
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_tick, "p_delta");
 	GDVIRTUAL_BIND(_generate_name);
-	GDVIRTUAL_BIND(_get_configuration_warning);
+	GDVIRTUAL_BIND(_get_configuration_warnings);
+#elif LIMBOAI_GDEXTENSION
+	// TODO: Until virtual functions are implemented in godot-cpp, we do this. Replace this code when possible.
+	ClassDB::bind_method(D_METHOD("_setup"), &BTTask::_setup);
+	ClassDB::bind_method(D_METHOD("_enter"), &BTTask::_enter);
+	ClassDB::bind_method(D_METHOD("_exit"), &BTTask::_exit);
+	ClassDB::bind_method(D_METHOD("_tick", "p_delta"), &BTTask::_tick);
+	ClassDB::bind_method(D_METHOD("_generate_name"), &BTTask::_generate_name);
+	ClassDB::bind_method(D_METHOD("_get_configuration_warnings"), &BTTask::_get_configuration_warnings);
+#endif
 }
 
 BTTask::BTTask() {

@@ -11,13 +11,7 @@
 
 #include "bt_set_var.h"
 
-#include "modules/limboai/blackboard/bb_param/bb_param.h"
-#include "modules/limboai/util/limbo_utility.h"
-
-#include "core/variant/callable.h"
-#include "core/variant/variant.h"
-
-String BTSetVar::_generate_name() const {
+String BTSetVar::_generate_name() {
 	if (variable.is_empty()) {
 		return "SetVar ???";
 	}
@@ -31,7 +25,7 @@ BT::Status BTSetVar::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(variable.is_empty(), FAILURE, "BTSetVar: `variable` is not set.");
 	ERR_FAIL_COND_V_MSG(!value.is_valid(), FAILURE, "BTSetVar: `value` is not set.");
 	Variant result;
-	Variant error_result = SNAME("Error: BTSetVar failed to get value!");
+	Variant error_result = LW_NAME(error_value);
 	Variant right_value = value->get_value(get_agent(), get_blackboard(), error_result);
 	ERR_FAIL_COND_V_MSG(right_value == error_result, FAILURE, "BTSetVar: Failed to get parameter value. Returning FAILURE.");
 	if (operation == LimboUtility::OPERATION_NONE) {
@@ -55,7 +49,7 @@ void BTSetVar::set_value(Ref<BBVariant> p_value) {
 	value = p_value;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && value.is_valid()) {
-		value->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		value->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 
@@ -64,7 +58,7 @@ void BTSetVar::set_operation(LimboUtility::Operation p_operation) {
 	emit_changed();
 }
 
-PackedStringArray BTSetVar::get_configuration_warnings() const {
+PackedStringArray BTSetVar::get_configuration_warnings() {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (variable.is_empty()) {
 		warnings.append("`variable` should be assigned.");

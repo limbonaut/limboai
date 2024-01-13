@@ -13,7 +13,6 @@
 #define BB_QUATERNION_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBQuaternion : public BBParam {
 	GDCLASS(BBQuaternion, BBParam);

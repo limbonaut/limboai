@@ -17,7 +17,7 @@ void BTAwaitAnimation::set_animation_player(Ref<BBNode> p_animation_player) {
 	animation_player_param = p_animation_player;
 	emit_changed();
 	if (Engine::get_singleton()->is_editor_hint() && animation_player_param.is_valid()) {
-		animation_player_param->connect(SNAME("changed"), Callable(this, SNAME("emit_changed")));
+		animation_player_param->connect(LW_NAME(changed), Callable(this, LW_NAME(emit_changed)));
 	}
 }
 
@@ -33,12 +33,12 @@ void BTAwaitAnimation::set_max_time(double p_max_time) {
 
 //**** Task Implementation
 
-PackedStringArray BTAwaitAnimation::get_configuration_warnings() const {
+PackedStringArray BTAwaitAnimation::get_configuration_warnings() {
 	PackedStringArray warnings = BTAction::get_configuration_warnings();
 	if (animation_player_param.is_null()) {
 		warnings.append("Animation Player parameter is not set.");
 	} else {
-		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value().is_zero()) {
+		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value() == Variant()) {
 			warnings.append("Path to AnimationPlayer node is not set.");
 		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable().is_empty()) {
 			warnings.append("AnimationPlayer blackboard variable is not set.");
@@ -53,7 +53,7 @@ PackedStringArray BTAwaitAnimation::get_configuration_warnings() const {
 	return warnings;
 }
 
-String BTAwaitAnimation::_generate_name() const {
+String BTAwaitAnimation::_generate_name() {
 	return "AwaitAnimation" +
 			(animation_name != StringName() ? vformat(" \"%s\"", animation_name) : " ???") +
 			vformat("  max_time: %ss", Math::snapped(max_time, 0.001));

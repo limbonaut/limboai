@@ -14,8 +14,6 @@
 
 #include "../bt_action.h"
 
-#include "core/variant/variant.h"
-
 class BTConsolePrint : public BTAction {
 	GDCLASS(BTConsolePrint, BTAction);
 	TASK_CATEGORY(Utility);
@@ -27,7 +25,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const override;
+	virtual String _generate_name() override;
 	virtual Status _tick(double p_delta) override;
 
 public:
@@ -43,7 +41,7 @@ public:
 	}
 	PackedStringArray get_bb_format_parameters() const { return bb_format_parameters; }
 
-	virtual PackedStringArray get_configuration_warnings() const override;
+	virtual PackedStringArray get_configuration_warnings() override;
 };
 
 #endif // BT_CONSOLE_PRINT_H

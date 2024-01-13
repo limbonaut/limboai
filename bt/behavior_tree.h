@@ -12,10 +12,17 @@
 #ifndef BEHAVIOR_TREE_H
 #define BEHAVIOR_TREE_H
 
-#include "core/io/resource.h"
-
-#include "modules/limboai/blackboard/blackboard.h"
 #include "tasks/bt_task.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/io/resource.h"
+#include "modules/limboai/blackboard/blackboard.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/resource.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class BehaviorTree : public Resource {
 	GDCLASS(BehaviorTree, Resource);
@@ -28,7 +35,9 @@ protected:
 	static void _bind_methods();
 
 public:
+#ifdef LIMBOAI_MODULE
 	virtual bool editor_can_reload_from_file() override { return false; }
+#endif
 
 	void set_description(String p_value) {
 		description = p_value;
@@ -43,6 +52,7 @@ public:
 	Ref<BTTask> get_root_task() const { return root_task; }
 
 	Ref<BehaviorTree> clone() const;
+	void copy_other(const Ref<BehaviorTree> &p_other);
 	Ref<BTTask> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const;
 };
 

@@ -12,11 +12,19 @@
 #ifndef LIMBO_DEBUGGER_H
 #define LIMBO_DEBUGGER_H
 
-#include "modules/limboai/bt/tasks/bt_task.h"
+#include "../../bt/tasks/bt_task.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/string/node_path.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/object.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/variant/node_path.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboDebugger : public Object {
 	GDCLASS(LimboDebugger, Object);
@@ -32,6 +40,9 @@ public:
 	static LimboDebugger *get_singleton();
 
 	~LimboDebugger();
+
+protected:
+	static void _bind_methods();
 
 #ifdef DEBUG_ENABLED
 private:
@@ -49,10 +60,13 @@ private:
 
 public:
 	static Error parse_message(void *p_user, const String &p_msg, const Array &p_args, bool &r_captured);
+#ifdef LIMBOAI_GDEXTENSION
+	bool parse_message_gdext(const String &p_msg, const Array &p_args);
+#endif
 
 	void register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
 	void unregister_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path);
 
-#endif // DEBUG_ENABLED
+#endif // ! DEBUG_ENABLED
 };
-#endif // LIMBO_DEBUGGER
+#endif // LIMBO_DEBUGGER_H

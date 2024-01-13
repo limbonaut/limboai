@@ -11,10 +11,16 @@
 
 #include "behavior_tree.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/templates/list.h"
 #include "core/variant/variant.h"
+#endif // ! LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/core/error_macros.hpp"
+#endif // ! LIMBOAI_GDEXTENSION
 
 Ref<BehaviorTree> BehaviorTree::clone() const {
 	Ref<BehaviorTree> copy = duplicate(false);
@@ -23,6 +29,12 @@ Ref<BehaviorTree> BehaviorTree::clone() const {
 		copy->root_task = root_task->clone();
 	}
 	return copy;
+}
+
+void BehaviorTree::copy_other(const Ref<BehaviorTree> &p_other) {
+	ERR_FAIL_COND(p_other.is_null());
+	description = p_other->get_description();
+	root_task = p_other->get_root_task();
 }
 
 Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const {
@@ -38,6 +50,7 @@ void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_root_task", "p_value"), &BehaviorTree::set_root_task);
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
+	ClassDB::bind_method(D_METHOD("copy_other", "p_other"), &BehaviorTree::copy_other);
 	ClassDB::bind_method(D_METHOD("instantiate", "p_agent", "p_blackboard"), &BehaviorTree::instantiate);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");

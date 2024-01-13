@@ -13,7 +13,6 @@
 #define BB_COLOR_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBColor : public BBParam {
 	GDCLASS(BBColor, BBParam);

@@ -11,10 +11,13 @@
 
 #include "bt_cooldown.h"
 
-#include "core/math/math_funcs.h"
-#include "core/object/class_db.h"
-#include "core/variant/array.h"
+#ifdef LIMBOAI_MODULE
 #include "scene/main/scene_tree.h"
+#endif
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/scene_tree.hpp>
+#endif
 
 //**** Setters / Getters
 
@@ -45,7 +48,7 @@ void BTCooldown::set_cooldown_state_var(String p_value) {
 
 //**** Task Implementation
 
-String BTCooldown::_generate_name() const {
+String BTCooldown::_generate_name() {
 	return vformat("Cooldown %s sec", Math::snapped(duration, 0.001));
 }
 
@@ -76,8 +79,9 @@ void BTCooldown::_chill() {
 	if (timer.is_valid()) {
 		timer->set_time_left(duration);
 	} else {
-		timer = SceneTree::get_singleton()->create_timer(duration, process_pause);
-		timer->connect("timeout", callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
+		timer = SCENE_TREE()->create_timer(duration, process_pause);
+		ERR_FAIL_NULL(timer);
+		timer->connect(LW_NAME(timeout), callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }
 

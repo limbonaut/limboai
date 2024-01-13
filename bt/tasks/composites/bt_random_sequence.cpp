@@ -1,7 +1,7 @@
 /**
  * bt_random_sequence.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -16,7 +16,7 @@ void BTRandomSequence::_enter() {
 	if (indicies.size() != get_child_count()) {
 		indicies.resize(get_child_count());
 		for (int i = 0; i < get_child_count(); i++) {
-			indicies.set(i, i);
+			indicies[i] = i;
 		}
 	}
 	indicies.shuffle();

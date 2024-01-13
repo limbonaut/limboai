@@ -12,11 +12,22 @@
 #ifndef BLACKBOARD_H
 #define BLACKBOARD_H
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
 #include "core/variant/dictionary.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
+#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/core/object.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class Blackboard : public RefCounted {
 	GDCLASS(Blackboard, RefCounted);

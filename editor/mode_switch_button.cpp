@@ -9,11 +9,17 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "mode_switch_button.h"
 
+#include "../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/object.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
 
 void ModeSwitchButton::add_mode(int p_id, const Ref<Texture2D> &p_icon, const String &p_tooltip) {
 	bool unique_id = true;
@@ -50,13 +56,21 @@ void ModeSwitchButton::set_mode(int p_id, bool p_no_signal) {
 
 	_set_mode_by_index(idx);
 	if (!p_no_signal) {
-		emit_signal(SNAME("mode_changed"));
+		emit_signal(LW_NAME(mode_changed));
 	}
 }
 
 void ModeSwitchButton::clear() {
 	current_mode_index = -1;
 	modes.clear();
+}
+
+void ModeSwitchButton::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_READY: {
+			connect(LW_NAME(pressed), callable_mp(this, &ModeSwitchButton::next_mode));
+		} break;
+	}
 }
 
 void ModeSwitchButton::_bind_methods() {
@@ -69,5 +83,6 @@ void ModeSwitchButton::_bind_methods() {
 }
 
 ModeSwitchButton::ModeSwitchButton() {
-	call_deferred(SNAME("connect"), SNAME("pressed"), callable_mp(this, &ModeSwitchButton::next_mode));
 }
+
+#endif // ! TOOLS_ENABLED

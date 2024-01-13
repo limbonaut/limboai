@@ -12,10 +12,10 @@
 #ifndef BT_STATE_H
 #define BT_STATE_H
 
-#include "modules/limboai/hsm/limbo_state.h"
+#include "../hsm/limbo_state.h"
 
-#include "modules/limboai/bt/behavior_tree.h"
-#include "modules/limboai/bt/tasks/bt_task.h"
+#include "../bt/behavior_tree.h"
+#include "../bt/tasks/bt_task.h"
 
 class BTState : public LimboState {
 	GDCLASS(BTState, LimboState);
@@ -30,7 +30,6 @@ protected:
 	static void _bind_methods();
 
 	virtual void _setup() override;
-	// virtual void _enter() override {}
 	virtual void _exit() override;
 	virtual void _update(double p_delta) override;
 

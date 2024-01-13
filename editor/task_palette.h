@@ -8,23 +8,51 @@
  * https://opensource.org/licenses/MIT.
  * =============================================================================
  */
+
+#ifdef TOOLS_ENABLED
+
 #ifndef TASK_PALETTE_H
 #define TASK_PALETTE_H
 
-#include "scene/gui/panel_container.h"
-
+#ifdef LIMBOAI_MODULE
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/flow_container.hpp>
+#include <godot_cpp/classes/line_edit.hpp>
+#include <godot_cpp/classes/panel_container.hpp>
+#include <godot_cpp/classes/popup_panel.hpp>
+#include <godot_cpp/classes/scroll_container.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/v_box_container.hpp>
+#include <godot_cpp/templates/hash_set.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class TaskButton : public Button {
 	GDCLASS(TaskButton, Button);
 
+private:
+	Control *_do_make_tooltip(const String &p_text) const;
+
+protected:
+	static void _bind_methods();
+
 public:
-	virtual Control *make_custom_tooltip(const String &p_text) const override;
+#ifdef LIMBOAI_MODULE
+	virtual Control *make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(p_text); }
+#elif LIMBOAI_GDEXTENSION
+	virtual Object *_make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(p_text); }
+#endif
 
 	TaskButton();
 };
@@ -46,10 +74,11 @@ private:
 	void _on_header_pressed();
 
 protected:
-	virtual void _update_theme_item_cache() override;
+	static void _bind_methods();
 
 	void _notification(int p_what);
-	static void _bind_methods();
+
+	virtual void _do_update_theme_item_cache();
 
 public:
 	void set_filter(String p_filter);
@@ -59,8 +88,9 @@ public:
 	bool is_collapsed() const;
 
 	String get_category_name() const { return section_header->get_text(); }
+	void set_category_name(const String &p_cat) { section_header->set_text(p_cat); }
 
-	TaskPaletteSection(String p_category_name);
+	TaskPaletteSection();
 	~TaskPaletteSection();
 };
 
@@ -145,7 +175,7 @@ private:
 	}
 
 protected:
-	virtual void _update_theme_item_cache() override;
+	virtual void _do_update_theme_item_cache();
 
 	void _notification(int p_what);
 	static void _bind_methods();
@@ -159,4 +189,6 @@ public:
 	~TaskPalette();
 };
 
-#endif // TASK_PALETTE
+#endif // TASK_PALETTE_H
+
+#endif // ! TOOLS_ENABLED

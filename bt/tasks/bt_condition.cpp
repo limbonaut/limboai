@@ -11,7 +11,7 @@
 
 #include "bt_condition.h"
 
-PackedStringArray BTCondition::get_configuration_warnings() const {
+PackedStringArray BTCondition::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
 	if (get_child_count_excluding_comments() != 0) {
 		warnings.append("Condition task can't have child tasks.");

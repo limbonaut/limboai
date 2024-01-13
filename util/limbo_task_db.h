@@ -12,9 +12,19 @@
 #ifndef LIMBO_TASK_DB_H
 #define LIMBO_TASK_DB_H
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/templates/hash_map.h"
 #include "core/templates/list.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/templates/list.hpp>
+#include <godot_cpp/variant/string.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboTaskDB {
 private:
@@ -54,10 +64,14 @@ public:
 	}
 };
 
+#ifdef LIMBOAI_MODULE
 #define LIMBO_REGISTER_TASK(m_class)             \
 	if (m_class::_class_is_enabled) {            \
 		::LimboTaskDB::register_task<m_class>(); \
 	}
+#elif LIMBOAI_GDEXTENSION
+#define LIMBO_REGISTER_TASK(m_class) LimboTaskDB::register_task<m_class>();
+#endif
 
 #define TASK_CATEGORY(m_cat)                           \
 public:                                                \

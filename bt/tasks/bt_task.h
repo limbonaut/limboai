@@ -9,15 +9,22 @@
  * =============================================================================
  */
 
-#ifndef BTTASK_H
-#define BTTASK_H
+#ifndef BT_TASK_H
+#define BT_TASK_H
 
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_task_db.h"
+#include "../../blackboard/blackboard.h"
+#include "../../util/limbo_compat.h"
+#include "../../util/limbo_string_names.h"
+#include "../../util/limbo_task_db.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#include "core/error/error_macros.h"
 #include "core/io/resource.h"
+#include "core/math/math_funcs.h"
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
+#include "core/os/memory.h"
 #include "core/string/ustring.h"
 #include "core/templates/vector.h"
 #include "core/typedefs.h"
@@ -25,6 +32,15 @@
 #include "core/variant/binder_common.h"
 #include "core/variant/dictionary.h"
 #include "scene/resources/texture.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/core/object.hpp>
+#include <godot_cpp/templates/vector.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 /**
  * Base class for BTTask.
@@ -54,7 +70,7 @@ class BTTask : public BT {
 private:
 	friend class BehaviorTree;
 
-	// Avoid namespace pollution in derived classes.
+	// Avoid namespace pollution in the derived classes.
 	struct Data {
 		int index = -1;
 		String custom_name;
@@ -69,37 +85,45 @@ private:
 	Array _get_children() const;
 	void _set_children(Array children);
 
+	PackedStringArray _get_configuration_warnings(); // ! Scripts only.
+
 protected:
 	static void _bind_methods();
 
-	virtual String _generate_name() const;
+	virtual String _generate_name();
 	virtual void _setup() {}
 	virtual void _enter() {}
 	virtual void _exit() {}
 	virtual Status _tick(double p_delta) { return FAILURE; }
 
+#ifdef LIMBOAI_MODULE
 	GDVIRTUAL0RC(String, _generate_name);
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1R(Status, _tick, double);
-	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warning);
+	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warnings);
+#endif // LIMBOAI_MODULE
 
 public:
+	// TODO: GDExtension doesn't have this method hmm...
+
+#ifdef LIMBOAI_MODULE
 	virtual bool editor_can_reload_from_file() override { return false; }
+#endif // LIMBOAI_MODULE
 
 	_FORCE_INLINE_ Node *get_agent() const { return data.agent; }
 	void set_agent(Node *p_agent) { data.agent = p_agent; }
 
 	String get_custom_name() const { return data.custom_name; }
 	void set_custom_name(const String &p_name);
-	String get_task_name() const;
+	String get_task_name();
 
 	Ref<BTTask> get_root() const;
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
-	virtual PackedStringArray get_configuration_warnings() const;
+	virtual PackedStringArray get_configuration_warnings(); // ! Native version.
 
 	Status execute(double p_delta);
 	void abort();
@@ -129,10 +153,10 @@ public:
 	bool is_descendant_of(const Ref<BTTask> &p_task) const;
 	Ref<BTTask> next_sibling() const;
 
-	void print_tree(int p_initial_tabs = 0) const;
+	void print_tree(int p_initial_tabs = 0);
 
 	BTTask();
 	~BTTask();
 };
 
-#endif // BTTASK_H
+#endif // BT_TASK_H

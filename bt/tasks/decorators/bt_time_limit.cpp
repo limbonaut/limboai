@@ -11,14 +11,12 @@
 
 #include "bt_time_limit.h"
 
-#include "core/math/math_funcs.h"
-
 void BTTimeLimit::set_time_limit(double p_value) {
 	time_limit = p_value;
 	emit_changed();
 }
 
-String BTTimeLimit::_generate_name() const {
+String BTTimeLimit::_generate_name() {
 	return vformat("TimeLimit %s sec", Math::snapped(time_limit, 0.001));
 }
 

@@ -13,7 +13,6 @@
 #define BB_VECTOR4_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBVector4 : public BBParam {
 	GDCLASS(BBVector4, BBParam);

@@ -90,7 +90,11 @@
 #include "bt/tasks/utility/bt_random_wait.h"
 #include "bt/tasks/utility/bt_wait.h"
 #include "bt/tasks/utility/bt_wait_ticks.h"
+#include "editor/action_banner.h"
+#include "editor/debugger/behavior_tree_data.h"
 #include "editor/debugger/limbo_debugger.h"
+#include "editor/debugger/limbo_debugger_plugin.h"
+#include "editor/mode_switch_button.h"
 #include "hsm/limbo_hsm.h"
 #include "hsm/limbo_state.h"
 #include "util/limbo_string_names.h"
@@ -100,16 +104,28 @@
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/behavior_tree_view.h"
 #include "editor/limbo_ai_editor_plugin.h"
-#endif
+#endif // TOOLS_ENABLED
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/core/class_db.hpp>
+#include <godot_cpp/core/memory.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 static LimboUtility *_limbo_utility = nullptr;
 
 void initialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+#ifdef LIMBOAI_GDEXTENSION
+		GDREGISTER_CLASS(LimboDebugger);
+#endif
 		LimboDebugger::initialize();
 
 		GDREGISTER_CLASS(LimboUtility);
@@ -149,76 +165,93 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		LIMBO_REGISTER_TASK(BTCooldown);
 		LIMBO_REGISTER_TASK(BTProbability);
 		LIMBO_REGISTER_TASK(BTForEach);
+		LIMBO_REGISTER_TASK(BTNewScope);
+		LIMBO_REGISTER_TASK(BTSubtree);
 
 		GDREGISTER_CLASS(BTAction);
+		GDREGISTER_CLASS(BTCondition);
 		LIMBO_REGISTER_TASK(BTAwaitAnimation);
 		LIMBO_REGISTER_TASK(BTCallMethod);
 		LIMBO_REGISTER_TASK(BTConsolePrint);
 		LIMBO_REGISTER_TASK(BTFail);
-		LIMBO_REGISTER_TASK(BTNewScope);
 		LIMBO_REGISTER_TASK(BTPauseAnimation);
 		LIMBO_REGISTER_TASK(BTPlayAnimation);
 		LIMBO_REGISTER_TASK(BTRandomWait);
 		LIMBO_REGISTER_TASK(BTSetAgentProperty);
 		LIMBO_REGISTER_TASK(BTSetVar);
 		LIMBO_REGISTER_TASK(BTStopAnimation);
-		LIMBO_REGISTER_TASK(BTSubtree);
 		LIMBO_REGISTER_TASK(BTWait);
 		LIMBO_REGISTER_TASK(BTWaitTicks);
-
-		GDREGISTER_CLASS(BTCondition);
 		LIMBO_REGISTER_TASK(BTCheckAgentProperty);
 		LIMBO_REGISTER_TASK(BTCheckTrigger);
 		LIMBO_REGISTER_TASK(BTCheckVar);
 
 		GDREGISTER_ABSTRACT_CLASS(BBParam);
-		GDREGISTER_CLASS(BBInt);
+		GDREGISTER_CLASS(BBAabb);
+		GDREGISTER_CLASS(BBArray);
+		GDREGISTER_CLASS(BBBasis);
 		GDREGISTER_CLASS(BBBool);
+		GDREGISTER_CLASS(BBByteArray);
+		GDREGISTER_CLASS(BBColor);
+		GDREGISTER_CLASS(BBColorArray);
+		GDREGISTER_CLASS(BBDictionary);
 		GDREGISTER_CLASS(BBFloat);
-		GDREGISTER_CLASS(BBString);
-		GDREGISTER_CLASS(BBVector2);
-		GDREGISTER_CLASS(BBVector2i);
-		GDREGISTER_CLASS(BBRect2);
-		GDREGISTER_CLASS(BBRect2i);
-		GDREGISTER_CLASS(BBVector3);
-		GDREGISTER_CLASS(BBVector3i);
-		GDREGISTER_CLASS(BBTransform2D);
-		GDREGISTER_CLASS(BBVector4);
-		GDREGISTER_CLASS(BBVector4i);
+		GDREGISTER_CLASS(BBFloatArray);
+		GDREGISTER_CLASS(BBInt);
+		GDREGISTER_CLASS(BBIntArray);
+		GDREGISTER_CLASS(BBNode);
 		GDREGISTER_CLASS(BBPlane);
 		GDREGISTER_CLASS(BBQuaternion);
-		GDREGISTER_CLASS(BBAabb);
-		GDREGISTER_CLASS(BBBasis);
-		GDREGISTER_CLASS(BBTransform3D);
-		GDREGISTER_CLASS(BBColor);
-		GDREGISTER_CLASS(BBStringName);
-		GDREGISTER_CLASS(BBColor);
-		GDREGISTER_CLASS(BBNode);
-		GDREGISTER_CLASS(BBDictionary);
-		GDREGISTER_CLASS(BBArray);
-		GDREGISTER_CLASS(BBByteArray);
-		GDREGISTER_CLASS(BBIntArray);
-		GDREGISTER_CLASS(BBFloatArray);
-		GDREGISTER_CLASS(BBColorArray);
+		GDREGISTER_CLASS(BBRect2);
+		GDREGISTER_CLASS(BBRect2i);
+		GDREGISTER_CLASS(BBString);
 		GDREGISTER_CLASS(BBStringArray);
-		GDREGISTER_CLASS(BBVector2Array);
-		GDREGISTER_CLASS(BBVector3Array);
+		GDREGISTER_CLASS(BBStringName);
+		GDREGISTER_CLASS(BBTransform2D);
+		GDREGISTER_CLASS(BBTransform3D);
 		GDREGISTER_CLASS(BBVariant);
+		GDREGISTER_CLASS(BBVector2);
+		GDREGISTER_CLASS(BBVector2Array);
+		GDREGISTER_CLASS(BBVector2i);
+		GDREGISTER_CLASS(BBVector3);
+		GDREGISTER_CLASS(BBVector3Array);
+		GDREGISTER_CLASS(BBVector3i);
+		GDREGISTER_CLASS(BBVector4);
+		GDREGISTER_CLASS(BBVector4i);
 
 		_limbo_utility = memnew(LimboUtility);
 
+#ifdef LIMBOAI_MODULE
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
+#elif LIMBOAI_GDEXTENSION
+		Engine::get_singleton()->register_singleton("LimboUtility", LimboUtility::get_singleton());
+#endif
+
 		LimboStringNames::create();
 	}
 
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+#ifdef LIMBOAI_GDEXTENSION
+		GDREGISTER_CLASS(TaskTree);
+		GDREGISTER_CLASS(TaskButton);
+		GDREGISTER_CLASS(TaskPaletteSection);
+		GDREGISTER_CLASS(TaskPalette);
+		GDREGISTER_CLASS(ActionBanner);
+		GDREGISTER_CLASS(ModeSwitchButton);
+		GDREGISTER_CLASS(CompatShortcutBin);
+		GDREGISTER_CLASS(CompatScreenSelect);
+		GDREGISTER_CLASS(CompatWindowWrapper);
+		GDREGISTER_CLASS(BehaviorTreeView);
+		GDREGISTER_CLASS(LimboDebuggerTab);
+		GDREGISTER_CLASS(LimboDebuggerPlugin);
+		GDREGISTER_CLASS(LimboAIEditor);
+		GDREGISTER_CLASS(LimboAIEditorPlugin);
+#endif // LIMBOAI_GDEXTENSION
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
-	} // else if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
-	  // GDREGISTER_CLASS(BehaviorTreeView);
-	// }
+	}
 
-#endif
+#endif // ! TOOLS_ENABLED
 }
 
 void uninitialize_limboai_module(ModuleInitializationLevel p_level) {
@@ -228,3 +261,18 @@ void uninitialize_limboai_module(ModuleInitializationLevel p_level) {
 		memdelete(_limbo_utility);
 	}
 }
+
+#ifdef LIMBOAI_GDEXTENSION
+extern "C" {
+// Initialization.
+GDExtensionBool GDE_EXPORT limboai_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, const GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {
+	godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
+
+	init_obj.register_initializer(initialize_limboai_module);
+	init_obj.register_terminator(uninitialize_limboai_module);
+	init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+
+	return init_obj.init();
+}
+}
+#endif // LIMBOAI_GDEXTENSION

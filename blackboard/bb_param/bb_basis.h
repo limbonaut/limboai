@@ -13,7 +13,6 @@
 #define BB_BASIS_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBBasis : public BBParam {
 	GDCLASS(BBBasis, BBParam);

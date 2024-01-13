@@ -14,8 +14,6 @@
 
 #include "../bt_composite.h"
 
-#include "core/templates/vector.h"
-
 class BTRandomSelector : public BTComposite {
 	GDCLASS(BTRandomSelector, BTComposite);
 	TASK_CATEGORY(Composites);
@@ -28,4 +26,5 @@ protected:
 	virtual void _enter() override;
 	virtual Status _tick(double p_delta) override;
 };
+
 #endif // BT_RANDOM_SELECTOR_H

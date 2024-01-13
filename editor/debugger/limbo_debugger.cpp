@@ -11,17 +11,26 @@
 
 #include "limbo_debugger.h"
 
+#include "../../bt/tasks/bt_task.h"
+#include "../../util/limbo_compat.h"
 #include "behavior_tree_data.h"
-#include "modules/limboai/bt/tasks/bt_task.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
 #include "core/io/resource.h"
 #include "core/string/node_path.h"
 #include "scene/main/scene_tree.h"
 #include "scene/main/window.h"
+#endif // LIMBOAI_MODULE
 
-//// LimboDebugger
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine_debugger.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/classes/window.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
+//**** LimboDebugger
 
 LimboDebugger *LimboDebugger::singleton = nullptr;
 LimboDebugger *LimboDebugger::get_singleton() {
@@ -30,8 +39,10 @@ LimboDebugger *LimboDebugger::get_singleton() {
 
 LimboDebugger::LimboDebugger() {
 	singleton = this;
-#ifdef DEBUG_ENABLED
+#if defined(DEBUG_ENABLED) && defined(LIMBOAI_MODULE)
 	EngineDebugger::register_message_capture("limboai", EngineDebugger::Capture(nullptr, LimboDebugger::parse_message));
+#elif defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
+	EngineDebugger::get_singleton()->register_message_capture("limboai", callable_mp(this, &LimboDebugger::parse_message_gdext));
 #endif
 }
 
@@ -40,7 +51,7 @@ LimboDebugger::~LimboDebugger() {
 }
 
 void LimboDebugger::initialize() {
-	if (EngineDebugger::is_active()) {
+	if (IS_DEBUGGER_ACTIVE()) {
 		memnew(LimboDebugger);
 	}
 }
@@ -49,6 +60,17 @@ void LimboDebugger::deinitialize() {
 	if (singleton) {
 		memdelete(singleton);
 	}
+}
+
+void LimboDebugger::_bind_methods() {
+#ifdef DEBUG_ENABLED
+
+#ifdef LIMBOAI_GDEXTENSION
+	ClassDB::bind_method(D_METHOD("parse_message_gdext"), &LimboDebugger::parse_message_gdext);
+#endif
+	ClassDB::bind_method(D_METHOD("_on_bt_updated", "p_status", "p_path"), &LimboDebugger::_on_bt_updated);
+	ClassDB::bind_method(D_METHOD("_on_state_updated", "p_delta", "p_path"), &LimboDebugger::_on_state_updated);
+#endif // ! DEBUG_ENABLED
 }
 
 #ifdef DEBUG_ENABLED
@@ -68,6 +90,14 @@ Error LimboDebugger::parse_message(void *p_user, const String &p_msg, const Arra
 	}
 	return OK;
 }
+
+#ifdef LIMBOAI_GDEXTENSION
+bool LimboDebugger::parse_message_gdext(const String &p_msg, const Array &p_args) {
+	bool r_captured;
+	LimboDebugger::parse_message(nullptr, p_msg, p_args, r_captured);
+	return r_captured;
+}
+#endif // LIMBOAI_GDEXTENSION
 
 void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
 	ERR_FAIL_COND(p_instance.is_null());
@@ -104,13 +134,13 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 		_untrack_tree();
 	}
 
-	Node *node = SceneTree::get_singleton()->get_root()->get_node(p_path);
+	Node *node = SCENE_TREE()->get_root()->get_node_or_null(p_path);
 	ERR_FAIL_COND(node == nullptr);
 
 	tracked_player = p_path;
 
-	bool r_valid = false;
-	Ref<Resource> bt = node->get(SNAME("behavior_tree"), &r_valid);
+	Ref<Resource> bt = node->get(LW_NAME(behavior_tree));
+
 	if (bt.is_valid()) {
 		bt_resource_path = bt->get_path();
 	} else {
@@ -118,9 +148,9 @@ void LimboDebugger::_track_tree(NodePath p_path) {
 	}
 
 	if (node->is_class("BTPlayer")) {
-		node->connect(SNAME("updated"), callable_mp(this, &LimboDebugger::_on_bt_updated).bind(p_path));
+		node->connect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated).bind(p_path));
 	} else if (node->is_class("BTState")) {
-		node->connect(SNAME("updated"), callable_mp(this, &LimboDebugger::_on_state_updated).bind(p_path));
+		node->connect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated).bind(p_path));
 	}
 }
 
@@ -132,13 +162,13 @@ void LimboDebugger::_untrack_tree() {
 	NodePath was_tracking = tracked_player;
 	tracked_player = NodePath();
 
-	Node *node = SceneTree::get_singleton()->get_root()->get_node(was_tracking);
+	Node *node = SCENE_TREE()->get_root()->get_node_or_null(was_tracking);
 	ERR_FAIL_COND(node == nullptr);
 
 	if (node->is_class("BTPlayer")) {
-		node->disconnect(SNAME("updated"), callable_mp(this, &LimboDebugger::_on_bt_updated));
+		node->disconnect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_bt_updated));
 	} else if (node->is_class("BTState")) {
-		node->disconnect(SNAME("updated"), callable_mp(this, &LimboDebugger::_on_state_updated));
+		node->disconnect(LW_NAME(updated), callable_mp(this, &LimboDebugger::_on_state_updated));
 	}
 }
 
@@ -168,4 +198,4 @@ void LimboDebugger::_on_state_updated(float _delta, NodePath p_path) {
 	EngineDebugger::get_singleton()->send_message("limboai:bt_update", arr);
 }
 
-#endif // DEBUG_ENABLED
+#endif // ! DEBUG_ENABLED

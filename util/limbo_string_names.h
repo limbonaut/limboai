@@ -12,10 +12,17 @@
 #ifndef LIMBO_STRING_NAMES_H
 #define LIMBO_STRING_NAMES_H
 
-#include "modules/register_module_types.h"
-
+#ifdef LIMBOAI_MODULE
 #include "core/string/string_name.h"
 #include "core/typedefs.h"
+#include "modules/register_module_types.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/variant/string.hpp"
+#include <godot_cpp/variant/string_name.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboStringNames {
 	friend void initialize_limboai_module(ModuleInitializationLevel p_level);
@@ -34,19 +41,117 @@ class LimboStringNames {
 public:
 	_FORCE_INLINE_ static LimboStringNames *get_singleton() { return singleton; }
 
-	StringName _generate_name;
-	StringName _setup;
+	StringName _draw_failure_status;
+	StringName _draw_probability;
+	StringName _draw_running_status;
+	StringName _draw_success_status;
 	StringName _enter;
 	StringName _exit;
+	StringName _generate_name;
+	StringName _get_configuration_warnings;
+	StringName _replace_task;
+	StringName _setup;
 	StringName _tick;
-	StringName behavior_tree_finished;
-	StringName setup;
-	StringName entered;
-	StringName exited;
-	StringName updated;
+	StringName _update_banners;
 	StringName _update;
+	StringName _weight_;
+	StringName accent_color;
+	StringName add_child_at_index;
+	StringName add_child;
+	StringName AnimationFilter;
+	StringName Back;
+	StringName behavior_tree_finished;
+	StringName behavior_tree;
+	StringName BehaviorTree;
+	StringName bold;
+	StringName BTAlwaysFail;
+	StringName BTAlwaysSucceed;
+	StringName changed;
+	StringName connect;
+	StringName Debug;
+	StringName disabled_font_color;
+	StringName doc_italic;
+	StringName draw;
+	StringName Duplicate;
+	StringName Editor;
+	StringName EditorFonts;
+	StringName EditorIcons;
+	StringName EditorStyles;
+	StringName emit_changed;
+	StringName entered;
+	StringName error_value;
+	StringName exited;
+	StringName favorite_tasks_changed;
+	StringName Favorites;
+	StringName font_color;
+	StringName font_size;
+	StringName font;
+	StringName Forward;
+	StringName gui_input;
+	StringName GuiTreeArrowDown;
+	StringName GuiTreeArrowRight;
+	StringName Help;
+	StringName icon_max_width;
+	StringName id_pressed;
+	StringName item_collapsed;
+	StringName item_selected;
+	StringName LimboDeselectAll;
+	StringName LimboExtraClock;
+	StringName LimboExtractSubtree;
+	StringName LimboPercent;
+	StringName LimboSelectAll;
+	StringName LineEdit;
+	StringName Load;
+	StringName managed;
+	StringName mode_changed;
+	StringName MoveDown;
+	StringName MoveUp;
+	StringName New;
+	StringName NewRoot;
+	StringName NodeWarning;
+	StringName NonFavorite;
+	StringName normal;
+	StringName popup_hide;
+	StringName pressed;
+	StringName probability_clicked;
+	StringName refresh;
+	StringName Reload;
+	StringName remove_child;
+	StringName Remove;
+	StringName Rename;
+	StringName request_open_in_screen;
+	StringName rmb_pressed;
+	StringName Save;
+	StringName Script;
+	StringName ScriptCreate;
+	StringName Search;
+	StringName set_custom_name;
+	StringName set_root_task;
+	StringName setup;
+	StringName started;
 	StringName state_changed;
-	StringName _get_configuration_warning;
+	StringName StatusWarning;
+	StringName stopped;
+	StringName task_activated;
+	StringName task_button_pressed;
+	StringName task_button_rmb;
+	StringName task_dragged;
+	StringName task_meta;
+	StringName task_selected;
+	StringName text_changed;
+	StringName timeout;
+	StringName toggled;
+	StringName Tools;
+	StringName update_task;
+	StringName update_tree;
+	StringName updated;
+	StringName visibility_changed;
+	StringName window_visibility_changed;
+
+	String EVENT_FINISHED;
+	String repeat_forever;
 };
+
+#define LW_NAME(m_arg) LimboStringNames::get_singleton()->m_arg
 
 #endif // LIMBO_STRING_NAMES_H

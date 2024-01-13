@@ -16,12 +16,19 @@
 
 #include "behavior_tree_data.h"
 
-#include "core/object/class_db.h"
-#include "core/object/object.h"
+#ifdef LIMBOAI_MODULE
 #include "scene/gui/control.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/style_box_flat.h"
 #include "scene/resources/texture.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/control.hpp>
+#include <godot_cpp/classes/font.hpp>
+#include <godot_cpp/classes/style_box_flat.hpp>
+#include <godot_cpp/classes/tree.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 class BehaviorTreeView : public Control {
 	GDCLASS(BehaviorTreeView, Control);
@@ -49,7 +56,9 @@ private:
 	void _item_collapsed(Object *p_obj);
 
 protected:
-	virtual void _update_theme_item_cache() override;
+	void _do_update_theme_item_cache();
+
+	void _notification(int p_what);
 
 	static void _bind_methods();
 
@@ -60,6 +69,6 @@ public:
 	BehaviorTreeView();
 };
 
-#endif // BEHAVIOR_TREE_VIEW
+#endif // ! BEHAVIOR_TREE_VIEW_H
 
-#endif // TOOLS_ENABLED
+#endif // ! TOOLS_ENABLED

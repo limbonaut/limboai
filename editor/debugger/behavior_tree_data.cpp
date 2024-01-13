@@ -11,10 +11,11 @@
 
 #include "behavior_tree_data.h"
 
-#include "core/object/script_language.h"
+#ifdef LIMBOAI_MODULE
 #include "core/templates/list.h"
+#endif
 
-//// BehaviorTreeData
+//**** BehaviorTreeData
 
 void BehaviorTreeData::serialize(Array &p_arr) {
 	p_arr.push_back(bt_player_path);
@@ -76,7 +77,7 @@ BehaviorTreeData::BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath
 
 		String script_path;
 		if (task->get_script()) {
-			Ref<Script> script = task->get_script();
+			Ref<Resource> script = task->get_script();
 			script_path = script->get_path();
 		}
 

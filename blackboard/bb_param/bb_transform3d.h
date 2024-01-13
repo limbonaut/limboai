@@ -13,7 +13,6 @@
 #define BB_TRANSFORM3D_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBTransform3D : public BBParam {
 	GDCLASS(BBTransform3D, BBParam);

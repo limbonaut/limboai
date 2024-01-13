@@ -11,14 +11,20 @@
 
 #include "bb_param.h"
 
-#include "modules/limboai/util/limbo_utility.h"
+#include "../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/core_bind.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/variant/variant.h"
 #include "core/variant/variant_utility.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
@@ -49,18 +55,22 @@ void BBParam::set_variable(const String &p_value) {
 	emit_changed();
 }
 
+#ifdef LIMBOAI_MODULE
 String BBParam::to_string() {
+#elif LIMBOAI_GDEXTENSION
+String BBParam::_to_string() {
+#endif
 	if (value_source == SAVED_VALUE) {
 		String s = saved_value.stringify();
 		switch (get_type()) {
 			case Variant::STRING: {
-				s = s.c_escape().quote();
+				s = "\"" + s.c_escape() + "\"";
 			} break;
 			case Variant::STRING_NAME: {
-				s = "&" + s.c_escape().quote();
+				s = "&\"" + s.c_escape() + "\"";
 			} break;
 			case Variant::NODE_PATH: {
-				s = "^" + s.c_escape().quote();
+				s = "^\"" + s.c_escape() + "\"";
 			} break;
 			default: {
 			} break;

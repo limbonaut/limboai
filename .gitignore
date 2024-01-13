@@ -1,3 +1,7 @@
+# LimboAI-specific
+demo/addons/
+icons/*.import
+
 # Godot auto generated files
 *.gen.*
 .import/

@@ -11,19 +11,12 @@
 
 #include "bt_delay.h"
 
-#include "core/error/error_macros.h"
-#include "core/math/math_funcs.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/variant/array.h"
-#include "core/variant/variant.h"
-
 void BTDelay::set_seconds(double p_value) {
 	seconds = p_value;
 	emit_changed();
 }
 
-String BTDelay::_generate_name() const {
+String BTDelay::_generate_name() {
 	return vformat("Delay %s sec", Math::snapped(seconds, 0.001));
 }
 

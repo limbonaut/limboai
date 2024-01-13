@@ -13,7 +13,6 @@
 #define BB_STRING_ARRAY_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBStringArray : public BBParam {
 	GDCLASS(BBStringArray, BBParam);

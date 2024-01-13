@@ -13,7 +13,6 @@
 #define BB_NODE_H
 
 #include "bb_param.h"
-#include "core/object/object.h"
 
 class BBNode : public BBParam {
 	GDCLASS(BBNode, BBParam);
