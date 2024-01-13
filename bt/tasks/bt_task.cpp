@@ -51,27 +51,20 @@ void BT::_bind_methods() {
 }
 
 String BTTask::_generate_name() {
-#ifdef LIMBOAI_MODULE
-	if (get_script_instance()) {
-		if (get_script_instance()->has_method(LimboStringNames::get_singleton()->_generate_name)) {
-			ERR_FAIL_COND_V_MSG(!get_script_instance()->get_script()->is_tool(), "ERROR: not a tool script", "Task script should be a \"tool\" script!");
-			return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
-		}
-		String script_path = get_script_instance()->get_script()->get_path();
-		if (!script_path.is_empty()) {
-			// Generate name based on script file
-			return script_path.get_basename().get_file().trim_prefix("BT").to_pascal_case();
-		}
-	}
-	return get_class().trim_prefix("BT");
-#endif // LIMBOAI_MODULE
+	String ret;
 
-#ifdef LIMBOAI_GDEXTENSION
-	if (IS_RESOURCE_FILE(get_path())) {
-		return get_path().get_basename().get_file().trim_prefix("BT").to_pascal_case();
+	// Generate name based on script path.
+	Ref<Script> sc = GET_SCRIPT(this);
+	if (sc.is_valid() && sc->get_path().is_absolute_path()) {
+		ret = sc->get_path().get_basename().get_file().to_pascal_case();
 	}
-	return get_class().trim_prefix("BT");
-#endif // LIMBOAI_GDEXTENSION
+
+	// Generate name based on core class name.
+	if (ret.is_empty()) {
+		ret = get_class();
+	}
+
+	return ret.trim_prefix("BT");
 }
 
 Array BTTask::_get_children() const {
@@ -100,7 +93,18 @@ void BTTask::_set_children(Array p_children) {
 
 String BTTask::get_task_name() {
 	if (data.custom_name.is_empty()) {
+#ifdef LIMBOAI_MODULE
+		if (get_script_instance() && get_script_instance()->has_method(LW_NAME(_generate_name))) {
+			if (unlikely(!get_script_instance()->get_script()->is_tool())) {
+				ERR_PRINT(vformat("BTTask: Task script should be a \"tool\" script!"));
+			} else {
+				return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
+			}
+		}
+		return _generate_name();
+#else // LIMBOAI_GDEXTENSION
 		return call(LimboStringNames::get_singleton()->_generate_name);
+#endif
 	}
 	return data.custom_name;
 }

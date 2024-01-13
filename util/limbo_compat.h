@@ -53,6 +53,7 @@
 #define FILE_EXISTS(m_path) FileAccess::exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::create(DirAccess::ACCESS_RESOURCES)
 #define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable, Variant()))
+#define GET_SCRIPT(m_obj) (m_obj->get_script_instance() ? m_obj->get_script_instance()->get_script() : nullptr)
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 
@@ -105,6 +106,7 @@ using namespace godot;
 #define FILE_EXISTS(m_path) FileAccess::file_exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::open("res://")
 #define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable))
+#define GET_SCRIPT(m_obj) (m_obj->get_script())
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret)            \
 	{                                                                \
