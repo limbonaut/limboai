@@ -14,7 +14,7 @@ release = '1.0'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx_markdown_builder']
+extensions = ['sphinx_markdown_builder', 'sphinx_rtd_dark_mode']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build']
@@ -27,6 +27,7 @@ exclude_patterns = ['_build']
 # markdown_http_base = "https://your-domain.com/docs"
 # markdown_uri_doc_suffix = ".html"
 
+default_dark_mode = False
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
