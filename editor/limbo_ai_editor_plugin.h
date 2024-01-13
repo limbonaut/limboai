@@ -84,6 +84,7 @@ private:
 
 	enum MiscMenu {
 		MISC_INTRODUCTION,
+		MISC_ONLINE_DOCUMENTATION,
 		MISC_OPEN_DEBUGGER,
 		MISC_PROJECT_SETTINGS,
 		MISC_CREATE_SCRIPT_TEMPLATE,
@@ -96,7 +97,8 @@ private:
 		Ref<Texture2D> move_task_down_icon;
 		Ref<Texture2D> move_task_up_icon;
 		Ref<Texture2D> open_debugger_icon;
-		Ref<Texture2D> open_doc_icon;
+		Ref<Texture2D> doc_icon;
+		Ref<Texture2D> introduction_icon;
 		Ref<Texture2D> percent_icon;
 		Ref<Texture2D> remove_task_icon;
 		Ref<Texture2D> rename_task_icon;

@@ -373,7 +373,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, LW_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_icon_item(theme_cache.change_type_icon, TTR("Change Type"), ACTION_CHANGE_TYPE);
 	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
-	menu->add_icon_item(theme_cache.open_doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
+	menu->add_icon_item(theme_cache.doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
 	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), task->get_script() == Variant());
 
 	menu->add_separator();
@@ -436,14 +436,17 @@ void LimboAIEditor::_action_selected(int p_id) {
 			Ref<BTTask> task = task_tree->get_selected();
 			ERR_FAIL_COND(task.is_null());
 			String help_class;
-			String res_path = task->get_path();
-			if (res_path.begins_with("res://")) {
-				help_class = "\"" + res_path.get_basename().to_pascal_case() + "\"";
-			} else {
+
+			Ref<Script> sc = GET_SCRIPT(task);
+			if (sc.is_valid() && sc->get_path().is_absolute_path()) {
+				help_class = sc->get_path();
+			}
+			if (help_class.is_empty()) {
 				// Assuming context task is core class.
 				help_class = task->get_class();
 			}
-			SHOW_DOC("class_name:" + help_class);
+
+			LimboUtility::get_singleton()->open_doc_class(help_class);
 		} break;
 		case ACTION_MOVE_UP: {
 			Ref<BTTask> sel = task_tree->get_selected();
@@ -590,7 +593,10 @@ void LimboAIEditor::_probability_popup_closed() {
 void LimboAIEditor::_misc_option_selected(int p_id) {
 	switch (p_id) {
 		case MISC_INTRODUCTION: {
-			SHOW_DOC("class_name:BehaviorTree");
+			LimboUtility::get_singleton()->open_doc_introduction();
+		} break;
+		case MISC_ONLINE_DOCUMENTATION: {
+			LimboUtility::get_singleton()->open_doc_online();
 		} break;
 		case MISC_OPEN_DEBUGGER: {
 			ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
@@ -938,7 +944,8 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->clear();
 
-	misc_menu->add_icon_item(theme_cache.open_doc_icon, TTR("Introduction"), MISC_INTRODUCTION);
+	misc_menu->add_icon_item(theme_cache.introduction_icon, TTR("Introduction"), MISC_INTRODUCTION);
+	misc_menu->add_icon_item(theme_cache.doc_icon, TTR("Online Documentation"), MISC_ONLINE_DOCUMENTATION);
 
 	misc_menu->add_separator();
 #ifdef LIMBOAI_MODULE
@@ -994,7 +1001,8 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.move_task_down_icon = get_theme_icon(LW_NAME(MoveDown), LW_NAME(EditorIcons));
 	theme_cache.move_task_up_icon = get_theme_icon(LW_NAME(MoveUp), LW_NAME(EditorIcons));
 	theme_cache.open_debugger_icon = get_theme_icon(LW_NAME(Debug), LW_NAME(EditorIcons));
-	theme_cache.open_doc_icon = get_theme_icon(LW_NAME(Help), LW_NAME(EditorIcons));
+	theme_cache.doc_icon = get_theme_icon(LW_NAME(Help), LW_NAME(EditorIcons));
+	theme_cache.introduction_icon = get_theme_icon(LW_NAME(Info), LW_NAME(EditorIcons));
 	theme_cache.remove_task_icon = get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons));
 	theme_cache.rename_task_icon = get_theme_icon(LW_NAME(Rename), LW_NAME(EditorIcons));
 	theme_cache.change_type_icon = get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons));
