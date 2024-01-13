@@ -22,7 +22,7 @@
 #include "core/object/ref_counted.h"
 #include "core/string/print_string.h"
 
-// * API abstractions: Module edition
+// *** API abstractions: Module edition
 
 #define SCRIPT_EDITOR() (ScriptEditor::get_singleton())
 #define EDITOR_FILE_SYSTEM() (EditorFileSystem::get_singleton())
@@ -37,8 +37,6 @@
 #define IS_CLASS(m_obj, m_class) (m_obj->is_class_ptr(m_class::get_class_ptr_static()))
 #define RAND_RANGE(m_from, m_to) (Math::random(m_from, m_to))
 #define RANDF() (Math::randf())
-#define VCALL(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
-#define VCALL_ARGS(method, ...) (call(LW_NAME(method), __VA_ARGS__))
 #define BUTTON_SET_ICON(m_btn, m_icon) m_btn->set_icon(m_icon)
 #define RESOURCE_LOAD(m_path, m_hint) ResourceLoader::load(m_path, m_hint)
 #define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::load(m_path, m_hint, ResourceFormatLoader::CACHE_MODE_IGNORE)
@@ -57,6 +55,16 @@
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 
+// * Virtual calls
+
+#define VCALL(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
+#define VCALL_ARGS(method, ...) (call(LW_NAME(method), __VA_ARGS__))
+#define VCALL_V(m_name, r_ret) (GDVIRTUAL_CALL(m_name, r_ret))
+#define VCALL_OR_NATIVE(m_name, ...)            \
+	if (!GDVIRTUAL_CALL(m_name, __VA_ARGS__)) { \
+		m_name(__VA_ARGS__);                    \
+	}
+
 // * Enum
 
 #define LW_KEY(key) (Key::key)
@@ -73,7 +81,7 @@
 
 using namespace godot;
 
-// * API abstractions: GDExtension edition
+// *** API abstractions: GDExtension edition
 
 #define SCRIPT_EDITOR() (EditorInterface::get_singleton()->get_script_editor())
 #define EDITOR_FILE_SYSTEM() (EditorInterface::get_singleton()->get_resource_filesystem())
@@ -90,8 +98,6 @@ using namespace godot;
 #define IS_CLASS(m_obj, m_class) (m_obj->is_class(#m_class))
 #define RAND_RANGE(m_from, m_to) (UtilityFunctions::randf_range(m_from, m_to))
 #define RANDF() (UtilityFunctions::randf())
-#define VCALL(m_name) (call(LW_NAME(m_name)))
-#define VCALL_ARGS(m_name, ...) (call(LW_NAME(m_name), __VA_ARGS__))
 #define BUTTON_SET_ICON(m_btn, m_icon) m_btn->set_button_icon(m_icon)
 #define RESOURCE_LOAD(m_path, m_hint) ResourceLoader::get_singleton()->load(m_path, m_hint)
 #define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::get_singleton()->load(m_path, m_hint, ResourceLoader::CACHE_MODE_IGNORE)
@@ -114,7 +120,12 @@ using namespace godot;
 		Variant::evaluate(m_op, m_lvalue, m_rvalue, r_ret, r_valid); \
 	}
 
-// * Enums
+#define VCALL(m_name) (call(LW_NAME(m_name)))
+#define VCALL_ARGS(m_name, ...) (call(LW_NAME(m_name), __VA_ARGS__))
+#define VCALL_V(m_name, r_ret) (r_ret = call(LW_NAME(m_name)))
+#define VCALL_OR_NATIVE(m_name) (call(LW_NAME(m_name)))
+
+// * Enum
 
 #define LW_KEY(key) (Key::KEY_##key)
 #define LW_KEY_MASK(mask) (KeyModifierMask::KEY_MASK_##mask)
@@ -137,7 +148,7 @@ String TTR(const String &p_text, const String &p_context = "");
 
 #endif // ! LIMBOAI_GDEXTENSION
 
-// * Shared defines
+// *** API abstractions: Shared
 
 #define VARIANT_IS_ARRAY(m_variant) (m_variant.get_type() >= Variant::ARRAY)
 #define VARIANT_IS_NUM(m_variant) (m_variant.get_type() == Variant::INT || m_variant.get_type() == Variant::FLOAT)
@@ -159,6 +170,6 @@ inline void VARIANT_DELETE_IF_OBJECT(Variant m_variant) {
 void SHOW_DOC(const String &p_topic);
 void EDIT_SCRIPT(const String &p_path);
 
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED
 
 #endif // LIMBO_COMPAT_H

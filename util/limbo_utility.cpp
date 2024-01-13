@@ -11,10 +11,9 @@
 
 #include "limbo_utility.h"
 
+#include "../bt/tasks/bt_task.h"
+
 #ifdef LIMBOAI_MODULE
-
-#include "modules/limboai/bt/tasks/bt_task.h"
-
 #include "core/error/error_macros.h"
 #include "core/object/script_language.h"
 #include "core/variant/variant.h"
@@ -24,11 +23,9 @@
 #include "editor/editor_node.h"
 #endif // TOOLS_ENABLED
 
-#endif // LIMBOAI_MODULE
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "bt/tasks/bt_task.h"
-
 #include "godot_cpp/classes/input_event_key.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
@@ -38,8 +35,7 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/theme.hpp>
 #include <godot_cpp/core/error_macros.hpp>
-
-#endif // LIMBOAI_GDEXTENSION
+#endif // ! LIMBOAI_GDEXTENSION
 
 LimboUtility *LimboUtility::singleton = nullptr;
 
@@ -265,10 +261,10 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 // TODO: Fix when godot-cpp https://github.com/godotengine/godot-cpp/issues/1348 is resolved.
 #ifdef LIMBOAI_MODULE
 			VARIANT_EVALUATE(Variant::OP_POWER, left_value, right_value, ret);
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 			ERR_PRINT("LimboUtility: Operation POWER is not available due to https://github.com/godotengine/godot-cpp/issues/1348");
 			ret = left_value;
-#endif // LIMBOAI_MODULE
+#endif
 		} break;
 		case OPERATION_BIT_SHIFT_LEFT: {
 			VARIANT_EVALUATE(Variant::OP_SHIFT_LEFT, left_value, right_value, ret);

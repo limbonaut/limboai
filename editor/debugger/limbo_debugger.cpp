@@ -30,7 +30,7 @@
 #include <godot_cpp/classes/window.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
-//// LimboDebugger
+//**** LimboDebugger
 
 LimboDebugger *LimboDebugger::singleton = nullptr;
 LimboDebugger *LimboDebugger::get_singleton() {
@@ -41,8 +41,7 @@ LimboDebugger::LimboDebugger() {
 	singleton = this;
 #if defined(DEBUG_ENABLED) && defined(LIMBOAI_MODULE)
 	EngineDebugger::register_message_capture("limboai", EngineDebugger::Capture(nullptr, LimboDebugger::parse_message));
-#endif
-#if defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
+#elif defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
 	EngineDebugger::get_singleton()->register_message_capture("limboai", callable_mp(this, &LimboDebugger::parse_message_gdext));
 #endif
 }
@@ -98,7 +97,7 @@ bool LimboDebugger::parse_message_gdext(const String &p_msg, const Array &p_args
 	LimboDebugger::parse_message(nullptr, p_msg, p_args, r_captured);
 	return r_captured;
 }
-#endif // LIMBOAI_MODULE
+#endif // LIMBOAI_GDEXTENSION
 
 void LimboDebugger::register_bt_instance(Ref<BTTask> p_instance, NodePath p_player_path) {
 	ERR_FAIL_COND(p_instance.is_null());

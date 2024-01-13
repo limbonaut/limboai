@@ -27,7 +27,7 @@
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/type_info.hpp>
 #include <godot_cpp/variant/variant.hpp>
-#endif
+#endif // LIMBOAI_GDEXTENSION
 
 class BBParam : public Resource {
 	GDCLASS(BBParam, Resource);
@@ -54,8 +54,7 @@ protected:
 #ifdef LIMBOAI_MODULE
 		Callable::CallError err;
 		Variant::construct(get_type(), saved_value, nullptr, 0, err);
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 		saved_value.clear();
 #endif
 	}
@@ -76,7 +75,7 @@ public:
 
 #ifdef LIMBOAI_MODULE
 	virtual String to_string() override;
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	virtual String _to_string();
 #endif
 

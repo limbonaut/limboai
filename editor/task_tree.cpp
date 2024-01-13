@@ -26,7 +26,6 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/script.hpp>
-
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

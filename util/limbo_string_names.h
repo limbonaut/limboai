@@ -16,14 +16,13 @@
 #include "core/string/string_name.h"
 #include "core/typedefs.h"
 #include "modules/register_module_types.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include "godot_cpp/variant/string.hpp"
 #include <godot_cpp/variant/string_name.hpp>
-
 using namespace godot;
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboStringNames {
 	friend void initialize_limboai_module(ModuleInitializationLevel p_level);
@@ -49,7 +48,7 @@ public:
 	StringName _enter;
 	StringName _exit;
 	StringName _generate_name;
-	StringName _get_configuration_warning;
+	StringName _get_configuration_warnings;
 	StringName _replace_task;
 	StringName _setup;
 	StringName _tick;

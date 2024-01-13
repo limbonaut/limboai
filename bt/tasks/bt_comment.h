@@ -23,4 +23,4 @@ public:
 	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_COMMENT
+#endif // BT_COMMENT_H

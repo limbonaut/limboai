@@ -64,8 +64,7 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 #ifdef LIMBOAI_MODULE
 		Variant left_value = get_agent()->get(property, &r_valid);
 		ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Failed to get agent's \"%s\" property. Returning FAILURE.", property));
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 		Variant left_value = get_agent()->get(property);
 #endif
 		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
@@ -75,8 +74,7 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 #ifdef LIMBOAI_MODULE
 	get_agent()->set(property, result, &r_valid);
 	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, result));
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	get_agent()->set(property, result);
 #endif
 	return SUCCESS;

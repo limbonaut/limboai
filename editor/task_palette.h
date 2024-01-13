@@ -15,15 +15,14 @@
 #define TASK_PALETTE_H
 
 #ifdef LIMBOAI_MODULE
-#include "scene/gui/panel_container.h"
-
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
@@ -36,9 +35,8 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
-
 using namespace godot;
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class TaskButton : public Button {
 	GDCLASS(TaskButton, Button);
@@ -52,10 +50,9 @@ protected:
 public:
 #ifdef LIMBOAI_MODULE
 	virtual Control *make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(p_text); }
-#endif // LIMBOAI_MODULE
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	virtual Object *_make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(p_text); }
-#endif // LIMBOAI_GDEXTENSION
+#endif
 
 	TaskButton();
 };
@@ -192,6 +189,6 @@ public:
 	~TaskPalette();
 };
 
-#endif // ! TASK_PALETTE_H
+#endif // TASK_PALETTE_H
 
 #endif // ! TOOLS_ENABLED

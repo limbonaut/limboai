@@ -15,6 +15,7 @@
 #include "core/error/error_macros.h"
 #include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
+
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/node.hpp>
 #endif // LIMBOAI_GDEXTENSION

@@ -13,17 +13,12 @@
 #define LIMBOAI_REGISTER_TYPES_H
 
 #ifdef LIMBOAI_MODULE
-
 #include "modules/register_module_types.h"
-
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-
 #include <godot_cpp/core/class_db.hpp>
-
 using namespace godot;
-
 #endif // LIMBOAI_GDEXTENSION
 
 void initialize_limboai_module(ModuleInitializationLevel p_level);

@@ -40,15 +40,14 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/file_system_dock.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/tab_container.hpp>
-
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 //**** LimboDebuggerTab
 
@@ -279,7 +278,7 @@ void LimboDebuggerPlugin::_window_visibility_changed(bool p_visible) {
 
 #ifdef LIMBOAI_MODULE
 void LimboDebuggerPlugin::setup_session(int p_idx) {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 void LimboDebuggerPlugin::_setup_session(int32_t p_idx) {
 #endif
 	Ref<EditorDebuggerSession> session = get_session(p_idx);
@@ -309,7 +308,7 @@ void LimboDebuggerPlugin::_setup_session(int32_t p_idx) {
 
 #ifdef LIMBOAI_MODULE
 bool LimboDebuggerPlugin::capture(const String &p_message, const Array &p_data, int p_session) {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 bool LimboDebuggerPlugin::_capture(const String &p_message, const Array &p_data, int32_t p_session) {
 #endif
 	bool captured = true;
@@ -329,7 +328,7 @@ bool LimboDebuggerPlugin::_capture(const String &p_message, const Array &p_data,
 
 #ifdef LIMBOAI_MODULE
 bool LimboDebuggerPlugin::has_capture(const String &p_capture) const {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 bool LimboDebuggerPlugin::_has_capture(const String &p_capture) const {
 #endif
 	return p_capture == "limboai";

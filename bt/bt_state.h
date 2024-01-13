@@ -30,7 +30,6 @@ protected:
 	static void _bind_methods();
 
 	virtual void _setup() override;
-	// virtual void _enter() override {}
 	virtual void _exit() override;
 	virtual void _update(double p_delta) override;
 

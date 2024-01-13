@@ -41,7 +41,7 @@
 #include "editor/project_settings_editor.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/separator.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button_group.hpp>
@@ -66,7 +66,7 @@
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
 #include <godot_cpp/core/error_macros.hpp>
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 //**** LimboAIEditor
 
@@ -193,9 +193,9 @@ void LimboAIEditor::_save_bt(String p_path) {
 	ERR_FAIL_COND_MSG(task_tree->get_bt().is_null(), "Behavior Tree is null.");
 #ifdef LIMBOAI_MODULE
 	task_tree->get_bt()->set_path(p_path, true);
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	task_tree->get_bt()->take_over_path(p_path);
-#endif // LIMBOAI_MODULE
+#endif
 	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
 	_update_header();
 	_mark_as_dirty(false);
@@ -259,7 +259,7 @@ void LimboAIEditor::_create_user_task_dir() {
 
 #ifdef LIMBOAI_MODULE
 	EditorFileSystem::get_singleton()->scan_changes();
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	EditorInterface::get_singleton()->get_resource_filesystem()->scan_sources();
 #endif
 	_update_banners();
@@ -270,7 +270,7 @@ void LimboAIEditor::_edit_project_settings() {
 	ProjectSettingsEditor::get_singleton()->set_general_page("limbo_ai/behavior_tree");
 	ProjectSettingsEditor::get_singleton()->popup_project_settings();
 	ProjectSettingsEditor::get_singleton()->connect(LW_NAME(visibility_changed), callable_mp(this, &LimboAIEditor::_update_banners), CONNECT_ONE_SHOT);
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	// TODO: Find a way to show project setting in GDExtension.
 	// TODO: Maybe show a popup dialog instead.
 	ERR_PRINT("Can't do in GDExtension. To edit project settings, navigate to \"Project->Project Settings\", enable \"Advanced settings\", and scroll down to the \"LimboAI\" section.");
@@ -601,9 +601,9 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 				EditorNode::get_singleton()->make_bottom_panel_item_visible(EditorDebuggerNode::get_singleton());
 				EditorDebuggerNode::get_singleton()->get_default_debugger()->switch_to_debugger(
 						LimboDebuggerPlugin::get_singleton()->get_session_tab_index());
-#else // LIMBOAI_GDEXTENSION
-	  // TODO: Unsure how to switch to debugger pane with GDExtension.
-#endif // LIMBOAI_MODULE
+#elif LIMBOAI_GDEXTENSION
+				// TODO: Unsure how to switch to debugger pane with GDExtension.
+#endif
 			}
 		} break;
 		case MISC_PROJECT_SETTINGS: {
@@ -787,9 +787,9 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 		}
 		disk_changed->call_deferred("popup_centered_ratio", 0.5);
 	}
-#else //LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	task_tree->update_tree();
-#endif // LIMBOAI_MODULE
+#endif
 }
 
 void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
@@ -942,7 +942,7 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->add_separator();
 #ifdef LIMBOAI_MODULE
-	// * Not sure how to switch to debugger pane with GDExtension.
+	// * Disabled in GDExtension: Not sure how to switch to debugger pane.
 	misc_menu->add_icon_shortcut(theme_cache.open_debugger_icon, LW_GET_SHORTCUT("limbo_ai/open_debugger"), MISC_OPEN_DEBUGGER);
 #endif // LIMBOAI_MODULE
 	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
@@ -1355,7 +1355,7 @@ LimboAIEditor::~LimboAIEditor() {
 
 #ifdef LIMBOAI_MODULE
 void LimboAIEditorPlugin::apply_changes() {
-#else // LIMBOAI_MODULE
+#elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_apply_changes() {
 #endif
 	limbo_ai_editor->apply_changes();
@@ -1382,7 +1382,7 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 
 #ifdef LIMBOAI_MODULE
 void LimboAIEditorPlugin::make_visible(bool p_visible) {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_make_visible(bool p_visible) {
 #endif
 	limbo_ai_editor->set_visible(p_visible);
@@ -1390,7 +1390,7 @@ void LimboAIEditorPlugin::_make_visible(bool p_visible) {
 
 #ifdef LIMBOAI_MODULE
 void LimboAIEditorPlugin::edit(Object *p_object) {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_edit(Object *p_object) {
 #endif
 	if (Object::cast_to<BehaviorTree>(p_object)) {
@@ -1400,7 +1400,7 @@ void LimboAIEditorPlugin::_edit(Object *p_object) {
 
 #ifdef LIMBOAI_MODULE
 bool LimboAIEditorPlugin::handles(Object *p_object) const {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 bool LimboAIEditorPlugin::_handles(Object *p_object) const {
 #endif
 	if (Object::cast_to<BehaviorTree>(p_object)) {

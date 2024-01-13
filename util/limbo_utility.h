@@ -26,13 +26,11 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/object.hpp>
-
 #include <godot_cpp/classes/shortcut.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/core/binder_common.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
-
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

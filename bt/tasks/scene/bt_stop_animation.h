@@ -56,4 +56,4 @@ public:
 	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_STOP_ANIMATION
+#endif // BT_STOP_ANIMATION_H

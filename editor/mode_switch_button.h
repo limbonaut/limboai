@@ -20,18 +20,14 @@
 #include "core/typedefs.h"
 #include "scene/gui/button.h"
 #include "scene/resources/texture.h"
-
-#define SET_ICON(m_tex) set_icon(m_tex)
-
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/templates/vector.hpp>
-
 using namespace godot;
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class ModeSwitchButton : public Button {
 	GDCLASS(ModeSwitchButton, Button);
@@ -69,6 +65,6 @@ public:
 	ModeSwitchButton();
 };
 
-#endif // ! MODE_SWITCH_BUTTON_H
+#endif // MODE_SWITCH_BUTTON_H
 
 #endif // ! TOOLS_ENABLED

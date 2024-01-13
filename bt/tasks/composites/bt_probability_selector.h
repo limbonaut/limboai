@@ -20,6 +20,7 @@
 #include "core/core_string_names.h"
 #include "core/typedefs.h"
 #endif // LIMBOAI_MODULE
+
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/templates/hash_set.hpp>
 #endif // LIMBOAI_GDEXTENSION

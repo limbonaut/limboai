@@ -12,6 +12,10 @@
 #ifndef BT_PLAYER_H
 #define BT_PLAYER_H
 
+#include "../blackboard/blackboard.h"
+#include "behavior_tree.h"
+#include "tasks/bt_task.h"
+
 #ifdef LIMBOAI_MODULE
 #include "scene/main/node.h"
 #endif
@@ -20,17 +24,13 @@
 #include <godot_cpp/classes/node.hpp>
 #endif
 
-#include "../blackboard/blackboard.h"
-#include "behavior_tree.h"
-#include "tasks/bt_task.h"
-
 class BTPlayer : public Node {
 	GDCLASS(BTPlayer, Node);
 
 public:
 	enum UpdateMode : unsigned int {
 		IDLE, // automatically call update() during NOTIFICATION_PROCESS
-		PHYSICS, //# automatically call update() during NOTIFICATION_PHYSICS
+		PHYSICS, // automatically call update() during NOTIFICATION_PHYSICS
 		MANUAL, // manually update state machine, user must call update(delta)
 	};
 
@@ -77,8 +77,8 @@ public:
 	BTPlayer();
 	~BTPlayer();
 
-#ifdef DEBUG_ENABLED
-	// Performace monitoring.
+#ifdef DEBUG_ENABLED // Performance monitoring
+
 private:
 	bool monitor_performance = false;
 	StringName monitor_id;

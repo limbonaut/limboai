@@ -95,8 +95,7 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	if (ce.error != Callable::CallError::CALL_OK) {
 		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, argument_count, ce) + ".");
 	}
-#endif // LIMBOAI_MODULE
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	Array call_args;
 	if (include_delta) {
 		call_args.push_back(Variant(p_delta));
@@ -107,7 +106,7 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 
 	// TODO: Unsure how to detect call error, so we return SUCCESS for now...
 	obj->callv(method, call_args);
-#endif // LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	return SUCCESS;
 }

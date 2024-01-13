@@ -20,16 +20,15 @@
 #include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/texture_rect.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/margin_container.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
-
 using namespace godot;
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class ActionBanner : public MarginContainer {
 	GDCLASS(ActionBanner, MarginContainer);
@@ -57,6 +56,6 @@ public:
 	ActionBanner();
 };
 
-#endif // ! ACTION_BANNER
+#endif // ACTION_BANNER_H
 
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED

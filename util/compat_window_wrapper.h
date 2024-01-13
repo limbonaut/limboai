@@ -40,12 +40,9 @@
 #define CompatShortcutBin ShortcutBin
 #define CompatScreenSelect ScreenSelect
 
-#endif // ! LIMBOAI_MODULE
-
-// TODO: Need to compile this as module too!!!
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/label.hpp>
@@ -144,4 +141,4 @@ public:
 
 #endif // ! LIMBOAI_GDEXTENSION
 
-#endif // ! COMPAT_WINDOW_WRAPPER_H
+#endif // COMPAT_WINDOW_WRAPPER_H

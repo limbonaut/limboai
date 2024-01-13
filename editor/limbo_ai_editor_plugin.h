@@ -41,7 +41,7 @@
 
 #define GET_UNDO_REDO() EditorUndoRedoManager::get_singleton()
 
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/control.hpp>
@@ -62,7 +62,7 @@ using namespace godot;
 
 #define GET_UNDO_REDO() plugin->get_undo_redo()
 
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboAIEditor : public Control {
 	GDCLASS(LimboAIEditor, Control);
@@ -208,7 +208,7 @@ public:
 
 #ifdef LIMBOAI_GDEXTENSION
 	virtual void _shortcut_input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
-#endif // LIMBOAI_GDEXTENSION
+#endif
 
 	LimboAIEditor();
 	~LimboAIEditor();
@@ -233,9 +233,8 @@ public:
 	virtual void apply_changes() override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
-#endif // LIMBOAI_MODULE
 
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	bool _has_main_screen() const override { return true; }
 
 	virtual String _get_plugin_name() const override { return "LimboAI"; }
@@ -244,12 +243,12 @@ public:
 	virtual void _edit(Object *p_object) override;
 	virtual bool _handles(Object *p_object) const override;
 	virtual Ref<Texture2D> _get_plugin_icon() const override;
-#endif // LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	LimboAIEditorPlugin();
 	~LimboAIEditorPlugin();
 };
 
-#endif // ! LIMBO_AI_EDITOR_PLUGIN_H
+#endif // LIMBO_AI_EDITOR_PLUGIN_H
 
 #endif // ! TOOLS_ENABLED

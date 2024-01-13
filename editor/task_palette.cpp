@@ -27,7 +27,6 @@
 #include "editor/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "scene/gui/check_box.h"
-
 #endif // LIMBO_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -50,7 +49,6 @@
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/style_box.hpp>
 #include <godot_cpp/core/error_macros.hpp>
-
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

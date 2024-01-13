@@ -34,7 +34,7 @@ LimboStringNames::LimboStringNames() {
 	_enter = SN("_enter");
 	_exit = SN("_exit");
 	_generate_name = SN("_generate_name");
-	_get_configuration_warning = SN("_get_configuration_warning");
+	_get_configuration_warnings = SN("_get_configuration_warnings");
 	_replace_task = SN("_replace_task");
 	_setup = SN("_setup");
 	_tick = SN("_tick");

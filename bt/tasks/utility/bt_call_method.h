@@ -50,4 +50,4 @@ public:
 	BTCallMethod();
 };
 
-#endif // BT_CALL_METHOD
+#endif // BT_CALL_METHOD_H

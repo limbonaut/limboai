@@ -58,8 +58,7 @@ BT::Status BTCheckAgentProperty::_tick(double p_delta) {
 	bool r_valid;
 	Variant left_value = get_agent()->get(property, &r_valid);
 	ERR_FAIL_COND_V_MSG(r_valid == false, FAILURE, vformat("BTCheckAgentProperty: Agent has no property named \"%s\"", property));
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	Variant left_value = get_agent()->get(property);
 #endif
 

@@ -30,7 +30,6 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
-
 #endif // LIMBOAI_GDEXTENSION
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
@@ -203,4 +202,4 @@ BehaviorTreeView::BehaviorTreeView() {
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 }
 
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED

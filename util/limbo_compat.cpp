@@ -17,7 +17,7 @@
 #include "core/io/resource.h"
 #include "editor/editor_node.h"
 #include "editor/plugins/script_editor_plugin.h"
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED
 
 #endif // ! LIMBOAI_MODULE
 
@@ -91,13 +91,13 @@ void SHOW_DOC(const String &p_topic) {
 #ifdef LIMBOAI_MODULE
 	ScriptEditor::get_singleton()->goto_help(p_topic);
 	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	TypedArray<ScriptEditorBase> open_editors = EditorInterface::get_singleton()->get_script_editor()->get_open_script_editors();
 	ERR_FAIL_COND_MSG(open_editors.size() == 0, "Can't open help page. Need at least one script open in the script editor.");
 	ScriptEditorBase *seb = Object::cast_to<ScriptEditorBase>(open_editors.front());
 	ERR_FAIL_NULL(seb);
 	seb->emit_signal("go_to_help", p_topic);
-#endif // ! LIMBOAI_GDEXTENSION
+#endif
 }
 
 void EDIT_SCRIPT(const String &p_path) {
@@ -105,14 +105,12 @@ void EDIT_SCRIPT(const String &p_path) {
 	Ref<Resource> res = ScriptEditor::get_singleton()->open_file(p_path);
 	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
 	EditorNode::get_singleton()->edit_resource(res);
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	Ref<Script> res = RESOURCE_LOAD(p_path, "Script");
 	ERR_FAIL_COND_MSG(res.is_null(), "Failed to load script: " + p_path);
 	EditorInterface::get_singleton()->edit_script(res);
 	EditorInterface::get_singleton()->set_main_screen_editor("Script");
-#endif // LIMBOAI_GDEXTENSION
+#endif
 }
 
 #endif // ! TOOLS_ENABLED

@@ -68,7 +68,7 @@ void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 			}
 		}
 	}
-};
+}
 
 void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_data"), &Blackboard::get_data);

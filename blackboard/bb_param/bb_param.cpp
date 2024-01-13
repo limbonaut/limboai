@@ -11,9 +11,9 @@
 
 #include "bb_param.h"
 
-#ifdef LIMBOAI_MODULE
-#include "modules/limboai/util/limbo_utility.h"
+#include "../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/core_bind.h"
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -23,8 +23,6 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "util/limbo_utility.h"
-
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -59,9 +57,9 @@ void BBParam::set_variable(const String &p_value) {
 
 #ifdef LIMBOAI_MODULE
 String BBParam::to_string() {
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 String BBParam::_to_string() {
-#endif // LIMBOAI_MODULE
+#endif
 	if (value_source == SAVED_VALUE) {
 		String s = saved_value.stringify();
 		switch (get_type()) {

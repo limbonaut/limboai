@@ -51,4 +51,4 @@ public:
 	BehaviorTreeData() {}
 };
 
-#endif // BEHAVIOR_TREE_DATA
+#endif // BEHAVIOR_TREE_DATA_H

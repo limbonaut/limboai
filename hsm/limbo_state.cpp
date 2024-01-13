@@ -100,9 +100,8 @@ bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 				ERR_PRINT("Error calling event handler " + Variant::get_callable_error_text(handlers[p_event], argptrs, 1, ce));
 			}
 		}
-#endif // LIMBOAI_MODULE
 
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 		if (p_cargo.get_type() == Variant::NIL) {
 			ret = handlers[p_event].call();
 		} else {
@@ -189,8 +188,7 @@ void LimboState::_bind_methods() {
 	GDVIRTUAL_BIND(_enter);
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_update, "p_delta");
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	ClassDB::bind_method(D_METHOD("_setup"), &LimboState::_setup);
 	ClassDB::bind_method(D_METHOD("_enter"), &LimboState::_enter);
 	ClassDB::bind_method(D_METHOD("_exit"), &LimboState::_exit);

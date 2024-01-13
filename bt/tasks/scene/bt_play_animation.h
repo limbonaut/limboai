@@ -69,4 +69,4 @@ public:
 	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_PLAY_ANIMATION
+#endif // BT_PLAY_ANIMATION_H

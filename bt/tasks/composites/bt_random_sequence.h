@@ -26,4 +26,5 @@ protected:
 	virtual void _enter() override;
 	virtual Status _tick(double p_delta) override;
 };
+
 #endif // BT_RANDOM_SEQUENCE_H

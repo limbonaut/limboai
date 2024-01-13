@@ -9,8 +9,8 @@
  * =============================================================================
  */
 
-#ifndef BTTASK_H
-#define BTTASK_H
+#ifndef BT_TASK_H
+#define BT_TASK_H
 
 #include "../../blackboard/blackboard.h"
 #include "../../util/limbo_compat.h"
@@ -32,16 +32,15 @@
 #include "core/variant/binder_common.h"
 #include "core/variant/dictionary.h"
 #include "scene/resources/texture.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/vector.hpp>
-
 using namespace godot;
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 /**
  * Base class for BTTask.
@@ -71,7 +70,7 @@ class BTTask : public BT {
 private:
 	friend class BehaviorTree;
 
-	// Avoid namespace pollution in derived classes.
+	// Avoid namespace pollution in the derived classes.
 	struct Data {
 		int index = -1;
 		String custom_name;
@@ -85,6 +84,8 @@ private:
 
 	Array _get_children() const;
 	void _set_children(Array children);
+
+	PackedStringArray _get_configuration_warnings(); // ! Scripts only.
 
 protected:
 	static void _bind_methods();
@@ -101,7 +102,7 @@ protected:
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1R(Status, _tick, double);
-	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warning);
+	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warnings);
 #endif // LIMBOAI_MODULE
 
 public:
@@ -122,7 +123,7 @@ public:
 
 	virtual Ref<BTTask> clone() const;
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
-	virtual PackedStringArray get_configuration_warnings();
+	virtual PackedStringArray get_configuration_warnings(); // ! Native version.
 
 	Status execute(double p_delta);
 	void abort();
@@ -158,4 +159,4 @@ public:
 	~BTTask();
 };
 
-#endif // BTTASK_H
+#endif // BT_TASK_H

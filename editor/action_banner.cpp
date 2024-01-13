@@ -22,7 +22,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 void ActionBanner::set_text(const String &p_text) {
 	message->set_text(p_text);
@@ -48,11 +48,9 @@ void ActionBanner::_execute_action(const Callable &p_action, bool p_auto_close) 
 	Callable::CallError ce;
 	Variant ret;
 	p_action.callp(nullptr, 0, ret, ce);
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	p_action.call();
-#endif // LIMBOAI_GDEXTENSION
+#endif
 
 	if (p_auto_close) {
 		queue_free();
@@ -96,4 +94,4 @@ ActionBanner::ActionBanner() {
 	hbox->add_child(spacer);
 }
 
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED

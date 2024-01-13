@@ -52,9 +52,6 @@
 #include <godot_cpp/classes/window.hpp>
 
 using namespace godot;
-// #include "editor/editor_node.h"
-// #include "editor/editor_scale.h"
-// #include "editor/progress_dialog.h"
 
 // WindowWrapper
 

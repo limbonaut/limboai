@@ -15,7 +15,7 @@
 #include "core/templates/list.h"
 #endif
 
-//// BehaviorTreeData
+//**** BehaviorTreeData
 
 void BehaviorTreeData::serialize(Array &p_arr) {
 	p_arr.push_back(bt_player_path);

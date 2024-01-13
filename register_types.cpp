@@ -104,25 +104,20 @@
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/behavior_tree_view.h"
 #include "editor/limbo_ai_editor_plugin.h"
-#endif // ! TOOLS_ENABLED
+#endif // TOOLS_ENABLED
 
 #ifdef LIMBOAI_MODULE
-
 #include "core/object/class_db.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
-
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/memory.hpp>
-
 using namespace godot;
-
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 static LimboUtility *_limbo_utility = nullptr;
 
@@ -228,7 +223,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 #ifdef LIMBOAI_MODULE
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 		Engine::get_singleton()->register_singleton("LimboUtility", LimboUtility::get_singleton());
 #endif
 
@@ -252,7 +247,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LimboDebuggerPlugin);
 		GDREGISTER_CLASS(LimboAIEditor);
 		GDREGISTER_CLASS(LimboAIEditorPlugin);
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
 	}
 
@@ -280,4 +275,4 @@ GDExtensionBool GDE_EXPORT limboai_init(GDExtensionInterfaceGetProcAddress p_get
 	return init_obj.init();
 }
 }
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION

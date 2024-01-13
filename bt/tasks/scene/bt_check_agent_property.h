@@ -45,4 +45,4 @@ public:
 	virtual PackedStringArray get_configuration_warnings() override;
 };
 
-#endif // BT_CHECK_AGENT_PROPERTY
+#endif // BT_CHECK_AGENT_PROPERTY_H

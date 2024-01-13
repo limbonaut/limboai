@@ -16,7 +16,6 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-
 #include "core/config/engine.h"
 #include "core/debugger/engine_debugger.h"
 #include "core/error/error_macros.h"
@@ -30,10 +29,9 @@
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
 #define GET_TICKS_USEC() (OS::get_singleton()->get_ticks_usec())
 
-#endif // LIMBO_MODULE
+#endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-
 #include <godot_cpp/classes/engine_debugger.hpp>
 #include <godot_cpp/classes/performance.hpp>
 #include <godot_cpp/classes/time.hpp>
@@ -41,7 +39,7 @@
 #define IS_DEBUGGER_ACTIVE() (EngineDebugger::get_singleton()->is_active())
 #define GET_TICKS_USEC() (Time::get_singleton()->get_ticks_usec())
 
-#endif // LIMBOAI_GDEXTENSION
+#endif // ! LIMBOAI_GDEXTENSION
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
@@ -148,7 +146,7 @@ double BTPlayer::_get_mean_update_time_msec() {
 	return 0.0;
 }
 
-#endif // DEBUG_ENABLED
+#endif // ! DEBUG_ENABLED
 
 void BTPlayer::_notification(int p_notification) {
 	switch (p_notification) {
@@ -182,7 +180,7 @@ void BTPlayer::_notification(int p_notification) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 			}
 		} break;
-#endif
+#endif // DEBUG_ENABLED
 	}
 }
 
@@ -223,7 +221,6 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_set_monitor_performance", "p_value"), &BTPlayer::_set_monitor_performance);
 	ClassDB::bind_method(D_METHOD("_get_monitor_performance"), &BTPlayer::_get_monitor_performance);
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "_set_monitor_performance", "_get_monitor_performance");
-	// ADD_PROPERTY_DEFAULT("monitor_performance", false);
 #endif // DEBUG_ENABLED
 }
 

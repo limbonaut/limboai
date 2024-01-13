@@ -98,7 +98,6 @@ void LimboHSM::update(double p_delta) {
 }
 
 void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String &p_event) {
-	// ERR_FAIL_COND(p_from_state == nullptr);
 	ERR_FAIL_COND(p_from_state != nullptr && p_from_state->get_parent() != this);
 	ERR_FAIL_COND(p_from_state != nullptr && !p_from_state->is_class("LimboState"));
 	ERR_FAIL_COND(p_to_state == nullptr);
@@ -164,11 +163,9 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 				if (unlikely(ce.error != Callable::CallError::CALL_OK)) {
 					ERR_PRINT_ONCE("LimboHSM: Error calling substate's guard callable: " + Variant::get_callable_error_text(to_state->guard_callable, nullptr, 0, ce));
 				}
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 				ret = to_state->guard_callable.call();
-#endif // LIMBOAI_GDEXTENSION
+#endif
 
 				if (unlikely(ret.get_type() != Variant::BOOL)) {
 					ERR_PRINT_ONCE(vformat("State guard callable %s returned non-boolean value (%s).", to_state->guard_callable, to_state));

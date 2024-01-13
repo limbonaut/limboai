@@ -28,7 +28,7 @@
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
 #include <godot_cpp/classes/tree.hpp>
-#endif
+#endif // LIMBOAI_GDEXTENSION
 
 class BehaviorTreeView : public Control {
 	GDCLASS(BehaviorTreeView, Control);

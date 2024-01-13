@@ -14,6 +14,7 @@
 #ifdef LIMBOAI_MODULE
 #include "scene/main/scene_tree.h"
 #endif
+
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/scene_tree.hpp>
 #endif
@@ -78,13 +79,8 @@ void BTCooldown::_chill() {
 	if (timer.is_valid()) {
 		timer->set_time_left(duration);
 	} else {
-#ifdef LIMBOAI_MODULE
-		timer = SceneTree::get_singleton()->create_timer(duration, process_pause);
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-		SceneTree *st = (SceneTree *)Engine::get_singleton()->get_main_loop();
-		timer = st->create_timer(duration, process_pause);
-#endif
+		timer = SCENE_TREE()->create_timer(duration, process_pause);
+		ERR_FAIL_NULL(timer);
 		timer->connect(LW_NAME(timeout), callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }

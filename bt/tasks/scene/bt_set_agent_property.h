@@ -45,4 +45,4 @@ public:
 	LimboUtility::Operation get_operation() const { return operation; }
 };
 
-#endif // BT_SET_AGENT_PROPERTY
+#endif // BT_SET_AGENT_PROPERTY_H

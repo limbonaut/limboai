@@ -11,12 +11,12 @@
 
 #include "bt_task.h"
 
-#ifdef LIMBOAI_MODULE
+#include "../../blackboard/blackboard.h"
+#include "../../util/limbo_string_names.h"
+#include "../../util/limbo_utility.h"
 #include "bt_comment.h"
-#include "modules/limboai/blackboard/blackboard.h"
-#include "modules/limboai/util/limbo_string_names.h"
-#include "modules/limboai/util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/io/resource.h"
 #include "core/object/class_db.h"
@@ -29,10 +29,6 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "blackboard/blackboard.h"
-#include "bt/tasks/bt_comment.h"
-#include "util/limbo_string_names.h"
-
 #include "godot_cpp/classes/global_constants.hpp"
 #include "godot_cpp/core/class_db.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
@@ -41,6 +37,7 @@
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "godot_cpp/variant/variant.hpp"
 #include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/script.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void BT::_bind_methods() {
@@ -102,7 +99,7 @@ String BTTask::get_task_name() {
 			}
 		}
 		return _generate_name();
-#else // LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 		return call(LimboStringNames::get_singleton()->_generate_name);
 #endif
 	}
@@ -133,15 +130,7 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 		get_child(i)->initialize(p_agent, p_blackboard);
 	}
 
-#ifdef LIMBOAI_MODULE
-	if (!GDVIRTUAL_CALL(_setup)) {
-		_setup();
-	}
-#endif
-
-#ifdef LIMBOAI_GDEXTENSION
-	call(LimboStringNames::get_singleton()->_setup);
-#endif
+	VCALL_OR_NATIVE(_setup);
 }
 
 Ref<BTTask> BTTask::clone() const {
@@ -191,9 +180,7 @@ Ref<BTTask> BTTask::clone() const {
 			}
 		}
 	}
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	// Make BBParam properties unique.
 	TypedArray<Dictionary> props = inst->get_property_list();
 	HashMap<Ref<Resource>, Ref<Resource>> duplicates;
@@ -220,8 +207,7 @@ Ref<BTTask> BTTask::clone() const {
 			}
 		}
 	}
-
-#endif // LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	return inst;
 }
@@ -235,15 +221,7 @@ BT::Status BTTask::execute(double p_delta) {
 			}
 		}
 
-#ifdef LIMBOAI_MODULE
-		if (!GDVIRTUAL_CALL(_enter)) {
-			_enter();
-		}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-		call(LimboStringNames::get_singleton()->_enter);
-#endif
-
+		VCALL_OR_NATIVE(_enter);
 	} else {
 		data.elapsed += p_delta;
 	}
@@ -252,20 +230,12 @@ BT::Status BTTask::execute(double p_delta) {
 	if (!GDVIRTUAL_CALL(_tick, p_delta, data.status)) {
 		data.status = _tick(p_delta);
 	}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	data.status = (Status)(int)call(LimboStringNames::get_singleton()->_tick, p_delta);
 #endif
 
 	if (data.status != RUNNING) {
-#ifdef LIMBOAI_MODULE
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-		call(LimboStringNames::get_singleton()->_exit);
-#endif
+		VCALL_OR_NATIVE(_exit);
 		data.elapsed = 0.0;
 	}
 	return data.status;
@@ -276,14 +246,7 @@ void BTTask::abort() {
 		get_child(i)->abort();
 	}
 	if (data.status == RUNNING) {
-#ifdef LIMBOAI_MODULE
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-		call(LimboStringNames::get_singleton()->_exit);
-#endif
+		VCALL_OR_NATIVE(_exit);
 	}
 	data.status = FRESH;
 	data.elapsed = 0.0;
@@ -364,19 +327,16 @@ Ref<BTTask> BTTask::next_sibling() const {
 	return Ref<BTTask>();
 }
 
+PackedStringArray BTTask::_get_configuration_warnings() {
+	return PackedStringArray();
+}
+
 PackedStringArray BTTask::get_configuration_warnings() {
 	PackedStringArray ret;
 
 	PackedStringArray warnings;
-#ifdef LIMBOAI_MODULE
-	if (GDVIRTUAL_CALL(_get_configuration_warning, warnings)) {
-		ret.append_array(warnings);
-	}
-#endif
-#ifdef LIMBOAI_GDEXTENSION
-	warnings = call(LimboStringNames::get_singleton()->_get_configuration_warning);
+	VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
 	ret.append_array(warnings);
-#endif
 
 	return ret;
 }
@@ -431,7 +391,6 @@ void BTTask::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", PROPERTY_USAGE_NONE), "", "get_blackboard");
-	// ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "parent", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", 0), "", "get_parent");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_status");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_elapsed_time");
@@ -442,22 +401,15 @@ void BTTask::_bind_methods() {
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_tick, "p_delta");
 	GDVIRTUAL_BIND(_generate_name);
-	GDVIRTUAL_BIND(_get_configuration_warning);
-#endif // LIMBOAI_MODULE
-#ifdef LIMBOAI_GDEXTENSION
+	GDVIRTUAL_BIND(_get_configuration_warnings);
+#elif LIMBOAI_GDEXTENSION
 	// TODO: Until virtual functions are implemented in godot-cpp, we do this. Replace this code when possible.
 	ClassDB::bind_method(D_METHOD("_setup"), &BTTask::_setup);
 	ClassDB::bind_method(D_METHOD("_enter"), &BTTask::_enter);
 	ClassDB::bind_method(D_METHOD("_exit"), &BTTask::_exit);
 	ClassDB::bind_method(D_METHOD("_tick", "p_delta"), &BTTask::_tick);
 	ClassDB::bind_method(D_METHOD("_generate_name"), &BTTask::_generate_name);
-	ClassDB::bind_method(D_METHOD("_get_configuration_warnings"), &BTTask::get_configuration_warnings);
-	// BIND_VIRTUAL_METHOD(BTTask, _setup);
-	// BIND_VIRTUAL_METHOD(BTTask, _enter);
-	// BIND_VIRTUAL_METHOD(BTTask, _exit);
-	// BIND_VIRTUAL_METHOD(BTTask, _tick);
-	// BIND_VIRTUAL_METHOD(BTTask, _generate_name);
-	// BIND_VIRTUAL_METHOD(BTTask, get_configuration_warnings);
+	ClassDB::bind_method(D_METHOD("_get_configuration_warnings"), &BTTask::_get_configuration_warnings);
 #endif
 }
 

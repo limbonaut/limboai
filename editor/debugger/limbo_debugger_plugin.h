@@ -29,10 +29,9 @@
 #include "scene/gui/panel_container.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/texture_rect.h"
-#endif // ! LIMBOAI_MODULE
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/editor_debugger_plugin.hpp>
 #include <godot_cpp/classes/editor_debugger_session.hpp>
@@ -44,8 +43,7 @@
 #include <godot_cpp/classes/panel_container.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
-
-#endif // ! LIMBOAI_GDEXTENSION
+#endif // LIMBOAI_GDEXTENSION
 
 class LimboDebuggerTab : public PanelContainer {
 	GDCLASS(LimboDebuggerTab, PanelContainer);
@@ -114,13 +112,11 @@ public:
 	void setup_session(int p_idx) override;
 	bool has_capture(const String &p_capture) const override;
 	bool capture(const String &p_message, const Array &p_data, int p_session) override;
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
+#elif LIMBOAI_GDEXTENSION
 	void _setup_session(int32_t p_idx) override;
 	bool _has_capture(const String &p_capture) const override;
 	bool _capture(const String &p_message, const Array &p_data, int32_t p_session) override;
-#endif // LIMBOAI_GDEXTENSION
+#endif
 
 	CompatWindowWrapper *get_session_tab() const;
 	int get_session_tab_index() const;
@@ -129,6 +125,6 @@ public:
 	~LimboDebuggerPlugin();
 };
 
-#endif // ! LIMBO_DEBUGGER_PLUGIN_H
+#endif // LIMBO_DEBUGGER_PLUGIN_H
 
 #endif // ! TOOLS_ENABLED
