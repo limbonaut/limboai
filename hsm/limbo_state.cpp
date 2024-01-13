@@ -41,7 +41,7 @@ LimboState *LimboState::named(String p_name) {
 
 void LimboState::_do_enter() {
 	active = true;
-	VCALL(_enter);
+	VCALL_OR_NATIVE(_enter);
 	emit_signal(LimboStringNames::get_singleton()->entered);
 };
 
@@ -49,13 +49,13 @@ void LimboState::_do_exit() {
 	if (!active) {
 		return;
 	}
-	VCALL(_exit);
+	VCALL_OR_NATIVE(_exit);
 	emit_signal(LimboStringNames::get_singleton()->exited);
 	active = false;
 };
 
 void LimboState::_do_update(double p_delta) {
-	VCALL_ARGS(_update, p_delta);
+	VCALL_OR_NATIVE_ARGS(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 };
 
@@ -71,7 +71,7 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 		}
 	}
 
-	VCALL(_setup);
+	VCALL_OR_NATIVE(_setup);
 	emit_signal(LimboStringNames::get_singleton()->setup);
 }
 
