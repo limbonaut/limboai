@@ -321,7 +321,7 @@ void LimboAIEditor::_extract_subtree(const String &p_path) {
 }
 
 void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
-	if (!p_event->is_pressed()) {
+	if (!p_event->is_pressed() || p_event->is_echo()) {
 		return;
 	}
 
@@ -1116,7 +1116,7 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
 
-	set_process_shortcut_input(true);
+	set_process_input(true);
 
 	save_dialog = memnew(FileDialog);
 	save_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);

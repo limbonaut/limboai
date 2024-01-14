@@ -295,13 +295,27 @@ Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_n
 	sc->set_name(p_name);
 
 	Array events;
+
+	Key keycode = p_keycode;
 	Ref<InputEventKey> ev = memnew(InputEventKey);
-	ev->set_keycode(p_keycode);
+	if (((int)LW_KEY_MASK(CMD_OR_CTRL) & (int)keycode) == (int)LW_KEY_MASK(CMD_OR_CTRL)) {
+		keycode = (Key)((int)keycode & (~((int)LW_KEY_MASK(CMD_OR_CTRL))));
+		ev->set_ctrl_pressed(true);
+	}
+	if (((int)LW_KEY_MASK(ALT) & (int)keycode) == (int)LW_KEY_MASK(ALT)) {
+		keycode = (Key)((int)keycode & (~((int)LW_KEY_MASK(ALT))));
+		ev->set_alt_pressed(true);
+	}
+	if (((int)LW_KEY_MASK(SHIFT) & (int)keycode) == (int)LW_KEY_MASK(SHIFT)) {
+		keycode = (Key)((int)keycode & (~((int)LW_KEY_MASK(SHIFT))));
+		ev->set_shift_pressed(true);
+	}
+	ev->set_keycode(keycode);
+	ev->set_pressed(true);
+
 	events.append(ev);
 	sc->set_events(events);
-
 	shortcuts[p_path] = sc;
-
 	return sc;
 }
 
