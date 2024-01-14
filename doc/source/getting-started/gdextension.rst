@@ -54,6 +54,6 @@ future releases of Godot!
 
 **Other GDExtension limitations**
 
-* In-editor documentation is not available. The plugin will open online documentation instead when requested.
+* Built-in documentation is not available. The plugin will open online documentation instead when requested.
 * Documentation tooltips are not available.
 * Handy :ref:`class_BBParam` property editor is not available in the extension due to dependencies on the engine classes that are not available in the Godot API.
