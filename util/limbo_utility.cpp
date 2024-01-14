@@ -12,6 +12,7 @@
 #include "limbo_utility.h"
 
 #include "../bt/tasks/bt_task.h"
+#include "../util/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
