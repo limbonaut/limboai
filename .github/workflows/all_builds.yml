@@ -10,6 +10,10 @@ on:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
+      godot-cpp-treeish:
+        description: A tag, branch or commit hash in the godot-cpp repository.
+        type: string
+        default: 4.2
 
 jobs:
   cache-sha:
@@ -87,3 +91,12 @@ jobs:
     with:
       godot-treeish: ${{ needs.cache-sha.outputs.godot-sha }}
       limboai-treeish: ${{ needs.cache-sha.outputs.limboai-sha }}
+
+  gdextension:
+    name: 🔌 GDExtension
+    needs: cache-sha
+    uses: ./.github/workflows/gdextension.yml
+    with:
+      godot-cpp-treeish: ${{ inputs.godot-cpp-treeish }}
+      limboai-treeish: ${{ needs.cache-sha.outputs.limboai-sha }}
+      test-build: false
