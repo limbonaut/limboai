@@ -4,8 +4,12 @@
   <img src="doc/images/logo.svg" width="400" alt="LimboAI logo">
 </p>
 
+[![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
 [![🔎 Unit Tests](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
 [![Documentation Status](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
+![GitHub License](https://img.shields.io/github/license/limbonaut/limboai)
+![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)
+![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)
 
 **LimboAI** is an open-source C++ module for **Godot Engine 4** providing a combination of
 **Behavior Trees** and **State Machines**, which can be used together to create complex AI behaviors.
