@@ -190,12 +190,12 @@ void TaskPalette::_menu_action_selected(int p_id) {
 		case MENU_OPEN_DOC: {
 			String help_class;
 			if (context_task.begins_with("res://")) {
-				help_class = "\"" + context_task.get_basename().to_pascal_case() + "\"";
+				help_class = context_task;
 			} else {
 				// Assuming context task is core class.
 				help_class = context_task;
 			}
-			SHOW_DOC("class_name:" + help_class);
+			LimboUtility::get_singleton()->open_doc_class(help_class);
 		} break;
 		case MENU_EDIT_SCRIPT: {
 			ERR_FAIL_COND(!context_task.begins_with("res://"));

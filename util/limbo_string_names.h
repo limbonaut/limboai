@@ -93,6 +93,7 @@ public:
 	StringName Help;
 	StringName icon_max_width;
 	StringName id_pressed;
+	StringName Info;
 	StringName item_collapsed;
 	StringName item_selected;
 	StringName LimboDeselectAll;

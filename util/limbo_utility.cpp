@@ -16,6 +16,7 @@
 #ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/script_language.h"
+#include "core/os/os.h"
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 
@@ -30,6 +31,7 @@
 #include "godot_cpp/classes/project_settings.hpp"
 #include "godot_cpp/variant/dictionary.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
+#include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
@@ -312,6 +314,30 @@ Ref<Shortcut> LimboUtility::get_shortcut(const String &p_path) const {
 		return SC->value;
 	}
 	return nullptr;
+}
+
+void LimboUtility::open_doc_introduction() {
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/classes/class_behaviortree.html",
+			LIMBO_DOC_VERSION));
+}
+
+void LimboUtility::open_doc_online() {
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/index.html",
+			LIMBO_DOC_VERSION));
+}
+
+void LimboUtility::open_doc_class(const String &p_class_name) {
+	if (p_class_name.begins_with("res://")) {
+		SHOW_DOC(vformat("class_name:\"%s\"", p_class_name));
+		return;
+	}
+
+#ifdef LIMBOAI_MODULE
+	SHOW_DOC("class_name:" + p_class_name);
+#elif LIMBOAI_GDEXTENSION
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/classes/class_%s.html",
+			LIMBO_DOC_VERSION, p_class_name.to_lower()));
+#endif
 }
 
 void LimboUtility::_bind_methods() {

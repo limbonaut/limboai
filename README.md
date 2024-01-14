@@ -5,22 +5,20 @@
 </p>
 
 [![🔎 Unit Tests](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
+[![Documentation Status](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
 
-**LimboAI** is a C++ module for **Godot Engine 4** that provides an implementation of Behavior Trees and State Machines, which can be used together to create complex AI behaviors.
+**LimboAI** is an open-source C++ module for **Godot Engine 4** providing a combination of
+**Behavior Trees** and **State Machines**, which can be used together to create complex AI behaviors.
+It comes with a behavior tree editor, built-in documentation, visual debugger, and more!
+While it is implemented in C++, it fully supports GDScript for [creating your own tasks](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html) and states.
 
 >**🛈 Supported Godot Engine: 4.2**
 
->**🛈 Previously supported:** [godot-4.1](https://github.com/limbonaut/limboai/tree/godot-4.1)
-
 >**🛈 License**: Use of this source code is governed by an MIT-style license that can be found in the LICENSE file or at https://opensource.org/licenses/MIT.
 
-A Behavior Tree (BT) is a powerful hierarchical structure used to model and control the behavior of agents in a game. It comprises tasks that represent specific actions or decision-making rules. When executed, the Behavior Tree starts from the root task and traverses down to the leaf tasks, which correspond to the actual actions or behaviors that the agent should perform. For detailed information on how various BT tasks function, please refer to the class documentation. The BehaviorTree class serves as a good starting point.
-
-> 🛈 See also: [Introduction to Behavior Trees](./doc/getting-started.md).
+Behavior Trees are powerful hierarchical structures used to model and control the behavior of agents in a game (e.g., characters, enemies, entities). They are designed to make it easier to create complex and highly modular behaviors for your games. To learn more about behavior trees, check out [Introduction to Behavior Trees](https://limboai.readthedocs.io/en/latest/getting-started/introduction.html).
 
 ![Textured screenshot](doc/images/behavior-tree-editor-debugger.png)
-
-<!-- ![Textured screenshot](doc/images/behavior-tree-debugger.png) -->
 
 ## Features
 
@@ -29,7 +27,7 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
     - Execute `BehaviorTree` resources using the `BTPlayer` node.
     - Create complex behaviors by combining and nesting tasks in a hierarchy.
     - Control execution flow using composite, decorator, and condition tasks.
-    - [Create custom tasks](./doc/getting-started.md#creating-custom-tasks-in-gdscript) by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
+    - [Create custom tasks](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html) by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
     - Built-in class documentation. Check out the `BehaviorTree` class documentation to get started.
     - Share data seamlessly between tasks using the `Blackboard`.
     - Blackboard scopes isolate variable namespaces and enable advanced techniques like sharing data between agents in a group.
@@ -48,7 +46,11 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 
 - **Tested:** Behavior tree tasks and HSM are covered by unit tests.
 
+- **GDExtension:** LimboAI can be [used as extension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html). Custom engine builds are not necessary.
+
 ## Getting LimboAI
+
+LimboAI can be used as either a C++ module or as a GDExtension shared library. GDExtension version is more convenient to use but somewhat limited in features. Whichever you choose to use, your project will stay compatible with both and you can switch from one to the other any time. See [Using GDExtension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html).
 
 ### Precompiled builds
 
@@ -62,21 +64,24 @@ A Behavior Tree (BT) is a powerful hierarchical structure used to model and cont
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
 
-## Using the module
+## Using the plugin
 
-<!-- - [Getting Started](./doc/getting-started.md#getting-started) -->
-- [Introduction to Behavior Trees](./doc/getting-started.md#introduction-to-behavior-trees)
-- [Creating custom tasks in GDScript](./doc/getting-started.md#creating-custom-tasks-in-gdscript)
-    - [Task anatomy](./doc/getting-started.md#task-anatomy)
-    - [Custom task example](./doc/getting-started.md#custom-task-example)
+- [Online Documentation](https://limboai.readthedocs.io/en/latest/index.html)
+- [Introduction to Behavior Trees](https://limboai.readthedocs.io/en/latest/getting-started/introduction.html)
+- [Creating custom tasks in GDScript](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html)
+- [Using GDExtension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html)
+- [Class reference](https://limboai.readthedocs.io/en/latest/getting-started/featured-classes.html)
 
 ## Contributing
 
 All contributions are welcome! Feel free to open issues with bug reports and feature requests, and submit PRs.
 
+Got an idea for a behavior tree task that you think would be useful on a variety of projects?
+Feel free to open an issue and describe your concept.
+
 ## Social
 
-We have a Discord server: https://discord.gg/N5MGC95GpP
+We have a fresh new Discord server: https://discord.gg/N5MGC95GpP
 
 I also write about LimboAI development on the Mastodon: https://mastodon.gamedev.place/@limbo.
 
@@ -90,4 +95,4 @@ Features and improvements that may be implemented in the future:
 - Exploring the execution history of behavior trees in the visual debugger.
 - Per-project ignore list for tasks that users may want to hide in the task palette.
 - GUI editor for state machines.
-- Supporting GDExtension in the future, once it matures.
+~~- Supporting GDExtension in the future, once it matures.~~ 🗸

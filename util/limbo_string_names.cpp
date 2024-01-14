@@ -79,6 +79,7 @@ LimboStringNames::LimboStringNames() {
 	Help = SN("Help");
 	icon_max_width = SN("icon_max_width");
 	id_pressed = SN("id_pressed");
+	Info = SN("Info");
 	item_collapsed = SN("item_collapsed");
 	item_selected = SN("item_selected");
 	LimboDeselectAll = SN("LimboDeselectAll");

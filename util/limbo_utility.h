@@ -36,6 +36,8 @@ using namespace godot;
 
 #define LOGICAL_XOR(a, b) (a) ? !(b) : (b)
 
+#define LIMBO_DOC_VERSION "latest"
+
 class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
 
@@ -87,6 +89,10 @@ public:
 	Ref<Shortcut> add_shortcut(const String &p_path, const String &p_name, Key p_keycode = LW_KEY(NONE));
 	bool is_shortcut(const String &p_path, const Ref<InputEvent> &p_event) const;
 	Ref<Shortcut> get_shortcut(const String &p_path) const;
+
+	void open_doc_introduction();
+	void open_doc_online();
+	void open_doc_class(const String &p_class_name);
 
 	LimboUtility();
 	~LimboUtility();
