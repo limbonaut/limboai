@@ -42,7 +42,9 @@ class LimboUtility : public Object {
 	GDCLASS(LimboUtility, Object);
 
 private:
+#ifdef TOOLS_ENABLED
 	HashMap<String, Ref<Shortcut>> shortcuts;
+#endif // TOOLS_ENABLED
 
 public:
 	enum CheckType : unsigned int {
@@ -86,6 +88,7 @@ public:
 	String get_operation_string(Operation p_operation) const;
 	Variant perform_operation(Operation p_operation, const Variant &left_value, const Variant &right_value);
 
+#ifdef TOOLS_ENABLED
 	Ref<Shortcut> add_shortcut(const String &p_path, const String &p_name, Key p_keycode = LW_KEY(NONE));
 	bool is_shortcut(const String &p_path, const Ref<InputEvent> &p_event) const;
 	Ref<Shortcut> get_shortcut(const String &p_path) const;
@@ -93,6 +96,7 @@ public:
 	void open_doc_introduction();
 	void open_doc_online();
 	void open_doc_class(const String &p_class_name);
+#endif // TOOLS_ENABLED
 
 	LimboUtility();
 	~LimboUtility();

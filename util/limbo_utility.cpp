@@ -288,6 +288,8 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 	return ret;
 }
 
+#ifdef TOOLS_ENABLED
+
 Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_name, Key p_keycode) {
 	Ref<Shortcut> sc = memnew(Shortcut);
 	sc->set_name(p_name);
@@ -340,6 +342,8 @@ void LimboUtility::open_doc_class(const String &p_class_name) {
 			LIMBO_DOC_VERSION, p_class_name.to_lower()));
 #endif
 }
+
+#endif // ! TOOLS_ENABLED
 
 void LimboUtility::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("decorate_var", "p_variable"), &LimboUtility::decorate_var);
