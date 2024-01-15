@@ -15,6 +15,7 @@
 #include "../bt_action.h"
 
 #include "../../../blackboard/bb_param/bb_node.h"
+#include "../../../blackboard/bb_param/bb_variant.h"
 
 class BTCallMethod : public BTAction {
 	GDCLASS(BTCallMethod, BTAction);
@@ -23,7 +24,7 @@ class BTCallMethod : public BTAction {
 private:
 	StringName method;
 	Ref<BBNode> node_param;
-	Array args;
+	TypedArray<BBVariant> args;
 	bool include_delta = false;
 	String result_var;
 
@@ -40,8 +41,8 @@ public:
 	void set_node_param(Ref<BBNode> p_object);
 	Ref<BBNode> get_node_param() const { return node_param; }
 
-	void set_args(Array p_args);
-	Array get_args() const { return args; }
+	void set_args(TypedArray<BBVariant> p_args);
+	TypedArray<BBVariant> get_args() const { return args; }
 
 	void set_include_delta(bool p_include_delta);
 	bool is_delta_included() const { return include_delta; }

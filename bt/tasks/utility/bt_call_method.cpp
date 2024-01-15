@@ -14,6 +14,10 @@
 #include "../../../util/limbo_compat.h"
 #include "../../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/classes/global_constants.hpp"
+#endif // LIMBOAI_GDEXTENSION
+
 //**** Setters / Getters
 
 void BTCallMethod::set_method(StringName p_method_name) {
@@ -83,6 +87,7 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get object: " + node_param->to_string());
 
 	Variant result;
+	Array call_args;
 
 #ifdef LIMBOAI_MODULE
 	const Variant delta = include_delta ? Variant(p_delta) : Variant();
@@ -95,7 +100,9 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 			argptrs[0] = &delta;
 		}
 		for (int i = 0; i < args.size(); i++) {
-			argptrs[i + int(include_delta)] = &args[i];
+			Ref<BBVariant> param = args[i];
+			call_args.push_back(param->get_value(get_agent(), get_blackboard()));
+			argptrs[i + int(include_delta)] = &call_args[i];
 		}
 	}
 
@@ -105,12 +112,12 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, argument_count, ce) + ".");
 	}
 #elif LIMBOAI_GDEXTENSION
-	Array call_args;
 	if (include_delta) {
 		call_args.push_back(Variant(p_delta));
-		call_args.append_array(args);
-	} else {
-		call_args = args;
+	}
+	for (int i = 0; i < args.size(); i++) {
+		Ref<BBVariant> param = args[i];
+		call_args.push_back(param->get_value(get_agent(), get_blackboard()));
 	}
 
 	// TODO: Unsure how to detect call error, so we return SUCCESS for now...
@@ -143,7 +150,7 @@ void BTCallMethod::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "result_var"), "set_result_var", "get_result_var");
 	ADD_GROUP("Arguments", "args_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "args_include_delta"), "set_include_delta", "is_delta_included");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args"), "set_args", "get_args");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args", PROPERTY_HINT_ARRAY_TYPE, RESOURCE_TYPE_HINT("BBVariant")), "set_args", "get_args");
 
 	// ADD_PROPERTY_DEFAULT("args_include_delta", false);
 }
