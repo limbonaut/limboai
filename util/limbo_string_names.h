@@ -151,6 +151,7 @@ public:
 
 	String EVENT_FINISHED;
 	String repeat_forever;
+	String output_var_prefix;
 };
 
 #define LW_NAME(m_arg) LimboStringNames::get_singleton()->m_arg

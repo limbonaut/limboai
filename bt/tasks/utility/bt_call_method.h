@@ -25,6 +25,7 @@ private:
 	Ref<BBNode> node_param;
 	Array args;
 	bool include_delta = false;
+	String result_var;
 
 protected:
 	static void _bind_methods();
@@ -44,6 +45,9 @@ public:
 
 	void set_include_delta(bool p_include_delta);
 	bool is_delta_included() const { return include_delta; }
+
+	void set_result_var(const String &p_result_var);
+	String get_result_var() const { return result_var; }
 
 	virtual PackedStringArray get_configuration_warnings() override;
 

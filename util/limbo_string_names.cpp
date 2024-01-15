@@ -136,4 +136,5 @@ LimboStringNames::LimboStringNames() {
 
 	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");
+	output_var_prefix.parse_utf8("➜");
 }
