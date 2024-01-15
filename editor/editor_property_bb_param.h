@@ -22,6 +22,7 @@
 #include "modules/limboai/editor/mode_switch_button.h"
 
 #include "scene/gui/box_container.h"
+#include "scene/gui/margin_container.h"
 #include "scene/gui/menu_button.h"
 
 class EditorPropertyBBParam : public EditorProperty {
@@ -38,6 +39,7 @@ private:
 	Mode mode = Mode::SPECIFY_VALUE;
 
 	HBoxContainer *hbox = nullptr;
+	MarginContainer *bottom_container = nullptr;
 	HBoxContainer *editor_hbox = nullptr;
 	ModeSwitchButton *mode_button = nullptr;
 	EditorProperty *value_editor = nullptr;

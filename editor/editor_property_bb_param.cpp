@@ -15,7 +15,6 @@
 
 #include "editor_property_bb_param.h"
 
-#include "core/variant/variant.h"
 #include "modules/limboai/blackboard/bb_param/bb_param.h"
 #include "modules/limboai/blackboard/bb_param/bb_variant.h"
 #include "modules/limboai/editor/mode_switch_button.h"
@@ -23,9 +22,11 @@
 #include "core/error/error_macros.h"
 #include "core/io/marshalls.h"
 #include "core/object/class_db.h"
+#include "core/object/object.h"
 #include "core/object/ref_counted.h"
 #include "core/os/memory.h"
 #include "core/string/print_string.h"
+#include "core/variant/variant.h"
 #include "editor/editor_inspector.h"
 #include "editor/editor_properties.h"
 #include "editor/editor_properties_array_dict.h"
@@ -55,6 +56,8 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 		_remove_value_editor();
 	}
 
+	bool is_bottom = false;
+
 	switch (p_type) {
 		case Variant::NIL: {
 			value_editor = memnew(EditorPropertyNil);
@@ -78,6 +81,7 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 			} else {
 				value_editor = memnew(EditorPropertyText);
 			}
+			is_bottom = (property_hint == PROPERTY_HINT_MULTILINE_TEXT);
 		} break;
 		case Variant::VECTOR2: {
 			EditorPropertyVector2 *editor = memnew(EditorPropertyVector2);
@@ -93,66 +97,79 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 			EditorPropertyRect2 *editor = memnew(EditorPropertyRect2);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::RECT2I: {
 			EditorPropertyRect2i *editor = memnew(EditorPropertyRect2i);
 			editor->setup(-100000, 100000);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::VECTOR3: {
 			EditorPropertyVector3 *editor = memnew(EditorPropertyVector3);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::VECTOR3I: {
 			EditorPropertyVector3i *editor = memnew(EditorPropertyVector3i);
 			editor->setup(-100000, 100000);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::VECTOR4: {
 			EditorPropertyVector4 *editor = memnew(EditorPropertyVector4);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::VECTOR4I: {
 			EditorPropertyVector4i *editor = memnew(EditorPropertyVector4i);
 			editor->setup(-100000, 100000);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::TRANSFORM2D: {
 			EditorPropertyTransform2D *editor = memnew(EditorPropertyTransform2D);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::PLANE: {
 			EditorPropertyPlane *editor = memnew(EditorPropertyPlane);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::QUATERNION: {
 			EditorPropertyQuaternion *editor = memnew(EditorPropertyQuaternion);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::AABB: {
 			EditorPropertyAABB *editor = memnew(EditorPropertyAABB);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::BASIS: {
 			EditorPropertyBasis *editor = memnew(EditorPropertyBasis);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::TRANSFORM3D: {
 			EditorPropertyTransform3D *editor = memnew(EditorPropertyTransform3D);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::PROJECTION: {
 			EditorPropertyProjection *editor = memnew(EditorPropertyProjection);
 			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::COLOR: {
 			value_editor = memnew(EditorPropertyColor);
@@ -161,6 +178,7 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 			EditorPropertyText *editor = memnew(EditorPropertyText);
 			editor->set_string_name(true);
 			value_editor = editor;
+			is_bottom = (property_hint == PROPERTY_HINT_MULTILINE_TEXT);
 		} break;
 		case Variant::NODE_PATH: {
 			value_editor = memnew(EditorPropertyNodePath);
@@ -176,9 +194,11 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 			EditorPropertyResource *editor = memnew(EditorPropertyResource);
 			editor->setup(_get_edited_param().ptr(), SNAME("saved_value"), "Resource");
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 		case Variant::DICTIONARY: {
 			value_editor = memnew(EditorPropertyDictionary);
+			is_bottom = true;
 		} break;
 
 		case Variant::ARRAY:
@@ -194,6 +214,7 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 			EditorPropertyArray *editor = memnew(EditorPropertyArray);
 			editor->setup(p_type);
 			value_editor = editor;
+			is_bottom = true;
 		} break;
 
 		default: {
@@ -202,15 +223,25 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 		}
 	}
 	value_editor->set_name_split_ratio(0.0);
-	editor_hbox->add_child(value_editor);
+	value_editor->set_use_folding(is_using_folding());
+	value_editor->set_selectable(false);
 	value_editor->set_h_size_flags(SIZE_EXPAND_FILL);
 	value_editor->set_meta(SNAME("_param_type"), p_type);
 	value_editor->connect(SNAME("property_changed"), callable_mp(this, &EditorPropertyBBParam::_value_edited));
+	if (is_bottom) {
+		bottom_container->add_child(value_editor);
+		set_bottom_editor(bottom_container);
+		bottom_container->show();
+	} else {
+		set_bottom_editor(nullptr);
+		editor_hbox->add_child(value_editor);
+		bottom_container->hide();
+	}
 }
 
 void EditorPropertyBBParam::_remove_value_editor() {
 	if (value_editor) {
-		editor_hbox->remove_child(value_editor);
+		value_editor->get_parent()->remove_child(value_editor);
 		value_editor->queue_free();
 		value_editor = nullptr;
 	}
@@ -245,15 +276,15 @@ void EditorPropertyBBParam::update_property() {
 		variable_edit->set_text(param->get_variable());
 		variable_edit->set_editable(true);
 		variable_edit->show();
-		mode_button->set_mode(Mode::BIND_VAR, true);
+		mode_button->call_deferred(SNAME("set_mode"), Mode::BIND_VAR, true);
 		type_choice->hide();
 	} else {
-		variable_edit->hide();
 		_create_value_editor(param->get_type());
+		variable_edit->hide();
 		value_editor->show();
 		value_editor->set_object_and_property(param.ptr(), SNAME("saved_value"));
-		mode_button->set_mode(Mode::SPECIFY_VALUE, true);
 		value_editor->update_property();
+		mode_button->call_deferred(SNAME("set_mode"), Mode::SPECIFY_VALUE, true);
 		type_choice->set_visible(is_variant_param);
 	}
 
@@ -307,6 +338,10 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	hbox = memnew(HBoxContainer);
 	add_child(hbox);
 	hbox->add_theme_constant_override(SNAME("separation"), 0);
+
+	bottom_container = memnew(MarginContainer);
+	bottom_container->set_theme_type_variation("MarginContainer4px");
+	add_child(bottom_container);
 
 	mode_button = memnew(ModeSwitchButton);
 	hbox->add_child(mode_button);
