@@ -16,7 +16,7 @@ runs:
         echo "GDEXTENSION_VERSION=${GDEXTENSION_VERSION}" >> "$GITHUB_ENV"
 
         cd ../limboai
-        echo "LIMBOAI_VERSION=$( (git describe --tags --exact-match HEAD || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1/g' )" >> "$GITHUB_ENV"
+        echo "LIMBOAI_VERSION=$( (git describe --tags --exact-match HEAD || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1.\2/g' )" >> "$GITHUB_ENV"
 
     - name: Set NAME_PREFIX
       shell: bash
