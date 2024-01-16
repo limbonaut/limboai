@@ -31,15 +31,17 @@ Properties
 .. table::
    :widths: auto
 
-   +-----------------------------+---------------------------------------------------------------------------+-----------+
-   | Array                       | :ref:`args<class_BTCallMethod_property_args>`                             | ``[]``    |
-   +-----------------------------+---------------------------------------------------------------------------+-----------+
-   | bool                        | :ref:`args_include_delta<class_BTCallMethod_property_args_include_delta>` | ``false`` |
-   +-----------------------------+---------------------------------------------------------------------------+-----------+
-   | StringName                  | :ref:`method<class_BTCallMethod_property_method>`                         | ``&""``   |
-   +-----------------------------+---------------------------------------------------------------------------+-----------+
-   | :ref:`BBNode<class_BBNode>` | :ref:`node<class_BTCallMethod_property_node>`                             |           |
-   +-----------------------------+---------------------------------------------------------------------------+-----------+
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
+   | :ref:`BBVariant[]<class_BBVariant>` | :ref:`args<class_BTCallMethod_property_args>`                             | ``[]``    |
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
+   | bool                                | :ref:`args_include_delta<class_BTCallMethod_property_args_include_delta>` | ``false`` |
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
+   | StringName                          | :ref:`method<class_BTCallMethod_property_method>`                         | ``&""``   |
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
+   | :ref:`BBNode<class_BBNode>`         | :ref:`node<class_BTCallMethod_property_node>`                             |           |
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
+   | String                              | :ref:`result_var<class_BTCallMethod_property_result_var>`                 | ``""``    |
+   +-------------------------------------+---------------------------------------------------------------------------+-----------+
 
 .. rst-class:: classref-section-separator
 
@@ -54,12 +56,12 @@ Property Descriptions
 
 .. rst-class:: classref-property
 
-Array **args** = ``[]``
+:ref:`BBVariant[]<class_BBVariant>` **args** = ``[]``
 
 .. rst-class:: classref-property-setget
 
-- void **set_args** **(** Array value **)**
-- Array **get_args** **(** **)**
+- void **set_args** **(** :ref:`BBVariant[]<class_BBVariant>` value **)**
+- :ref:`BBVariant[]<class_BBVariant>` **get_args** **(** **)**
 
 The arguments to be passed when calling the method.
 
@@ -113,6 +115,23 @@ The name of the method to be called.
 - :ref:`BBNode<class_BBNode>` **get_node_param** **(** **)**
 
 Specifies the ``Node`` or ``Object`` instance containing the method to be called.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTCallMethod_property_result_var:
+
+.. rst-class:: classref-property
+
+String **result_var** = ``""``
+
+.. rst-class:: classref-property-setget
+
+- void **set_result_var** **(** String value **)**
+- String **get_result_var** **(** **)**
+
+if non-empty, assign the result of the method call to the blackboard variable specified by this property.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`

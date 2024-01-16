@@ -64,7 +64,7 @@ Methods
    +-------------------------------+------------------------------------------------------------------------------------------------------------------------------+
    | String                        | :ref:`_generate_name<class_BTTask_private_method__generate_name>` **(** **)** |virtual| |const|                              |
    +-------------------------------+------------------------------------------------------------------------------------------------------------------------------+
-   | PackedStringArray             | :ref:`_get_configuration_warning<class_BTTask_private_method__get_configuration_warning>` **(** **)** |virtual| |const|      |
+   | PackedStringArray             | :ref:`_get_configuration_warnings<class_BTTask_private_method__get_configuration_warnings>` **(** **)** |virtual| |const|    |
    +-------------------------------+------------------------------------------------------------------------------------------------------------------------------+
    | void                          | :ref:`_setup<class_BTTask_private_method__setup>` **(** **)** |virtual|                                                      |
    +-------------------------------+------------------------------------------------------------------------------------------------------------------------------+
@@ -249,11 +249,11 @@ Called to generate a display name for the task unless :ref:`custom_name<class_BT
 
 ----
 
-.. _class_BTTask_private_method__get_configuration_warning:
+.. _class_BTTask_private_method__get_configuration_warnings:
 
 .. rst-class:: classref-method
 
-PackedStringArray **_get_configuration_warning** **(** **)** |virtual| |const|
+PackedStringArray **_get_configuration_warnings** **(** **)** |virtual| |const|
 
 The string returned by this method is shown as a warning message in the behavior tree editor. Any task script that overrides this method must include ``@tool`` annotation at the top of the file.
 

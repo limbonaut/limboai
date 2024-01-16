@@ -21,6 +21,13 @@
 				Makes a copy of the BehaviorTree resource.
 			</description>
 		</method>
+		<method name="copy_other">
+			<return type="void" />
+			<param index="0" name="p_other" type="BehaviorTree" />
+			<description>
+				Become a copy of another behavior tree.
+			</description>
+		</method>
 		<method name="get_root_task" qualifiers="const">
 			<return type="BTTask" />
 			<description>

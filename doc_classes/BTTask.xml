@@ -31,7 +31,7 @@
 				Called to generate a display name for the task unless [member custom_name] is set. See [method get_task_name].
 			</description>
 		</method>
-		<method name="_get_configuration_warning" qualifiers="virtual const">
+		<method name="_get_configuration_warnings" qualifiers="virtual const">
 			<return type="PackedStringArray" />
 			<description>
 				The string returned by this method is shown as a warning message in the behavior tree editor. Any task script that overrides this method must include [code]@tool[/code] annotation at the top of the file.
@@ -126,7 +126,7 @@
 				Returns the root task of the behavior tree.
 			</description>
 		</method>
-		<method name="get_task_name" qualifiers="const">
+		<method name="get_task_name">
 			<return type="String" />
 			<description>
 				The string returned by this method is used to represent the task in the editor.
@@ -169,7 +169,7 @@
 				Returns [code]null[/code] if this task has no parent or it is the last child in the parent's children list.
 			</description>
 		</method>
-		<method name="print_tree" qualifiers="const">
+		<method name="print_tree">
 			<return type="void" />
 			<param index="0" name="p_initial_tabs" type="int" default="0" />
 			<description>
