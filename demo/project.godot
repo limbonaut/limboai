@@ -12,9 +12,9 @@ config_version=5
 
 config/name="LimboAI Test"
 config/tags=PackedStringArray("demo")
-run/main_scene="res://examples/waypoints/example_waypoints.tscn"
+run/main_scene="res://demo/examples/waypoints/example_waypoints.tscn"
 config/features=PackedStringArray("4.2")
-config/icon="res://icon.png"
+config/icon="res://demo/godot.png"
 
 [debug]
 
@@ -23,6 +23,11 @@ gdscript/warnings/native_method_override=1
 [gui]
 
 common/drop_mouse_on_gui_input_disabled=true
+
+[limbo_ai]
+
+behavior_tree/behavior_tree_default_dir="res://demo/ai/trees"
+behavior_tree/user_task_dir_1="res://demo/ai/tasks"
 
 [physics]
 

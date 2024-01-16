@@ -18,12 +18,14 @@ extends BTAction
 @export var tolerance := 50.0
 
 
+@warning_ignore("native_method_override") # needed for GDExtension version.
 func _generate_name() -> String:
 	return "Arrive  pos: %s  speed: %s" % [
 		LimboUtility.decorate_var(target_position_var),
 		LimboUtility.decorate_var(speed_var),
 	]
 
+@warning_ignore("native_method_override")
 func _tick(p_delta: float) -> Status:
 	var target_pos: Vector2 = blackboard.get_var(target_position_var, Vector2.ZERO)
 	if target_pos.distance_to(agent.global_position) < tolerance:
