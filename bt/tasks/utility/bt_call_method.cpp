@@ -12,6 +12,11 @@
 #include "bt_call_method.h"
 
 #include "../../../util/limbo_compat.h"
+#include "../../../util/limbo_utility.h"
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/classes/global_constants.hpp"
+#endif // LIMBOAI_GDEXTENSION
 
 //**** Setters / Getters
 
@@ -33,8 +38,13 @@ void BTCallMethod::set_include_delta(bool p_include_delta) {
 	emit_changed();
 }
 
-void BTCallMethod::set_args(Array p_args) {
+void BTCallMethod::set_args(TypedArray<BBVariant> p_args) {
 	args = p_args;
+	emit_changed();
+}
+
+void BTCallMethod::set_result_var(const String &p_result_var) {
+	result_var = p_result_var;
 	emit_changed();
 }
 
@@ -63,10 +73,11 @@ String BTCallMethod::_generate_name() {
 		}
 		args_str += vformat("%s", args).trim_prefix("[").trim_suffix("]");
 	}
-	return vformat("CallMethod %s(%s)  node: %s",
-			(method != StringName() ? method : "???"),
+	return vformat("CallMethod %s(%s)  node: %s  %s",
+			method != StringName() ? method : "???",
 			args_str,
-			(node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???"));
+			node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???",
+			result_var.is_empty() ? "" : LW_NAME(output_var_prefix) + LimboUtility::get_singleton()->decorate_var(result_var));
 }
 
 BT::Status BTCallMethod::_tick(double p_delta) {
@@ -74,6 +85,9 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 	ERR_FAIL_COND_V_MSG(node_param.is_null(), FAILURE, "BTCallMethod: Node parameter is not set.");
 	Object *obj = node_param->get_value(get_agent(), get_blackboard());
 	ERR_FAIL_COND_V_MSG(obj == nullptr, FAILURE, "BTCallMethod: Failed to get object: " + node_param->to_string());
+
+	Variant result;
+	Array call_args;
 
 #ifdef LIMBOAI_MODULE
 	const Variant delta = include_delta ? Variant(p_delta) : Variant();
@@ -86,27 +100,33 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 			argptrs[0] = &delta;
 		}
 		for (int i = 0; i < args.size(); i++) {
-			argptrs[i + int(include_delta)] = &args[i];
+			Ref<BBVariant> param = args[i];
+			call_args.push_back(param->get_value(get_agent(), get_blackboard()));
+			argptrs[i + int(include_delta)] = &call_args[i];
 		}
 	}
 
 	Callable::CallError ce;
-	obj->callp(method, argptrs, argument_count, ce);
+	result = obj->callp(method, argptrs, argument_count, ce);
 	if (ce.error != Callable::CallError::CALL_OK) {
 		ERR_FAIL_V_MSG(FAILURE, "BTCallMethod: Error calling method: " + Variant::get_call_error_text(obj, method, argptrs, argument_count, ce) + ".");
 	}
 #elif LIMBOAI_GDEXTENSION
-	Array call_args;
 	if (include_delta) {
 		call_args.push_back(Variant(p_delta));
-		call_args.append_array(args);
-	} else {
-		call_args = args;
+	}
+	for (int i = 0; i < args.size(); i++) {
+		Ref<BBVariant> param = args[i];
+		call_args.push_back(param->get_value(get_agent(), get_blackboard()));
 	}
 
 	// TODO: Unsure how to detect call error, so we return SUCCESS for now...
-	obj->callv(method, call_args);
+	result = obj->callv(method, call_args);
 #endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
+
+	if (!result_var.is_empty()) {
+		get_blackboard()->set_var(result_var, result);
+	}
 
 	return SUCCESS;
 }
@@ -122,12 +142,15 @@ void BTCallMethod::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_args"), &BTCallMethod::get_args);
 	ClassDB::bind_method(D_METHOD("set_include_delta", "p_include_delta"), &BTCallMethod::set_include_delta);
 	ClassDB::bind_method(D_METHOD("is_delta_included"), &BTCallMethod::is_delta_included);
+	ClassDB::bind_method(D_METHOD("set_result_var", "p_result_var"), &BTCallMethod::set_result_var);
+	ClassDB::bind_method(D_METHOD("get_result_var"), &BTCallMethod::get_result_var);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "method"), "set_method", "get_method");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING, "result_var"), "set_result_var", "get_result_var");
 	ADD_GROUP("Arguments", "args_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "args_include_delta"), "set_include_delta", "is_delta_included");
-	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args"), "set_args", "get_args");
+	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args", PROPERTY_HINT_ARRAY_TYPE, RESOURCE_TYPE_HINT("BBVariant")), "set_args", "get_args");
 
 	// ADD_PROPERTY_DEFAULT("args_include_delta", false);
 }

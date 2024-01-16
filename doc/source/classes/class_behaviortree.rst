@@ -114,9 +114,7 @@ Makes a copy of the BehaviorTree resource.
 
 void **copy_other** **(** :ref:`BehaviorTree<class_BehaviorTree>` p_other **)**
 
-.. container:: contribute
-
-	There is currently no description for this method. Please help us by :ref:`contributing one <doc_updating_the_class_reference>`!
+Become a copy of another behavior tree.
 
 .. rst-class:: classref-item-separator
 

@@ -10,7 +10,7 @@
 	<tutorials>
 	</tutorials>
 	<members>
-		<member name="args" type="Array" setter="set_args" getter="get_args" default="[]">
+		<member name="args" type="BBVariant[]" setter="set_args" getter="get_args" default="[]">
 			The arguments to be passed when calling the method.
 		</member>
 		<member name="args_include_delta" type="bool" setter="set_include_delta" getter="is_delta_included" default="false">
@@ -21,6 +21,9 @@
 		</member>
 		<member name="node" type="BBNode" setter="set_node_param" getter="get_node_param">
 			Specifies the [Node] or [Object] instance containing the method to be called.
+		</member>
+		<member name="result_var" type="String" setter="set_result_var" getter="get_result_var" default="&quot;&quot;">
+			if non-empty, assign the result of the method call to the blackboard variable specified by this property.
 		</member>
 	</members>
 </class>

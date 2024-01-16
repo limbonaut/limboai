@@ -39,5 +39,10 @@ void BBVariant::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "type", PROPERTY_HINT_ENUM, vtypes), "set_type", "get_type");
 }
 
+BBVariant::BBVariant(const Variant &p_value) {
+	set_type(p_value.get_type());
+	set_saved_value(p_value);
+}
+
 BBVariant::BBVariant() {
 }
