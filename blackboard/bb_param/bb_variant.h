@@ -27,6 +27,7 @@ public:
 	virtual Variant::Type get_type() const override;
 	void set_type(Variant::Type p_type);
 
+	BBVariant(const Variant &p_value);
 	BBVariant();
 };
 

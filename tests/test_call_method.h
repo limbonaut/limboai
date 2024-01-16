@@ -70,7 +70,7 @@ TEST_CASE("[Modules][LimboAI] BTCallMethod") {
 
 			SUBCASE("Should fail with 0 arguments") {
 				cm->set_include_delta(false);
-				cm->set_args(Array());
+				cm->set_args(TypedArray<BBVariant>());
 				ERR_PRINT_OFF;
 				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
 				ERR_PRINT_ON;
@@ -78,8 +78,8 @@ TEST_CASE("[Modules][LimboAI] BTCallMethod") {
 			}
 			SUBCASE("Should fail with too many arguments") {
 				cm->set_include_delta(true);
-				Array args;
-				args.push_back(0.2);
+				TypedArray<BBVariant> args;
+				args.push_back(memnew(BBVariant(0.2)));
 				cm->set_args(args);
 				ERR_PRINT_OFF;
 				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
@@ -88,8 +88,8 @@ TEST_CASE("[Modules][LimboAI] BTCallMethod") {
 			}
 			SUBCASE("Should fail with a wrong type arg") {
 				cm->set_include_delta(false);
-				Array args;
-				args.push_back("wrong_data");
+				TypedArray<BBVariant> args;
+				args.push_back(memnew(BBVariant("wrong data type")));
 				cm->set_args(args);
 				ERR_PRINT_OFF;
 				CHECK(cm->execute(0.01666) == BTTask::FAILURE);
@@ -98,14 +98,13 @@ TEST_CASE("[Modules][LimboAI] BTCallMethod") {
 			}
 			SUBCASE("Should succeed with delta included") {
 				cm->set_include_delta(true);
-				cm->set_args(Array());
 				CHECK(cm->execute(0.01666) == BTTask::SUCCESS);
 				CHECK(callback_counter->num_callbacks == 1);
 			}
 			SUBCASE("Should succeed with one float arg") {
 				cm->set_include_delta(false);
-				Array args;
-				args.push_back(0.2);
+				TypedArray<BBVariant> args;
+				args.push_back(memnew(BBVariant(0.2)));
 				cm->set_args(args);
 				CHECK(cm->execute(0.01666) == BTTask::SUCCESS);
 				CHECK(callback_counter->num_callbacks == 1);
