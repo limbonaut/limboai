@@ -28,6 +28,8 @@ HIGHLIGHT_COLOR='\033[1;36m' # Light Cyan
 NC='\033[0m' # No Color
 ERROR_COLOR="\033[0;31m"  # Red
 
+usage() { echo "Usage: $0 [--copy-demo]"; }
+
 msg () {  echo -e "$@"; }
 highlight() { echo -e "${HIGHLIGHT_COLOR}$@${NC}"; }
 error () { echo -e "${ERROR_COLOR}$@${NC}" >&2; }
@@ -43,6 +45,22 @@ fi
 trap exit SIGINT
 
 set -e
+
+copy_demo=0
+
+# Parsing arguments
+for i in "$@"
+do
+    case "${i}" in
+	--copy-demo)
+	    copy_demo=1
+	    shift
+	    ;;
+	*)
+	    usage
+	    ;;
+    esac
+done
 
 highlight Setup started.
 
@@ -62,8 +80,13 @@ else
 fi
 
 if [ ! -e "${PWD}/demo" ]; then
-    ln -s limboai/demo demo
-    highlight -- Linked demo project.
+    if [ ${copy_demo} == 1 ]; then
+        cp -r limboai/demo demo
+        highlight -- Copied demo.
+    else
+        ln -s limboai/demo demo
+        highlight -- Linked demo project.
+    fi
 else
     highlight -- Skipping \"demo\". File already exists!
 fi
