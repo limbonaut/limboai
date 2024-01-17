@@ -992,6 +992,17 @@ void LimboAIEditor::_update_banners() {
 			banners->call_deferred(LW_NAME(add_child), banner);
 		}
 	}
+
+#ifdef LIMBOAI_GDEXTENSION
+	if (!limitations_banner_shown && GLOBAL_GET("debug/gdscript/warnings/native_method_override") == Variant(2)) {
+		ActionBanner *banner = memnew(ActionBanner);
+		banner->set_text(vformat(TTR("In Project Settings, \"debug/gdscript/warnings/native_method_override\" is set to \"Error\"")));
+		banner->add_action(TTR("Instructions"), callable_mp(LimboUtility::get_singleton(), &LimboUtility::open_doc_gdextension_limitations));
+		banner->add_action(TTR("Dismiss"), callable_mp(banner, &ActionBanner::close));
+		banners->call_deferred(LW_NAME(add_child), banner);
+		limitations_banner_shown = true;
+	}
+#endif // LIMBOAI_GDEXTENSION
 }
 
 void LimboAIEditor::_do_update_theme_item_cache() {

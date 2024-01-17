@@ -95,6 +95,7 @@ public:
 
 	void open_doc_introduction();
 	void open_doc_online();
+	void open_doc_gdextension_limitations();
 	void open_doc_class(const String &p_class_name);
 #endif // TOOLS_ENABLED
 
