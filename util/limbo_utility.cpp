@@ -334,7 +334,7 @@ Ref<Shortcut> LimboUtility::get_shortcut(const String &p_path) const {
 }
 
 void LimboUtility::open_doc_introduction() {
-	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/classes/class_behaviortree.html",
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/getting-started/introduction.html",
 			LIMBO_DOC_VERSION));
 }
 
