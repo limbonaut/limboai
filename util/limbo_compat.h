@@ -60,6 +60,7 @@
 #define VCALL(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
 #define VCALL_ARGS(method, ...) (call(LW_NAME(method), __VA_ARGS__))
 #define VCALL_V(m_name, r_ret) (GDVIRTUAL_CALL(m_name, r_ret))
+
 #define VCALL_OR_NATIVE(m_name)    \
 	if (!GDVIRTUAL_CALL(m_name)) { \
 		m_name();                  \
@@ -68,6 +69,16 @@
 #define VCALL_OR_NATIVE_ARGS(m_name, ...)       \
 	if (!GDVIRTUAL_CALL(m_name, __VA_ARGS__)) { \
 		m_name(__VA_ARGS__);                    \
+	}
+
+#define VCALL_OR_NATIVE_V(m_name, m_ret_type, r_ret)       \
+	if (!GDVIRTUAL_CALL(m_name, r_ret)) {                  \
+		r_ret = VariantCaster<m_ret_type>::cast(m_name()); \
+	}
+
+#define VCALL_OR_NATIVE_ARGS_V(m_name, m_ret_type, r_ret, ...)        \
+	if (!GDVIRTUAL_CALL(m_name, __VA_ARGS__, r_ret)) {                \
+		r_ret = VariantCaster<m_ret_type>::cast(m_name(__VA_ARGS__)); \
 	}
 
 // * Enum
@@ -125,11 +136,30 @@ using namespace godot;
 		Variant::evaluate(m_op, m_lvalue, m_rvalue, r_ret, r_valid); \
 	}
 
+// * Virtual calls:
+// * This is a workaround for missing ClassDB::add_virtual_method().
+// ! When using these macros, DON'T BIND the native virtual methods!
+
 #define VCALL(m_name) (call(LW_NAME(m_name)))
 #define VCALL_ARGS(m_name, ...) (call(LW_NAME(m_name), __VA_ARGS__))
 #define VCALL_V(m_name, r_ret) (r_ret = call(LW_NAME(m_name)))
-#define VCALL_OR_NATIVE(m_name) (call(LW_NAME(m_name)))
-#define VCALL_OR_NATIVE_ARGS(m_name, ...) (call(LW_NAME(m_name), __VA_ARGS__))
+
+#define VCALL_OR_NATIVE(m_name)        \
+	if (has_method(LW_NAME(m_name))) { \
+		call(LW_NAME(m_name));         \
+	} else {                           \
+		m_name();                      \
+	}
+
+#define VCALL_OR_NATIVE_ARGS(m_name, ...)   \
+	if (has_method(LW_NAME(m_name))) {      \
+		call(LW_NAME(m_name), __VA_ARGS__); \
+	} else {                                \
+		m_name(__VA_ARGS__);                \
+	}
+
+#define VCALL_OR_NATIVE_V(m_name, m_ret_type, r_ret) r_ret = (has_method(LW_NAME(m_name)) ? VariantCaster<m_ret_type>::cast(call(LW_NAME(m_name))) : VariantCaster<m_ret_type>::cast(m_name()))
+#define VCALL_OR_NATIVE_ARGS_V(m_name, m_ret_type, r_ret, ...) r_ret = (has_method(LW_NAME(m_name)) ? VariantCaster<m_ret_type>::cast(call(LW_NAME(m_name), __VA_ARGS__)) : VariantCaster<m_ret_type>::cast(m_name(__VA_ARGS__)))
 
 // * Enum
 

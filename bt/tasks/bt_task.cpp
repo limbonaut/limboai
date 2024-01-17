@@ -100,7 +100,9 @@ String BTTask::get_task_name() {
 		}
 		return _generate_name();
 #elif LIMBOAI_GDEXTENSION
-		return call(LimboStringNames::get_singleton()->_generate_name);
+		String s;
+		VCALL_OR_NATIVE_V(_generate_name, String, s);
+		return s;
 #endif
 	}
 	return data.custom_name;
@@ -226,13 +228,7 @@ BT::Status BTTask::execute(double p_delta) {
 		data.elapsed += p_delta;
 	}
 
-#ifdef LIMBOAI_MODULE
-	if (!GDVIRTUAL_CALL(_tick, p_delta, data.status)) {
-		data.status = _tick(p_delta);
-	}
-#elif LIMBOAI_GDEXTENSION
-	data.status = (Status)(int)call(LimboStringNames::get_singleton()->_tick, p_delta);
-#endif
+	VCALL_OR_NATIVE_ARGS_V(_tick, Status, data.status, p_delta);
 
 	if (data.status != RUNNING) {
 		VCALL_OR_NATIVE(_exit);
@@ -337,6 +333,7 @@ PackedStringArray BTTask::get_configuration_warnings() {
 	PackedStringArray warnings;
 	VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
 	ret.append_array(warnings);
+	ret.append_array(_get_configuration_warnings());
 
 	return ret;
 }
@@ -403,13 +400,7 @@ void BTTask::_bind_methods() {
 	GDVIRTUAL_BIND(_generate_name);
 	GDVIRTUAL_BIND(_get_configuration_warnings);
 #elif LIMBOAI_GDEXTENSION
-	// TODO: Until virtual functions are implemented in godot-cpp, we do this. Replace this code when possible.
-	ClassDB::bind_method(D_METHOD("_setup"), &BTTask::_setup);
-	ClassDB::bind_method(D_METHOD("_enter"), &BTTask::_enter);
-	ClassDB::bind_method(D_METHOD("_exit"), &BTTask::_exit);
-	ClassDB::bind_method(D_METHOD("_tick", "p_delta"), &BTTask::_tick);
-	ClassDB::bind_method(D_METHOD("_generate_name"), &BTTask::_generate_name);
-	ClassDB::bind_method(D_METHOD("_get_configuration_warnings"), &BTTask::_get_configuration_warnings);
+	// TODO: Registering virtual functions is not available in godot-cpp...
 #endif
 }
 

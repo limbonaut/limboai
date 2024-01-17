@@ -110,10 +110,6 @@ private:
 		Ref<Texture2D> behavior_tree_icon;
 	} theme_cache;
 
-#ifdef LIMBOAI_GDEXTENSION
-	bool limitations_banner_shown = false;
-#endif // LIMBOAI_GDEXTENSION
-
 	EditorPlugin *plugin;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
