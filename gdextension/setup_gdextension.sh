@@ -76,6 +76,9 @@ done
 
 highlight Setup started.
 
+${PYTHON} limboai/gdextension/update_icons.py --silent
+highlight -- Icon declarations updated.
+
 transfer="ln -s"
 transfer_word="Linked"
 if [ ${copy_all} == 1 ]; then
@@ -145,8 +148,5 @@ if [ ! -e "${PWD}/demo/addons/limboai/icons/" ]; then
 else
     highlight -- Skipping icons. File already exists!
 fi
-
-${PYTHON} limboai/gdextension/update_icons.py --silent
-highlight -- Icon declarations updated.
 
 highlight Setup complete.
