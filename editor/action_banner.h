@@ -50,6 +50,7 @@ public:
 	String get_text() const;
 
 	void add_action(const String &p_name, const Callable &p_action, bool p_auto_close = false);
+	void add_spacer();
 
 	void close();
 

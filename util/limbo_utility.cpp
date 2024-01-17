@@ -348,6 +348,11 @@ void LimboUtility::open_doc_gdextension_limitations() {
 			LIMBO_DOC_VERSION));
 }
 
+void LimboUtility::open_doc_custom_tasks() {
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/getting-started/custom-tasks.html",
+			LIMBO_DOC_VERSION));
+}
+
 void LimboUtility::open_doc_class(const String &p_class_name) {
 	if (p_class_name.begins_with("res://")) {
 		SHOW_DOC(vformat("class_name:\"%s\"", p_class_name));

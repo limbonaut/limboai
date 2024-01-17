@@ -594,11 +594,14 @@ void LimboAIEditor::_probability_popup_closed() {
 
 void LimboAIEditor::_misc_option_selected(int p_id) {
 	switch (p_id) {
-		case MISC_INTRODUCTION: {
-			LimboUtility::get_singleton()->open_doc_introduction();
-		} break;
 		case MISC_ONLINE_DOCUMENTATION: {
 			LimboUtility::get_singleton()->open_doc_online();
+		} break;
+		case MISC_DOC_INTRODUCTION: {
+			LimboUtility::get_singleton()->open_doc_introduction();
+		} break;
+		case MISC_DOC_CUSTOM_TASKS: {
+			LimboUtility::get_singleton()->open_doc_custom_tasks();
 		} break;
 		case MISC_OPEN_DEBUGGER: {
 			ERR_FAIL_COND(LimboDebuggerPlugin::get_singleton() == nullptr);
@@ -951,8 +954,9 @@ void LimboAIEditor::_update_misc_menu() {
 
 	misc_menu->clear();
 
-	misc_menu->add_icon_item(theme_cache.introduction_icon, TTR("Introduction"), MISC_INTRODUCTION);
 	misc_menu->add_icon_item(theme_cache.doc_icon, TTR("Online Documentation"), MISC_ONLINE_DOCUMENTATION);
+	misc_menu->add_icon_item(theme_cache.introduction_icon, TTR("Introduction"), MISC_DOC_INTRODUCTION);
+	misc_menu->add_icon_item(theme_cache.introduction_icon, TTR("Creating custom tasks in GDScript"), MISC_DOC_CUSTOM_TASKS);
 
 	misc_menu->add_separator();
 #ifdef LIMBOAI_MODULE
@@ -981,6 +985,8 @@ void LimboAIEditor::_update_banners() {
 			banner->set_text(vformat(TTR("Task folder not found: %s"), task_dir));
 			banner->add_action(TTR("Create"), callable_mp(this, &LimboAIEditor::_create_user_task_dir), true);
 			banner->add_action(TTR("Edit Path..."), callable_mp(this, &LimboAIEditor::_edit_project_settings));
+			banner->add_spacer();
+			banner->add_action(TTR("Help..."), callable_mp(LimboUtility::get_singleton(), &LimboUtility::open_doc_custom_tasks));
 			banner->set_meta(LW_NAME(managed), Variant(true));
 			banners->call_deferred(LW_NAME(add_child), banner);
 		}
@@ -1004,7 +1010,7 @@ void LimboAIEditor::_update_banners() {
 	if (!limitations_banner_shown && GLOBAL_GET("debug/gdscript/warnings/native_method_override") == Variant(2)) {
 		ActionBanner *banner = memnew(ActionBanner);
 		banner->set_text(vformat(TTR("In Project Settings, \"debug/gdscript/warnings/native_method_override\" is set to \"Error\"")));
-		banner->add_action(TTR("Instructions"), callable_mp(LimboUtility::get_singleton(), &LimboUtility::open_doc_gdextension_limitations));
+		banner->add_action(TTR("Instructions..."), callable_mp(LimboUtility::get_singleton(), &LimboUtility::open_doc_gdextension_limitations));
 		banner->add_action(TTR("Dismiss"), callable_mp(banner, &ActionBanner::close));
 		banners->call_deferred(LW_NAME(add_child), banner);
 		limitations_banner_shown = true;
