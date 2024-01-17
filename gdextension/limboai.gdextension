@@ -24,7 +24,6 @@ android.release.arm64 = "res://addons/limboai/bin/liblimboai.android.template_re
 
 [icons]
 
-BehaviorTree = "res://addons/limboai/icons/BehaviorTree.svg"
 BTAction = "res://addons/limboai/icons/BTAction.svg"
 BTAlwaysFail = "res://addons/limboai/icons/BTAlwaysFail.svg"
 BTAlwaysSucceed = "res://addons/limboai/icons/BTAlwaysSucceed.svg"
@@ -68,12 +67,13 @@ BTSubtree = "res://addons/limboai/icons/BTSubtree.svg"
 BTTimeLimit = "res://addons/limboai/icons/BTTimeLimit.svg"
 BTWait = "res://addons/limboai/icons/BTWait.svg"
 BTWaitTicks = "res://addons/limboai/icons/BTWaitTicks.svg"
+BehaviorTree = "res://addons/limboai/icons/BehaviorTree.svg"
 LimboAI = "res://addons/limboai/icons/LimboAI.svg"
 LimboDeselectAll = "res://addons/limboai/icons/LimboDeselectAll.svg"
 LimboExtraBlackboard = "res://addons/limboai/icons/LimboExtraBlackboard.svg"
 LimboExtraClock = "res://addons/limboai/icons/LimboExtraClock.svg"
-LimboExtractSubtree = "res://addons/limboai/icons/LimboExtractSubtree.svg"
 LimboExtraVariable = "res://addons/limboai/icons/LimboExtraVariable.svg"
+LimboExtractSubtree = "res://addons/limboai/icons/LimboExtractSubtree.svg"
 LimboHSM = "res://addons/limboai/icons/LimboHSM.svg"
 LimboPercent = "res://addons/limboai/icons/LimboPercent.svg"
 LimboSelectAll = "res://addons/limboai/icons/LimboSelectAll.svg"
