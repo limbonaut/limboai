@@ -28,6 +28,7 @@
 #include "editor/gui/editor_spin_slider.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
+#include "scene/gui/dialogs.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
@@ -44,6 +45,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/classes/accept_dialog.hpp"
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_spin_slider.hpp>
@@ -153,6 +155,8 @@ private:
 	Tree *disk_changed_list;
 	HashSet<String> disk_changed_files;
 
+	AcceptDialog *info_dialog;
+
 	void _add_task(const Ref<BTTask> &p_task);
 	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
 	void _add_task_by_class_or_path(const String &p_class_or_path);
@@ -175,6 +179,7 @@ private:
 	void _reload_modified();
 	void _resave_modified(String _str = "");
 	void _popup_file_dialog(FileDialog *p_dialog) { p_dialog->popup_centered_clamped(Size2i(700, 500), 0.8f); }
+	void _popup_info_dialog(const String &p_text);
 
 	void _rename_task_confirmed();
 	void _on_tree_rmb(const Vector2 &p_menu_pos);

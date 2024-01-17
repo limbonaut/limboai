@@ -272,8 +272,10 @@ void LimboAIEditor::_edit_project_settings() {
 	ProjectSettingsEditor::get_singleton()->connect(LW_NAME(visibility_changed), callable_mp(this, &LimboAIEditor::_update_banners), CONNECT_ONE_SHOT);
 #elif LIMBOAI_GDEXTENSION
 	// TODO: Find a way to show project setting in GDExtension.
-	// TODO: Maybe show a popup dialog instead.
-	ERR_PRINT("Can't do in GDExtension. To edit project settings, navigate to \"Project->Project Settings\", enable \"Advanced settings\", and scroll down to the \"LimboAI\" section.");
+	String text = "Can't open settings in GDExtension, sorry :(\n"
+				  "To edit project settings, navigate to \"Project->Project Settings\",\n"
+				  "enable \"Advanced settings\", and scroll down to the \"LimboAI\" section.";
+	_popup_info_dialog(text);
 #endif
 }
 
@@ -882,6 +884,11 @@ void LimboAIEditor::_resave_modified(String _str) {
 	disk_changed_files.clear();
 }
 
+void LimboAIEditor::_popup_info_dialog(const String &p_text) {
+	info_dialog->set_text(p_text);
+	info_dialog->popup_centered();
+}
+
 void LimboAIEditor::_rename_task_confirmed() {
 	ERR_FAIL_COND(!task_tree->get_selected().is_valid());
 	rename_dialog->hide();
@@ -1112,6 +1119,7 @@ void LimboAIEditor::_bind_methods() {
 }
 
 LimboAIEditor::LimboAIEditor() {
+	plugin = nullptr;
 	idx_history = 0;
 
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
@@ -1351,6 +1359,9 @@ LimboAIEditor::LimboAIEditor() {
 		disk_changed->get_ok_button()->set_text(TTR("Reload"));
 		disk_changed->add_button(TTR("Resave"), !DisplayServer::get_singleton()->get_swap_cancel_ok(), "resave");
 	}
+
+	info_dialog = memnew(AcceptDialog);
+	add_child(info_dialog);
 
 	BASE_CONTROL()->add_child(disk_changed);
 
