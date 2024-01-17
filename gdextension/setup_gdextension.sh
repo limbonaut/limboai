@@ -28,7 +28,7 @@ HIGHLIGHT_COLOR='\033[1;36m' # Light Cyan
 NC='\033[0m' # No Color
 ERROR_COLOR="\033[0;31m"  # Red
 
-usage() { echo "Usage: $0 [--copy-demo]"; }
+usage() { echo "Usage: $0 [--copy-demo] [--copy-all] [--trash-old]"; }
 
 msg () {  echo -e "$@"; }
 highlight() { echo -e "${HIGHLIGHT_COLOR}$@${NC}"; }
@@ -47,6 +47,8 @@ trap exit SIGINT
 set -e
 
 copy_demo=0
+copy_all=0
+trash_old=0
 
 # Parsing arguments
 for i in "$@"
@@ -56,13 +58,42 @@ do
 	    copy_demo=1
 	    shift
 	    ;;
+	--copy-all)
+	    copy_demo=1
+	    copy_all=1
+	    shift
+	    ;;
+    --trash-old)
+        trash_old=1
+        shift
+        ;;
 	*)
 	    usage
+        exit 1
 	    ;;
     esac
 done
 
 highlight Setup started.
+
+${PYTHON} limboai/gdextension/update_icons.py --silent
+highlight -- Icon declarations updated.
+
+transfer="ln -s"
+transfer_word="Linked"
+if [ ${copy_all} == 1 ]; then
+    transfer="cp -R"
+    transfer_word="Copied"
+fi
+
+if [ ${trash_old} == 1 ]; then
+    if ! command -v trash &> /dev/null; then
+        error trash command not available. Aborting.
+        exit 1
+    fi
+    trash SConstruct limboai/demo/addons demo || /bin/true
+    highlight -- Trashed old setup.
+fi
 
 if [ ! -d "${PWD}/godot-cpp/" ]; then
     highlight -- Cloning godot-cpp...
@@ -73,15 +104,15 @@ else
 fi
 
 if [ ! -f "${PWD}/SConstruct" ]; then
-    ln -s limboai/gdextension/SConstruct SConstruct
-    highlight -- Linked SConstruct.
+    ${transfer} limboai/gdextension/SConstruct SConstruct
+    highlight -- ${transfer_word} SConstruct.
 else
     highlight -- Skipping \"SConstruct\". File already exists!
 fi
 
 if [ ! -e "${PWD}/demo" ]; then
     if [ ${copy_demo} == 1 ]; then
-        cp -r limboai/demo demo
+        cp -R limboai/demo demo
         highlight -- Copied demo.
     else
         ln -s limboai/demo demo
@@ -91,48 +122,31 @@ else
     highlight -- Skipping \"demo\". File already exists!
 fi
 
-# if [ -d "${PWD}/demo/" ]; then
-#     highlight -- Demo project exists. Archiving...
-#     backup_version=1
-#     backup_dir="${PWD}/demo.old${backup_version}"
-#     while [ -d "${backup_dir}" ]; do
-#         ((backup_version++))
-#         backup_dir="${PWD}/demo.old${backup_version}"
-#     done
-#     mv demo/ ${backup_dir}
-#     highlight -- Demo project archived as \"$(basename ${backup_dir})\".
-# fi
-
-# if [ ! -d "${PWD}/demo/" ]; then
-#     cp -r limboai/demo demo
-#     highlight -- Copied demo project.
-# else
-#     error Error: \"demo\" directory exists!
-#     exit 2
-# fi
-
-if [ ! -e "${PWD}/limboai/demo/addons/limboai/bin/limboai.gdextension" ]; then
-    ls -l
-    mkdir -p ./limboai/demo/addons/limboai/bin/
-    cd ./limboai/demo/addons/limboai/bin/
-    ln -s ../../../../gdextension/limboai.gdextension limboai.gdextension || ln -s ../../../../limboai/gdextension/limboai.gdextension limboai.gdextension
-    ls -l
+if [ ! -e "${PWD}/demo/addons/limboai/bin/limboai.gdextension" ]; then
+    mkdir -p ./demo/addons/limboai/bin/
+    cd ./demo/addons/limboai/bin/
+    if [ -f "../../../../gdextension/limboai.gdextension" ]; then
+        ${transfer} ../../../../gdextension/limboai.gdextension limboai.gdextension
+    else
+        ${transfer} ../../../../limboai/gdextension/limboai.gdextension limboai.gdextension
+    fi
     cd -
-    highlight -- Linked limboai.gdextension.
+    highlight -- ${transfer_word} limboai.gdextension.
 else
     highlight -- Skipping limboai.gdextension. File already exists!
 fi
 
-if [ ! -e "${PWD}/limboai/demo/addons/limboai/icons/" ]; then
-    cd ./limboai/demo/addons/limboai/
-    ln -s ../../../icons icons || ln -s ../../../limboai/icons icons
+if [ ! -e "${PWD}/demo/addons/limboai/icons/" ]; then
+    cd ./demo/addons/limboai/
+    if [ -d "../../../icons" ]; then
+        ${transfer} ../../../icons icons
+    else
+        ${transfer} ../../../limboai/icons icons
+    fi
     cd -
-    highlight -- Linked icons.
+    highlight -- ${transfer_word} icons.
 else
-    highlight -- Skipping linking icons. File already exists!
+    highlight -- Skipping icons. File already exists!
 fi
-
-${PYTHON} limboai/gdextension/update_icons.py --silent
-highlight -- Icon declarations updated.
 
 highlight Setup complete.

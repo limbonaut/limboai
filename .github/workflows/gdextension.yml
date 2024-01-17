@@ -162,14 +162,12 @@ jobs:
       - name: Setup project structure for GDExtension
         shell: bash
         run: |
-          python ./limboai/gdextension/update_icons.py
-          mkdir -p demo/addons/limboai/bin
-          mv limboai/icons demo/addons/limboai/
-          cp limboai/gdextension/SConstruct SConstruct
-          cp limboai/gdextension/limboai.gdextension demo/addons/limboai/bin
+          bash ./limboai/gdextension/setup_gdextension.sh --copy-all
           echo "---"
           ls -l
+          echo "---"
           ls -l -R ./demo/
+
 
       - name: Compilation
         shell: bash
@@ -184,7 +182,10 @@ jobs:
         run: |
           mkdir out
           mv demo/addons/ out/
+          cp limboai/{README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
+          cp -R limboai/demo/demo out/demo
           rm -f out/addons/limboai/bin/*.{exp,lib,pdb}
+          echo "---"
           ls -R out/
 
       - name: Strip lib

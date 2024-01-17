@@ -334,12 +334,22 @@ Ref<Shortcut> LimboUtility::get_shortcut(const String &p_path) const {
 }
 
 void LimboUtility::open_doc_introduction() {
-	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/classes/class_behaviortree.html",
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/getting-started/introduction.html",
 			LIMBO_DOC_VERSION));
 }
 
 void LimboUtility::open_doc_online() {
 	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/index.html",
+			LIMBO_DOC_VERSION));
+}
+
+void LimboUtility::open_doc_gdextension_limitations() {
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/getting-started/gdextension.html#limitations-of-the-gdextension-version",
+			LIMBO_DOC_VERSION));
+}
+
+void LimboUtility::open_doc_custom_tasks() {
+	OS::get_singleton()->shell_open(vformat("https://limboai.readthedocs.io/en/%s/getting-started/custom-tasks.html",
 			LIMBO_DOC_VERSION));
 }
 

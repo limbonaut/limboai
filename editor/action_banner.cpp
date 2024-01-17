@@ -17,11 +17,13 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "editor/editor_scale.h"
 #include "scene/gui/button.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void ActionBanner::set_text(const String &p_text) {
@@ -41,6 +43,12 @@ void ActionBanner::add_action(const String &p_name, const Callable &p_action, bo
 	action_btn->set_text(p_name);
 	action_btn->connect(LW_NAME(pressed), callable_mp(this, &ActionBanner::_execute_action).bind(p_action, p_auto_close));
 	hbox->add_child(action_btn);
+}
+
+void ActionBanner::add_spacer() {
+	Control *spacer = memnew(Control);
+	spacer->set_custom_minimum_size(Vector2(8.0 * EDSCALE, 0.0));
+	hbox->add_child(spacer);
 }
 
 void ActionBanner::_execute_action(const Callable &p_action, bool p_auto_close) {

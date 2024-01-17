@@ -58,9 +58,14 @@ def main():
 
     content += "[icons]\n\n"
 
+    icon_files = []
     icons_dir = os.path.join(config_dir, "../icons/")
     for icon_file in glob.glob(icons_dir + "/*.svg"):
         icon_file = os.path.basename(icon_file)
+        icon_files.append(icon_file)
+
+    icon_files.sort()
+    for icon_file in icon_files:
         content += os.path.splitext(icon_file)[0] + " = \"res://addons/limboai/icons/" + icon_file + "\"\n"
 
     f = open(config_path, "w")
