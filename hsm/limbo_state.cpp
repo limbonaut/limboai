@@ -37,27 +37,32 @@ LimboState *LimboState::get_root() const {
 LimboState *LimboState::named(String p_name) {
 	set_name(p_name);
 	return this;
-};
+}
 
-void LimboState::_do_enter() {
+void LimboState::_enter() {
 	active = true;
-	VCALL_OR_NATIVE(_enter);
+	VCALL(_enter);
 	emit_signal(LimboStringNames::get_singleton()->entered);
-};
+}
 
-void LimboState::_do_exit() {
+void LimboState::_exit() {
 	if (!active) {
 		return;
 	}
-	VCALL_OR_NATIVE(_exit);
+	VCALL(_exit);
 	emit_signal(LimboStringNames::get_singleton()->exited);
 	active = false;
-};
+}
 
-void LimboState::_do_update(double p_delta) {
-	VCALL_OR_NATIVE_ARGS(_update, p_delta);
+void LimboState::_update(double p_delta) {
+	VCALL_ARGS(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
-};
+}
+
+void LimboState::_setup() {
+	VCALL(_setup);
+	emit_signal(LimboStringNames::get_singleton()->setup);
+}
 
 void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	ERR_FAIL_COND(p_agent == nullptr);
@@ -71,14 +76,8 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 		}
 	}
 
-	VCALL_OR_NATIVE(_setup);
-	emit_signal(LimboStringNames::get_singleton()->setup);
+	_setup();
 }
-
-void LimboState::_setup() {}
-void LimboState::_enter() {}
-void LimboState::_exit() {}
-void LimboState::_update(double p_delta) {}
 
 bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event.is_empty(), false);
@@ -189,10 +188,7 @@ void LimboState::_bind_methods() {
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_update, "p_delta");
 #elif LIMBOAI_GDEXTENSION
-	ClassDB::bind_method(D_METHOD("_setup"), &LimboState::_setup);
-	ClassDB::bind_method(D_METHOD("_enter"), &LimboState::_enter);
-	ClassDB::bind_method(D_METHOD("_exit"), &LimboState::_exit);
-	ClassDB::bind_method(D_METHOD("_update", "p_delta"), &LimboState::_update);
+	// TODO: Registering virtual functions is not available in godot-cpp...
 #endif
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
@@ -204,7 +200,7 @@ void LimboState::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("entered"));
 	ADD_SIGNAL(MethodInfo("exited"));
 	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::FLOAT, "p_delta")));
-};
+}
 
 LimboState::LimboState() {
 	agent = nullptr;

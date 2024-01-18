@@ -58,8 +58,9 @@
 // * Virtual calls
 
 #define VCALL(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
-#define VCALL_ARGS(method, ...) (call(LW_NAME(method), __VA_ARGS__))
+#define VCALL_ARGS(m_name, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__))
 #define VCALL_V(m_name, r_ret) (GDVIRTUAL_CALL(m_name, r_ret))
+#define VCALL_ARGS_V(m_name, r_ret, ...) (GDVIRTUAL_CALL(m_name, __VA_ARGS__, r_ret))
 
 #define VCALL_OR_NATIVE(m_name)    \
 	if (!GDVIRTUAL_CALL(m_name)) { \
@@ -139,10 +140,29 @@ using namespace godot;
 // * Virtual calls:
 // * This is a workaround for missing ClassDB::add_virtual_method().
 // ! When using these macros, DON'T BIND the native virtual methods!
+// -----------------------------
+// VCALL*: only calls a script version if present.
+// VCALL_OR_NATIVE*: calls a script version if present; otherwise, calls the native version.
 
-#define VCALL(m_name) (call(LW_NAME(m_name)))
-#define VCALL_ARGS(m_name, ...) (call(LW_NAME(m_name), __VA_ARGS__))
-#define VCALL_V(m_name, r_ret) (r_ret = call(LW_NAME(m_name)))
+#define VCALL(m_name)                  \
+	if (has_method(LW_NAME(m_name))) { \
+		call(LW_NAME(m_name));         \
+	}
+
+#define VCALL_ARGS(m_name, ...)             \
+	if (has_method(LW_NAME(m_name))) {      \
+		call(LW_NAME(m_name), __VA_ARGS__); \
+	}
+
+#define VCALL_V(m_name, r_ret)         \
+	if (has_method(LW_NAME(m_name))) { \
+		r_ret = call(LW_NAME(m_name)); \
+	}
+
+#define VCALL_ARGS_V(m_name, r_ret, ...)            \
+	if (has_method(LW_NAME(m_name))) {              \
+		r_ret = call(LW_NAME(m_name, __VA_ARGS__)); \
+	}
 
 #define VCALL_OR_NATIVE(m_name)        \
 	if (has_method(LW_NAME(m_name))) { \

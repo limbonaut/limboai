@@ -56,7 +56,6 @@ protected:
 
 	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
 
-	// Implemented in GDScript:
 	virtual void _setup();
 	virtual void _enter();
 	virtual void _exit();
@@ -69,15 +68,9 @@ protected:
 	GDVIRTUAL1(_update, double);
 #endif // LIMBOAI_MODULE
 
-	virtual void _do_enter();
-	virtual void _do_exit();
-	virtual void _do_update(double p_delta);
-
 	void add_event_handler(const String &p_event, const Callable &p_handler);
 
 public:
-	static String EVENT_FINISHED() { return LW_NAME(EVENT_FINISHED); }
-
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 
 	Node *get_agent() const { return agent; }
