@@ -1,7 +1,7 @@
 /**
- * bb_float_array.h
+ * bb_float32_array.h
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -9,16 +9,16 @@
  * =============================================================================
  */
 
-#ifndef BB_FLOAT_ARRAY_H
-#define BB_FLOAT_ARRAY_H
+#ifndef BB_FLOAT32_ARRAY_H
+#define BB_FLOAT32_ARRAY_H
 
 #include "bb_param.h"
 
-class BBFloatArray : public BBParam {
-	GDCLASS(BBFloatArray, BBParam);
+class BBFloat32Array : public BBParam {
+	GDCLASS(BBFloat32Array, BBParam);
 
 protected:
-	virtual Variant::Type get_type() const override { return Variant::PACKED_FLOAT64_ARRAY; }
+	virtual Variant::Type get_type() const override { return Variant::PACKED_FLOAT32_ARRAY; }
 };
 
-#endif // BB_FLOAT_ARRAY_H
+#endif // BB_FLOAT32_ARRAY_H

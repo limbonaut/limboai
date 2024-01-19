@@ -1,7 +1,7 @@
 /**
  * register_types.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -20,12 +20,15 @@
 #include "blackboard/bb_param/bb_color_array.h"
 #include "blackboard/bb_param/bb_dictionary.h"
 #include "blackboard/bb_param/bb_float.h"
-#include "blackboard/bb_param/bb_float_array.h"
+#include "blackboard/bb_param/bb_float32_array.h"
+#include "blackboard/bb_param/bb_float64_array.h"
 #include "blackboard/bb_param/bb_int.h"
-#include "blackboard/bb_param/bb_int_array.h"
+#include "blackboard/bb_param/bb_int32_array.h"
+#include "blackboard/bb_param/bb_int64_array.h"
 #include "blackboard/bb_param/bb_node.h"
 #include "blackboard/bb_param/bb_param.h"
 #include "blackboard/bb_param/bb_plane.h"
+#include "blackboard/bb_param/bb_projection.h"
 #include "blackboard/bb_param/bb_quaternion.h"
 #include "blackboard/bb_param/bb_rect2.h"
 #include "blackboard/bb_param/bb_rect2i.h"
@@ -196,11 +199,14 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BBColorArray);
 		GDREGISTER_CLASS(BBDictionary);
 		GDREGISTER_CLASS(BBFloat);
-		GDREGISTER_CLASS(BBFloatArray);
+		GDREGISTER_CLASS(BBFloat32Array);
+		GDREGISTER_CLASS(BBFloat64Array);
 		GDREGISTER_CLASS(BBInt);
-		GDREGISTER_CLASS(BBIntArray);
+		GDREGISTER_CLASS(BBInt32Array);
+		GDREGISTER_CLASS(BBInt64Array);
 		GDREGISTER_CLASS(BBNode);
 		GDREGISTER_CLASS(BBPlane);
+		GDREGISTER_CLASS(BBProjection);
 		GDREGISTER_CLASS(BBQuaternion);
 		GDREGISTER_CLASS(BBRect2);
 		GDREGISTER_CLASS(BBRect2i);
