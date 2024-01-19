@@ -26,34 +26,6 @@ Limitations of the GDExtension version
 GDExtension is the most convenient way of using the LimboAI plugin, but it comes
 with certain limitations.
 
-The biggest one is that marking methods as virtual for scripting is not
-currently possible in godot-cpp. We use these methods to allow creating custom
-behavior tree tasks in GDScript.
-Due to a workaround we employ, the editor will complain about native
-methods being overridden. And by default, such warnings are treated as errors.
-You have two options...
-
-In your Project Settings, you can edit ``Debug -> GDScript -> Warnings -> Native Methods Override``
-and set it to either ``Warn`` or ``Ignore``.
-Those settings are hidden, unless ``Advanced Settings`` toggle is switched on!
-
-Alternatively, in your custom tasks, you can add specific instructions for
-the parser to ignore the warning. For example:
-
-.. code:: gdscript
-
-    # The following line instructs parser to ignore the warning:
-    @warning_ignore("native_method_override")
-    func _tick(p_delta: float) -> Status:
-        return SUCCESS
-
-You would have to do that for each overridden method in your custom tasks.
-It's up to you which option you prefer. Personally, I'd set it to ``Warn`` and
-add ignores only if it gets overwhelming. Hopefully, this will be fixed in the
-future releases of Godot!
-
-**Other GDExtension limitations**
-
 * Built-in documentation is not available. The plugin will open online documentation instead when requested.
 * Documentation tooltips are not available.
 * Handy :ref:`class_BBParam` property editor is not available in the extension due to dependencies on the engine classes that are not available in the Godot API.
