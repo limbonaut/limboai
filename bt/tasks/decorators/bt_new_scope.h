@@ -14,18 +14,20 @@
 
 #include "../bt_decorator.h"
 
+#include "../../../blackboard/blackboard_source.h"
+
 class BTNewScope : public BTDecorator {
 	GDCLASS(BTNewScope, BTDecorator);
 	TASK_CATEGORY(Decorators);
 
 private:
-	Dictionary blackboard_data;
+	Ref<BlackboardSource> blackboard_source;
 
 protected:
 	static void _bind_methods();
 
-	void _set_blackboard_data(const Dictionary &p_value) { blackboard_data = p_value; }
-	Dictionary _get_blackboard_data() const { return blackboard_data; }
+	void set_blackboard_source(const Ref<BlackboardSource> &p_source) { blackboard_source = p_source; }
+	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
 
 	virtual Status _tick(double p_delta) override;
 

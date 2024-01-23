@@ -21,7 +21,7 @@ class BlackboardSource : public Resource {
 	GDCLASS(BlackboardSource, Resource);
 
 private:
-	HashMap<String, BBVariable> vars;
+	HashMap<String, BBVariable> data;
 	Ref<BlackboardSource> base;
 	// HashMap<String, BBVariable> overrides;
 
@@ -32,9 +32,11 @@ public:
 	void remove_var(const String &p_name);
 	BBVariable get_var(const String &p_name);
 	PackedStringArray list_vars() const;
+	bool is_empty() const { return data.is_empty(); }
 
 	void sync_base();
-	Ref<Blackboard> instantiate();
+	Ref<Blackboard> create_blackboard();
+	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite);
 
 	BlackboardSource() = default;
 };

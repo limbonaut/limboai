@@ -13,6 +13,7 @@
 #define BT_PLAYER_H
 
 #include "../blackboard/blackboard.h"
+#include "../blackboard/blackboard_source.h"
 #include "behavior_tree.h"
 #include "tasks/bt_task.h"
 
@@ -36,6 +37,7 @@ public:
 
 private:
 	Ref<BehaviorTree> behavior_tree;
+	Ref<BlackboardSource> blackboard_source;
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
 	Ref<Blackboard> blackboard;
@@ -49,14 +51,14 @@ private:
 protected:
 	static void _bind_methods();
 
-	void _set_blackboard_data(Dictionary p_value) { blackboard->set_data(p_value.duplicate()); }
-	Dictionary _get_blackboard_data() const { return blackboard->get_data(); }
-
 	void _notification(int p_notification);
 
 public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_tree);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; };
+
+	void set_blackboard_source(const Ref<BlackboardSource> &p_source) { blackboard_source = p_source; }
+	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
 
 	void set_update_mode(UpdateMode p_mode);
 	UpdateMode get_update_mode() const { return update_mode; }
