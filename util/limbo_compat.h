@@ -218,6 +218,8 @@ inline void VARIANT_DELETE_IF_OBJECT(Variant m_variant) {
 	}
 }
 
+Variant VARIANT_DEFAULT(Variant::Type p_type);
+
 #define PROJECT_CONFIG_FILE() GET_PROJECT_SETTINGS_DIR().path_join("limbo_ai.cfg")
 #define IS_RESOURCE_FILE(m_path) (m_path.begins_with("res://") && m_path.find("::") == -1)
 #define RESOURCE_TYPE_HINT(m_type) vformat("%s/%s:%s", Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE, m_type)

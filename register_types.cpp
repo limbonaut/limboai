@@ -47,6 +47,7 @@
 #include "blackboard/bb_param/bb_vector4.h"
 #include "blackboard/bb_param/bb_vector4i.h"
 #include "blackboard/blackboard.h"
+#include "blackboard/blackboard_source.h"
 #include "bt/behavior_tree.h"
 #include "bt/bt_player.h"
 #include "bt/bt_state.h"
@@ -133,6 +134,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 		GDREGISTER_CLASS(LimboUtility);
 		GDREGISTER_CLASS(Blackboard);
+		GDREGISTER_CLASS(BlackboardSource);
 
 		GDREGISTER_CLASS(LimboState);
 		GDREGISTER_CLASS(LimboHSM);

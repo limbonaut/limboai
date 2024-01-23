@@ -25,7 +25,15 @@ private:
 	Ref<BlackboardSource> base;
 	// HashMap<String, BBVariable> overrides;
 
+protected:
+	bool _set(const StringName &p_name, const Variant &p_value);
+	bool _get(const StringName &p_name, Variant &r_ret) const;
+	void _get_property_list(List<PropertyInfo> *p_list) const;
+
 public:
+	void set_base_source(const Ref<BlackboardSource> &p_base);
+	Ref<BlackboardSource> get_base_source() const { return base; }
+
 	void set_value(const String &p_name, const Variant &p_value);
 	Variant get_value(const String &p_name) const;
 	void add_var(const String &p_name, const BBVariable &p_var);
@@ -38,7 +46,7 @@ public:
 	Ref<Blackboard> create_blackboard();
 	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite);
 
-	BlackboardSource() = default;
+	BlackboardSource();
 };
 
 #endif // BLACKBOARD_SOURCE_H

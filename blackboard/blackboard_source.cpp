@@ -11,6 +11,93 @@
 
 #include "blackboard_source.h"
 
+bool BlackboardSource::_set(const StringName &p_name, const Variant &p_value) {
+	String prop_name = p_name;
+
+	// * Editor
+	if (data.has(prop_name)) {
+		data[prop_name].set_value(p_value);
+		return true;
+	}
+
+	// * Storage
+	if (prop_name.begins_with("var/")) {
+		String var_name = prop_name.get_slicec('/', 1);
+		String what = prop_name.get_slicec('/', 2);
+		if (!data.has(var_name) && what == "name") {
+			data.insert(var_name, BBVariable());
+		}
+		if (what == "name") {
+			// We don't store variable name with the variable.
+		} else if (what == "type") {
+			data[var_name].set_type((Variant::Type)(int)p_value);
+		} else if (what == "value") {
+			data[var_name].set_value(p_value);
+		} else if (what == "hint") {
+			data[var_name].set_hint((PropertyHint)(int)p_value);
+		} else if (what == "hint_string") {
+			data[var_name].set_hint_string(p_value);
+		} else {
+			return false;
+		}
+		return true;
+	}
+
+	return false;
+}
+
+bool BlackboardSource::_get(const StringName &p_name, Variant &r_ret) const {
+	String prop_name = p_name;
+
+	// * Editor
+	if (data.has(prop_name)) {
+		r_ret = data[prop_name].get_value();
+		return true;
+	}
+
+	// * Storage
+	if (!prop_name.begins_with("var/")) {
+		return false;
+	}
+
+	String var_name = prop_name.get_slicec('/', 1);
+	String what = prop_name.get_slicec('/', 2);
+	ERR_FAIL_COND_V(!data.has(var_name), false);
+	if (what == "type") {
+		r_ret = data[var_name].get_type();
+	} else if (what == "value") {
+		r_ret = data[var_name].get_value();
+	} else if (what == "hint") {
+		r_ret = data[var_name].get_hint();
+	} else if (what == "hint_string") {
+		r_ret = data[var_name].get_hint_string();
+	}
+	return true;
+}
+
+void BlackboardSource::_get_property_list(List<PropertyInfo> *p_list) const {
+	for (const KeyValue<String, BBVariable> &kv : data) {
+		String var_name = kv.key;
+		BBVariable var = kv.value;
+
+		// * Editor
+		p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
+
+		// * Storage
+		p_list->push_back(PropertyInfo(Variant::STRING, "var/" + var_name + "/name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+		p_list->push_back(PropertyInfo(Variant::INT, "var/" + var_name + "/type", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+		p_list->push_back(PropertyInfo(var.get_type(), "var/" + var_name + "/value", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+		p_list->push_back(PropertyInfo(Variant::INT, "var/" + var_name + "/hint", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+		p_list->push_back(PropertyInfo(Variant::STRING, "var/" + var_name + "/hint_string", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL));
+	}
+}
+
+void BlackboardSource::set_base_source(const Ref<BlackboardSource> &p_base) {
+	base = p_base;
+	sync_base();
+	emit_changed();
+}
+
 void BlackboardSource::set_value(const String &p_name, const Variant &p_value) {
 	ERR_FAIL_COND(!data.has(p_name));
 	data.get(p_name).set_value(p_value);
@@ -82,4 +169,11 @@ void BlackboardSource::populate_blackboard(const Ref<Blackboard> &p_blackboard, 
 		}
 		p_blackboard->add_var(kv.key, kv.value.duplicate());
 	}
+}
+
+BlackboardSource::BlackboardSource() {
+	// TODO: REMOVE ALL BELOW
+	data.insert("speed", BBVariable(Variant::Type::FLOAT, PropertyHint::PROPERTY_HINT_NONE, ""));
+	data.insert("limit_speed", BBVariable(Variant::Type::BOOL, PropertyHint::PROPERTY_HINT_NONE, ""));
+	data.insert("about", BBVariable(Variant::Type::STRING, PropertyHint::PROPERTY_HINT_MULTILINE_TEXT, ""));
 }

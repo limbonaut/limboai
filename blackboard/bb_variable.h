@@ -14,6 +14,7 @@
 
 #include "core/object/object.h"
 #include "core/templates/safe_refcount.h"
+#include "core/variant/variant.h"
 
 class BBVariable {
 private:
@@ -60,7 +61,7 @@ public:
 	void operator=(const BBVariable &p_var);
 
 	BBVariable(const BBVariable &p_var);
-	BBVariable();
+	BBVariable(Variant::Type p_type = Variant::Type::NIL, PropertyHint p_hint = PROPERTY_HINT_NONE, const String &p_hint_string = "");
 	~BBVariable();
 };
 

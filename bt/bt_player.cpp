@@ -63,11 +63,33 @@ void BTPlayer::_load_tree() {
 #endif
 }
 
+void BTPlayer::_update_blackboard_source() {
+	if (behavior_tree.is_valid() && behavior_tree->get_blackboard_source().is_valid()) {
+		if (blackboard_source.is_null()) {
+			blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
+		}
+		if (blackboard_source == behavior_tree->get_blackboard_source()) {
+			blackboard_source->sync_base();
+		} else {
+			blackboard_source->set_base_source(behavior_tree->get_blackboard_source());
+		}
+	}
+}
+
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	behavior_tree = p_tree;
 	if (Engine::get_singleton()->is_editor_hint() == false && get_owner()) {
 		_load_tree();
 	}
+	_update_blackboard_source();
+}
+
+void BTPlayer::set_blackboard_source(const Ref<BlackboardSource> &p_source) {
+	blackboard_source = p_source;
+	if (blackboard_source.is_null()) {
+		blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
+	}
+	_update_blackboard_source();
 }
 
 void BTPlayer::set_update_mode(UpdateMode p_mode) {

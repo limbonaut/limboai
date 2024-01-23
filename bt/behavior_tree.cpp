@@ -47,6 +47,8 @@ Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_bl
 void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_description", "p_value"), &BehaviorTree::set_description);
 	ClassDB::bind_method(D_METHOD("get_description"), &BehaviorTree::get_description);
+	ClassDB::bind_method(D_METHOD("set_blackboard_source", "p_source"), &BehaviorTree::set_blackboard_source);
+	ClassDB::bind_method(D_METHOD("get_blackboard_source"), &BehaviorTree::get_blackboard_source);
 	ClassDB::bind_method(D_METHOD("set_root_task", "p_value"), &BehaviorTree::set_root_task);
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
@@ -55,4 +57,9 @@ void BehaviorTree::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "root_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "set_root_task", "get_root_task");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT), "set_blackboard_source", "get_blackboard_source");
+}
+
+BehaviorTree::BehaviorTree() {
+	blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
 }

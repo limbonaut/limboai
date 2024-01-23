@@ -12,11 +12,11 @@
 #ifndef BEHAVIOR_TREE_H
 #define BEHAVIOR_TREE_H
 
+#include "../blackboard/blackboard_source.h"
 #include "tasks/bt_task.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/resource.h"
-#include "modules/limboai/blackboard/blackboard.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -29,6 +29,7 @@ class BehaviorTree : public Resource {
 
 private:
 	String description;
+	Ref<BlackboardSource> blackboard_source;
 	Ref<BTTask> root_task;
 
 protected:
@@ -38,6 +39,12 @@ public:
 #ifdef LIMBOAI_MODULE
 	virtual bool editor_can_reload_from_file() override { return false; }
 #endif
+
+	void set_blackboard_source(const Ref<BlackboardSource> &p_source) {
+		blackboard_source = p_source;
+		emit_changed();
+	}
+	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
 
 	void set_description(String p_value) {
 		description = p_value;
@@ -54,6 +61,8 @@ public:
 	Ref<BehaviorTree> clone() const;
 	void copy_other(const Ref<BehaviorTree> &p_other);
 	Ref<BTTask> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const;
+
+	BehaviorTree();
 };
 
 #endif // BEHAVIOR_TREE_H

@@ -26,6 +26,19 @@
 #include <godot_cpp/classes/engine_debugger.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
+void BTState::_update_blackboard_source() {
+	if (behavior_tree.is_valid() && behavior_tree->get_blackboard_source().is_valid()) {
+		if (get_blackboard_source().is_null()) {
+			set_blackboard_source(Ref<BlackboardSource>(memnew(BlackboardSource)));
+		}
+		if (get_blackboard_source() == behavior_tree->get_blackboard_source()) {
+			get_blackboard_source()->sync_base();
+		} else {
+			get_blackboard_source()->set_base_source(behavior_tree->get_blackboard_source());
+		}
+	}
+}
+
 void BTState::_setup() {
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
 	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard());

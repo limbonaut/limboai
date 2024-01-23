@@ -11,6 +11,8 @@
 
 #include "bb_variable.h"
 
+#include "../util/limbo_compat.h"
+
 void BBVariable::unref() {
 	if (data && data->refcount.unref()) {
 		memdelete(data);
@@ -36,6 +38,7 @@ Variant BBVariable::get_value() const {
 
 void BBVariable::set_type(Variant::Type p_type) {
 	data->type = p_type;
+	data->value = VARIANT_DEFAULT(p_type);
 }
 
 Variant::Type BBVariable::get_type() const {
@@ -136,9 +139,13 @@ BBVariable::BBVariable(const BBVariable &p_var) {
 	}
 }
 
-BBVariable::BBVariable() {
+BBVariable::BBVariable(Variant::Type p_type, PropertyHint p_hint, const String &p_hint_string) {
 	data = memnew(Data);
 	data->refcount.init();
+
+	set_type(p_type);
+	data->hint = p_hint;
+	data->hint_string = p_hint_string;
 }
 
 BBVariable::~BBVariable() {

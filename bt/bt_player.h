@@ -47,6 +47,7 @@ private:
 	Ref<BTTask> tree_instance;
 
 	void _load_tree();
+	void _update_blackboard_source();
 
 protected:
 	static void _bind_methods();
@@ -57,7 +58,7 @@ public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_tree);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; };
 
-	void set_blackboard_source(const Ref<BlackboardSource> &p_source) { blackboard_source = p_source; }
+	void set_blackboard_source(const Ref<BlackboardSource> &p_source);
 	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
 
 	void set_update_mode(UpdateMode p_mode);
