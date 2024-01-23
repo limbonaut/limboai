@@ -26,15 +26,15 @@
 #include <godot_cpp/classes/engine_debugger.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
-void BTState::_update_blackboard_source() {
-	if (behavior_tree.is_valid() && behavior_tree->get_blackboard_source().is_valid()) {
-		if (get_blackboard_source().is_null()) {
-			set_blackboard_source(Ref<BlackboardSource>(memnew(BlackboardSource)));
+void BTState::_update_blackboard_plan() {
+	if (behavior_tree.is_valid() && behavior_tree->get_blackboard_plan().is_valid()) {
+		if (get_blackboard_plan().is_null()) {
+			set_blackboard_plan(Ref<BlackboardPlan>(memnew(BlackboardPlan)));
 		}
-		if (get_blackboard_source() == behavior_tree->get_blackboard_source()) {
-			get_blackboard_source()->sync_with_base_source();
+		if (get_blackboard_plan() == behavior_tree->get_blackboard_plan()) {
+			get_blackboard_plan()->sync_with_base_plan();
 		} else {
-			get_blackboard_source()->set_base_source(behavior_tree->get_blackboard_source());
+			get_blackboard_plan()->set_base_plan(behavior_tree->get_blackboard_plan());
 		}
 	}
 }

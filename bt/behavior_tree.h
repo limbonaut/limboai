@@ -12,7 +12,7 @@
 #ifndef BEHAVIOR_TREE_H
 #define BEHAVIOR_TREE_H
 
-#include "../blackboard/blackboard_source.h"
+#include "../blackboard/blackboard_plan.h"
 #include "tasks/bt_task.h"
 
 #ifdef LIMBOAI_MODULE
@@ -29,7 +29,7 @@ class BehaviorTree : public Resource {
 
 private:
 	String description;
-	Ref<BlackboardSource> blackboard_source;
+	Ref<BlackboardPlan> blackboard_plan;
 	Ref<BTTask> root_task;
 
 protected:
@@ -40,8 +40,8 @@ public:
 	virtual bool editor_can_reload_from_file() override { return false; }
 #endif
 
-	void set_blackboard_source(const Ref<BlackboardSource> &p_source);
-	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
+	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
+	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 
 	void set_description(String p_value) {
 		description = p_value;

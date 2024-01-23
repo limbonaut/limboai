@@ -16,8 +16,8 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 	ERR_FAIL_COND(p_blackboard == nullptr);
 
 	Ref<Blackboard> bb;
-	if (blackboard_source.is_valid()) {
-		bb = blackboard_source->create_blackboard();
+	if (blackboard_plan.is_valid()) {
+		bb = blackboard_plan->create_blackboard();
 	} else {
 		bb = Ref<Blackboard>(memnew(Blackboard));
 	}
@@ -33,8 +33,8 @@ BT::Status BTNewScope::_tick(double p_delta) {
 }
 
 void BTNewScope::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_blackboard_source", "p_source"), &BTNewScope::set_blackboard_source);
-	ClassDB::bind_method(D_METHOD("get_blackboard_source"), &BTNewScope::get_blackboard_source);
+	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "p_plan"), &BTNewScope::set_blackboard_plan);
+	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &BTNewScope::get_blackboard_plan);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_source", "get_blackboard_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_plan", "get_blackboard_plan");
 }

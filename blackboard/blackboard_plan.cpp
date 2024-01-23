@@ -1,5 +1,5 @@
 /**
- * blackboard_source.cpp
+ * blackboard_plan.cpp
  * =============================================================================
  * Copyright 2021-2024 Serhii Snitsaruk
  *
@@ -9,9 +9,9 @@
  * =============================================================================
  */
 
-#include "blackboard_source.h"
+#include "blackboard_plan.h"
 
-bool BlackboardSource::_set(const StringName &p_name, const Variant &p_value) {
+bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	String prop_name = p_name;
 
 	// * Editor
@@ -46,7 +46,7 @@ bool BlackboardSource::_set(const StringName &p_name, const Variant &p_value) {
 	return false;
 }
 
-bool BlackboardSource::_get(const StringName &p_name, Variant &r_ret) const {
+bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	String prop_name = p_name;
 
 	// * Editor
@@ -75,7 +75,7 @@ bool BlackboardSource::_get(const StringName &p_name, Variant &r_ret) const {
 	return true;
 }
 
-void BlackboardSource::_get_property_list(List<PropertyInfo> *p_list) const {
+void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	for (const KeyValue<String, BBVariable> &kv : data) {
 		String var_name = kv.key;
 		BBVariable var = kv.value;
@@ -92,11 +92,11 @@ void BlackboardSource::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
-bool BlackboardSource::_property_can_revert(const StringName &p_name) const {
+bool BlackboardPlan::_property_can_revert(const StringName &p_name) const {
 	return base.is_valid() && base->data.has(p_name);
 }
 
-bool BlackboardSource::_property_get_revert(const StringName &p_name, Variant &r_property) const {
+bool BlackboardPlan::_property_get_revert(const StringName &p_name, Variant &r_property) const {
 	if (base->data.has(p_name)) {
 		r_property = base->data[p_name].get_value();
 		return true;
@@ -104,40 +104,40 @@ bool BlackboardSource::_property_get_revert(const StringName &p_name, Variant &r
 	return false;
 }
 
-void BlackboardSource::set_base_source(const Ref<BlackboardSource> &p_base) {
+void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	base = p_base;
-	sync_with_base_source();
+	sync_with_base_plan();
 	emit_changed();
 }
 
-void BlackboardSource::set_value(const String &p_name, const Variant &p_value) {
+void BlackboardPlan::set_value(const String &p_name, const Variant &p_value) {
 	ERR_FAIL_COND(!data.has(p_name));
 	data.get(p_name).set_value(p_value);
 }
 
-Variant BlackboardSource::get_value(const String &p_name) const {
+Variant BlackboardPlan::get_value(const String &p_name) const {
 	ERR_FAIL_COND_V(!data.has(p_name), Variant());
 	return data.get(p_name).get_value();
 }
 
-void BlackboardSource::add_var(const String &p_name, const BBVariable &p_var) {
+void BlackboardPlan::add_var(const String &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(data.has(p_name));
 	ERR_FAIL_COND(base.is_valid());
 	data.insert(p_name, p_var);
 }
 
-void BlackboardSource::remove_var(const String &p_name) {
+void BlackboardPlan::remove_var(const String &p_name) {
 	ERR_FAIL_COND(!data.has(p_name));
 	ERR_FAIL_COND(base.is_valid());
 	data.erase(p_name);
 }
 
-BBVariable BlackboardSource::get_var(const String &p_name) {
+BBVariable BlackboardPlan::get_var(const String &p_name) {
 	ERR_FAIL_COND_V(!data.has(p_name), BBVariable());
 	return data.get(p_name);
 }
 
-PackedStringArray BlackboardSource::list_vars() const {
+PackedStringArray BlackboardPlan::list_vars() const {
 	PackedStringArray ret;
 	for (const KeyValue<String, BBVariable> &kv : data) {
 		ret.append(kv.key);
@@ -145,10 +145,12 @@ PackedStringArray BlackboardSource::list_vars() const {
 	return ret;
 }
 
-void BlackboardSource::sync_with_base_source() {
+void BlackboardPlan::sync_with_base_plan() {
 	if (base.is_null()) {
 		return;
 	}
+
+	// Sync variables with the base plan.
 	for (const KeyValue<String, BBVariable> &kv : base->data) {
 		if (!data.has(kv.key)) {
 			data.insert(kv.key, kv.value.duplicate());
@@ -163,9 +165,16 @@ void BlackboardSource::sync_with_base_source() {
 			var.set_value(kv.value.get_value());
 		}
 	}
+
+	// Erase variables that do not exist in the base plan.
+	for (const KeyValue<String, BBVariable> &kv : data) {
+		if (!base->data.has(kv.key)) {
+			data.erase(kv.key);
+		}
+	}
 }
 
-Ref<Blackboard> BlackboardSource::create_blackboard() {
+Ref<Blackboard> BlackboardPlan::create_blackboard() {
 	Ref<Blackboard> bb = memnew(Blackboard);
 	for (const KeyValue<String, BBVariable> &kv : data) {
 		bb->add_var(kv.key, kv.value.duplicate());
@@ -173,7 +182,7 @@ Ref<Blackboard> BlackboardSource::create_blackboard() {
 	return bb;
 }
 
-void BlackboardSource::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite) {
+void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite) {
 	for (const KeyValue<String, BBVariable> &kv : data) {
 		if (p_blackboard->has_var(kv.key)) {
 			if (overwrite) {
@@ -186,9 +195,12 @@ void BlackboardSource::populate_blackboard(const Ref<Blackboard> &p_blackboard, 
 	}
 }
 
-BlackboardSource::BlackboardSource() {
-	// TODO: REMOVE ALL BELOW
-	data.insert("speed", BBVariable(Variant::Type::FLOAT, PropertyHint::PROPERTY_HINT_NONE, ""));
-	data.insert("limit_speed", BBVariable(Variant::Type::BOOL, PropertyHint::PROPERTY_HINT_NONE, ""));
+BlackboardPlan::BlackboardPlan() {
+	// TODO: REMOVE THE TEST DATA BELOW.
+	data.insert("speed", BBVariable(Variant::Type::FLOAT));
+	data["speed"].set_value(200.0);
+	data.insert("limit_speed", BBVariable(Variant::Type::BOOL));
+	data["limit_speed"].set_value(500.0);
 	data.insert("about", BBVariable(Variant::Type::STRING, PropertyHint::PROPERTY_HINT_MULTILINE_TEXT, ""));
+	data["about"].set_value("Hello, World!");
 }

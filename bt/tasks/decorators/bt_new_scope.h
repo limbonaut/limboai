@@ -14,20 +14,20 @@
 
 #include "../bt_decorator.h"
 
-#include "../../../blackboard/blackboard_source.h"
+#include "../../../blackboard/blackboard_plan.h"
 
 class BTNewScope : public BTDecorator {
 	GDCLASS(BTNewScope, BTDecorator);
 	TASK_CATEGORY(Decorators);
 
 private:
-	Ref<BlackboardSource> blackboard_source;
+	Ref<BlackboardPlan> blackboard_plan;
 
 protected:
 	static void _bind_methods();
 
-	void set_blackboard_source(const Ref<BlackboardSource> &p_source) { blackboard_source = p_source; }
-	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
+	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) { blackboard_plan = p_plan; }
+	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 
 	virtual Status _tick(double p_delta) override;
 

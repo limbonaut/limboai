@@ -63,15 +63,16 @@ void BTPlayer::_load_tree() {
 #endif
 }
 
-void BTPlayer::_update_blackboard_source() {
-	if (behavior_tree.is_valid() && behavior_tree->get_blackboard_source().is_valid()) {
-		if (blackboard_source.is_null()) {
-			blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
-		}
-		if (blackboard_source == behavior_tree->get_blackboard_source()) {
-			blackboard_source->sync_with_base_source();
+void BTPlayer::_update_blackboard_plan() {
+	if (blackboard_plan.is_null()) {
+		blackboard_plan = Ref<BlackboardPlan>(memnew(BlackboardPlan));
+	}
+
+	if (behavior_tree.is_valid()) {
+		if (blackboard_plan == behavior_tree->get_blackboard_plan()) {
+			blackboard_plan->sync_with_base_plan();
 		} else {
-			blackboard_source->set_base_source(behavior_tree->get_blackboard_source());
+			blackboard_plan->set_base_plan(behavior_tree->get_blackboard_plan());
 		}
 	}
 }
@@ -81,12 +82,12 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	if (Engine::get_singleton()->is_editor_hint() == false && get_owner()) {
 		_load_tree();
 	}
-	_update_blackboard_source();
+	_update_blackboard_plan();
 }
 
-void BTPlayer::set_blackboard_source(const Ref<BlackboardSource> &p_source) {
-	blackboard_source = p_source;
-	_update_blackboard_source();
+void BTPlayer::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
+	blackboard_plan = p_plan;
+	_update_blackboard_plan();
 }
 
 void BTPlayer::set_update_mode(UpdateMode p_mode) {
@@ -182,8 +183,8 @@ void BTPlayer::_notification(int p_notification) {
 				if (blackboard.is_null()) {
 					blackboard = Ref<Blackboard>(memnew(Blackboard));
 				}
-				if (blackboard_source.is_valid()) {
-					blackboard_source->populate_blackboard(blackboard, false);
+				if (blackboard_plan.is_valid()) {
+					blackboard_plan->populate_blackboard(blackboard, false);
 				}
 				if (behavior_tree.is_valid()) {
 					_load_tree();
@@ -221,8 +222,8 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_prefetch_nodepath_vars", "p_value"), &BTPlayer::set_prefetch_nodepath_vars);
 	ClassDB::bind_method(D_METHOD("get_prefetch_nodepath_vars"), &BTPlayer::get_prefetch_nodepath_vars);
 
-	ClassDB::bind_method(D_METHOD("set_blackboard_source", "p_blackboard"), &BTPlayer::set_blackboard_source);
-	ClassDB::bind_method(D_METHOD("get_blackboard_source"), &BTPlayer::get_blackboard_source);
+	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "p_plan"), &BTPlayer::set_blackboard_plan);
+	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &BTPlayer::get_blackboard_plan);
 
 	ClassDB::bind_method(D_METHOD("update", "p_delta"), &BTPlayer::update);
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
@@ -232,7 +233,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "set_blackboard", "get_blackboard");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_source", "get_blackboard_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_plan", "get_blackboard_plan");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars"), "set_prefetch_nodepath_vars", "get_prefetch_nodepath_vars");
 
 	BIND_ENUM_CONSTANT(IDLE);

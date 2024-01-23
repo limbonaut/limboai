@@ -26,7 +26,7 @@ private:
 	String success_event;
 	String failure_event;
 
-	void _update_blackboard_source();
+	void _update_blackboard_plan();
 
 protected:
 	static void _bind_methods();

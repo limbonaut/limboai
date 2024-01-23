@@ -13,7 +13,7 @@
 #define LIMBO_STATE_H
 
 #include "../blackboard/blackboard.h"
-#include "../blackboard/blackboard_source.h"
+#include "../blackboard/blackboard_plan.h"
 
 #include "../util/limbo_string_names.h"
 
@@ -38,7 +38,7 @@ class LimboState : public Node {
 	GDCLASS(LimboState, Node);
 
 private:
-	Ref<BlackboardSource> blackboard_source;
+	Ref<BlackboardPlan> blackboard_plan;
 	Node *agent;
 	Ref<Blackboard> blackboard;
 	HashMap<String, Callable> handlers;
@@ -70,8 +70,8 @@ protected:
 	void add_event_handler(const String &p_event, const Callable &p_handler);
 
 public:
-	void set_blackboard_source(const Ref<BlackboardSource> p_source) { blackboard_source = p_source; }
-	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
+	void set_blackboard_plan(const Ref<BlackboardPlan> p_plan) { blackboard_plan = p_plan; }
+	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 
