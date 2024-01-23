@@ -179,8 +179,11 @@ void BTPlayer::_notification(int p_notification) {
 		} break;
 		case NOTIFICATION_READY: {
 			if (!Engine::get_singleton()->is_editor_hint()) {
+				if (blackboard.is_null()) {
+					blackboard = Ref<Blackboard>(memnew(Blackboard));
+				}
 				if (blackboard_source.is_valid()) {
-					blackboard = blackboard_source->create_blackboard();
+					blackboard_source->populate_blackboard(blackboard, false);
 				}
 				if (behavior_tree.is_valid()) {
 					_load_tree();
@@ -247,6 +250,7 @@ void BTPlayer::_bind_methods() {
 }
 
 BTPlayer::BTPlayer() {
+	blackboard = Ref<Blackboard>(memnew(Blackboard));
 }
 
 BTPlayer::~BTPlayer() {

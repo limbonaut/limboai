@@ -70,11 +70,12 @@ void Blackboard::add_var(const String &p_name, const BBVariable &p_var) {
 
 void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 	ERR_FAIL_COND(p_node == nullptr);
-	for (KeyValue<String, BBVariable> &kv : data) {
-		if (kv.value.get_value().get_type() == Variant::NODE_PATH) {
-			Node *fetched_node = p_node->get_node_or_null(kv.value.get_value());
+	for (const KeyValue<String, BBVariable> &kv : data) {
+		BBVariable var = kv.value;
+		if (var.get_value().get_type() == Variant::NODE_PATH) {
+			Node *fetched_node = p_node->get_node_or_null(var.get_value());
 			if (fetched_node != nullptr) {
-				kv.value.set_value(fetched_node);
+				var.set_value(fetched_node);
 			}
 		}
 	}
