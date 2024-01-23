@@ -36,5 +36,5 @@ void BTNewScope::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_blackboard_source", "p_source"), &BTNewScope::set_blackboard_source);
 	ClassDB::bind_method(D_METHOD("get_blackboard_source"), &BTNewScope::get_blackboard_source);
 
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT), "set_blackboard_source", "get_blackboard_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_source", "get_blackboard_source");
 }

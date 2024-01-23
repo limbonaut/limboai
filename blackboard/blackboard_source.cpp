@@ -92,9 +92,21 @@ void BlackboardSource::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 }
 
+bool BlackboardSource::_property_can_revert(const StringName &p_name) const {
+	return base.is_valid() && base->data.has(p_name);
+}
+
+bool BlackboardSource::_property_get_revert(const StringName &p_name, Variant &r_property) const {
+	if (base->data.has(p_name)) {
+		r_property = base->data[p_name].get_value();
+		return true;
+	}
+	return false;
+}
+
 void BlackboardSource::set_base_source(const Ref<BlackboardSource> &p_base) {
 	base = p_base;
-	sync_base();
+	sync_with_base_source();
 	emit_changed();
 }
 
@@ -133,7 +145,10 @@ PackedStringArray BlackboardSource::list_vars() const {
 	return ret;
 }
 
-void BlackboardSource::sync_base() {
+void BlackboardSource::sync_with_base_source() {
+	if (base.is_null()) {
+		return;
+	}
 	for (const KeyValue<String, BBVariable> &kv : base->data) {
 		if (!data.has(kv.key)) {
 			data.insert(kv.key, kv.value.duplicate());

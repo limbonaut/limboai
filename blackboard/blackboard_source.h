@@ -22,13 +22,17 @@ class BlackboardSource : public Resource {
 
 private:
 	HashMap<String, BBVariable> data;
+
+	// When base is not null, the source is considered to be derived from the base source.
+	// A derived source can only have variables that exist in the base source.
 	Ref<BlackboardSource> base;
-	// HashMap<String, BBVariable> overrides;
 
 protected:
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
+	bool _property_can_revert(const StringName &p_name) const;
+	bool _property_get_revert(const StringName &p_name, Variant &r_property) const;
 
 public:
 	void set_base_source(const Ref<BlackboardSource> &p_base);
@@ -42,7 +46,9 @@ public:
 	PackedStringArray list_vars() const;
 	bool is_empty() const { return data.is_empty(); }
 
-	void sync_base();
+	void sync_with_base_source();
+	bool is_derived() { return base.is_valid(); }
+
 	Ref<Blackboard> create_blackboard();
 	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite);
 

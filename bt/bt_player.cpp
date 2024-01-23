@@ -69,7 +69,7 @@ void BTPlayer::_update_blackboard_source() {
 			blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
 		}
 		if (blackboard_source == behavior_tree->get_blackboard_source()) {
-			blackboard_source->sync_base();
+			blackboard_source->sync_with_base_source();
 		} else {
 			blackboard_source->set_base_source(behavior_tree->get_blackboard_source());
 		}

@@ -32,7 +32,7 @@ void BTState::_update_blackboard_source() {
 			set_blackboard_source(Ref<BlackboardSource>(memnew(BlackboardSource)));
 		}
 		if (get_blackboard_source() == behavior_tree->get_blackboard_source()) {
-			get_blackboard_source()->sync_base();
+			get_blackboard_source()->sync_with_base_source();
 		} else {
 			get_blackboard_source()->set_base_source(behavior_tree->get_blackboard_source());
 		}
