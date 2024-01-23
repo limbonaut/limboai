@@ -22,6 +22,14 @@
 #include "godot_cpp/core/error_macros.hpp"
 #endif // ! LIMBOAI_GDEXTENSION
 
+void BehaviorTree::set_blackboard_source(const Ref<BlackboardSource> &p_source) {
+	blackboard_source = p_source;
+	if (blackboard_source.is_null()) {
+		blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
+	}
+	emit_changed();
+}
+
 Ref<BehaviorTree> BehaviorTree::clone() const {
 	Ref<BehaviorTree> copy = duplicate(false);
 	copy->set_path("");
@@ -57,9 +65,8 @@ void BehaviorTree::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "root_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "set_root_task", "get_root_task");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT), "set_blackboard_source", "get_blackboard_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_source", "get_blackboard_source");
 }
 
 BehaviorTree::BehaviorTree() {
-	blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
 }

@@ -40,10 +40,7 @@ public:
 	virtual bool editor_can_reload_from_file() override { return false; }
 #endif
 
-	void set_blackboard_source(const Ref<BlackboardSource> &p_source) {
-		blackboard_source = p_source;
-		emit_changed();
-	}
+	void set_blackboard_source(const Ref<BlackboardSource> &p_source);
 	Ref<BlackboardSource> get_blackboard_source() const { return blackboard_source; }
 
 	void set_description(String p_value) {

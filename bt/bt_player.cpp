@@ -86,9 +86,6 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 
 void BTPlayer::set_blackboard_source(const Ref<BlackboardSource> &p_source) {
 	blackboard_source = p_source;
-	if (blackboard_source.is_null()) {
-		blackboard_source = Ref<BlackboardSource>(memnew(BlackboardSource));
-	}
 	_update_blackboard_source();
 }
 
@@ -232,7 +229,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "set_blackboard", "get_blackboard");
-	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT), "set_blackboard_source", "get_blackboard_source");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_source", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardSource", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_source", "get_blackboard_source");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars"), "set_prefetch_nodepath_vars", "get_prefetch_nodepath_vars");
 
 	BIND_ENUM_CONSTANT(IDLE);
@@ -250,7 +247,6 @@ void BTPlayer::_bind_methods() {
 }
 
 BTPlayer::BTPlayer() {
-	blackboard = Ref<Blackboard>(memnew(Blackboard));
 }
 
 BTPlayer::~BTPlayer() {
