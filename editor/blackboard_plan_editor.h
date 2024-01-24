@@ -36,7 +36,7 @@ private:
 	int last_index = 0;
 
 	int drag_mouse_y_delta = 0;
-	int drag_index = 0;
+	int drag_index = -1;
 
 	Ref<BlackboardPlan> plan;
 
@@ -81,6 +81,7 @@ class EditorInspectorPluginBBPlan : public EditorInspectorPlugin {
 
 private:
 	BlackboardPlanEditor *plan_editor;
+	Ref<StyleBoxFlat> toolbar_style;
 
 	void _edit_plan(const Ref<BlackboardPlan> &p_plan);
 	void _open_base_plan(const Ref<BlackboardPlan> &p_plan);

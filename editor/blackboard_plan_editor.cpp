@@ -266,7 +266,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 }
 
 BlackboardPlanEditor::BlackboardPlanEditor() {
-	set_title(TTR("Edit Blackboard Plan"));
+	set_title(TTR("Manage Blackboard Plan"));
 
 	VBoxContainer *vbox = memnew(VBoxContainer);
 	vbox->add_theme_constant_override(LW_NAME(separation), 8 * EDSCALE);
@@ -378,8 +378,14 @@ void EditorInspectorPluginBBPlan::parse_begin(Object *p_object) {
 	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
 	ERR_FAIL_NULL(plan);
 
+	PanelContainer *panel = memnew(PanelContainer);
+	panel->add_theme_style_override(LW_NAME(panel), toolbar_style);
+
 	MarginContainer *margin_container = memnew(MarginContainer);
+	panel->add_child(margin_container);
 	margin_container->set_theme_type_variation("MarginContainer4px");
+	margin_container->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	margin_container->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
 	VBoxContainer *toolbar = memnew(VBoxContainer);
 	margin_container->add_child(toolbar);
@@ -388,24 +394,30 @@ void EditorInspectorPluginBBPlan::parse_begin(Object *p_object) {
 	if (plan->is_derived()) {
 		Button *goto_btn = memnew(Button);
 		toolbar->add_child(goto_btn);
-		goto_btn->set_text(TTR("Open Base Plan"));
+		goto_btn->set_text(TTR("Edit Base"));
 		goto_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
 		goto_btn->set_custom_minimum_size(Size2(200.0, 0.0) * EDSCALE);
 		goto_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_open_base_plan).bind(plan));
 	} else {
 		Button *edit_btn = memnew(Button);
 		toolbar->add_child(edit_btn);
-		edit_btn->set_text(TTR("Edit..."));
+		edit_btn->set_text(TTR("Manage..."));
 		edit_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
 		edit_btn->set_custom_minimum_size(Size2(200.0, 0.0) * EDSCALE);
 		edit_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_edit_plan).bind(plan));
 	}
 
-	add_custom_control(margin_container);
+	add_custom_control(panel);
 }
 
 EditorInspectorPluginBBPlan::EditorInspectorPluginBBPlan() {
 	plan_editor = memnew(BlackboardPlanEditor);
 	EditorInterface::get_singleton()->get_base_control()->add_child(plan_editor);
 	plan_editor->hide();
+
+	toolbar_style = Ref<StyleBoxFlat>(memnew(StyleBoxFlat));
+	Color bg = EditorInterface::get_singleton()->get_editor_theme()->get_color(LW_NAME(accent_color), LW_NAME(Editor));
+	bg = bg.darkened(-0.1);
+	bg.a *= 0.2;
+	toolbar_style->set_bg_color(bg);
 }

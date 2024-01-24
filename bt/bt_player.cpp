@@ -71,16 +71,21 @@ void BTPlayer::_update_blackboard_plan() {
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
-	if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
-		behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
+	if (Engine::get_singleton()->is_editor_hint()) {
+		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
+			behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
+		}
+		if (p_tree.is_valid()) {
+			p_tree->connect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
+		}
+		behavior_tree = p_tree;
+		_update_blackboard_plan();
+	} else {
+		behavior_tree = p_tree;
+		if (get_owner()) {
+			_load_tree();
+		}
 	}
-	behavior_tree = p_tree;
-	if (!Engine::get_singleton()->is_editor_hint() && get_owner()) {
-		_load_tree();
-	} else if (behavior_tree.is_valid()) {
-		behavior_tree->connect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
-	}
-	_update_blackboard_plan();
 }
 
 void BTPlayer::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
@@ -193,18 +198,27 @@ void BTPlayer::_notification(int p_notification) {
 #endif
 			}
 		} break;
-#ifdef DEBUG_ENABLED
 		case NOTIFICATION_ENTER_TREE: {
+#ifdef DEBUG_ENABLED
 			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 			}
+#endif // DEBUG_ENABLED
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
+#ifdef DEBUG_ENABLED
 			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
 			}
-		} break;
 #endif // DEBUG_ENABLED
+
+			if (Engine::get_singleton()->is_editor_hint()) {
+				if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
+					behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
+				}
+			}
+
+		} break;
 	}
 }
 

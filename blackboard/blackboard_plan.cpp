@@ -107,8 +107,6 @@ bool BlackboardPlan::_property_get_revert(const StringName &p_name, Variant &r_p
 void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	base = p_base;
 	sync_with_base_plan();
-	emit_changed();
-	notify_property_list_changed();
 }
 
 void BlackboardPlan::set_value(const String &p_name, const Variant &p_value) {
