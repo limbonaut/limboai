@@ -24,7 +24,8 @@ private:
 	HashMap<String, BBVariable> data;
 
 	// When base is not null, the plan is considered to be derived from the base plan.
-	// A derived plan can only have variables that exist in the base plan.
+	// A derived plan can only have variables that exist in the base plan,
+	// and only the values can be different in those variables.
 	Ref<BlackboardPlan> base;
 
 protected:
@@ -40,11 +41,19 @@ public:
 
 	void set_value(const String &p_name, const Variant &p_value);
 	Variant get_value(const String &p_name) const;
+
 	void add_var(const String &p_name, const BBVariable &p_var);
 	void remove_var(const String &p_name);
 	BBVariable get_var(const String &p_name);
-	PackedStringArray list_vars() const;
+	Pair<String, BBVariable> get_var_by_index(int p_index);
+	bool has_var(const String &p_name) { return data.has(p_name); }
 	bool is_empty() const { return data.is_empty(); }
+	int get_var_count() const { return data.size(); }
+
+	PackedStringArray list_vars() const;
+	String get_var_name(const BBVariable &p_var) const;
+	void rename_var(const String &p_name, const String &p_new_name);
+	void swap_vars(int idx_a, int idx_b);
 
 	void sync_with_base_plan();
 	bool is_derived() { return base.is_valid(); }

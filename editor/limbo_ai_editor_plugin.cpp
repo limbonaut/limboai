@@ -18,11 +18,12 @@
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../bt/tasks/composites/bt_selector.h"
 #include "../bt/tasks/decorators/bt_subtree.h"
-#include "../editor/debugger/limbo_debugger_plugin.h"
-#include "../editor/editor_property_bb_param.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
 #include "action_banner.h"
+#include "blackboard_plan_editor.h"
+#include "debugger/limbo_debugger_plugin.h"
+#include "editor_property_bb_param.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
@@ -1447,6 +1448,7 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor->hide();
 	limbo_ai_editor->set_plugin(this);
 
+	add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
 #ifdef LIMBOAI_MODULE
 	// ! Only used in the module version.
 	add_inspector_plugin(memnew(EditorInspectorPluginBBParam));

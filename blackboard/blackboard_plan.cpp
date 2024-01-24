@@ -108,11 +108,13 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	base = p_base;
 	sync_with_base_plan();
 	emit_changed();
+	notify_property_list_changed();
 }
 
 void BlackboardPlan::set_value(const String &p_name, const Variant &p_value) {
 	ERR_FAIL_COND(!data.has(p_name));
 	data.get(p_name).set_value(p_value);
+	emit_changed();
 }
 
 Variant BlackboardPlan::get_value(const String &p_name) const {
@@ -124,17 +126,37 @@ void BlackboardPlan::add_var(const String &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(data.has(p_name));
 	ERR_FAIL_COND(base.is_valid());
 	data.insert(p_name, p_var);
+	notify_property_list_changed();
+	emit_changed();
 }
 
 void BlackboardPlan::remove_var(const String &p_name) {
 	ERR_FAIL_COND(!data.has(p_name));
 	ERR_FAIL_COND(base.is_valid());
 	data.erase(p_name);
+	notify_property_list_changed();
+	emit_changed();
 }
 
 BBVariable BlackboardPlan::get_var(const String &p_name) {
 	ERR_FAIL_COND_V(!data.has(p_name), BBVariable());
 	return data.get(p_name);
+}
+
+Pair<String, BBVariable> BlackboardPlan::get_var_by_index(int p_index) {
+	Pair<String, BBVariable> ret;
+	ERR_FAIL_INDEX_V(p_index, (int)data.size(), ret);
+
+	int i = 0;
+	for (const KeyValue<String, BBVariable> &kv : data) {
+		if (i == p_index) {
+			ret.first = kv.key;
+			ret.second = kv.value;
+		}
+		i += 1;
+	}
+
+	return ret;
 }
 
 PackedStringArray BlackboardPlan::list_vars() const {
@@ -145,24 +167,66 @@ PackedStringArray BlackboardPlan::list_vars() const {
 	return ret;
 }
 
+String BlackboardPlan::get_var_name(const BBVariable &p_var) const {
+	for (const KeyValue<String, BBVariable> &kv : data) {
+		if (kv.value == p_var) {
+			return kv.key;
+		}
+	}
+	return String();
+}
+
+void BlackboardPlan::rename_var(const String &p_name, const String &p_new_name) {
+	ERR_FAIL_COND(p_new_name.is_empty());
+	ERR_FAIL_COND(data.has(p_new_name));
+	ERR_FAIL_COND(!data.has(p_name));
+
+	data.replace_key(p_name, p_new_name);
+	notify_property_list_changed();
+	emit_changed();
+}
+
+void BlackboardPlan::swap_vars(int p_idx_a, int p_idx_b) {
+	ERR_FAIL_INDEX(p_idx_a, (int)data.size());
+	ERR_FAIL_INDEX(p_idx_b, (int)data.size());
+
+	Pair<String, BBVariable> a = get_var_by_index(p_idx_a);
+	Pair<String, BBVariable> b = get_var_by_index(p_idx_b);
+
+	data.replace_key(a.first, "__tmp__");
+	data.replace_key(b.first, a.first);
+	data.replace_key("__tmp__", b.first);
+
+	data[b.first] = b.second;
+	data[a.first] = a.second;
+
+	notify_property_list_changed();
+	emit_changed();
+}
+
 void BlackboardPlan::sync_with_base_plan() {
 	if (base.is_null()) {
 		return;
 	}
 
+	bool changed = false;
+
 	// Sync variables with the base plan.
 	for (const KeyValue<String, BBVariable> &kv : base->data) {
 		if (!data.has(kv.key)) {
 			data.insert(kv.key, kv.value.duplicate());
+			changed = true;
 			continue;
 		}
 
 		BBVariable var = data.get(kv.key);
 		if (!var.is_same_prop_info(kv.value)) {
 			var.copy_prop_info(kv.value);
+			changed = true;
 		}
 		if (var.get_value().get_type() != kv.value.get_type()) {
 			var.set_value(kv.value.get_value());
+			changed = true;
 		}
 	}
 
@@ -170,7 +234,13 @@ void BlackboardPlan::sync_with_base_plan() {
 	for (const KeyValue<String, BBVariable> &kv : data) {
 		if (!base->data.has(kv.key)) {
 			data.erase(kv.key);
+			changed = true;
 		}
+	}
+
+	if (changed) {
+		notify_property_list_changed();
+		emit_changed();
 	}
 }
 
@@ -196,11 +266,4 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 }
 
 BlackboardPlan::BlackboardPlan() {
-	// TODO: REMOVE THE TEST DATA BELOW.
-	data.insert("speed", BBVariable(Variant::Type::FLOAT));
-	data["speed"].set_value(200.0);
-	data.insert("limit_speed", BBVariable(Variant::Type::BOOL));
-	data["limit_speed"].set_value(500.0);
-	data.insert("about", BBVariable(Variant::Type::STRING, PropertyHint::PROPERTY_HINT_MULTILINE_TEXT, ""));
-	data["about"].set_value("Hello, World!");
 }

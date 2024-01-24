@@ -42,6 +42,7 @@ LimboStringNames::LimboStringNames() {
 	_update_banners = SN("_update_banners");
 	_weight_ = SN("_weight_");
 	accent_color = SN("accent_color");
+	Add = SN("Add");
 	add_child = SN("add_child");
 	add_child_at_index = SN("add_child_at_index");
 	AnimationFilter = SN("AnimationFilter");
@@ -52,8 +53,12 @@ LimboStringNames::LimboStringNames() {
 	bold = SN("bold");
 	BTAlwaysFail = SN("BTAlwaysFail");
 	BTAlwaysSucceed = SN("BTAlwaysSucceed");
+	button_down = SN("button_down");
+	button_up = SN("button_up");
 	changed = SN("changed");
 	connect = SN("connect");
+	dark_color_1 = SN("dark_color_1");
+	dark_color_2 = SN("dark_color_2");
 	Debug = SN("Debug");
 	disabled_font_color = SN("disabled_font_color");
 	doc_italic = SN("doc_italic");
@@ -76,6 +81,7 @@ LimboStringNames::LimboStringNames() {
 	gui_input = SN("gui_input");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
+	HeaderSmall = SN("HeaderSmall");
 	Help = SN("Help");
 	icon_max_width = SN("icon_max_width");
 	id_pressed = SN("id_pressed");
@@ -97,6 +103,7 @@ LimboStringNames::LimboStringNames() {
 	NodeWarning = SN("NodeWarning");
 	NonFavorite = SN("NonFavorite");
 	normal = SN("normal");
+	panel = SN("panel");
 	popup_hide = SN("popup_hide");
 	pressed = SN("pressed");
 	probability_clicked = SN("probability_clicked");
@@ -111,6 +118,7 @@ LimboStringNames::LimboStringNames() {
 	Script = SN("Script");
 	ScriptCreate = SN("ScriptCreate");
 	Search = SN("Search");
+	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
 	set_root_task = SN("set_root_task");
 	setup = SN("setup");
@@ -125,9 +133,12 @@ LimboStringNames::LimboStringNames() {
 	task_meta = SN("task_meta");
 	task_selected = SN("task_selected");
 	text_changed = SN("text_changed");
+	text_submitted = SN("text_submitted");
 	timeout = SN("timeout");
 	toggled = SN("toggled");
 	Tools = SN("Tools");
+	Tree = SN("Tree");
+	TripleBar = SN("TripleBar");
 	update_task = SN("update_task");
 	update_tree = SN("update_tree");
 	updated = SN("updated");

@@ -67,20 +67,18 @@ void BTPlayer::_update_blackboard_plan() {
 	if (blackboard_plan.is_null()) {
 		blackboard_plan = Ref<BlackboardPlan>(memnew(BlackboardPlan));
 	}
-
-	if (behavior_tree.is_valid()) {
-		if (blackboard_plan == behavior_tree->get_blackboard_plan()) {
-			blackboard_plan->sync_with_base_plan();
-		} else {
-			blackboard_plan->set_base_plan(behavior_tree->get_blackboard_plan());
-		}
-	}
+	blackboard_plan->set_base_plan(behavior_tree.is_valid() ? behavior_tree->get_blackboard_plan() : nullptr);
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
+	if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
+		behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
+	}
 	behavior_tree = p_tree;
-	if (Engine::get_singleton()->is_editor_hint() == false && get_owner()) {
+	if (!Engine::get_singleton()->is_editor_hint() && get_owner()) {
 		_load_tree();
+	} else if (behavior_tree.is_valid()) {
+		behavior_tree->connect(LW_NAME(changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
 	}
 	_update_blackboard_plan();
 }
