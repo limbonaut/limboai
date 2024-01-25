@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="1_rhs33"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_2hcqi"]
-var/speed/name = null
+var/speed/name = "speed"
 var/speed/type = 3
 var/speed/value = 200.0
 var/speed/hint = 1
@@ -43,5 +43,5 @@ duration = 3.0
 children = [SubResource("BTCooldown_gen0l")]
 
 [resource]
-root_task = SubResource("BTSelector_5dclr")
 blackboard_plan = SubResource("BlackboardPlan_2hcqi")
+root_task = SubResource("BTSelector_5dclr")

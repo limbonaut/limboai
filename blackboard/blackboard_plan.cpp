@@ -63,7 +63,10 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	String var_name = prop_name.get_slicec('/', 1);
 	String what = prop_name.get_slicec('/', 2);
 	ERR_FAIL_COND_V(!data.has(var_name), false);
-	if (what == "type") {
+
+	if (what == "name") {
+		r_ret = var_name;
+	} else if (what == "type") {
 		r_ret = data[var_name].get_type();
 	} else if (what == "value") {
 		r_ret = data[var_name].get_value();
@@ -109,17 +112,6 @@ bool BlackboardPlan::_property_get_revert(const StringName &p_name, Variant &r_p
 void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	base = p_base;
 	sync_with_base_plan();
-}
-
-void BlackboardPlan::set_value(const String &p_name, const Variant &p_value) {
-	ERR_FAIL_COND(!data.has(p_name));
-	data.get(p_name).set_value(p_value);
-	emit_changed();
-}
-
-Variant BlackboardPlan::get_value(const String &p_name) const {
-	ERR_FAIL_COND_V(!data.has(p_name), Variant());
-	return data.get(p_name).get_value();
 }
 
 void BlackboardPlan::add_var(const String &p_name, const BBVariable &p_var) {

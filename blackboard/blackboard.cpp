@@ -28,8 +28,8 @@ using namespace godot;
 
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);
-	while (bb->get_parent_scope().is_valid()) {
-		bb = bb->get_parent_scope();
+	while (bb->get_parent().is_valid()) {
+		bb = bb->get_parent();
 	}
 	return bb;
 }
@@ -45,11 +45,11 @@ Variant Blackboard::get_var(const String &p_name, const Variant &p_default) cons
 }
 
 void Blackboard::set_var(const String &p_name, const Variant &p_value) {
-	// TODO: Check if p_value can be converted into required type!
 	if (data.has(p_name)) {
+		// Not checking type - allowing duck-typing.
 		data[p_name].set_value(p_value);
 	} else {
-		BBVariable var;
+		BBVariable var(p_value.get_type());
 		var.set_value(p_value);
 		data.insert(p_name, var);
 	}
@@ -85,11 +85,9 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_var", "p_name", "p_default"), &Blackboard::get_var, Variant());
 	ClassDB::bind_method(D_METHOD("set_var", "p_name", "p_value"), &Blackboard::set_var);
 	ClassDB::bind_method(D_METHOD("has_var", "p_name"), &Blackboard::has_var);
-	ClassDB::bind_method(D_METHOD("set_parent_scope", "p_blackboard"), &Blackboard::set_parent_scope);
-	ClassDB::bind_method(D_METHOD("get_parent_scope"), &Blackboard::get_parent_scope);
+	ClassDB::bind_method(D_METHOD("set_parent_scope", "p_blackboard"), &Blackboard::set_parent);
+	ClassDB::bind_method(D_METHOD("get_parent_scope"), &Blackboard::get_parent);
 	ClassDB::bind_method(D_METHOD("erase_var", "p_name"), &Blackboard::erase_var);
 	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "p_node"), &Blackboard::prefetch_nodepath_vars);
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
-	// ClassDB::bind_method(D_METHOD("get_data"), &Blackboard::get_data);
-	// ClassDB::bind_method(D_METHOD("set_data", "p_data"), &Blackboard::set_data);
 }

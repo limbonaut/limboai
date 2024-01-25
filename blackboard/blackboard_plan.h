@@ -39,9 +39,6 @@ public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
 
-	void set_value(const String &p_name, const Variant &p_value);
-	Variant get_value(const String &p_name) const;
-
 	void add_var(const String &p_name, const BBVariable &p_var);
 	void remove_var(const String &p_name);
 	BBVariable get_var(const String &p_name);

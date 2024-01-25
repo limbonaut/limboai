@@ -42,8 +42,8 @@ protected:
 	static void _bind_methods();
 
 public:
-	void set_parent_scope(const Ref<Blackboard> &p_blackboard) { parent = p_blackboard; }
-	Ref<Blackboard> get_parent_scope() const { return parent; }
+	void set_parent(const Ref<Blackboard> &p_blackboard) { parent = p_blackboard; }
+	Ref<Blackboard> get_parent() const { return parent; }
 
 	Ref<Blackboard> top() const;
 
@@ -56,9 +56,7 @@ public:
 
 	void prefetch_nodepath_vars(Node *p_node);
 
-	// TODO: Rework serialization API.
-	// void set_data(const Dictionary &p_value);
-	// Dictionary get_data() const;
+	// TODO: Add serialization API.
 };
 
 #endif // BLACKBOARD_H

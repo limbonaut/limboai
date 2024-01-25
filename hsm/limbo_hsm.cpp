@@ -190,7 +190,7 @@ bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
 void LimboHSM::initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	if (!p_parent_scope.is_null()) {
-		blackboard->set_parent_scope(p_parent_scope);
+		blackboard->set_parent(p_parent_scope);
 	}
 	_initialize(p_agent, nullptr);
 

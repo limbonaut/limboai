@@ -22,7 +22,7 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 		bb = Ref<Blackboard>(memnew(Blackboard));
 	}
 
-	bb->set_parent_scope(p_blackboard);
+	bb->set_parent(p_blackboard);
 
 	BTDecorator::initialize(p_agent, bb);
 }

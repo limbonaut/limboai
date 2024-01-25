@@ -5,9 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://d0mht3ntak7e5" path="res://demo/godot.png" id="3_64ge2"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_b86q8"]
-var/speed/name = null
+var/speed/name = "speed"
 var/speed/type = 3
-var/speed/value = 200.0
+var/speed/value = 300.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 

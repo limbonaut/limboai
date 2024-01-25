@@ -71,7 +71,7 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	if (!p_blackboard.is_null()) {
 		if (blackboard_plan.is_valid() && !blackboard_plan->is_empty()) {
 			blackboard = blackboard_plan->create_blackboard();
-			blackboard->set_parent_scope(p_blackboard);
+			blackboard->set_parent(p_blackboard);
 		} else {
 			blackboard = p_blackboard;
 		}

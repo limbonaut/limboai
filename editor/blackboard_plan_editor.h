@@ -34,7 +34,6 @@ private:
 	} theme_cache;
 
 	int last_index = 0;
-
 	int drag_mouse_y_delta = 0;
 	int drag_index = -1;
 

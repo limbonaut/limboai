@@ -40,19 +40,13 @@ public:
 	virtual bool editor_can_reload_from_file() override { return false; }
 #endif
 
+	void set_description(const String &p_value);
+	String get_description() const { return description; }
+
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
 	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 
-	void set_description(String p_value) {
-		description = p_value;
-		emit_changed();
-	}
-	String get_description() const { return description; }
-
-	void set_root_task(const Ref<BTTask> &p_value) {
-		root_task = p_value;
-		emit_changed();
-	}
+	void set_root_task(const Ref<BTTask> &p_value);
 	Ref<BTTask> get_root_task() const { return root_task; }
 
 	Ref<BehaviorTree> clone() const;
