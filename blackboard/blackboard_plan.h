@@ -56,7 +56,7 @@ public:
 	void swap_vars(int idx_a, int idx_b);
 
 	void sync_with_base_plan();
-	bool is_derived() { return base.is_valid(); }
+	bool is_derived() const { return base.is_valid(); }
 
 	Ref<Blackboard> create_blackboard();
 	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite);
