@@ -19,6 +19,17 @@
 #include "scene/gui/dialogs.h"
 #endif // LIMBOAI_MODULE
 
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/accept_dialog.hpp>
+#include <godot_cpp/classes/editor_inspector_plugin.hpp>
+#include <godot_cpp/classes/panel_container.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/scroll_container.hpp>
+#include <godot_cpp/classes/style_box_flat.hpp>
+#include <godot_cpp/classes/v_box_container.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
+
 // *****
 
 class BlackboardPlanEditor : public AcceptDialog {
@@ -65,6 +76,8 @@ private:
 	void _visibility_changed();
 
 protected:
+	static void _bind_methods() {}
+
 	void _notification(int p_what);
 
 public:
@@ -85,9 +98,17 @@ private:
 	void _edit_plan(const Ref<BlackboardPlan> &p_plan);
 	void _open_base_plan(const Ref<BlackboardPlan> &p_plan);
 
+protected:
+	static void _bind_methods() {}
+
 public:
+#ifdef LIMBOAI_MODULE
 	virtual bool can_handle(Object *p_object) override;
 	virtual void parse_begin(Object *p_object) override;
+#elif LIMBOAI_GDEXTENSION
+	virtual bool _can_handle(Object *p_object) const override;
+	virtual void _parse_begin(Object *p_object) override;
+#endif
 
 	EditorInspectorPluginBBPlan();
 };

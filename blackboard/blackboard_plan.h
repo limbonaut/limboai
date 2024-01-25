@@ -12,16 +12,24 @@
 #ifndef BLACKBOARD_PLAN_H
 #define BLACKBOARD_PLAN_H
 
-#include "core/io/resource.h"
-
 #include "bb_variable.h"
 #include "blackboard.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/io/resource.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/resource.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class BlackboardPlan : public Resource {
 	GDCLASS(BlackboardPlan, Resource);
 
 private:
-	HashMap<String, BBVariable> data;
+	List<Pair<String, BBVariable>> var_list;
+	HashMap<String, BBVariable> var_map;
 
 	// When base is not null, the plan is considered to be derived from the base plan.
 	// A derived plan can only have variables that exist in the base plan,
@@ -29,6 +37,8 @@ private:
 	Ref<BlackboardPlan> base;
 
 protected:
+	static void _bind_methods() {}
+
 	bool _set(const StringName &p_name, const Variant &p_value);
 	bool _get(const StringName &p_name, Variant &r_ret) const;
 	void _get_property_list(List<PropertyInfo> *p_list) const;
@@ -43,9 +53,9 @@ public:
 	void remove_var(const String &p_name);
 	BBVariable get_var(const String &p_name);
 	Pair<String, BBVariable> get_var_by_index(int p_index);
-	bool has_var(const String &p_name) { return data.has(p_name); }
-	bool is_empty() const { return data.is_empty(); }
-	int get_var_count() const { return data.size(); }
+	bool has_var(const String &p_name) { return var_map.has(p_name); }
+	bool is_empty() const { return var_map.is_empty(); }
+	int get_var_count() const { return var_map.size(); }
 
 	PackedStringArray list_vars() const;
 	String get_var_name(const BBVariable &p_var) const;

@@ -12,9 +12,18 @@
 #ifndef BB_VARIABLE_H
 #define BB_VARIABLE_H
 
+#ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 #include "core/templates/safe_refcount.h"
 #include "core/variant/variant.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include "godot_cpp/core/defs.hpp"
+#include "godot_cpp/templates/safe_refcount.hpp"
+#include "godot_cpp/variant/variant.hpp"
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class BBVariable {
 private:

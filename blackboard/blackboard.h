@@ -17,7 +17,6 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
-#include "core/variant/dictionary.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
@@ -27,7 +26,7 @@
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/object.hpp>
-#include <godot_cpp/variant/dictionary.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

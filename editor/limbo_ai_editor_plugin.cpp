@@ -1394,6 +1394,11 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 	switch (p_notification) {
 		case NOTIFICATION_READY: {
 			add_debugger_plugin(memnew(LimboDebuggerPlugin));
+			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
+#ifdef LIMBOAI_MODULE
+			// ! Only used in the module version.
+			add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
+#endif // LIMBOAI_MODULE
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			// Add BehaviorTree to the list of resources that should open in a new inspector.
@@ -1447,12 +1452,6 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	MAIN_SCREEN_CONTROL()->add_child(limbo_ai_editor);
 	limbo_ai_editor->hide();
 	limbo_ai_editor->set_plugin(this);
-
-	add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
-#ifdef LIMBOAI_MODULE
-	// ! Only used in the module version.
-	add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
-#endif // LIMBOAI_MODULE
 }
 
 LimboAIEditorPlugin::~LimboAIEditorPlugin() {

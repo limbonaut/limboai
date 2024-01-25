@@ -11,6 +11,7 @@
 
 #include "blackboard_plan_editor.h"
 
+#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 
@@ -21,6 +22,19 @@
 #include "scene/gui/panel_container.h"
 #include "scene/resources/style_box_flat.h"
 #endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/input.hpp>
+#include <godot_cpp/classes/input_event_mouse_motion.hpp>
+#include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/line_edit.hpp>
+#include <godot_cpp/classes/margin_container.hpp>
+#include <godot_cpp/classes/theme.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
@@ -78,7 +92,8 @@ void BlackboardPlanEditor::_show_button_popup(Button *p_button, PopupMenu *p_pop
 	ERR_FAIL_NULL(p_button);
 	ERR_FAIL_NULL(p_popup);
 
-	Rect2 rect = p_button->get_screen_rect();
+	Transform2D xform = p_button->get_screen_transform();
+	Rect2 rect(xform.get_origin(), xform.get_scale() * p_button->get_size());
 	rect.position.y += rect.size.height;
 	rect.size.height = 0;
 	p_popup->set_size(rect.size);
@@ -137,8 +152,8 @@ void BlackboardPlanEditor::_drag_button_gui_input(const Ref<InputEvent> &p_event
 		ERR_FAIL_NULL(row);
 		ERR_FAIL_NULL(other_row);
 		rows_vbox->move_child(row, drag_index + drag_dir);
-		row->add_theme_style_override(LW_NAME(panel), row->get_index() % 2 ? theme_cache.odd_style : theme_cache.even_style);
-		other_row->add_theme_style_override(LW_NAME(panel), other_row->get_index() % 2 ? theme_cache.odd_style : theme_cache.even_style);
+		ADD_STYLEBOX_OVERRIDE(row, LW_NAME(panel), row->get_index() % 2 ? theme_cache.odd_style : theme_cache.even_style);
+		ADD_STYLEBOX_OVERRIDE(other_row, LW_NAME(panel), other_row->get_index() % 2 ? theme_cache.odd_style : theme_cache.even_style);
 
 		drag_index += drag_dir;
 	}
@@ -167,7 +182,7 @@ void BlackboardPlanEditor::_refresh() {
 
 		PanelContainer *row_panel = memnew(PanelContainer);
 		rows_vbox->add_child(row_panel);
-		row_panel->add_theme_style_override(LW_NAME(panel), idx % 2 ? theme_cache.odd_style : theme_cache.even_style);
+		ADD_STYLEBOX_OVERRIDE(row_panel, LW_NAME(panel), idx % 2 ? theme_cache.odd_style : theme_cache.even_style);
 		row_panel->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
 		HBoxContainer *props_hbox = memnew(HBoxContainer);
@@ -177,7 +192,7 @@ void BlackboardPlanEditor::_refresh() {
 		Button *drag_button = memnew(Button);
 		props_hbox->add_child(drag_button);
 		drag_button->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
-		drag_button->set_icon(theme_cache.grab_icon);
+		BUTTON_SET_ICON(drag_button, theme_cache.grab_icon);
 		drag_button->connect(LW_NAME(gui_input), callable_mp(this, &BlackboardPlanEditor::_drag_button_gui_input));
 		drag_button->connect(LW_NAME(button_down), callable_mp(this, &BlackboardPlanEditor::_drag_button_down).bind(row_panel));
 		drag_button->connect(LW_NAME(button_up), callable_mp(this, &BlackboardPlanEditor::_drag_button_up));
@@ -196,7 +211,7 @@ void BlackboardPlanEditor::_refresh() {
 		type_choice->set_custom_minimum_size(Size2(170, 0.0) * EDSCALE);
 		type_choice->set_text(Variant::get_type_name(var.get_type()));
 		type_choice->set_tooltip_text(Variant::get_type_name(var.get_type()));
-		type_choice->set_icon(get_theme_icon(Variant::get_type_name(var.get_type()), LW_NAME(EditorIcons)));
+		BUTTON_SET_ICON(type_choice, get_theme_icon(Variant::get_type_name(var.get_type()), LW_NAME(EditorIcons)));
 		type_choice->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
 		type_choice->set_flat(true);
 		type_choice->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
@@ -225,7 +240,7 @@ void BlackboardPlanEditor::_refresh() {
 		Button *trash_button = memnew(Button);
 		props_hbox->add_child(trash_button);
 		trash_button->set_custom_minimum_size(Size2(24.0, 0.0) * EDSCALE);
-		trash_button->set_icon(theme_cache.trash_icon);
+		BUTTON_SET_ICON(trash_button, theme_cache.trash_icon);
 		trash_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_trash_var).bind(idx));
 
 		idx += 1;
@@ -238,7 +253,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 			theme_cache.trash_icon = get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons));
 			theme_cache.grab_icon = get_theme_icon(LW_NAME(TripleBar), LW_NAME(EditorIcons));
 
-			add_var_tool->set_icon(get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
+			BUTTON_SET_ICON(add_var_tool, get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
 
 			type_menu->clear();
 			for (int i = 0; i < Variant::VARIANT_MAX; i++) {
@@ -249,18 +264,20 @@ void BlackboardPlanEditor::_notification(int p_what) {
 				type_menu->add_icon_item(get_theme_icon(type, LW_NAME(EditorIcons)), type, i);
 			}
 
-			scroll_container->add_theme_style_override(LW_NAME(panel), get_theme_stylebox(LW_NAME(panel), LW_NAME(Tree)));
+			ADD_STYLEBOX_OVERRIDE(scroll_container, LW_NAME(panel), get_theme_stylebox(LW_NAME(panel), LW_NAME(Tree)));
 
 			Color bg_color = get_theme_color(LW_NAME(dark_color_2), LW_NAME(Editor));
 			theme_cache.odd_style->set_bg_color(bg_color.darkened(-0.05));
 			theme_cache.even_style->set_bg_color(bg_color.darkened(0.05));
 			theme_cache.header_style->set_bg_color(bg_color.darkened(-0.2));
 
-			header_row->add_theme_style_override(LW_NAME(panel), theme_cache.header_style);
+			ADD_STYLEBOX_OVERRIDE(header_row, LW_NAME(panel), theme_cache.header_style);
 		} break;
 		case NOTIFICATION_READY: {
 			add_var_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_add_var));
 			connect(LW_NAME(visibility_changed), callable_mp(this, &BlackboardPlanEditor::_visibility_changed));
+			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
+			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
 		} break;
 	}
 }
@@ -338,11 +355,9 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 
 	type_menu = memnew(PopupMenu);
 	add_child(type_menu);
-	type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 
 	hint_menu = memnew(PopupMenu);
 	add_child(hint_menu);
-	hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
 	for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
 		hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
 	}
@@ -352,7 +367,7 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 	theme_cache.header_style.instantiate();
 }
 
-// *****
+// ***** EditorInspectorPluginBBPlan *****
 
 void EditorInspectorPluginBBPlan::_edit_plan(const Ref<BlackboardPlan> &p_plan) {
 	ERR_FAIL_NULL(p_plan);
@@ -366,7 +381,11 @@ void EditorInspectorPluginBBPlan::_open_base_plan(const Ref<BlackboardPlan> &p_p
 	EditorInterface::get_singleton()->call_deferred("edit_resource", p_plan->get_base_plan());
 }
 
+#ifdef LIMBOAI_MODULE
 bool EditorInspectorPluginBBPlan::can_handle(Object *p_object) {
+#elif LIMBOAI_GDEXTENSION
+bool EditorInspectorPluginBBPlan::_can_handle(Object *p_object) const {
+#endif
 	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
 	if (plan.is_valid()) {
 		plan->sync_with_base_plan();
@@ -374,12 +393,16 @@ bool EditorInspectorPluginBBPlan::can_handle(Object *p_object) {
 	return plan.is_valid();
 }
 
+#ifdef LIMBOAI_MODULE
 void EditorInspectorPluginBBPlan::parse_begin(Object *p_object) {
+#elif LIMBOAI_GDEXTENSION
+void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
+#endif
 	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
 	ERR_FAIL_NULL(plan);
 
 	PanelContainer *panel = memnew(PanelContainer);
-	panel->add_theme_style_override(LW_NAME(panel), toolbar_style);
+	ADD_STYLEBOX_OVERRIDE(panel, LW_NAME(panel), toolbar_style);
 
 	MarginContainer *margin_container = memnew(MarginContainer);
 	panel->add_child(margin_container);
