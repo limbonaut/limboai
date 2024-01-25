@@ -175,14 +175,27 @@ void BlackboardPlan::rename_var(const String &p_name, const String &p_new_name) 
 	emit_changed();
 }
 
-void BlackboardPlan::swap_vars(int p_idx_a, int p_idx_b) {
-	ERR_FAIL_INDEX(p_idx_a, (int)var_map.size());
-	ERR_FAIL_INDEX(p_idx_b, (int)var_map.size());
+void BlackboardPlan::move_var(int p_index, int p_new_index) {
+	ERR_FAIL_INDEX(p_index, (int)var_map.size());
+	ERR_FAIL_INDEX(p_new_index, (int)var_map.size());
 
-	Pair<String, BBVariable> a = var_list[p_idx_a];
-	Pair<String, BBVariable> b = var_list[p_idx_b];
+	if (p_index == p_new_index) {
+		return;
+	}
 
-	var_list.swap(var_list.find(a), var_list.find(b));
+	List<Pair<String, BBVariable>>::Element *E = var_list.front();
+	for (int i = 0; i < p_index; i++) {
+		E = E->next();
+	}
+	List<Pair<String, BBVariable>>::Element *E2 = var_list.front();
+	for (int i = 0; i < p_new_index; i++) {
+		E2 = E2->next();
+	}
+
+	var_list.move_before(E, E2);
+	if (p_new_index > p_index) {
+		var_list.move_before(E2, E);
+	}
 
 	notify_property_list_changed();
 	emit_changed();

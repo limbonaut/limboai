@@ -64,6 +64,8 @@ LimboStringNames::LimboStringNames() {
 	doc_italic = SN("doc_italic");
 	draw = SN("draw");
 	Duplicate = SN("Duplicate");
+	Edit = SN("Edit");
+	EditAddRemove = SN("EditAddRemove");
 	Editor = SN("Editor");
 	EditorFonts = SN("EditorFonts");
 	EditorIcons = SN("EditorIcons");

@@ -46,6 +46,7 @@ private:
 
 	int last_index = 0;
 	int drag_mouse_y_delta = 0;
+	int drag_start = -1;
 	int drag_index = -1;
 
 	Ref<BlackboardPlan> plan;

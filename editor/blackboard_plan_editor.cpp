@@ -113,13 +113,16 @@ void BlackboardPlanEditor::_hint_chosen(int id) {
 
 void BlackboardPlanEditor::_drag_button_down(Control *p_row) {
 	drag_index = p_row->get_index();
+	drag_start = drag_index;
 	drag_mouse_y_delta = 0.0;
 	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
 }
 
 void BlackboardPlanEditor::_drag_button_up() {
-	drag_index = -1;
 	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+	plan->move_var(drag_start, drag_index);
+	drag_index = -1;
+	drag_start = -1;
 	_refresh();
 }
 
@@ -140,12 +143,10 @@ void BlackboardPlanEditor::_drag_button_gui_input(const Ref<InputEvent> &p_event
 		return;
 	}
 
-	float required_distance = 20.0f * EDSCALE;
+	float required_distance = 30.0f * EDSCALE;
 	if (ABS(drag_mouse_y_delta) > required_distance) {
 		int drag_dir = drag_mouse_y_delta > 0.0f ? 1 : -1;
 		drag_mouse_y_delta -= required_distance * drag_dir;
-
-		plan->swap_vars(drag_index, drag_index + drag_dir);
 
 		Control *row = Object::cast_to<Control>(rows_vbox->get_child(drag_index));
 		Control *other_row = Object::cast_to<Control>(rows_vbox->get_child(drag_index + drag_dir));
@@ -412,21 +413,23 @@ void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
 
 	VBoxContainer *toolbar = memnew(VBoxContainer);
 	margin_container->add_child(toolbar);
-	toolbar->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
+	toolbar->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
 	if (plan->is_derived()) {
 		Button *goto_btn = memnew(Button);
 		toolbar->add_child(goto_btn);
 		goto_btn->set_text(TTR("Edit Base"));
 		goto_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
-		goto_btn->set_custom_minimum_size(Size2(200.0, 0.0) * EDSCALE);
+		goto_btn->set_custom_minimum_size(Size2(150.0, 0.0) * EDSCALE);
+		BUTTON_SET_ICON(goto_btn, EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(Edit), LW_NAME(EditorIcons)));
 		goto_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_open_base_plan).bind(plan));
 	} else {
 		Button *edit_btn = memnew(Button);
 		toolbar->add_child(edit_btn);
 		edit_btn->set_text(TTR("Manage..."));
 		edit_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
-		edit_btn->set_custom_minimum_size(Size2(200.0, 0.0) * EDSCALE);
+		edit_btn->set_custom_minimum_size(Size2(150.0, 0.0) * EDSCALE);
+		BUTTON_SET_ICON(edit_btn, EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(EditAddRemove), LW_NAME(EditorIcons)));
 		edit_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_edit_plan).bind(plan));
 	}
 

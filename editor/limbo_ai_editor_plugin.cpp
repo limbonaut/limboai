@@ -184,8 +184,9 @@ void LimboAIEditor::_update_history_buttons() {
 }
 
 void LimboAIEditor::_new_bt() {
-	BehaviorTree *bt = memnew(BehaviorTree);
+	Ref<BehaviorTree> bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
+	bt->set_blackboard_plan(memnew(BlackboardPlan));
 	EDIT_RESOURCE(bt);
 }
 
@@ -221,6 +222,11 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	if (!p_force_refresh && task_tree->get_bt() == p_behavior_tree) {
 		return;
 	}
+
+#ifdef LIMBOAI_MODULE
+	p_behavior_tree->editor_set_section_unfold("blackboard_plan", true);
+	p_behavior_tree->notify_property_list_changed();
+#endif // LIMBOAI_MODULE
 
 	task_tree->load_bt(p_behavior_tree);
 
@@ -698,6 +704,9 @@ void LimboAIEditor::_on_visibility_changed() {
 void LimboAIEditor::_on_header_pressed() {
 	_update_header();
 	task_tree->deselect();
+#ifdef LIMBOAI_MODULE
+	task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
+#endif // LIMBOAI_MODULE
 	EDIT_RESOURCE(task_tree->get_bt());
 }
 

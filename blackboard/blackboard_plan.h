@@ -60,7 +60,7 @@ public:
 	PackedStringArray list_vars() const;
 	String get_var_name(const BBVariable &p_var) const;
 	void rename_var(const String &p_name, const String &p_new_name);
-	void swap_vars(int idx_a, int idx_b);
+	void move_var(int p_index, int p_new_index);
 
 	void sync_with_base_plan();
 	bool is_derived() const { return base.is_valid(); }

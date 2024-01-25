@@ -78,6 +78,8 @@ public:
 	StringName doc_italic;
 	StringName draw;
 	StringName Duplicate;
+	StringName Edit;
+	StringName EditAddRemove;
 	StringName Editor;
 	StringName EditorFonts;
 	StringName EditorIcons;
