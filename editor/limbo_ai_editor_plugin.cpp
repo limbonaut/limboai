@@ -18,11 +18,12 @@
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../bt/tasks/composites/bt_selector.h"
 #include "../bt/tasks/decorators/bt_subtree.h"
-#include "../editor/debugger/limbo_debugger_plugin.h"
-#include "../editor/editor_property_bb_param.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
 #include "action_banner.h"
+#include "blackboard_plan_editor.h"
+#include "debugger/limbo_debugger_plugin.h"
+#include "editor_property_bb_param.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
@@ -183,8 +184,9 @@ void LimboAIEditor::_update_history_buttons() {
 }
 
 void LimboAIEditor::_new_bt() {
-	BehaviorTree *bt = memnew(BehaviorTree);
+	Ref<BehaviorTree> bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
+	bt->set_blackboard_plan(memnew(BlackboardPlan));
 	EDIT_RESOURCE(bt);
 }
 
@@ -220,6 +222,11 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	if (!p_force_refresh && task_tree->get_bt() == p_behavior_tree) {
 		return;
 	}
+
+#ifdef LIMBOAI_MODULE
+	p_behavior_tree->editor_set_section_unfold("blackboard_plan", true);
+	p_behavior_tree->notify_property_list_changed();
+#endif // LIMBOAI_MODULE
 
 	task_tree->load_bt(p_behavior_tree);
 
@@ -697,6 +704,9 @@ void LimboAIEditor::_on_visibility_changed() {
 void LimboAIEditor::_on_header_pressed() {
 	_update_header();
 	task_tree->deselect();
+#ifdef LIMBOAI_MODULE
+	task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
+#endif // LIMBOAI_MODULE
 	EDIT_RESOURCE(task_tree->get_bt());
 }
 
@@ -1393,6 +1403,11 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 	switch (p_notification) {
 		case NOTIFICATION_READY: {
 			add_debugger_plugin(memnew(LimboDebuggerPlugin));
+			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
+#ifdef LIMBOAI_MODULE
+			// ! Only used in the module version.
+			add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
+#endif // LIMBOAI_MODULE
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			// Add BehaviorTree to the list of resources that should open in a new inspector.
@@ -1446,11 +1461,6 @@ LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	MAIN_SCREEN_CONTROL()->add_child(limbo_ai_editor);
 	limbo_ai_editor->hide();
 	limbo_ai_editor->set_plugin(this);
-
-#ifdef LIMBOAI_MODULE
-	// ! Only used in the module version.
-	add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
-#endif // LIMBOAI_MODULE
 }
 
 LimboAIEditorPlugin::~LimboAIEditorPlugin() {

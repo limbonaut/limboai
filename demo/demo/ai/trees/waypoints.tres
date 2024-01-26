@@ -1,6 +1,13 @@
-[gd_resource type="BehaviorTree" load_steps=10 format=3 uid="uid://cjkqi41oagagd"]
+[gd_resource type="BehaviorTree" load_steps=11 format=3 uid="uid://cjkqi41oagagd"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="1_rhs33"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_2hcqi"]
+var/speed/name = "speed"
+var/speed/type = 3
+var/speed/value = 200.0
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BTAction" id="BTAction_3xal7"]
 script = ExtResource("1_rhs33")
@@ -36,4 +43,5 @@ duration = 3.0
 children = [SubResource("BTCooldown_gen0l")]
 
 [resource]
+blackboard_plan = SubResource("BlackboardPlan_2hcqi")
 root_task = SubResource("BTSelector_5dclr")

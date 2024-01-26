@@ -288,6 +288,129 @@ Variant LimboUtility::perform_operation(Operation p_operation, const Variant &le
 	return ret;
 }
 
+String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
+	switch (p_hint) {
+		case PROPERTY_HINT_NONE: {
+			return "NONE";
+		}
+		case PROPERTY_HINT_RANGE: {
+			return "RANGE";
+		}
+		case PROPERTY_HINT_ENUM: {
+			return "ENUM";
+		}
+		case PROPERTY_HINT_ENUM_SUGGESTION: {
+			return "SUGGESTION";
+		}
+		case PROPERTY_HINT_EXP_EASING: {
+			return "EXP_EASING";
+		}
+		case PROPERTY_HINT_LINK: {
+			return "LINK";
+		}
+		case PROPERTY_HINT_FLAGS: {
+			return "FLAGS";
+		}
+		case PROPERTY_HINT_LAYERS_2D_RENDER: {
+			return "LAYERS_2D_RENDER";
+		}
+		case PROPERTY_HINT_LAYERS_2D_PHYSICS: {
+			return "LAYERS_2D_PHYSICS";
+		}
+		case PROPERTY_HINT_LAYERS_2D_NAVIGATION: {
+			return "LAYERS_2D_NAVIGATION";
+		}
+		case PROPERTY_HINT_LAYERS_3D_RENDER: {
+			return "LAYERS_3D_RENDER";
+		}
+		case PROPERTY_HINT_LAYERS_3D_PHYSICS: {
+			return "LAYERS_3D_PHYSICS";
+		}
+		case PROPERTY_HINT_LAYERS_3D_NAVIGATION: {
+			return "LAYERS_3D_NAVIGATION";
+		}
+		case PROPERTY_HINT_FILE: {
+			return "FILE";
+		}
+		case PROPERTY_HINT_DIR: {
+			return "DIR";
+		}
+		case PROPERTY_HINT_GLOBAL_FILE: {
+			return "GLOBAL_FILE";
+		}
+		case PROPERTY_HINT_GLOBAL_DIR: {
+			return "GLOBAL_DIR";
+		}
+		case PROPERTY_HINT_RESOURCE_TYPE: {
+			return "RESOURCE_TYPE";
+		}
+		case PROPERTY_HINT_MULTILINE_TEXT: {
+			return "MULTILINE_TEXT";
+		}
+		case PROPERTY_HINT_EXPRESSION: {
+			return "EXPRESSION";
+		}
+		case PROPERTY_HINT_PLACEHOLDER_TEXT: {
+			return "PLACEHOLDER_TEXT";
+		}
+		case PROPERTY_HINT_COLOR_NO_ALPHA: {
+			return "COLOR_NO_ALPHA";
+		}
+		case PROPERTY_HINT_OBJECT_ID: {
+			return "OBJECT_ID";
+		}
+		case PROPERTY_HINT_TYPE_STRING: {
+			return "TYPE_STRING";
+		}
+		case PROPERTY_HINT_NODE_PATH_TO_EDITED_NODE: {
+			return "NODE_PATH_TO_EDITED_NODE";
+		}
+		case PROPERTY_HINT_OBJECT_TOO_BIG: {
+			return "OBJECT_TOO_BIG";
+		}
+		case PROPERTY_HINT_NODE_PATH_VALID_TYPES: {
+			return "NODE_PATH_VALID_TYPES";
+		}
+		case PROPERTY_HINT_SAVE_FILE: {
+			return "SAVE_FILE";
+		}
+		case PROPERTY_HINT_GLOBAL_SAVE_FILE: {
+			return "GLOBAL_SAVE_FILE";
+		}
+		case PROPERTY_HINT_INT_IS_OBJECTID: {
+			return "INT_IS_OBJECTID";
+		}
+		case PROPERTY_HINT_INT_IS_POINTER: {
+			return "INT_IS_POINTER";
+		}
+		case PROPERTY_HINT_ARRAY_TYPE: {
+			return "ARRAY_TYPE";
+		}
+		case PROPERTY_HINT_LOCALE_ID: {
+			return "LOCALE_ID";
+		}
+		case PROPERTY_HINT_LOCALIZABLE_STRING: {
+			return "LOCALIZABLE_STRING";
+		}
+		case PROPERTY_HINT_NODE_TYPE: {
+			return "NODE_TYPE";
+		}
+		case PROPERTY_HINT_HIDE_QUATERNION_EDIT: {
+			return "HIDE_QUATERNION_EDIT";
+		}
+		case PROPERTY_HINT_PASSWORD: {
+			return "PASSWORD";
+		}
+		case PROPERTY_HINT_LAYERS_AVOIDANCE: {
+			return "LAYERS_AVOIDANCE";
+		}
+		case PROPERTY_HINT_MAX: {
+			return "MAX";
+		}
+	}
+	return "";
+}
+
 #ifdef TOOLS_ENABLED
 
 Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_name, Key p_keycode) {

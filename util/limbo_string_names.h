@@ -58,6 +58,7 @@ public:
 	StringName accent_color;
 	StringName add_child_at_index;
 	StringName add_child;
+	StringName Add;
 	StringName AnimationFilter;
 	StringName Back;
 	StringName behavior_tree_finished;
@@ -66,13 +67,19 @@ public:
 	StringName bold;
 	StringName BTAlwaysFail;
 	StringName BTAlwaysSucceed;
+	StringName button_down;
+	StringName button_up;
 	StringName changed;
 	StringName connect;
+	StringName dark_color_1;
+	StringName dark_color_2;
 	StringName Debug;
 	StringName disabled_font_color;
 	StringName doc_italic;
 	StringName draw;
 	StringName Duplicate;
+	StringName Edit;
+	StringName EditAddRemove;
 	StringName Editor;
 	StringName EditorFonts;
 	StringName EditorIcons;
@@ -90,6 +97,7 @@ public:
 	StringName gui_input;
 	StringName GuiTreeArrowDown;
 	StringName GuiTreeArrowRight;
+	StringName HeaderSmall;
 	StringName Help;
 	StringName icon_max_width;
 	StringName id_pressed;
@@ -112,6 +120,7 @@ public:
 	StringName NodeWarning;
 	StringName NonFavorite;
 	StringName normal;
+	StringName panel;
 	StringName popup_hide;
 	StringName pressed;
 	StringName probability_clicked;
@@ -126,6 +135,7 @@ public:
 	StringName Script;
 	StringName ScriptCreate;
 	StringName Search;
+	StringName separation;
 	StringName set_custom_name;
 	StringName set_root_task;
 	StringName setup;
@@ -140,9 +150,12 @@ public:
 	StringName task_meta;
 	StringName task_selected;
 	StringName text_changed;
+	StringName text_submitted;
 	StringName timeout;
 	StringName toggled;
 	StringName Tools;
+	StringName Tree;
+	StringName TripleBar;
 	StringName update_task;
 	StringName update_tree;
 	StringName updated;
