@@ -65,7 +65,19 @@ void BlackboardPlanEditor::_rename_var(const String &p_new_name, int p_index) {
 
 void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_index) {
 	ERR_FAIL_NULL(plan);
-	plan->get_var_by_index(p_index).second.set_type(p_new_type);
+
+	BBVariable var = plan->get_var_by_index(p_index).second;
+	if (var.get_type() == p_new_type) {
+		return;
+	}
+
+	PackedInt32Array allowed_hints = LimboUtility::get_singleton()->get_property_hints_allowed_for_type(p_new_type);
+	if (!allowed_hints.has(var.get_hint())) {
+		var.set_hint(PROPERTY_HINT_NONE);
+	}
+
+	var.set_type(p_new_type);
+
 	plan->notify_property_list_changed();
 	_refresh();
 }
@@ -98,6 +110,16 @@ void BlackboardPlanEditor::_show_button_popup(Button *p_button, PopupMenu *p_pop
 	rect.size.height = 0;
 	p_popup->set_size(rect.size);
 	p_popup->set_position(rect.position);
+
+	if (p_popup == hint_menu) {
+		hint_menu->clear();
+		hint_menu->reset_size();
+		Variant::Type t = plan->get_var_by_index(p_index).second.get_type();
+		PackedInt32Array hints = LimboUtility::get_singleton()->get_property_hints_allowed_for_type(t);
+		for (int i = 0; i < hints.size(); i++) {
+			hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(hints[i])), hints[i]);
+		}
+	}
 
 	last_index = p_index;
 	p_popup->popup();
