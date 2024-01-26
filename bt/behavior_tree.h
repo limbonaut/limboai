@@ -32,6 +32,8 @@ private:
 	Ref<BlackboardPlan> blackboard_plan;
 	Ref<BTTask> root_task;
 
+	void _plan_changed();
+
 protected:
 	static void _bind_methods();
 
@@ -54,6 +56,7 @@ public:
 	Ref<BTTask> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const;
 
 	BehaviorTree();
+	~BehaviorTree();
 };
 
 #endif // BEHAVIOR_TREE_H

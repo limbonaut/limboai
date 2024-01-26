@@ -11,6 +11,8 @@
 
 #include "behavior_tree.h"
 
+#include "../util/limbo_string_names.h"
+
 #ifdef LIMBOAI_MODULE
 #include "core/error/error_macros.h"
 #include "core/object/class_db.h"
@@ -28,10 +30,24 @@ void BehaviorTree::set_description(const String &p_value) {
 }
 
 void BehaviorTree::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
+	if (blackboard_plan == p_plan) {
+		return;
+	}
+
+	if (Engine::get_singleton()->is_editor_hint() && blackboard_plan.is_valid() &&
+			blackboard_plan->is_connected(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed))) {
+		blackboard_plan->disconnect(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed));
+	}
+
 	blackboard_plan = p_plan;
 	if (blackboard_plan.is_null()) {
 		blackboard_plan = Ref<BlackboardPlan>(memnew(BlackboardPlan));
 	}
+
+	if (Engine::get_singleton()->is_editor_hint()) {
+		blackboard_plan->connect(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed));
+	}
+
 	emit_changed();
 }
 
@@ -62,6 +78,10 @@ Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_bl
 	return inst;
 }
 
+void BehaviorTree::_plan_changed() {
+	emit_changed();
+}
+
 void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_description", "p_value"), &BehaviorTree::set_description);
 	ClassDB::bind_method(D_METHOD("get_description"), &BehaviorTree::get_description);
@@ -79,4 +99,11 @@ void BehaviorTree::_bind_methods() {
 }
 
 BehaviorTree::BehaviorTree() {
+}
+
+BehaviorTree::~BehaviorTree() {
+	if (Engine::get_singleton()->is_editor_hint() && blackboard_plan.is_valid() &&
+			blackboard_plan->is_connected(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed))) {
+		blackboard_plan->disconnect(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed));
+	}
 }

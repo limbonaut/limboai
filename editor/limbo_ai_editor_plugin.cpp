@@ -228,7 +228,16 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
 
+	if (task_tree->get_bt().is_valid() &&
+			task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
+		task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+	}
+
 	task_tree->load_bt(p_behavior_tree);
+
+	if (task_tree->get_bt().is_valid()) {
+		task_tree->get_bt()->connect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+	}
 
 	int idx = history.find(p_behavior_tree);
 	if (idx != -1) {
@@ -1052,6 +1061,11 @@ void LimboAIEditor::_notification(int p_what) {
 			cf->load(conf_path);
 			cf->set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
 			cf->save(conf_path);
+
+			if (task_tree->get_bt().is_valid() &&
+					task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
+				task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+			}
 		} break;
 		case NOTIFICATION_READY: {
 			// **** Signals
