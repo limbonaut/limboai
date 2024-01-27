@@ -54,6 +54,11 @@
 #define GET_SCRIPT(m_obj) (m_obj->get_script_instance() ? m_obj->get_script_instance()->get_script() : nullptr)
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_style_override(m_name, m_stylebox))
 
+_FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
+	bool r_valid;
+	return Variant(p_obj).has_key(p_prop, r_valid);
+}
+
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret) r_ret = Variant::evaluate(m_op, m_lvalue, m_rvalue)
 
 // * Virtual calls
@@ -132,6 +137,10 @@ using namespace godot;
 #define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable))
 #define GET_SCRIPT(m_obj) (m_obj->get_script())
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_stylebox_override(m_name, m_stylebox))
+
+_FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
+	return Variant(p_obj).has_key(p_prop);
+}
 
 #define VARIANT_EVALUATE(m_op, m_lvalue, m_rvalue, r_ret)            \
 	{                                                                \

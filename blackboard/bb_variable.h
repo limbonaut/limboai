@@ -14,14 +14,10 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
-#include "core/templates/safe_refcount.h"
-#include "core/variant/variant.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/core/defs.hpp"
-#include "godot_cpp/templates/safe_refcount.hpp"
-#include "godot_cpp/variant/variant.hpp"
+#include "godot_cpp/core/object.hpp"
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -33,14 +29,14 @@ private:
 		Variant::Type type = Variant::NIL;
 		PropertyHint hint = PropertyHint::PROPERTY_HINT_NONE;
 		String hint_string;
-		// bool bound = false;
-		// uint64_t bound_object = 0;
-		// StringName bound_property;
+
+		NodePath binding_path;
+		uint64_t bound_object = 0;
+		StringName bound_property;
 	};
 
 	Data *data = nullptr;
 	void unref();
-	// void init_ref();
 
 public:
 	void set_value(const Variant &p_value);
@@ -60,10 +56,15 @@ public:
 	bool is_same_prop_info(const BBVariable &p_other) const;
 	void copy_prop_info(const BBVariable &p_other);
 
-	// bool is_bound() { return bound; }
+	// * Editor binding methods
+	String get_binding_path() const { return data->binding_path; }
+	void set_binding_path(const String &p_binding_path) { data->binding_path = p_binding_path; }
+	bool has_binding() { return data->binding_path.is_empty(); }
 
-	// void bind(Node *p_root, NodePath p_path);
-	// void unbind();
+	// * Runtime binding methods
+	bool is_bound() const { return data->bound_object != 0; }
+	void bind(Object *p_object, const StringName &p_property);
+	void unbind();
 
 	bool operator==(const BBVariable &p_var) const;
 	bool operator!=(const BBVariable &p_var) const;

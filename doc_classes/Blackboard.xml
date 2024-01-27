@@ -11,6 +11,15 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="bind_var_to_property">
+			<return type="void" />
+			<param index="0" name="p_name" type="String" />
+			<param index="1" name="p_object" type="Object" />
+			<param index="2" name="p_property" type="StringName" />
+			<description>
+				Establish a binding between a variable and the object's property specified by [param p_property] and [param p_object]. Changes to the variable update the property, and vice versa.
+			</description>
+		</method>
 		<method name="erase_var">
 			<return type="void" />
 			<param index="0" name="p_name" type="String" />
@@ -65,6 +74,13 @@
 			<return type="Blackboard" />
 			<description>
 				Returns the topmost [Blackboard] in the scope chain.
+			</description>
+		</method>
+		<method name="unbind_var">
+			<return type="void" />
+			<param index="0" name="p_name" type="String" />
+			<description>
+				Remove binding from a variable.
 			</description>
 		</method>
 	</methods>

@@ -51,6 +51,9 @@ public:
 	bool has_var(const String &p_name) const;
 	void erase_var(const String &p_name);
 
+	void bind_var_to_property(const String &p_name, Object *p_object, const StringName &p_property);
+	void unbind_var(const String &p_name);
+
 	void add_var(const String &p_name, const BBVariable &p_var);
 
 	void prefetch_nodepath_vars(Node *p_node);

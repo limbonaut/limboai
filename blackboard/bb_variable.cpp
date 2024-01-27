@@ -20,19 +20,35 @@ void BBVariable::unref() {
 	data = nullptr;
 }
 
-// void BBVariable::init_ref() {
-// 	if (data) {
-// 		unref();
-// 	}
-// 	data = memnew(Data);
-// 	data->refcount.init();
-// }
-
 void BBVariable::set_value(const Variant &p_value) {
-	data->value = p_value;
+	data->value = p_value; // Setting value even when bound as a fallback in case the binding fails.
+
+	if (is_bound()) {
+		Object *obj = ObjectDB::get_instance(ObjectID(data->bound_object));
+		ERR_FAIL_COND_MSG(!obj, "Blackboard: Failed to get bound object.");
+#ifdef LIMBOAI_MODULE
+		bool r_valid;
+		obj->set(data->bound_property, p_value, &r_valid);
+		ERR_FAIL_COND_MSG(!r_valid, vformat("Blackboard: Failed to set bound property `%s` on %s", data->bound_property, obj));
+#elif LIMBOAI_GDEXTENSION
+		obj->set(data->bound_property, p_value);
+#endif
+	}
 }
 
 Variant BBVariable::get_value() const {
+	if (is_bound()) {
+		Object *obj = ObjectDB::get_instance(ObjectID(data->bound_object));
+		ERR_FAIL_COND_V_MSG(!obj, data->value, "Blackboard: Failed to get bound object.");
+#ifdef LIMBOAI_MODULE
+		bool r_valid;
+		Variant ret = obj->get(data->bound_property, &r_valid);
+		ERR_FAIL_COND_V_MSG(!r_valid, data->value, vformat("Blackboard: Failed to get bound property `%s` on %s", data->bound_property, obj));
+#elif LIMBOAI_GDEXTENSION
+		Variant ret = obj->get(data->bound_property);
+#endif
+		return ret;
+	}
 	return data->value;
 }
 
@@ -87,6 +103,19 @@ void BBVariable::copy_prop_info(const BBVariable &p_other) {
 	data->type = p_other.data->type;
 	data->hint = p_other.data->hint;
 	data->hint_string = p_other.data->hint_string;
+}
+
+void BBVariable::bind(Object *p_object, const StringName &p_property) {
+	ERR_FAIL_NULL_MSG(p_object, "Blackboard: Binding failed - object is null.");
+	ERR_FAIL_COND_MSG(p_property == StringName(), "Blackboard: Binding failed - property name is empty.");
+	ERR_FAIL_COND_MSG(!OBJECT_HAS_PROPERTY(p_object, p_property), vformat("Blackboard: Binding failed - %s has no property `%s`.", p_object, p_property));
+	data->bound_object = p_object->get_instance_id();
+	data->bound_property = p_property;
+}
+
+void BBVariable::unbind() {
+	data->bound_object = 0;
+	data->bound_property = StringName();
 }
 
 bool BBVariable::operator==(const BBVariable &p_var) const {

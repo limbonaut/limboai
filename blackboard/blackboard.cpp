@@ -12,7 +12,6 @@
 #include "blackboard.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
@@ -62,6 +61,16 @@ void Blackboard::erase_var(const String &p_name) {
 	data.erase(p_name);
 }
 
+void Blackboard::bind_var_to_property(const String &p_name, Object *p_object, const StringName &p_property) {
+	ERR_FAIL_COND_MSG(!data.has(p_name), "Blackboard: Binding failed - can't bind variable that doesn't exist.");
+	data[p_name].bind(p_object, p_property);
+}
+
+void Blackboard::unbind_var(const String &p_name) {
+	ERR_FAIL_COND_MSG(data.has(p_name), "Blackboard: Can't unbind variable that doesn't exist.");
+	data[p_name].unbind();
+}
+
 void Blackboard::add_var(const String &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(data.has(p_name));
 	data.insert(p_name, p_var);
@@ -89,4 +98,6 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("erase_var", "p_name"), &Blackboard::erase_var);
 	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "p_node"), &Blackboard::prefetch_nodepath_vars);
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
+	ClassDB::bind_method(D_METHOD("bind_var_to_property", "p_name", "p_object", "p_property"), &Blackboard::bind_var_to_property);
+	ClassDB::bind_method(D_METHOD("unbind_var", "p_name"), &Blackboard::unbind_var);
 }
