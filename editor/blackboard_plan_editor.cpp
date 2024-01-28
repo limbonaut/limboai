@@ -48,10 +48,10 @@ void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
 
 	int suffix = 1;
-	String name = "var" + itos(suffix);
+	String name = default_var_name;
 	while (plan->has_var(name)) {
 		suffix += 1;
-		name = "var" + itos(suffix);
+		name = default_var_name + itos(suffix);
 	}
 
 	BBVariable var(Variant::Type::FLOAT);
@@ -127,6 +127,12 @@ void BlackboardPlanEditor::edit_plan(const Ref<BlackboardPlan> &p_plan) {
 	_refresh();
 }
 
+void BlackboardPlanEditor::set_next_var_name(const String &p_name) {
+	if (p_name.is_valid_identifier()) {
+		default_var_name = p_name;
+	}
+}
+
 void BlackboardPlanEditor::_show_button_popup(Button *p_button, PopupMenu *p_popup, int p_index) {
 	ERR_FAIL_NULL(p_button);
 	ERR_FAIL_NULL(p_popup);
@@ -158,6 +164,13 @@ void BlackboardPlanEditor::_type_chosen(int id) {
 
 void BlackboardPlanEditor::_hint_chosen(int id) {
 	_change_var_hint(PropertyHint(id), last_index);
+}
+
+void BlackboardPlanEditor::_add_var_pressed() {
+	_add_var();
+	LineEdit *name_edit = _get_name_edit(rows_vbox->get_child_count() - 1);
+	name_edit->grab_focus();
+	name_edit->select_all();
 }
 
 void BlackboardPlanEditor::_drag_button_down(Control *p_row) {
@@ -212,6 +225,7 @@ void BlackboardPlanEditor::_drag_button_gui_input(const Ref<InputEvent> &p_event
 void BlackboardPlanEditor::_visibility_changed() {
 	if (!is_visible() && plan.is_valid()) {
 		plan->notify_property_list_changed();
+		default_var_name = "var";
 	}
 }
 
@@ -324,7 +338,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 			ADD_STYLEBOX_OVERRIDE(header_row, LW_NAME(panel), theme_cache.header_style);
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
-			add_var_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_add_var));
+			add_var_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_add_var_pressed));
 			connect(LW_NAME(visibility_changed), callable_mp(this, &BlackboardPlanEditor::_visibility_changed));
 			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
@@ -344,6 +358,8 @@ void BlackboardPlanEditor::_notification(int p_what) {
 }
 
 BlackboardPlanEditor::BlackboardPlanEditor() {
+	default_var_name = "var";
+
 	set_title(TTR("Manage Blackboard Plan"));
 
 	VBoxContainer *vbox = memnew(VBoxContainer);

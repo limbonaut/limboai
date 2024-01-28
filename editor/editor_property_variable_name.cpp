@@ -79,6 +79,10 @@ void EditorPropertyVariableName::_update_status() {
 }
 
 void EditorPropertyVariableName::_status_pressed() {
+	ERR_FAIL_NULL(plan);
+	if (!plan->has_var(name_edit->get_text())) {
+		BlackboardPlanEditor::get_singleton()->set_next_var_name(name_edit->get_text());
+	}
 	BlackboardPlanEditor::get_singleton()->edit_plan(plan);
 	BlackboardPlanEditor::get_singleton()->popup_centered();
 }
