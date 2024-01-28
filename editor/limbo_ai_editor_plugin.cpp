@@ -1431,7 +1431,9 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 			add_inspector_plugin(var_plugin);
 #ifdef LIMBOAI_MODULE
 			// ! Only used in the module version.
-			add_inspector_plugin(memnew(EditorInspectorPluginBBParam));
+			EditorInspectorPluginBBParam *param_plugin = memnew(EditorInspectorPluginBBParam);
+			param_plugin->set_plan_getter(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
+			add_inspector_plugin(param_plugin);
 #endif // LIMBOAI_MODULE
 		} break;
 		case NOTIFICATION_ENTER_TREE: {

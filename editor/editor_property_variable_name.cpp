@@ -60,11 +60,15 @@ void EditorPropertyVariableName::_name_changed(const String &p_new_name) {
 }
 
 void EditorPropertyVariableName::_variable_selected(int p_id) {
-	_name_changed(plan->get_var_by_index(p_id).first);
+	String var_name = plan->get_var_by_index(p_id).first;
+	name_edit->set_text(var_name);
+	_name_changed(var_name);
 }
 
 void EditorPropertyVariableName::_update_status() {
-	ERR_FAIL_NULL(plan);
+	if (plan.is_null()) {
+		return;
+	}
 	if (plan->has_var(name_edit->get_text())) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
 		status_btn->set_tooltip_text(TTR("This variable exists in the blackboard plan.\n\nClick to open blackboard plan."));
@@ -108,6 +112,7 @@ void EditorPropertyVariableName::_update_property() {
 
 void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan) {
 	plan = p_plan;
+	_update_status();
 }
 
 void EditorPropertyVariableName::_notification(int p_what) {
