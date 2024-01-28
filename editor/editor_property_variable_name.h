@@ -36,6 +36,7 @@ private:
 		Ref<Texture2D> var_exists_icon;
 		Ref<Texture2D> var_not_found_icon;
 		Ref<Texture2D> var_add_icon;
+		Ref<Texture2D> var_private_icon;
 	};
 	ThemeCache theme_cache;
 

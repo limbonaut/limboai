@@ -72,6 +72,9 @@ void EditorPropertyVariableName::_update_status() {
 	if (plan->has_var(name_edit->get_text())) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
 		status_btn->set_tooltip_text(TTR("This variable exists in the blackboard plan.\n\nClick to open blackboard plan."));
+	} else if (name_edit->get_text().begins_with("_")) {
+		BUTTON_SET_ICON(status_btn, theme_cache.var_private_icon);
+		status_btn->set_tooltip_text(TTR("Variable is private and doesn't exist in the blackboard plan.\n\nClick to open blackboard plan."));
 	} else {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_not_found_icon);
 		status_btn->set_tooltip_text(TTR("No such variable exists in the blackboard plan!\n\nClick to open blackboard plan."));
@@ -142,6 +145,7 @@ void EditorPropertyVariableName::_notification(int p_what) {
 			theme_cache.var_add_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarAdd));
 			theme_cache.var_exists_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarExists));
 			theme_cache.var_not_found_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarNotFound));
+			theme_cache.var_private_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarPrivate));
 		} break;
 	}
 }

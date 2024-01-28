@@ -98,6 +98,7 @@ LimboStringNames::LimboStringNames() {
 	LimboVarAdd = SN("LimboVarAdd");
 	LimboVarExists = SN("LimboVarExists");
 	LimboVarNotFound = SN("LimboVarNotFound");
+	LimboVarPrivate = SN("LimboVarPrivate");
 	LineEdit = SN("LineEdit");
 	Load = SN("Load");
 	managed = SN("managed");

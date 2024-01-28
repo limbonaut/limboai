@@ -113,6 +113,7 @@ public:
 	StringName LimboVarAdd;
 	StringName LimboVarExists;
 	StringName LimboVarNotFound;
+	StringName LimboVarPrivate;
 	StringName LineEdit;
 	StringName Load;
 	StringName managed;
