@@ -97,13 +97,11 @@ void LimboHSM::update(double p_delta) {
 	_update(p_delta);
 }
 
-void LimboHSM::add_transition(Node *p_from_state, Node *p_to_state, const String &p_event) {
-	ERR_FAIL_COND(p_from_state != nullptr && p_from_state->get_parent() != this);
-	ERR_FAIL_COND(p_from_state != nullptr && !p_from_state->is_class("LimboState"));
-	ERR_FAIL_COND(p_to_state == nullptr);
-	ERR_FAIL_COND(p_to_state->get_parent() != this);
-	ERR_FAIL_COND(!p_to_state->is_class("LimboState"));
-	ERR_FAIL_COND(p_event.is_empty());
+void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, const String &p_event) {
+	ERR_FAIL_COND_MSG(p_from_state != nullptr && p_from_state->get_parent() != this, "LimboHSM: Unable to add a transition from a state that is not an immediate child of mine.");
+	ERR_FAIL_COND_MSG(p_to_state == nullptr, "LimboHSM: Unable to add a transition to a null state.");
+	ERR_FAIL_COND_MSG(p_to_state->get_parent() != this, "LimboHSM: Unable to add a transition to a state that is not an immediate child of mine.");
+	ERR_FAIL_COND_MSG(p_event.is_empty(), "LimboHSM: Failed to add transition due to empty event string.");
 
 	uint64_t key = _get_transition_key(p_from_state, p_event);
 	transitions[key] = Object::cast_to<LimboState>(p_to_state);
