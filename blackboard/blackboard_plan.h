@@ -59,6 +59,7 @@ public:
 
 	PackedStringArray list_vars() const;
 	String get_var_name(const BBVariable &p_var) const;
+	bool is_valid_var_name(const String &p_name) const;
 	void rename_var(const String &p_name, const String &p_new_name);
 	void move_var(int p_index, int p_new_index);
 

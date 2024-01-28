@@ -40,6 +40,10 @@ using namespace godot;
 
 BlackboardPlanEditor *BlackboardPlanEditor::singleton = nullptr;
 
+LineEdit *BlackboardPlanEditor::_get_name_edit(int p_row_index) const {
+	return Object::cast_to<LineEdit>(rows_vbox->get_child(p_row_index)->get_child(0)->get_child(1));
+}
+
 void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
 
@@ -64,7 +68,26 @@ void BlackboardPlanEditor::_trash_var(int p_index) {
 
 void BlackboardPlanEditor::_rename_var(const String &p_new_name, int p_index) {
 	ERR_FAIL_NULL(plan);
-	plan->rename_var(plan->get_var_by_index(p_index).first, p_new_name);
+
+	LineEdit *name_edit = _get_name_edit(p_index);
+	ERR_FAIL_NULL(name_edit);
+
+	bool is_valid_var_name = plan->is_valid_var_name(p_new_name);
+	if (is_valid_var_name) {
+		plan->rename_var(plan->get_var_by_index(p_index).first, p_new_name);
+	}
+
+	if (is_valid_var_name || plan->get_var_by_index(p_index).first == p_new_name) {
+		if (name_edit->has_theme_color_override(LW_NAME(font_color))) {
+			name_edit->remove_theme_color_override(LW_NAME(font_color));
+			name_edit->queue_redraw();
+		}
+	} else {
+		if (!name_edit->has_theme_color_override(LW_NAME(font_color))) {
+			name_edit->add_theme_color_override(LW_NAME(font_color), Color(1, 0, 0));
+			name_edit->queue_redraw();
+		}
+	}
 }
 
 void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_index) {

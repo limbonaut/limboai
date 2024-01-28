@@ -158,9 +158,16 @@ String BlackboardPlan::get_var_name(const BBVariable &p_var) const {
 	return String();
 }
 
+bool BlackboardPlan::is_valid_var_name(const String &p_name) const {
+	return p_name.is_valid_identifier() && !var_map.has(p_name);
+}
+
 void BlackboardPlan::rename_var(const String &p_name, const String &p_new_name) {
-	ERR_FAIL_COND(p_new_name.is_empty());
-	ERR_FAIL_COND(var_map.has(p_new_name));
+	if (p_name == p_new_name) {
+		return;
+	}
+
+	ERR_FAIL_COND(!is_valid_var_name(p_new_name));
 	ERR_FAIL_COND(!var_map.has(p_name));
 
 	BBVariable var = var_map[p_name];

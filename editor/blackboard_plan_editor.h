@@ -24,6 +24,7 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/accept_dialog.hpp>
 #include <godot_cpp/classes/editor_inspector_plugin.hpp>
+#include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/scroll_container.hpp>
@@ -62,6 +63,8 @@ private:
 	ScrollContainer *scroll_container;
 	PopupMenu *type_menu;
 	PopupMenu *hint_menu;
+
+	LineEdit *_get_name_edit(int p_row_index) const;
 
 	void _add_var();
 	void _trash_var(int p_index);
