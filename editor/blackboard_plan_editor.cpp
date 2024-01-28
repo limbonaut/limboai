@@ -171,6 +171,9 @@ void BlackboardPlanEditor::_add_var_pressed() {
 	LineEdit *name_edit = _get_name_edit(rows_vbox->get_child_count() - 1);
 	name_edit->grab_focus();
 	name_edit->select_all();
+
+	// Note: Scroll to the end, delay is necessary here.
+	scroll_container->call_deferred(LW_NAME(call_deferred), LW_NAME(set_v_scroll), 888888888);
 }
 
 void BlackboardPlanEditor::_drag_button_down(Control *p_row) {

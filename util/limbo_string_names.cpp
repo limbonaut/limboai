@@ -55,6 +55,7 @@ LimboStringNames::LimboStringNames() {
 	BTAlwaysSucceed = SN("BTAlwaysSucceed");
 	button_down = SN("button_down");
 	button_up = SN("button_up");
+	call_deferred = SN("call_deferred");
 	changed = SN("changed");
 	connect = SN("connect");
 	dark_color_1 = SN("dark_color_1");
@@ -130,6 +131,7 @@ LimboStringNames::LimboStringNames() {
 	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
 	set_root_task = SN("set_root_task");
+	set_v_scroll = SN("set_v_scroll");
 	setup = SN("setup");
 	started = SN("started");
 	state_changed = SN("state_changed");

@@ -69,6 +69,7 @@ public:
 	StringName BTAlwaysSucceed;
 	StringName button_down;
 	StringName button_up;
+	StringName call_deferred;
 	StringName changed;
 	StringName connect;
 	StringName dark_color_1;
@@ -145,6 +146,7 @@ public:
 	StringName separation;
 	StringName set_custom_name;
 	StringName set_root_task;
+	StringName set_v_scroll;
 	StringName setup;
 	StringName started;
 	StringName state_changed;
