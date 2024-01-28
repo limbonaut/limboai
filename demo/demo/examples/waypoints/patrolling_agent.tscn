@@ -10,6 +10,11 @@ var/speed/type = 3
 var/speed/value = 300.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/waypoints/name = "waypoints"
+var/waypoints/type = 28
+var/waypoints/value = []
+var/waypoints/hint = 0
+var/waypoints/hint_string = "22:"
 
 [sub_resource type="Animation" id="Animation_5id00"]
 length = 0.001
