@@ -721,7 +721,9 @@ void LimboAIEditor::_on_header_pressed() {
 	_update_header();
 	task_tree->deselect();
 #ifdef LIMBOAI_MODULE
-	task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
+	if (task_tree->get_bt().is_valid()) {
+		task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
+	}
 #endif // LIMBOAI_MODULE
 	EDIT_RESOURCE(task_tree->get_bt());
 }
