@@ -12,6 +12,8 @@
 #ifndef BLACKBOARD_PLAN_EDITOR_H
 #define BLACKBOARD_PLAN_EDITOR_H
 
+#ifdef TOOLS_ENABLED
+
 #include "../blackboard/blackboard_plan.h"
 
 #ifdef LIMBOAI_MODULE
@@ -34,6 +36,9 @@ using namespace godot;
 
 class BlackboardPlanEditor : public AcceptDialog {
 	GDCLASS(BlackboardPlanEditor, AcceptDialog);
+
+private:
+	static BlackboardPlanEditor *singleton;
 
 private:
 	struct ThemeCache {
@@ -82,6 +87,8 @@ protected:
 	void _notification(int p_what);
 
 public:
+	_FORCE_INLINE_ static BlackboardPlanEditor *get_singleton() { return singleton; }
+
 	void edit_plan(const Ref<BlackboardPlan> &p_plan);
 
 	BlackboardPlanEditor();
@@ -113,5 +120,7 @@ public:
 
 	EditorInspectorPluginBBPlan();
 };
+
+#endif // TOOLS_ENABLED
 
 #endif // BLACKBOARD_PLAN_EDITOR_H

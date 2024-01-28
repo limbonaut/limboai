@@ -256,9 +256,12 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LimboDebuggerPlugin);
 		GDREGISTER_CLASS(BlackboardPlanEditor);
 		GDREGISTER_CLASS(EditorInspectorPluginBBPlan);
+		GDREGISTER_CLASS(EditorPropertyVariableName);
+		GDREGISTER_CLASS(EditorInspectorPluginVariableName);
 		GDREGISTER_CLASS(LimboAIEditor);
 		GDREGISTER_CLASS(LimboAIEditorPlugin);
 #endif // LIMBOAI_GDEXTENSION
+
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
 	}
 

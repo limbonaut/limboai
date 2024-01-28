@@ -95,6 +95,7 @@ public:
 	StringName font;
 	StringName Forward;
 	StringName gui_input;
+	StringName GuiOptionArrow;
 	StringName GuiTreeArrowDown;
 	StringName GuiTreeArrowRight;
 	StringName HeaderSmall;
@@ -109,10 +110,15 @@ public:
 	StringName LimboExtractSubtree;
 	StringName LimboPercent;
 	StringName LimboSelectAll;
+	StringName LimboVarAdd;
+	StringName LimboVarExists;
+	StringName LimboVarNotFound;
 	StringName LineEdit;
 	StringName Load;
 	StringName managed;
 	StringName mode_changed;
+	StringName mouse_entered;
+	StringName mouse_exited;
 	StringName MoveDown;
 	StringName MoveUp;
 	StringName New;

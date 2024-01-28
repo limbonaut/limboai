@@ -255,6 +255,13 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	_update_header();
 }
 
+Ref<BlackboardPlan> LimboAIEditor::get_edited_blackboard_plan() {
+	if (task_tree->get_bt().is_valid()) {
+		return task_tree->get_bt()->get_blackboard_plan();
+	}
+	return nullptr;
+}
+
 void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 	Ref<BehaviorTree> bt = task_tree->get_bt();
 	if (p_dirty && !dirty.has(bt)) {
@@ -1135,6 +1142,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_resave_modified"), &LimboAIEditor::_resave_modified);
 	ClassDB::bind_method(D_METHOD("_replace_task", "p_task", "p_by_task"), &LimboAIEditor::_replace_task);
 	ClassDB::bind_method(D_METHOD("_popup_file_dialog"), &LimboAIEditor::_popup_file_dialog);
+	ClassDB::bind_method(D_METHOD("get_edited_blackboard_plan"), &LimboAIEditor::get_edited_blackboard_plan);
 }
 
 LimboAIEditor::LimboAIEditor() {
@@ -1418,6 +1426,9 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 		case NOTIFICATION_READY: {
 			add_debugger_plugin(memnew(LimboDebuggerPlugin));
 			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
+			EditorInspectorPluginVariableName *var_plugin = memnew(EditorInspectorPluginVariableName);
+			var_plugin->set_plan_getter(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
+			add_inspector_plugin(var_plugin);
 #ifdef LIMBOAI_MODULE
 			// ! Only used in the module version.
 			add_inspector_plugin(memnew(EditorInspectorPluginBBParam));

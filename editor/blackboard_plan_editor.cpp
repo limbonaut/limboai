@@ -9,6 +9,8 @@
  * =============================================================================
  */
 
+#ifdef TOOLS_ENABLED
+
 #include "blackboard_plan_editor.h"
 
 #include "../util/limbo_compat.h"
@@ -35,6 +37,8 @@
 #include <godot_cpp/classes/theme.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
+
+BlackboardPlanEditor *BlackboardPlanEditor::singleton = nullptr;
 
 void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
@@ -296,11 +300,22 @@ void BlackboardPlanEditor::_notification(int p_what) {
 
 			ADD_STYLEBOX_OVERRIDE(header_row, LW_NAME(panel), theme_cache.header_style);
 		} break;
-		case NOTIFICATION_READY: {
+		case NOTIFICATION_ENTER_TREE: {
 			add_var_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_add_var));
 			connect(LW_NAME(visibility_changed), callable_mp(this, &BlackboardPlanEditor::_visibility_changed));
 			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
+
+			for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
+				hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
+			}
+
+			singleton = this;
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			if (singleton == this) {
+				singleton = nullptr;
+			}
 		} break;
 	}
 }
@@ -381,9 +396,6 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 
 	hint_menu = memnew(PopupMenu);
 	add_child(hint_menu);
-	for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
-		hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
-	}
 
 	theme_cache.odd_style.instantiate();
 	theme_cache.even_style.instantiate();
@@ -469,3 +481,5 @@ EditorInspectorPluginBBPlan::EditorInspectorPluginBBPlan() {
 	bg.a *= 0.2;
 	toolbar_style->set_bg_color(bg);
 }
+
+#endif // TOOLS_ENABLED

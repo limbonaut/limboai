@@ -81,6 +81,7 @@ LimboStringNames::LimboStringNames() {
 	font_size = SN("font_size");
 	Forward = SN("Forward");
 	gui_input = SN("gui_input");
+	GuiOptionArrow = SN("GuiOptionArrow");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
 	HeaderSmall = SN("HeaderSmall");
@@ -94,10 +95,15 @@ LimboStringNames::LimboStringNames() {
 	LimboExtraClock = SN("LimboExtraClock");
 	LimboPercent = SN("LimboPercent");
 	LimboSelectAll = SN("LimboSelectAll");
+	LimboVarAdd = SN("LimboVarAdd");
+	LimboVarExists = SN("LimboVarExists");
+	LimboVarNotFound = SN("LimboVarNotFound");
 	LineEdit = SN("LineEdit");
 	Load = SN("Load");
 	managed = SN("managed");
 	mode_changed = SN("mode_changed");
+	mouse_entered = SN("mouse_entered");
+	mouse_exited = SN("mouse_exited");
 	MoveDown = SN("MoveDown");
 	MoveUp = SN("MoveUp");
 	New = SN("New");
