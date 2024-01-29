@@ -316,8 +316,8 @@ void EditorPropertyBBParam::_notification(int p_what) {
 
 			// Initialize mode button.
 			mode_button->clear();
-			mode_button->add_mode(Mode::SPECIFY_VALUE, get_editor_theme_icon(SNAME("LimboSpecifyValue")), TTR("Mode: Specify value.\nClick to switch mode."));
-			mode_button->add_mode(Mode::BIND_VAR, get_editor_theme_icon(SNAME("BTSetVar")), TTR("Mode: Use blackboard variable.\nClick to switch mode."));
+			mode_button->add_mode(Mode::SPECIFY_VALUE, get_editor_theme_icon(SNAME("LimboSpecifyValue")), TTR("Mode: Set a specific value.\nClick to switch modes."));
+			mode_button->add_mode(Mode::BIND_VAR, get_editor_theme_icon(SNAME("BTSetVar")), TTR("Mode: Use a blackboard variable.\nClick to switch modes."));
 			mode_button->set_mode(_get_edited_param()->get_value_source() == BBParam::BLACKBOARD_VAR ? Mode::BIND_VAR : Mode::SPECIFY_VALUE, true);
 
 			bool is_variant_param = _get_edited_param()->is_class_ptr(BBVariant::get_class_ptr_static());

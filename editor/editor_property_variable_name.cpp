@@ -73,13 +73,13 @@ void EditorPropertyVariableName::_update_status() {
 	}
 	if (plan->has_var(name_edit->get_text())) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
-		status_btn->set_tooltip_text(TTR("This variable exists in the blackboard plan.\n\nClick to open blackboard plan."));
+		status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
 	} else if (name_edit->get_text().begins_with("_")) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_private_icon);
-		status_btn->set_tooltip_text(TTR("Variable is private and doesn't exist in the blackboard plan.\n\nClick to open blackboard plan."));
+		status_btn->set_tooltip_text(TTR("This variable is private and is not included in the blackboard plan.\nClick to open the blackboard plan."));
 	} else {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_not_found_icon);
-		status_btn->set_tooltip_text(TTR("No such variable exists in the blackboard plan!\n\nClick to open blackboard plan."));
+		status_btn->set_tooltip_text(TTR("No matching variable found in the blackboard plan!\nClick to open the blackboard plan."));
 	}
 }
 
