@@ -66,6 +66,8 @@ void EditorPropertyVariableName::_variable_selected(int p_id) {
 }
 
 void EditorPropertyVariableName::_update_status() {
+	status_btn->set_visible(plan.is_valid());
+	drop_btn->set_visible(plan.is_valid());
 	if (plan.is_null()) {
 		return;
 	}

@@ -256,10 +256,13 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 }
 
 Ref<BlackboardPlan> LimboAIEditor::get_edited_blackboard_plan() {
-	if (task_tree->get_bt().is_valid()) {
-		return task_tree->get_bt()->get_blackboard_plan();
+	if (task_tree->get_bt().is_null()) {
+		return nullptr;
 	}
-	return nullptr;
+	if (task_tree->get_bt()->get_blackboard_plan().is_null()) {
+		task_tree->get_bt()->set_blackboard_plan(memnew(BlackboardPlan));
+	}
+	return task_tree->get_bt()->get_blackboard_plan();
 }
 
 void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
