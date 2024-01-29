@@ -159,6 +159,9 @@ String BlackboardPlan::get_var_name(const BBVariable &p_var) const {
 }
 
 bool BlackboardPlan::is_valid_var_name(const String &p_name) const {
+	if (p_name.begins_with("resource_")) {
+		return false;
+	}
 	return p_name.is_valid_identifier() && !var_map.has(p_name);
 }
 
