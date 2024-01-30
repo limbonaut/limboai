@@ -10,7 +10,7 @@ func _generate_name() -> String:
 
 
 # Called each time this task is ticked (aka executed).
-func _tick(delta: float) -> Status:
+func _tick(_delta: float) -> Status:
 	var target := blackboard.get_var(target_var) as CharacterBody2D
 	if not is_instance_valid(target):
 		return FAILURE

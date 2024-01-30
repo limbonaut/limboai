@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=24 format=3 uid="uid://bpdm5jnegi38"]
+[gd_resource type="BehaviorTree" load_steps=21 format=3 uid="uid://bpdm5jnegi38"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_2jpsu"]
 [ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="2_h5db5"]
@@ -8,8 +8,8 @@
 var/speed/name = "speed"
 var/speed/type = 3
 var/speed/value = 400.0
-var/speed/hint = 0
-var/speed/hint_string = ""
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
 resource_name = "AnimationPlayer"
@@ -21,20 +21,12 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
-min_duration = 0.1
-max_duration = 0.8
+min_duration = 0.7
+max_duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
-custom_name = "Chilling"
+custom_name = "Pause before action"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
-
-[sub_resource type="BTComment" id="BTComment_6tjy8"]
-custom_name = "Approach player"
-
-[sub_resource type="BTAction" id="BTAction_ulbrf"]
-script = ExtResource("1_2jpsu")
-group = &"player"
-output_var = "_target"
 
 [sub_resource type="BBNode" id="BBNode_wpj6d"]
 resource_name = "AnimationPlayer"
@@ -45,14 +37,24 @@ animation_player = SubResource("BBNode_wpj6d")
 animation_name = &"walk"
 blend = 0.1
 
+[sub_resource type="BTAction" id="BTAction_ulbrf"]
+script = ExtResource("1_2jpsu")
+group = &"player"
+output_var = "_target"
+
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
 script = ExtResource("2_h5db5")
 target_var = "_target"
 speed_var = "speed"
-distance = 100.0
+approach_distance = null
 
-[sub_resource type="BTComment" id="BTComment_i1svx"]
-custom_name = "Attack player"
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
+children = [SubResource("BTAction_a4jqi")]
+time_limit = 2.0
+
+[sub_resource type="BTSequence" id="BTSequence_1xfnq"]
+custom_name = "Pursue player"
+children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"), SubResource("BTTimeLimit_xek5v")]
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
 script = ExtResource("3_bpmfp")
@@ -70,25 +72,14 @@ await_completion = 2.0
 animation_player = SubResource("BBNode_s8evu")
 animation_name = &"attack"
 
-[sub_resource type="BBNode" id="BBNode_4jcut"]
-resource_name = "AnimationPlayer"
-saved_value = NodePath("AnimationPlayer")
-
-[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_wgf32"]
-animation_player = SubResource("BBNode_4jcut")
-animation_name = &"idle"
-blend = 0.1
-
-[sub_resource type="BTWait" id="BTWait_lcs3i"]
-duration = 0.5
+[sub_resource type="BTSequence" id="BTSequence_ww5v2"]
+custom_name = "Melee attack"
+children = [SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd")]
 
 [sub_resource type="BTSequence" id="BTSequence_pxl2k"]
-custom_name = "Melee attack"
-children = [SubResource("BTSequence_yhjh1"), SubResource("BTComment_6tjy8"), SubResource("BTAction_ulbrf"), SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_a4jqi"), SubResource("BTComment_i1svx"), SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd"), SubResource("BTPlayAnimation_wgf32"), SubResource("BTWait_lcs3i")]
-
-[sub_resource type="BTSelector" id="BTSelector_mcdtk"]
-children = [SubResource("BTSequence_pxl2k")]
+custom_name = "Main"
+children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]
 
 [resource]
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
-root_task = SubResource("BTSelector_mcdtk")
+root_task = SubResource("BTSequence_pxl2k")
