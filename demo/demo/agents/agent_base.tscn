@@ -270,10 +270,22 @@ tracks/20/keys = {
 "update": 0,
 "values": [Vector2(1, 1)]
 }
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Root/Hitbox/CollisionShape2D:disabled")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
 
 [sub_resource type="Animation" id="Animation_g7a0r"]
 resource_name = "attack"
-length = 0.3
+length = 0.35
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -502,6 +514,18 @@ tracks/18/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Root/Hitbox/CollisionShape2D:disabled")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 1,
+"values": [true, false, true]
 }
 
 [sub_resource type="Animation" id="Animation_b0ub6"]
@@ -996,7 +1020,7 @@ tracks/20/keys = {
 
 [sub_resource type="Animation" id="Animation_gowr5"]
 resource_name = "hurt"
-length = 0.15
+length = 0.25
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -1018,7 +1042,7 @@ tracks/1/interp = 2
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
+"transitions": PackedFloat32Array(1, 2),
 "update": 0,
 "values": [0.0, -0.459832]
 }
@@ -1036,7 +1060,7 @@ tracks/2/keys = {
 }
 tracks/3/type = "value"
 tracks/3/imported = false
-tracks/3/enabled = true
+tracks/3/enabled = false
 tracks/3/path = NodePath("Root/Rig/Body/Hat:position")
 tracks/3/interp = 2
 tracks/3/loop_wrap = true
@@ -1225,6 +1249,18 @@ tracks/18/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("Root/Hitbox/CollisionShape2D:disabled")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
 }
 
 [sub_resource type="Animation" id="Animation_gnqgt"]
@@ -2214,6 +2250,7 @@ script = ExtResource("5_taq6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Root/Hitbox"]
 shape = SubResource("RectangleShape2D_2k81i")
+disabled = true
 debug_color = Color(0.933131, 0.0801983, 0.605982, 0.42)
 metadata/_edit_lock_ = true
 

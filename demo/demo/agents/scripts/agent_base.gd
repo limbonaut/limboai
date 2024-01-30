@@ -6,6 +6,7 @@ extends CharacterBody2D
 @onready var health: Health = $Health
 @onready var root: Node2D = $Root
 
+var _frames_since_facing_update: int = 0
 
 func _ready() -> void:
 	health.damaged.connect(_damaged)
@@ -17,14 +18,34 @@ func _physics_process(_delta: float) -> void:
 
 
 func _update_facing() -> void:
-	if velocity.x > 0.0 and root.scale.x < 0.0:
+	_frames_since_facing_update += 1
+	if _frames_since_facing_update > 3:
+		face_dir(velocity.x)
+
+
+func face_dir(dir: float) -> void:
+	if dir > 0.0 and root.scale.x < 0.0:
 		root.scale.x = 1.0;
-	if velocity.x < 0.0 and root.scale.x > 0.0:
+		_frames_since_facing_update = 0
+	if dir < 0.0 and root.scale.x > 0.0:
 		root.scale.x = -1.0;
+		_frames_since_facing_update = 0
 
 
 func _damaged(_amount: float) -> void:
 	animation_player.play(&"hurt")
+	var btplayer := get_node_or_null(^"BTPlayer") as BTPlayer
+	if btplayer:
+		btplayer.set_active(false)
+	var hsm := get_node_or_null(^"LimboHSM")
+	if hsm:
+		hsm.set_active(false)
+	await animation_player.animation_finished
+	if btplayer:
+		btplayer.restart()
+	if hsm:
+		hsm.set_active(true)
+
 
 
 func _die() -> void:
