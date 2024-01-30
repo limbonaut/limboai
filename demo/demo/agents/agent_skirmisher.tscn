@@ -5,20 +5,20 @@
 
 [node name="Bobby" instance=ExtResource("1_2ir76")]
 
-[node name="LegL" parent="Rig" index="0"]
+[node name="LegL" parent="Root/Rig" index="0"]
 texture = ExtResource("2_w8tqw")
 
-[node name="LegR" parent="Rig" index="1"]
+[node name="LegR" parent="Root/Rig" index="1"]
 texture = ExtResource("2_w8tqw")
 
-[node name="Body" parent="Rig" index="2"]
+[node name="Body" parent="Root/Rig" index="2"]
 texture = ExtResource("2_w8tqw")
 
-[node name="Hat" parent="Rig/Body" index="0"]
+[node name="Hat" parent="Root/Rig/Body" index="0"]
 texture = ExtResource("2_w8tqw")
 
-[node name="HandL" parent="Rig/Body" index="1"]
+[node name="HandL" parent="Root/Rig/Body" index="1"]
 texture = ExtResource("2_w8tqw")
 
-[node name="HandR" parent="Rig/Body" index="2"]
+[node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_w8tqw")
