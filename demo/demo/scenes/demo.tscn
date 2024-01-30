@@ -3142,7 +3142,7 @@ y_sort_enabled = true
 metadata/_edit_lock_ = true
 
 [node name="ShroomFat1" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(314.983, -307.68)
+position = Vector2(316, -293)
 rotation = -0.47206
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3158,7 +3158,7 @@ region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomRed1" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(206, -174)
+position = Vector2(211, -172)
 rotation = -0.554414
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
@@ -3269,7 +3269,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThinFlip2" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1344.93, -353.31)
+position = Vector2(1324, -351)
 rotation = -2.73344
 scale = Vector2(0.729666, -0.765873)
 texture = ExtResource("2_kesm7")
@@ -3352,7 +3352,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin3" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(97.5, -80.0442)
+position = Vector2(104, -70)
 rotation = 0.0063462
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3392,7 +3392,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin8" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1306.5, -369.044)
+position = Vector2(1266, -377)
 rotation = 0.481942
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3402,7 +3402,6 @@ region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 [node name="ShroomThin9" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(1436.5, -326.044)
 rotation = -0.0734592
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
@@ -3417,7 +3416,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomRed8" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2284, -186)
+position = Vector2(2289, -167)
 rotation = 0.0517097
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
@@ -3425,7 +3424,7 @@ region_enabled = true
 region_rect = Rect2(667.382, 0, 217.218, 259.018)
 
 [node name="ShroomThin1" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-124.5, -66.0442)
+position = Vector2(-122, -58)
 rotation = 0.434625
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3435,21 +3434,20 @@ region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 [node name="ShroomThin11" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(2088.5, -233.044)
 rotation = -0.0820285
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin12" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-816.5, 448.956)
+position = Vector2(-800, 471)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin13" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-482.5, 96.9558)
+position = Vector2(-457, 62)
 rotation = -0.368511
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3474,7 +3472,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomFat4" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-844.017, 532.32)
+position = Vector2(-819, 547)
 rotation = -0.338786
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3482,7 +3480,7 @@ region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomFat5" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-513.017, 232.32)
+position = Vector2(-510, 252)
 rotation = -0.121513
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3490,7 +3488,7 @@ region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomFat6" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-199.017, -81.6802)
+position = Vector2(-192, -54)
 rotation = -0.182008
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3507,7 +3505,7 @@ region_enabled = true
 region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomBlue7" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-728, 438)
+position = Vector2(-724, 448)
 rotation = 0.0185129
 scale = Vector2(1.27499, 1.17746)
 texture = ExtResource("2_kesm7")
@@ -3525,7 +3523,7 @@ region_enabled = true
 region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomRed9" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-747, 768)
+position = Vector2(-725, 776)
 rotation = -0.737596
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
@@ -3533,7 +3531,7 @@ region_enabled = true
 region_rect = Rect2(667.382, 0, 217.218, 259.018)
 
 [node name="ShroomYellow3" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-614, 348)
+position = Vector2(-601, 352)
 rotation = 0.0245847
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
@@ -3543,7 +3541,6 @@ region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 [node name="ShroomYellow8" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(-394, 213)
 rotation = 0.304539
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
 region_enabled = true
@@ -3558,14 +3555,14 @@ region_enabled = true
 region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 
 [node name="ShroomThin15" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-470.5, 10.9558)
+position = Vector2(-472, 2)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomYellow10" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2290, -83.9999)
+position = Vector2(2302, -93.9999)
 rotation = 0.443771
 scale = Vector2(1.48644, 1.42174)
 texture = ExtResource("2_kesm7")
@@ -3574,7 +3571,7 @@ region_enabled = true
 region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 
 [node name="ShroomFat7" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2702.95, 241.978)
+position = Vector2(2673, 269)
 rotation = 0.249999
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3649,8 +3646,7 @@ region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomThin16" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(2610, 225)
-rotation = -0.125206
-scale = Vector2(1, 1)
+rotation = -0.321984
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
@@ -3665,7 +3661,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomRed13" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-580, 845)
+position = Vector2(-556, 849)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
 region_enabled = true
@@ -3674,7 +3670,6 @@ region_rect = Rect2(667.382, 0, 217.218, 259.018)
 [node name="ShroomRed14" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(770, 1513)
 rotation = 0.159869
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
 region_enabled = true
@@ -3704,7 +3699,7 @@ region_enabled = true
 region_rect = Rect2(667.382, 0, 217.218, 259.018)
 
 [node name="ShroomRed18" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2510, 848)
+position = Vector2(2508, 864)
 rotation = -0.259673
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -124)
@@ -3730,7 +3725,6 @@ region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 [node name="ShroomYellow15" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(529, 1365)
 rotation = 0.0404178
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
 region_enabled = true
@@ -3745,9 +3739,9 @@ region_enabled = true
 region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 
 [node name="ShroomYellow17" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1605, 1336)
+position = Vector2(1605.04, 1336.65)
 rotation = -0.0585388
-scale = Vector2(1, 1)
+scale = Vector2(1, 1.00276)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
 region_enabled = true
@@ -3770,14 +3764,14 @@ region_enabled = true
 region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 
 [node name="ShroomFat9" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-355.017, 1123.32)
+position = Vector2(-379, 1132)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
 region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomThinFlip6" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-554.068, 1044.69)
+position = Vector2(-583, 1039)
 rotation = -2.70279
 scale = Vector2(0.729666, -0.765873)
 texture = ExtResource("2_kesm7")
@@ -3822,7 +3816,6 @@ region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 [node name="ShroomThin19" type="Sprite2D" parent="YSort/Props/Shrooms"]
 position = Vector2(104.5, 1254.96)
 rotation = 0.328221
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
@@ -3853,7 +3846,7 @@ region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomFat12" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1087.98, 1359.32)
+position = Vector2(1047, 1369)
 rotation = 0.0773245
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
@@ -3868,9 +3861,8 @@ region_enabled = true
 region_rect = Rect2(364.026, 0, 303.355, 246.522)
 
 [node name="ShroomFat14" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2384.98, 989.32)
+position = Vector2(2416, 1002)
 rotation = -0.543407
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -118)
 region_enabled = true
@@ -3885,7 +3877,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin22" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1853.5, 1295.96)
+position = Vector2(1842, 1288)
 rotation = 0.47074
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3893,7 +3885,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin23" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2422.5, 942.956)
+position = Vector2(2473, 905)
 rotation = -0.509121
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3917,7 +3909,7 @@ region_enabled = true
 region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomBlue11" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-231, 1196)
+position = Vector2(-231, 1209)
 rotation = 0.335187
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -115)
@@ -3933,7 +3925,7 @@ region_enabled = true
 region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomBlue13" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1469, 1259)
+position = Vector2(1454, 1249)
 rotation = -0.110138
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -115)
@@ -3957,7 +3949,7 @@ region_enabled = true
 region_rect = Rect2(175.8, 0, 188.1, 246.522)
 
 [node name="ShroomBlue16" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(2705, 761)
+position = Vector2(2712, 770)
 rotation = -0.0419129
 scale = Vector2(1.27499, 1.17746)
 texture = ExtResource("2_kesm7")
@@ -3983,7 +3975,7 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomThin26" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(1514.5, 1327.96)
+position = Vector2(1512, 1310)
 rotation = -0.223667
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
@@ -3999,16 +3991,15 @@ region_enabled = true
 region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomYellow20" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-555, 981)
+position = Vector2(-577, 977)
 rotation = -0.196464
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
 region_enabled = true
 region_rect = Rect2(-0.296913, 2.76804, 172.051, 239.67)
 
 [node name="ShroomThin28" type="Sprite2D" parent="YSort/Props/Shrooms"]
-position = Vector2(-614.5, 1028.96)
+position = Vector2(-645, 1030)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -110)
 region_enabled = true
@@ -4016,7 +4007,7 @@ region_rect = Rect2(886.896, 0, 99.9249, 222.903)
 
 [node name="ShroomYellow21" type="Sprite2D" parent="YSort/Props/Shrooms"]
 y_sort_enabled = true
-position = Vector2(727, -335)
+position = Vector2(731, -360)
 rotation = 0.0837674
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -116)
@@ -4028,21 +4019,21 @@ y_sort_enabled = true
 metadata/_edit_lock_ = true
 
 [node name="Grass1" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-407.776, -8.06427)
+position = Vector2(-438, -25)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass2" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-350.776, -6.06427)
+position = Vector2(-356, -28)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass3" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-210, -48)
+position = Vector2(-210, -64)
 rotation = -0.191355
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4050,23 +4041,22 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass4" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-249.776, -42.0643)
+position = Vector2(-279, -60)
 rotation = -0.351512
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass5" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-147.776, -62.0643)
+position = Vector2(-140, -66)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass6" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-79.776, -55.0643)
+position = Vector2(-76, -63)
 rotation = 0.150085
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4074,35 +4064,36 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass7" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-25.776, -47.0643)
+position = Vector2(-6, -64)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass8" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(52.224, -48.0643)
+position = Vector2(51, -70)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass9" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(103.724, -60.4053)
+position = Vector2(105, -82)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass10" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(156.224, -71.0643)
+position = Vector2(162, -106)
+rotation = -0.447914
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass11" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(184.224, -143.064)
+position = Vector2(178, -174)
 rotation = -0.826729
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4110,7 +4101,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass12" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(220.224, -206.064)
+position = Vector2(209, -232)
 rotation = -0.708204
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4118,16 +4109,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass13" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(257.224, -255.064)
+position = Vector2(241, -276)
 rotation = -0.614925
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass14" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(303.224, -285.064)
+position = Vector2(334, -323)
 rotation = -0.476317
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4135,14 +4125,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass15" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(392.224, -335.064)
+position = Vector2(385, -352)
+rotation = -0.3282
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass16" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(449.224, -352.064)
+position = Vector2(441, -376)
 rotation = -0.219466
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4150,7 +4141,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass17" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(508.224, -367.064)
+position = Vector2(513, -388)
 rotation = -0.0260885
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4158,7 +4149,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass18" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(571.224, -382.064)
+position = Vector2(571, -394)
 rotation = 0.123957
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4174,16 +4165,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass20" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(704.224, -377.064)
+position = Vector2(692, -382)
 rotation = 0.10344
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass21" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(757.224, -368.064)
+position = Vector2(760, -376)
 rotation = 0.000137895
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4191,7 +4181,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass22" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(810.224, -366.064)
+position = Vector2(813, -380)
 rotation = 0.193515
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4199,7 +4189,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass23" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(865.224, -362.064)
+position = Vector2(863, -394)
 rotation = 0.0942186
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4207,7 +4197,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass24" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(949.224, -385.064)
+position = Vector2(953, -417)
 rotation = -0.108891
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4215,25 +4205,23 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass25" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1001.22, -406.064)
+position = Vector2(1025, -436)
 rotation = -0.219926
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass26" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1066.22, -425.064)
+position = Vector2(1090, -444)
 rotation = -0.0691996
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass27" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1162.22, -428.064)
+position = Vector2(1148, -438)
 rotation = 0.0942186
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4241,7 +4229,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass28" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1223.22, -410.064)
+position = Vector2(1206, -419)
 rotation = 0.325109
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4249,7 +4237,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass29" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1279.22, -391.064)
+position = Vector2(1288, -387)
 rotation = 0.372396
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4257,7 +4245,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass30" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1347.22, -362.064)
+position = Vector2(1341, -367)
 rotation = 0.4261
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4267,14 +4255,13 @@ region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 [node name="Grass31" type="Sprite2D" parent="YSort/Props/Grass"]
 position = Vector2(1392.22, -349.064)
 rotation = 0.248156
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass32" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1462.22, -337.064)
+position = Vector2(1470, -345)
 rotation = 0.140579
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4282,7 +4269,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass33" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1517.22, -332.064)
+position = Vector2(1537, -344)
 rotation = 0.151143
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4290,7 +4277,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass34" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1593.22, -331.064)
+position = Vector2(1603, -342)
 rotation = 0.101008
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4298,16 +4285,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass35" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1653.22, -328.064)
+position = Vector2(1659, -336)
 rotation = 0.248156
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass36" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1728.22, -315.064)
+position = Vector2(1719, -319)
 rotation = 0.28446
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4331,7 +4317,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass39" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1892.22, -240.064)
+position = Vector2(1915, -248)
 rotation = 0.342354
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4339,25 +4325,23 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass40" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1992.22, -222.064)
+position = Vector2(1987, -236)
 rotation = 0.0942217
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass41" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2080.22, -228.064)
+position = Vector2(2063, -246)
 rotation = 0.0141966
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass42" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2142.22, -234.064)
+position = Vector2(2133, -247)
 rotation = 0.107299
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4365,7 +4349,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass43" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2207.22, -230.064)
+position = Vector2(2205, -237)
 rotation = 0.352407
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4381,15 +4365,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass45" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2323.22, -186.064)
-rotation = 0.461954
+position = Vector2(2301, -137)
+rotation = 0.940869
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass46" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2387.22, -22.0642)
+position = Vector2(2351, -42)
 rotation = 0.458519
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4397,7 +4381,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass47" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2467.22, 0.93573)
+position = Vector2(2442, -4)
 rotation = 0.3067
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4405,7 +4389,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass48" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2516.22, 34.9358)
+position = Vector2(2491, 36.0001)
 rotation = 0.534738
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4413,15 +4397,16 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass49" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2562.22, 83.9357)
+position = Vector2(2517.19, 77.2042)
 rotation = 0.830507
+scale = Vector2(1.00312, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass50" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2592.22, 117.936)
+position = Vector2(2575, 147)
 rotation = 0.976222
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4429,7 +4414,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass51" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2614.22, 156.936)
+position = Vector2(2552, 127)
 rotation = 0.668316
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4437,7 +4422,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass52" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2649.22, 203.936)
+position = Vector2(2618, 199)
 rotation = 0.534738
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4445,7 +4430,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass53" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2772.22, 269.936)
+position = Vector2(2711, 264)
 rotation = 0.830507
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4453,7 +4438,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass54" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-354.776, 202.936)
+position = Vector2(-368, 174)
 rotation = -0.456926
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4461,16 +4446,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass55" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-399.776, 216.936)
+position = Vector2(-443, 208)
 rotation = -0.199051
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass56" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-466.776, 239.936)
+position = Vector2(-496, 229)
 rotation = -0.456926
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4478,7 +4462,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass57" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-603.776, 349.936)
+position = Vector2(-593, 303)
 rotation = -0.456926
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4486,7 +4470,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass58" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-654.776, 378.936)
+position = Vector2(-652, 357)
 rotation = -0.456926
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4502,7 +4486,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass60" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-756.776, 452.936)
+position = Vector2(-771, 447)
 rotation = -0.456926
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4510,16 +4494,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass61" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-798.776, 509.936)
+position = Vector2(-801, 488)
 rotation = -0.986285
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass62" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2687, 466)
+position = Vector2(2713, 523)
 rotation = -0.236838
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4527,7 +4510,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass63" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2651, 553)
+position = Vector2(2723, 333)
 rotation = -0.0377601
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4535,15 +4518,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass74" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-497, 898)
-rotation = 0.186929
+position = Vector2(-528, 883)
+rotation = 0.425283
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass75" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-565.776, 886.936)
+position = Vector2(-567, 879)
 rotation = -0.145538
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4551,7 +4534,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass76" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-611.776, 888.936)
+position = Vector2(-618, 878)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
@@ -4560,7 +4543,6 @@ region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 [node name="Grass77" type="Sprite2D" parent="YSort/Props/Grass"]
 position = Vector2(-702, 875)
 rotation = -0.136894
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
@@ -4576,7 +4558,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass73" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2745.22, 816.936)
+position = Vector2(2726, 803)
 rotation = -0.177835
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4584,15 +4566,16 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass72" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2699.22, 837.936)
+position = Vector2(2687.59, 820.894)
 rotation = -0.335356
+scale = Vector2(0.996004, 0.997321)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass71" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2650.22, 848.936)
+position = Vector2(2635, 831)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4600,7 +4583,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass70" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2601.22, 861.936)
+position = Vector2(2584, 850)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4608,7 +4591,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass69" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2551.22, 885.936)
+position = Vector2(2534, 878)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4616,7 +4599,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass68" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2510.22, 944.936)
+position = Vector2(2485, 937)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4624,7 +4607,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass67" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2494.22, 1010.94)
+position = Vector2(2472, 984)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4632,7 +4615,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass66" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2455.22, 1025.94)
+position = Vector2(2442, 1015)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4640,7 +4623,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass65" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2415.22, 1045.94)
+position = Vector2(2404, 1033)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4648,7 +4631,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass64" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2364.22, 1075.94)
+position = Vector2(2357, 1063)
 rotation = -0.419734
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4656,7 +4639,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass79" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2346.22, 1157.94)
+position = Vector2(2328, 1128)
 rotation = -0.449816
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4664,16 +4647,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass80" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2346.22, 1196.94)
+position = Vector2(2321, 1180)
 rotation = -0.194528
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass81" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2326.22, 1224.94)
+position = Vector2(2309, 1201)
 rotation = -0.24821
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4681,7 +4663,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass82" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2283.22, 1245.94)
+position = Vector2(2283, 1232)
 rotation = -0.335356
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4689,7 +4671,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass83" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2238.22, 1256.94)
+position = Vector2(2231, 1246)
 rotation = -0.0390497
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4697,16 +4679,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass84" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2179.22, 1260.94)
+position = Vector2(2172, 1251)
 rotation = -0.0459226
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass85" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2123.22, 1265.94)
+position = Vector2(2116, 1252)
 rotation = -0.140489
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4714,7 +4695,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass86" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2067.22, 1280.94)
+position = Vector2(2062, 1263)
 rotation = -0.295208
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4722,7 +4703,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass87" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(2015.22, 1303.94)
+position = Vector2(2011, 1282)
 rotation = -0.261242
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4730,7 +4711,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass88" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1963.22, 1323.94)
+position = Vector2(1964, 1309)
 rotation = -0.138799
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4738,7 +4719,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass89" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1918, 1289)
+position = Vector2(1906, 1315)
 rotation = 0.0341306
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4746,7 +4727,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass90" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1841, 1292)
+position = Vector2(1857, 1309)
 rotation = -0.00321719
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4754,7 +4735,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass91" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1762.5, 1296.99)
+position = Vector2(1795, 1307)
 rotation = -0.0304235
 scale = Vector2(0.994353, 0.99967)
 texture = ExtResource("2_kesm7")
@@ -4763,7 +4744,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass92" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1648, 1270)
+position = Vector2(1639, 1358)
 rotation = -0.250016
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4771,47 +4752,47 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass93" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1638, 1350)
-rotation = -0.150536
+position = Vector2(1563, 1353)
+rotation = 0.257884
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass94" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1693, 1313)
-rotation = 0.111058
+position = Vector2(1739, 1322)
+rotation = -0.22541
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass95" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1615, 1312)
-rotation = 0.451662
+position = Vector2(1691, 1341)
+rotation = -0.244855
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass96" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1549.22, 1332.94)
-rotation = 0.451662
+position = Vector2(1506, 1318)
+rotation = 0.717251
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass97" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1511.22, 1294.94)
-rotation = 0.482162
+position = Vector2(1466, 1276)
+rotation = 0.644911
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass98" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1453.22, 1274.94)
+position = Vector2(1425, 1259)
 rotation = 0.0565641
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4819,15 +4800,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass99" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1399.22, 1275.94)
-rotation = 0.0565641
+position = Vector2(1366, 1265)
+rotation = -0.149705
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass100" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1420, 1224)
+position = Vector2(1308, 1292)
 rotation = -0.153005
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4835,7 +4816,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass101" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1306, 1284)
+position = Vector2(1255, 1311)
 rotation = 0.0565641
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4843,7 +4824,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass102" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1204, 1307)
+position = Vector2(1137, 1337)
 rotation = 0.0565641
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4851,33 +4832,31 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass103" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1155, 1293)
-rotation = -0.149808
+position = Vector2(1096, 1376)
+rotation = -0.369265
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass104" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(997, 1369)
-rotation = -0.0884506
-scale = Vector2(1, 1)
+position = Vector2(1051, 1418)
+rotation = -0.358503
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass105" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1004, 1436)
+position = Vector2(947, 1450)
 rotation = -0.124099
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass106" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(966, 1415)
+position = Vector2(988, 1444)
 rotation = 0.0565641
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4885,7 +4864,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass107" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(1300, 1262)
+position = Vector2(1203, 1319)
 rotation = -0.10731
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4893,7 +4872,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass108" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(867, 1397)
+position = Vector2(851, 1493)
 rotation = -0.241176
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4901,7 +4880,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass109" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(893, 1448)
+position = Vector2(894, 1462)
 rotation = -0.0791258
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4909,7 +4888,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass110" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(835, 1465)
+position = Vector2(823, 1532)
 rotation = -0.36178
 scale = Vector2(0.896039, 0.929433)
 texture = ExtResource("2_kesm7")
@@ -4918,7 +4897,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass111" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(786, 1535)
+position = Vector2(778, 1556)
 rotation = -0.183817
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4926,7 +4905,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass112" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(721, 1539)
+position = Vector2(711, 1555)
 rotation = 0.23761
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4934,7 +4913,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass113" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(662, 1528)
+position = Vector2(661, 1543)
 rotation = 0.23761
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4942,7 +4921,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass114" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(711.224, 1419.94)
+position = Vector2(678, 1421)
 rotation = 0.450015
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4950,7 +4929,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass115" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(673.224, 1419.94)
+position = Vector2(653, 1408)
 rotation = 0.246509
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4958,7 +4937,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass116" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(604.224, 1421.94)
+position = Vector2(603, 1405)
 rotation = -0.0914229
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4966,7 +4945,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass117" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(550.224, 1427.94)
+position = Vector2(547, 1414)
 rotation = -0.119099
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4974,7 +4953,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass118" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(505.224, 1409.94)
+position = Vector2(489, 1402)
 rotation = 0.450015
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4982,15 +4961,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass119" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(431.224, 1400.94)
-rotation = -0.164258
+position = Vector2(436, 1385)
+rotation = 0.305517
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass120" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(377.224, 1408.94)
+position = Vector2(395, 1383)
 rotation = -0.203084
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -4998,23 +4977,24 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass121" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(336.224, 1408.94)
-rotation = 0.440908
+position = Vector2(352, 1390)
+rotation = -0.194154
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass122" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(279.224, 1345.94)
-rotation = 0.450015
+position = Vector2(257, 1351)
+rotation = 0.488442
+scale = Vector2(0.984626, 0.967626)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass123" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(316.224, 1368.94)
+position = Vector2(288, 1385)
 rotation = 0.450015
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5022,16 +5002,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass124" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(221.224, 1333.94)
+position = Vector2(221, 1329)
 rotation = 0.132079
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass125" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(181.224, 1322.94)
+position = Vector2(174, 1314)
 rotation = 0.346821
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5039,7 +5018,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass126" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(149.224, 1294.94)
+position = Vector2(133, 1299)
 rotation = 0.450015
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5047,7 +5026,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass127" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(102.224, 1271.94)
+position = Vector2(88, 1271)
 rotation = 0.450015
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5079,7 +5058,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass131" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-107.776, 1238.94)
+position = Vector2(-113, 1228)
 rotation = 0.0963627
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5087,7 +5066,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass132" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-170.776, 1250.94)
+position = Vector2(-168, 1233)
 rotation = -0.0568394
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5095,7 +5074,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass133" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-215.776, 1254.94)
+position = Vector2(-225, 1238)
 rotation = 0.0963627
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5103,7 +5082,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass134" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-226.776, 1241.94)
+position = Vector2(-281, 1225)
 rotation = 0.599394
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5111,16 +5090,16 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass135" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-324.776, 1193.94)
-rotation = 0.292079
-scale = Vector2(0.954882, 0.880126)
+position = Vector2(-313, 1160)
+rotation = -0.539764
+scale = Vector2(0.920388, 0.98772)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass136" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-380.776, 1166.94)
+position = Vector2(-366, 1176)
 rotation = 0.109422
 scale = Vector2(0.936615, 0.872008)
 texture = ExtResource("2_kesm7")
@@ -5129,7 +5108,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass137" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-421.776, 1157.94)
+position = Vector2(-423, 1151)
 rotation = 0.527011
 scale = Vector2(0.824352, 0.816612)
 texture = ExtResource("2_kesm7")
@@ -5138,16 +5117,15 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass138" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-463, 1109)
+position = Vector2(-471, 1133)
 rotation = 0.452393
-scale = Vector2(1, 1)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass139" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-486, 1054)
+position = Vector2(-541, 1058)
 rotation = 0.138139
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
@@ -5155,7 +5133,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass140" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-547, 1047)
+position = Vector2(-590, 1054)
 rotation = -0.110402
 scale = Vector2(0.845736, 0.853483)
 texture = ExtResource("2_kesm7")
@@ -5164,7 +5142,7 @@ region_enabled = true
 region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Grass141" type="Sprite2D" parent="YSort/Props/Grass"]
-position = Vector2(-619, 1043)
+position = Vector2(-642, 1052)
 texture = ExtResource("2_kesm7")
 offset = Vector2(0, -42)
 region_enabled = true
