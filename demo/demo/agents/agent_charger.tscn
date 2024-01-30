@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://g1pnvanyxcpa"]
+
+[ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_n83hi"]
+[ext_resource type="Texture2D" uid="uid://ce16nc0wy2s8" path="res://demo/assets/agent_charger.png" id="2_y7pic"]
+
+[node name="Bobby" instance=ExtResource("1_n83hi")]
+
+[node name="LegL" parent="Rig" index="0"]
+texture = ExtResource("2_y7pic")
+
+[node name="LegR" parent="Rig" index="1"]
+texture = ExtResource("2_y7pic")
+
+[node name="Body" parent="Rig" index="2"]
+texture = ExtResource("2_y7pic")
+
+[node name="Hat" parent="Rig/Body" index="0"]
+texture = ExtResource("2_y7pic")
+
+[node name="HandL" parent="Rig/Body" index="1"]
+texture = ExtResource("2_y7pic")
+
+[node name="HandR" parent="Rig/Body" index="2"]
+texture = ExtResource("2_y7pic")

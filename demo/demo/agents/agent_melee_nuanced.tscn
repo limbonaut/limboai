@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://2e4ohaqjaawb"]
+
+[ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_afx5l"]
+[ext_resource type="Texture2D" uid="uid://usu3j55d6dgc" path="res://demo/assets/agent_melee_nuanced.png" id="2_e51r0"]
+
+[node name="Bobby" instance=ExtResource("1_afx5l")]
+
+[node name="LegL" parent="Rig" index="0"]
+texture = ExtResource("2_e51r0")
+
+[node name="LegR" parent="Rig" index="1"]
+texture = ExtResource("2_e51r0")
+
+[node name="Body" parent="Rig" index="2"]
+texture = ExtResource("2_e51r0")
+
+[node name="Hat" parent="Rig/Body" index="0"]
+texture = ExtResource("2_e51r0")
+
+[node name="HandL" parent="Rig/Body" index="1"]
+texture = ExtResource("2_e51r0")
+
+[node name="HandR" parent="Rig/Body" index="2"]
+texture = ExtResource("2_e51r0")

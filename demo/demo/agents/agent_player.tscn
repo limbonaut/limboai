@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://d07ag5dcje13i"]
+
+[ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_aybxr"]
+
+[node name="AgentPlayer" instance=ExtResource("1_aybxr")]
