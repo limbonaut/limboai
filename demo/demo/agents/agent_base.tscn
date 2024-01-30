@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ooigbfhfy4wa"]
+[gd_scene load_steps=20 format=3 uid="uid://ooigbfhfy4wa"]
 
 [ext_resource type="Texture2D" uid="uid://dlo1ine6p5di4" path="res://demo/assets/agent_bobby.png" id="1_1u51b"]
 [ext_resource type="Script" path="res://demo/agents/scripts/agent_base.gd" id="1_n8vy2"]
@@ -2146,9 +2146,8 @@ _data = {
 "walk": SubResource("Animation_fh06e")
 }
 
-[sub_resource type="BlackboardPlan" id="BlackboardPlan_v0ck1"]
-
-[node name="Agent" type="CharacterBody2D"]
+[node name="AgentBase" type="CharacterBody2D"]
+collision_layer = 0
 script = ExtResource("1_n8vy2")
 
 [node name="Root" type="Node2D" parent="."]
@@ -2209,6 +2208,8 @@ region_rect = Rect2(300, 0, 100, 70)
 
 [node name="Hitbox" type="Area2D" parent="Root"]
 position = Vector2(50, 0)
+collision_layer = 0
+collision_mask = 4
 script = ExtResource("5_taq6b")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Root/Hitbox"]
@@ -2217,6 +2218,8 @@ debug_color = Color(0.933131, 0.0801983, 0.605982, 0.42)
 metadata/_edit_lock_ = true
 
 [node name="Hurtbox" type="Area2D" parent="Root" node_paths=PackedStringArray("health")]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("6_jnvxm")
 health = NodePath("../../Health")
 
@@ -2238,6 +2241,3 @@ libraries = {
 "": SubResource("AnimationLibrary_ws2ti")
 }
 autoplay = "idle"
-
-[node name="BTPlayer" type="BTPlayer" parent="."]
-blackboard_plan = SubResource("BlackboardPlan_v0ck1")

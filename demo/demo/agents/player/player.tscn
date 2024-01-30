@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://d07ag5dcje13i"]
+
+[ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_mswd4"]
+[ext_resource type="Script" path="res://demo/agents/player/player.gd" id="2_24nyi"]
+[ext_resource type="Script" path="res://demo/agents/player/idle_state.gd" id="2_moi60"]
+[ext_resource type="Script" path="res://demo/agents/player/move_state.gd" id="3_bxpc0"]
+
+[node name="Player" instance=ExtResource("1_mswd4")]
+script = ExtResource("2_24nyi")
+
+[node name="LimboHSM" type="LimboHSM" parent="." index="4"]
+
+[node name="IdleState" type="LimboState" parent="LimboHSM" index="0" node_paths=PackedStringArray("animation_player")]
+script = ExtResource("2_moi60")
+animation_player = NodePath("../../AnimationPlayer")
+animation = &"idle"
+
+[node name="MoveState" type="LimboState" parent="LimboHSM" index="1" node_paths=PackedStringArray("animation_player")]
+script = ExtResource("3_bxpc0")
+animation_player = NodePath("../../AnimationPlayer")
+animation = &"walk"

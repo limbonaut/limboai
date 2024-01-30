@@ -5,6 +5,7 @@ extends Area2D
 
 @export var health: Health
 
+
 func take_damage(amount: float, source: Area2D) -> void:
 	if source.owner == owner:
 		# Don't damage yourself.

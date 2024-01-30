@@ -1,11 +1,11 @@
 [gd_scene load_steps=11 format=3 uid="uid://bsig1usigbbuy"]
 
 [ext_resource type="Texture2D" uid="uid://b3g14elmg0m36" path="res://demo/assets/env_rocks.png" id="1_145kx"]
-[ext_resource type="Texture2D" uid="uid://65b6yuobhxf8" path="res://demo/assets/env_clouds.png" id="1_jm68v"]
+[ext_resource type="PackedScene" uid="uid://dt2jlrqffpyw" path="res://demo/scenes/clouds.tscn" id="1_gsxmp"]
 [ext_resource type="Texture2D" uid="uid://cc7b22sy46gwn" path="res://demo/assets/env_ground.png" id="1_vifjc"]
 [ext_resource type="Texture2D" uid="uid://4kw2ks8doc0w" path="res://demo/assets/env_plants.png" id="2_kesm7"]
 [ext_resource type="PackedScene" uid="uid://bpd1wmw2f7bvg" path="res://demo/props/gong.tscn" id="3_nbto3"]
-[ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="5_wgewp"]
+[ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
 [ext_resource type="PackedScene" uid="uid://comfxjrcylgb" path="res://demo/agents/agent_melee_simple.tscn" id="7_ruy6b"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
@@ -2845,258 +2845,7 @@ offset_bottom = 2502.0
 color = Color(0.537255, 0.745098, 0.854902, 1)
 metadata/_edit_lock_ = true
 
-[node name="Clouds" type="Node2D" parent="."]
-modulate = Color(1, 1, 1, 0.792157)
-position = Vector2(-1998, -1508)
-metadata/_edit_lock_ = true
-
-[node name="Cloud1" type="Sprite2D" parent="Clouds"]
-position = Vector2(764, 358)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud13" type="Sprite2D" parent="Clouds"]
-position = Vector2(4005, 2983)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud5" type="Sprite2D" parent="Clouds"]
-position = Vector2(-152, 2723)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud6" type="Sprite2D" parent="Clouds"]
-position = Vector2(3293, 936)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud2" type="Sprite2D" parent="Clouds"]
-position = Vector2(85, 1505)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud16" type="Sprite2D" parent="Clouds"]
-position = Vector2(3434, 3542)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud7" type="Sprite2D" parent="Clouds"]
-position = Vector2(1380, 3802)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud3" type="Sprite2D" parent="Clouds"]
-position = Vector2(503, 1222)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud14" type="Sprite2D" parent="Clouds"]
-position = Vector2(4174, 3309)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud15" type="Sprite2D" parent="Clouds"]
-position = Vector2(4695, 2800)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud8" type="Sprite2D" parent="Clouds"]
-position = Vector2(152, 3383)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud4" type="Sprite2D" parent="Clouds"]
-position = Vector2(164, 1669)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud9" type="Sprite2D" parent="Clouds"]
-position = Vector2(328, 3474)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud10" type="Sprite2D" parent="Clouds"]
-position = Vector2(933, 515)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud12" type="Sprite2D" parent="Clouds"]
-position = Vector2(4570, 1222)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud11" type="Sprite2D" parent="Clouds"]
-position = Vector2(3784, 345)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud17" type="Sprite2D" parent="Clouds"]
-position = Vector2(-2737.13, 367.814)
-scale = Vector2(1.35085, 1.15254)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud18" type="Sprite2D" parent="Clouds"]
-position = Vector2(-1254.92, 3539.61)
-scale = Vector2(0.898305, 0.898305)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud19" type="Sprite2D" parent="Clouds"]
-position = Vector2(-2912.7, 1260.29)
-scale = Vector2(1.10169, 1.10169)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud20" type="Sprite2D" parent="Clouds"]
-position = Vector2(-3251.5, 3437.56)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud21" type="Sprite2D" parent="Clouds"]
-position = Vector2(-3181.26, 3581.44)
-scale = Vector2(0.949153, 0.949153)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud22" type="Sprite2D" parent="Clouds"]
-position = Vector2(-420.856, 367.017)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud23" type="Sprite2D" parent="Clouds"]
-position = Vector2(-1493, 3040)
-scale = Vector2(0.898305, 0.898305)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud24" type="Sprite2D" parent="Clouds"]
-position = Vector2(-510, 2429)
-scale = Vector2(1.15254, 1.15254)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud25" type="Sprite2D" parent="Clouds"]
-position = Vector2(-712, 1373)
-scale = Vector2(1.10169, 1.10169)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud26" type="Sprite2D" parent="Clouds"]
-position = Vector2(-269, 2004)
-scale = Vector2(0.79661, 0.79661)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud27" type="Sprite2D" parent="Clouds"]
-position = Vector2(-1656, 2353)
-scale = Vector2(0.949153, 0.949153)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud28" type="Sprite2D" parent="Clouds"]
-position = Vector2(-461, 1787)
-scale = Vector2(1.10169, 1.10169)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud29" type="Sprite2D" parent="Clouds"]
-position = Vector2(3890, 2612.5)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud30" type="Sprite2D" parent="Clouds"]
-position = Vector2(3832, 1394.5)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud31" type="Sprite2D" parent="Clouds"]
-position = Vector2(3472, 3106)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud32" type="Sprite2D" parent="Clouds"]
-position = Vector2(3095, 2689.5)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud33" type="Sprite2D" parent="Clouds"]
-position = Vector2(4016, 1558.5)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud34" type="Sprite2D" parent="Clouds"]
-position = Vector2(3863, 1375)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(12, 7, 455, 168)
-
-[node name="Cloud35" type="Sprite2D" parent="Clouds"]
-position = Vector2(3521.25, 3087)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud36" type="Sprite2D" parent="Clouds"]
-position = Vector2(3609.25, 3161)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(507, 7, 193, 88)
-
-[node name="Cloud37" type="Sprite2D" parent="Clouds"]
-visible = false
-position = Vector2(3754.25, 1447)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(501, 99, 210, 92)
-
-[node name="Cloud38" type="Sprite2D" parent="Clouds"]
-visible = false
-position = Vector2(2915.25, 2833)
-scale = Vector2(0.898305, 0.898305)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
-
-[node name="Cloud39" type="Sprite2D" parent="Clouds"]
-visible = false
-position = Vector2(3270.25, 2207)
-texture = ExtResource("1_jm68v")
-region_enabled = true
-region_rect = Rect2(10, 189, 644, 165)
+[node name="Clouds" parent="." instance=ExtResource("1_gsxmp")]
 
 [node name="Ground" type="Node2D" parent="."]
 metadata/_edit_lock_ = true
@@ -3123,15 +2872,21 @@ metadata/_edit_lock_ = true
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
-[node name="Agent" parent="YSort/Agents" instance=ExtResource("5_wgewp")]
-position = Vector2(775, 332)
-
-[node name="Camera2D" type="Camera2D" parent="YSort/Agents/Agent"]
-position = Vector2(295, -350)
-zoom = Vector2(0.88, 0.88)
-
 [node name="AgentMeleeSimple" parent="YSort/Agents" instance=ExtResource("7_ruy6b")]
 position = Vector2(1212, 333)
+
+[node name="Player" parent="YSort/Agents" instance=ExtResource("5_cmgoj")]
+position = Vector2(633, 256)
+
+[node name="Camera2D" type="Camera2D" parent="YSort/Agents/Player"]
+position = Vector2(0, -142)
+zoom = Vector2(0.88, 0.88)
+process_callback = 0
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_top_margin = 0.1
+drag_bottom_margin = 0.1
 
 [node name="Props" type="Node2D" parent="YSort"]
 y_sort_enabled = true
@@ -5150,3 +4905,10 @@ region_rect = Rect2(996.053, 4.65938, 177.044, 92.8809)
 
 [node name="Gong" parent="YSort/Props" instance=ExtResource("3_nbto3")]
 position = Vector2(1059, -29)
+
+[node name="Limits" type="StaticBody2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Limits"]
+polygon = PackedVector2Array(-814, 535, -380, 190, -306, -21, 87, -46, 346, -330, 870, -373, 1115, -418, 1363, -334, 1613, -324, 1854, -225, 2208, -197, 2675, 309, 2642, 741, 2244, 1140, 1618, 1271, 1360, 1193, 865, 1423, 706, 1377, -113, 1192, -452, 1035, -488, 902, -625, 803, -734, 680, -1660, 719, -1331, 2205, 3170, 2304, 3988, 404, 2999, -1433, 131, -1364, -1715, 264, -1659, 716, -737, 676)
+metadata/_edit_lock_ = true
