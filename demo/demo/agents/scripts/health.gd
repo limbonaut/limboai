@@ -1,7 +1,7 @@
 class_name Health
 extends Node
-
 ## Tracks health and emits signal when damaged or dead.
+
 
 signal death
 signal damaged(amount: float)
@@ -16,6 +16,9 @@ func _ready() -> void:
 
 
 func take_damage(amount: float) -> void:
+	if _current <= 0:
+		return
+
 	_current -= amount
 	_current = max(_current, 0.0)
 

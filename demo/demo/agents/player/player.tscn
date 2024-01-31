@@ -24,4 +24,4 @@ animation = &"walk"
 [node name="AttackState" type="LimboState" parent="LimboHSM" index="2" node_paths=PackedStringArray("animation_player")]
 script = ExtResource("5_mpgu6")
 animation_player = NodePath("../../AnimationPlayer")
-animation = &"attack"
+animations = Array[StringName]([&"attack_1", &"attack_2", &"attack_3"])

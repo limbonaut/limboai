@@ -47,7 +47,6 @@ func _damaged(_amount: float) -> void:
 		hsm.set_active(true)
 
 
-
 func _die() -> void:
 	animation_player.play(&"death")
 

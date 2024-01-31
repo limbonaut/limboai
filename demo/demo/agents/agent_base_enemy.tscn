@@ -9,8 +9,8 @@
 var/speed/name = "speed"
 var/speed/type = 3
 var/speed/value = 400.0
-var/speed/hint = 0
-var/speed/hint_string = ""
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
 
 [node name="AgentEnemy" instance=ExtResource("1_uffd7")]
 script = ExtResource("2_w7f5y")

@@ -1,5 +1,11 @@
 @tool
 extends BTAction
+## Pursue target.
+##
+## Returns RUNNING, while moving towards target but not yet at the desired distance.
+## Returns SUCCESS, when at the desired distance from target.
+## Returns FAILURE, if target is not a valid instance.
+
 
 const TOLERANCE := 30.0
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsig1usigbbuy"]
+[gd_scene load_steps=11 format=3 uid="uid://bsig1usigbbuy"]
 
 [ext_resource type="Texture2D" uid="uid://b3g14elmg0m36" path="res://demo/assets/env_rocks.png" id="1_145kx"]
 [ext_resource type="PackedScene" uid="uid://dt2jlrqffpyw" path="res://demo/scenes/clouds.tscn" id="1_gsxmp"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://bpd1wmw2f7bvg" path="res://demo/props/gong.tscn" id="3_nbto3"]
 [ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
 [ext_resource type="PackedScene" uid="uid://sjans5psq6pg" path="res://demo/agents/agent_base_enemy.tscn" id="5_knyss"]
-[ext_resource type="PackedScene" uid="uid://comfxjrcylgb" path="res://demo/agents/agent_melee_simple.tscn" id="7_ruy6b"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
 length = 0.001
@@ -2872,9 +2871,6 @@ metadata/_edit_lock_ = true
 [node name="Agents" type="Node2D" parent="YSort"]
 y_sort_enabled = true
 metadata/_edit_lock_ = true
-
-[node name="AgentMeleeSimple" parent="YSort/Agents" instance=ExtResource("7_ruy6b")]
-position = Vector2(1212, 333)
 
 [node name="AgentEnemy" parent="YSort/Agents" instance=ExtResource("5_knyss")]
 position = Vector2(1527.4, 690.665)

@@ -1,12 +1,13 @@
 extends LimboState
+## Move state.
+
 
 const VERTICAL_FACTOR := 0.8
-
-## Move state.
 
 @export var animation_player: AnimationPlayer
 @export var animation: StringName
 @export var speed: float = 500.0
+
 
 func _enter() -> void:
 	animation_player.play(animation, 0.1)

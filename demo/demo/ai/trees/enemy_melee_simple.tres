@@ -12,8 +12,8 @@ var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
-resource_name = "AnimationPlayer"
 saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_qiw21"]
 animation_player = SubResource("BBNode_nrd4b")
@@ -29,8 +29,8 @@ custom_name = "Pause before action"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
 
 [sub_resource type="BBNode" id="BBNode_wpj6d"]
-resource_name = "AnimationPlayer"
 saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_olf37"]
 animation_player = SubResource("BBNode_wpj6d")
@@ -46,11 +46,11 @@ output_var = "_target"
 script = ExtResource("2_h5db5")
 target_var = "_target"
 speed_var = "speed"
-approach_distance = null
+approach_distance = 100.0
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
-children = [SubResource("BTAction_a4jqi")]
 time_limit = 2.0
+children = [SubResource("BTAction_a4jqi")]
 
 [sub_resource type="BTSequence" id="BTSequence_1xfnq"]
 custom_name = "Pursue player"
@@ -64,13 +64,13 @@ target_var = "_target"
 duration = 0.1
 
 [sub_resource type="BBNode" id="BBNode_s8evu"]
-resource_name = "AnimationPlayer"
 saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ppmxd"]
 await_completion = 2.0
 animation_player = SubResource("BBNode_s8evu")
-animation_name = &"attack"
+animation_name = &"attack_3"
 
 [sub_resource type="BTSequence" id="BTSequence_ww5v2"]
 custom_name = "Melee attack"
