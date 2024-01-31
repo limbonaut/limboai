@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://4kw2ks8doc0w" path="res://demo/assets/env_plants.png" id="2_kesm7"]
 [ext_resource type="PackedScene" uid="uid://bpd1wmw2f7bvg" path="res://demo/props/gong.tscn" id="3_nbto3"]
 [ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
-[ext_resource type="PackedScene" uid="uid://sjans5psq6pg" path="res://demo/agents/agent_base_enemy.tscn" id="5_knyss"]
+[ext_resource type="PackedScene" uid="uid://2e4ohaqjaawb" path="res://demo/agents/agent_melee_nuanced.tscn" id="8_ovfbp"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
 length = 0.001
@@ -2872,9 +2872,6 @@ metadata/_edit_lock_ = true
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
-[node name="AgentEnemy" parent="YSort/Agents" instance=ExtResource("5_knyss")]
-position = Vector2(1527.4, 690.665)
-
 [node name="Player" parent="YSort/Agents" instance=ExtResource("5_cmgoj")]
 position = Vector2(633, 256)
 
@@ -2887,6 +2884,9 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
+
+[node name="AgentMeleeNuanced" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(-180, 552)
 
 [node name="Props" type="Node2D" parent="YSort"]
 y_sort_enabled = true

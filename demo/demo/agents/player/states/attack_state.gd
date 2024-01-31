@@ -1,3 +1,13 @@
+#*
+#* attack_state.gd
+#* =============================================================================
+#* Copyright 2021-2024 Serhii Snitsaruk
+#*
+#* Use of this source code is governed by an MIT-style
+#* license that can be found in the LICENSE file or at
+#* https://opensource.org/licenses/MIT.
+#* =============================================================================
+#*
 extends LimboState
 
 ## Attack state: Perform 3-part combo attack for as long as player hits attack button.

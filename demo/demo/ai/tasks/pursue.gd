@@ -1,3 +1,13 @@
+#*
+#* pursue.gd
+#* =============================================================================
+#* Copyright 2021-2024 Serhii Snitsaruk
+#*
+#* Use of this source code is governed by an MIT-style
+#* license that can be found in the LICENSE file or at
+#* https://opensource.org/licenses/MIT.
+#* =============================================================================
+#*
 @tool
 extends BTAction
 ## Pursue target.
@@ -35,6 +45,7 @@ func _tick(_delta: float) -> Status:
 	var target_pos := Vector2(
 		target.global_position.x + approach_distance * _side,
 		target.global_position.y)
+
 	if agent.global_position.distance_to(target_pos) < TOLERANCE:
 		return SUCCESS
 

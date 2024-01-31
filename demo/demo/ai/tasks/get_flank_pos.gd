@@ -1,5 +1,5 @@
 #*
-#* face_target.gd
+#* GetFlankPos.gd
 #* =============================================================================
 #* Copyright 2021-2024 Serhii Snitsaruk
 #*
@@ -10,21 +10,25 @@
 #*
 @tool
 extends BTAction
-## FaceTarget
+## GetFlankPos
 
-@export var target_var: String = "target"
+@export var target_var: String = "_target"
+@export var position_var: String = "flank_pos"
+@export var distance: float = 300.0
 
 # Display a customized name (requires @tool).
 func _generate_name() -> String:
-	return "FaceTarget " + LimboUtility.decorate_var(target_var)
-
+	return "GetFlankPos %s -> %s" % [
+		LimboUtility.decorate_var(target_var),
+		LimboUtility.decorate_var(position_var)]
 
 # Called each time this task is ticked (aka executed).
-func _tick(_delta: float) -> Status:
-	var target := blackboard.get_var(target_var) as CharacterBody2D
+func _tick(delta: float) -> Status:
+	var target: CharacterBody2D = blackboard.get_var(target_var)
 	if not is_instance_valid(target):
 		return FAILURE
-	var dir: float = target.global_position.x - agent.global_position.x
-	agent.velocity = Vector2.ZERO
-	agent.face_dir(dir)
+	var dir: float = signf(target.global_position.x - agent.global_position.x)
+	var flank_pos: Vector2 = target.global_position
+	flank_pos.x += dir * distance
+	blackboard.set_var(position_var, flank_pos)
 	return SUCCESS

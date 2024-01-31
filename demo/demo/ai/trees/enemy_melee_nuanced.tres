@@ -1,0 +1,144 @@
+[gd_resource type="BehaviorTree" load_steps=34 format=3 uid="uid://c2u6sljqkim0n"]
+
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_uvue5"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_flank_pos.gd" id="2_0llce"]
+[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="2_aanv5"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="3_r5itf"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_x6gkn"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
+var/speed/name = "speed"
+var/speed/type = 3
+var/speed/value = 400.0
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
+var/flank_speed/name = "flank_speed"
+var/flank_speed/type = 3
+var/flank_speed/value = 600.0
+var/flank_speed/hint = 1
+var/flank_speed/hint_string = "10,1000,10"
+
+[sub_resource type="BBNode" id="BBNode_nrd4b"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_qiw21"]
+animation_player = SubResource("BBNode_nrd4b")
+animation_name = &"idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
+min_duration = 0.7
+max_duration = 1.5
+
+[sub_resource type="BTSequence" id="BTSequence_yhjh1"]
+custom_name = "Pause before action"
+children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
+
+[sub_resource type="BTAction" id="BTAction_c4cxo"]
+script = ExtResource("1_uvue5")
+group = &"player"
+output_var = "_target"
+
+[sub_resource type="BTAction" id="BTAction_qr6nr"]
+script = ExtResource("2_0llce")
+target_var = "_target"
+position_var = "_flank_pos"
+distance = 450.0
+
+[sub_resource type="BBNode" id="BBNode_kc64r"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_panch"]
+animation_player = SubResource("BBNode_kc64r")
+animation_name = &"walk"
+blend = 0.1
+speed = 1.5
+
+[sub_resource type="BTAction" id="BTAction_66hsk"]
+script = ExtResource("3_x6gkn")
+target_position_var = "_flank_pos"
+speed_var = "flank_speed"
+tolerance = 50.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_24ath"]
+time_limit = 10.0
+children = [SubResource("BTAction_66hsk")]
+
+[sub_resource type="BTAction" id="BTAction_enw2m"]
+script = ExtResource("3_r5itf")
+target_var = "_target"
+
+[sub_resource type="BTSequence" id="BTSequence_lhg7f"]
+custom_name = "Flank player"
+children = [SubResource("BTAction_c4cxo"), SubResource("BTAction_qr6nr"), SubResource("BTPlayAnimation_panch"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m")]
+metadata/_weight_ = 1.0
+
+[sub_resource type="BTCooldown" id="BTCooldown_skw41"]
+duration = 5.0
+children = [SubResource("BTSequence_lhg7f")]
+
+[sub_resource type="BBNode" id="BBNode_wpj6d"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_olf37"]
+animation_player = SubResource("BBNode_wpj6d")
+animation_name = &"walk"
+blend = 0.1
+
+[sub_resource type="BTAction" id="BTAction_ulbrf"]
+script = ExtResource("1_uvue5")
+group = &"player"
+output_var = "_target"
+
+[sub_resource type="BTAction" id="BTAction_a4jqi"]
+script = ExtResource("2_aanv5")
+target_var = "_target"
+speed_var = "speed"
+approach_distance = 100.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
+time_limit = 2.0
+children = [SubResource("BTAction_a4jqi")]
+
+[sub_resource type="BTSequence" id="BTSequence_vd4xt"]
+custom_name = "Approach"
+children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"), SubResource("BTTimeLimit_xek5v")]
+
+[sub_resource type="BTAction" id="BTAction_kidxn"]
+script = ExtResource("3_r5itf")
+target_var = "_target"
+
+[sub_resource type="BTWait" id="BTWait_tadkc"]
+duration = 0.1
+
+[sub_resource type="BBNode" id="BBNode_s8evu"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ppmxd"]
+await_completion = 2.0
+animation_player = SubResource("BBNode_s8evu")
+animation_name = &"attack_3"
+
+[sub_resource type="BTSequence" id="BTSequence_ww5v2"]
+custom_name = "Melee attack"
+children = [SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd")]
+
+[sub_resource type="BTSequence" id="BTSequence_1xfnq"]
+custom_name = "Approach and melee attack"
+children = [SubResource("BTSequence_vd4xt"), SubResource("BTSequence_ww5v2")]
+
+[sub_resource type="BTProbabilitySelector" id="BTProbabilitySelector_rjsiq"]
+abort_on_failure = true
+children = [SubResource("BTCooldown_skw41"), SubResource("BTSequence_1xfnq")]
+
+[sub_resource type="BTSequence" id="BTSequence_pxl2k"]
+custom_name = "Main"
+children = [SubResource("BTSequence_yhjh1"), SubResource("BTProbabilitySelector_rjsiq")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_46tbn")
+root_task = SubResource("BTSequence_pxl2k")
