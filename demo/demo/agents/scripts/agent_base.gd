@@ -12,11 +12,14 @@ extends CharacterBody2D
 
 ## Base agent script.
 
+const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var health: Health = $Health
 @onready var root: Node2D = $Root
 
 var _frames_since_facing_update: int = 0
+var _is_dead: bool = false
 
 func _ready() -> void:
 	health.damaged.connect(_damaged)
@@ -42,6 +45,17 @@ func face_dir(dir: float) -> void:
 		_frames_since_facing_update = 0
 
 
+func get_facing() -> float:
+	return signf(root.scale.x)
+
+
+func throw_ninja_star() -> void:
+	var ninja_star := NinjaStar.instantiate()
+	ninja_star.dir = get_facing()
+	get_parent().add_child(ninja_star)
+	ninja_star.global_position = global_position + Vector2.RIGHT * 100.0 * get_facing()
+
+
 func _damaged(_amount: float) -> void:
 	animation_player.play(&"hurt")
 	var btplayer := get_node_or_null(^"BTPlayer") as BTPlayer
@@ -51,13 +65,14 @@ func _damaged(_amount: float) -> void:
 	if hsm:
 		hsm.set_active(false)
 	await animation_player.animation_finished
-	if btplayer:
+	if btplayer and not _is_dead:
 		btplayer.restart()
-	if hsm:
+	if hsm and not _is_dead:
 		hsm.set_active(true)
 
 
 func _die() -> void:
+	_is_dead = true
 	animation_player.play(&"death")
 
 	for child in get_children():

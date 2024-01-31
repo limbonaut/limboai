@@ -23,7 +23,7 @@ func _generate_name() -> String:
 		LimboUtility.decorate_var(position_var)]
 
 # Called each time this task is ticked (aka executed).
-func _tick(delta: float) -> Status:
+func _tick(_delta: float) -> Status:
 	var target: CharacterBody2D = blackboard.get_var(target_var)
 	if not is_instance_valid(target):
 		return FAILURE

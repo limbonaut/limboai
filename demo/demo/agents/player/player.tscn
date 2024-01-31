@@ -9,6 +9,12 @@
 [node name="Player" groups=["player"] instance=ExtResource("1_mswd4")]
 script = ExtResource("2_24nyi")
 
+[node name="Hitbox" parent="Root" index="3"]
+collision_mask = 8
+
+[node name="Hurtbox" parent="Root" index="4"]
+collision_layer = 4
+
 [node name="LimboHSM" type="LimboHSM" parent="." index="4"]
 
 [node name="IdleState" type="LimboState" parent="LimboHSM" index="0" node_paths=PackedStringArray("animation_player")]

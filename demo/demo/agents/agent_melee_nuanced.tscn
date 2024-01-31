@@ -18,13 +18,13 @@ var/flank_speed/hint_string = "10,1000,10"
 
 [node name="AgentMeleeNuanced" instance=ExtResource("1_afx5l")]
 
-[node name="LegL" parent="Root/Rig" index="0"]
+[node name="LegL" parent="Root/Rig" index="1"]
 texture = ExtResource("2_e51r0")
 
-[node name="LegR" parent="Root/Rig" index="1"]
+[node name="LegR" parent="Root/Rig" index="2"]
 texture = ExtResource("2_e51r0")
 
-[node name="Body" parent="Root/Rig" index="2"]
+[node name="Body" parent="Root/Rig" index="3"]
 texture = ExtResource("2_e51r0")
 
 [node name="Hat" parent="Root/Rig/Body" index="0"]

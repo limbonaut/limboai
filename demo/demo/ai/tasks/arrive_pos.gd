@@ -23,13 +23,13 @@ func _generate_name() -> String:
 		LimboUtility.decorate_var(target_position_var),
 	]
 
-func _tick(p_delta: float) -> Status:
+func _tick(_delta: float) -> Status:
 	var target_pos: Vector2 = blackboard.get_var(target_position_var, Vector2.ZERO)
 	if target_pos.distance_to(agent.global_position) < tolerance:
 		return SUCCESS
 
 	var speed: float = blackboard.get_var(speed_var, 10.0)
-	var dist: float = agent.global_position.distance_to(target_pos)
+	var dist: float = absf(agent.global_position.x - target_pos.x)
 	var vertical_factor: float = remap(dist, 200.0, 500.0, 1.0, 0.0)
 	vertical_factor = clampf(vertical_factor, 0.0, 1.0)
 	var dir: Vector2 = agent.global_position.direction_to(target_pos)

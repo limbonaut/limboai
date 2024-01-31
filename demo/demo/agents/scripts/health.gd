@@ -26,7 +26,7 @@ func _ready() -> void:
 
 
 func take_damage(amount: float) -> void:
-	if _current <= 0:
+	if _current <= 0.0:
 		return
 
 	_current -= amount
