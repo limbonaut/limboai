@@ -1,8 +1,8 @@
 [gd_resource type="BehaviorTree" load_steps=40 format=3 uid="uid://c2u6sljqkim0n"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_uvue5"]
-[ext_resource type="Script" path="res://demo/ai/tasks/get_flank_pos.gd" id="2_0llce"]
 [ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="2_aanv5"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_fl3fr"]
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="3_r5itf"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_x6gkn"]
 
@@ -40,12 +40,6 @@ output_var = "_target"
 custom_name = "Pause before action"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8"), SubResource("BTAction_c4cxo")]
 
-[sub_resource type="BTAction" id="BTAction_qr6nr"]
-script = ExtResource("2_0llce")
-target_var = "_target"
-position_var = "_flank_pos"
-distance = 450.0
-
 [sub_resource type="BBNode" id="BBNode_kc64r"]
 saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
@@ -55,6 +49,14 @@ animation_player = SubResource("BBNode_kc64r")
 animation_name = &"walk"
 blend = 0.1
 speed = 1.5
+
+[sub_resource type="BTAction" id="BTAction_6e48s"]
+script = ExtResource("2_fl3fr")
+target_var = "_target"
+closest_side = false
+range_min = 400.0
+range_max = 600.0
+position_var = "_flank_pos"
 
 [sub_resource type="BTAction" id="BTAction_66hsk"]
 script = ExtResource("3_x6gkn")
@@ -71,11 +73,11 @@ target_var = "_target"
 
 [sub_resource type="BTSequence" id="BTSequence_lhg7f"]
 custom_name = "Flank player"
-children = [SubResource("BTAction_qr6nr"), SubResource("BTPlayAnimation_panch"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m")]
+children = [SubResource("BTPlayAnimation_panch"), SubResource("BTAction_6e48s"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m")]
 metadata/_weight_ = 1.0
 
 [sub_resource type="BTCooldown" id="BTCooldown_skw41"]
-duration = 5.0
+duration = 6.0
 children = [SubResource("BTSequence_lhg7f")]
 metadata/_weight_ = 2.0
 

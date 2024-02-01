@@ -77,7 +77,6 @@ custom_name = "Melee attack"
 children = [SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd")]
 
 [sub_resource type="BTSequence" id="BTSequence_pxl2k"]
-custom_name = "Main"
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]
 
 [resource]
