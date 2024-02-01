@@ -50,8 +50,10 @@ func _tick(_delta: float) -> Status:
 	var speed: float = blackboard.get_var(speed_var, 200.0)
 	if agent.global_position.distance_to(_waypoint) < TOLERANCE:
 		_select_new_waypoint(desired_pos)
-	agent.velocity = agent.global_position.direction_to(_waypoint) * speed
+	var desired_velocity: Vector2 = agent.global_position.direction_to(_waypoint) * speed
+	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()
+	agent.update_facing()
 	return RUNNING
 
 

@@ -25,8 +25,10 @@ func _generate_name() -> String:
 # Called each time this task is ticked (aka executed).
 func _tick(_delta: float) -> Status:
 	var facing: float = agent.get_facing()
-	agent.velocity = Vector2.RIGHT * facing * force
+	var desired_velocity: Vector2 = Vector2.RIGHT * facing * force
+	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()
+	agent.update_facing()
 	if elapsed_time > duration:
 		return SUCCESS
 	return RUNNING

@@ -16,8 +16,5 @@ extends Area2D
 @export var health: Health
 
 
-func take_damage(amount: float, source: Area2D) -> void:
-	if source.owner == owner:
-		# Don't damage yourself.
-		return
-	health.take_damage(amount)
+func take_damage(amount: float, knockback: Vector2) -> void:
+	health.take_damage(amount, knockback)

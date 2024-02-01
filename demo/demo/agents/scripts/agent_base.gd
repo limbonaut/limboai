@@ -19,6 +19,7 @@ const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 @onready var root: Node2D = $Root
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 
+
 var _frames_since_facing_update: int = 0
 var _is_dead: bool = false
 
@@ -27,11 +28,7 @@ func _ready() -> void:
 	health.death.connect(_die)
 
 
-func _physics_process(_delta: float) -> void:
-	_update_facing()
-
-
-func _update_facing() -> void:
+func update_facing() -> void:
 	_frames_since_facing_update += 1
 	if _frames_since_facing_update > 3:
 		face_dir(velocity.x)
@@ -57,7 +54,8 @@ func throw_ninja_star() -> void:
 	ninja_star.global_position = global_position + Vector2.RIGHT * 100.0 * get_facing()
 
 
-func _damaged(_amount: float) -> void:
+func _damaged(_amount: float, knockback: Vector2) -> void:
+	apply_knockback(knockback)
 	animation_player.play(&"hurt")
 	var btplayer := get_node_or_null(^"BTPlayer") as BTPlayer
 	if btplayer:
@@ -72,8 +70,18 @@ func _damaged(_amount: float) -> void:
 		hsm.set_active(true)
 
 
+func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
+	if knockback.is_zero_approx():
+		return
+	for i in range(frames):
+		velocity = lerp(velocity, knockback, 0.2)
+		move_and_slide()
+		await get_tree().physics_frame
+
+
 func _die() -> void:
 	_is_dead = true
+	root.process_mode = Node.PROCESS_MODE_DISABLED
 	animation_player.play(&"death")
 	collision_shape_2d.set_deferred(&"disabled", true)
 

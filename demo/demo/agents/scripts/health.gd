@@ -14,7 +14,7 @@ extends Node
 
 
 signal death
-signal damaged(amount: float)
+signal damaged(amount: float, knockback: Vector2)
 
 @export var max_health: float = 10.0
 
@@ -25,7 +25,7 @@ func _ready() -> void:
 	_current = max_health
 
 
-func take_damage(amount: float) -> void:
+func take_damage(amount: float, knockback: Vector2) -> void:
 	if _current <= 0.0:
 		return
 
@@ -35,7 +35,7 @@ func take_damage(amount: float) -> void:
 	if _current <= 0.0:
 		death.emit()
 	else:
-		damaged.emit(amount)
+		damaged.emit(amount, knockback)
 
 
 func get_current() -> float:

@@ -38,10 +38,10 @@ scale_max = 1.2
 scale_curve = SubResource("CurveTexture_sb0wp")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2k81i"]
-size = Vector2(100, 35)
+size = Vector2(130, 35)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_26abe"]
-size = Vector2(70, 35)
+size = Vector2(80, 35)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0c228"]
 
@@ -354,6 +354,18 @@ tracks/25/path = NodePath("Root/WeaponNinjaStar:visible")
 tracks/25/interp = 1
 tracks/25/loop_wrap = true
 tracks/25/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/26/type = "value"
+tracks/26/imported = false
+tracks/26/enabled = true
+tracks/26/path = NodePath("Root/Hitbox:knockback_enabled")
+tracks/26/interp = 1
+tracks/26/loop_wrap = true
+tracks/26/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -1142,6 +1154,18 @@ tracks/19/keys = {
 "update": 1,
 "values": [true, false, true]
 }
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("Root/Hitbox:knockback_enabled")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0.2, 0.35),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
 
 [sub_resource type="Animation" id="Animation_wei72"]
 resource_name = "death"
@@ -1699,6 +1723,18 @@ tracks/21/path = NodePath("Root/WeaponNinjaStar:visible")
 tracks/21/interp = 1
 tracks/21/loop_wrap = true
 tracks/21/keys = {
+"times": PackedFloat32Array(0, 0.25),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, false]
+}
+tracks/22/type = "value"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Root/Hitbox:knockback_enabled")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = {
 "times": PackedFloat32Array(0, 0.25),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -3509,9 +3545,8 @@ fixed_fps = 60
 
 [node name="WeaponNinjaStar" type="Sprite2D" parent="Root"]
 visible = false
-position = Vector2(-71.6739, -72.9077)
-rotation = 0.204683
-scale = Vector2(0.999983, 0.999976)
+position = Vector2(-55, -76)
+scale = Vector2(0.999982, 0.999976)
 texture = ExtResource("4_1c5xq")
 
 [node name="Hitbox" type="Area2D" parent="Root"]
@@ -3519,6 +3554,7 @@ position = Vector2(50, 0)
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("5_taq6b")
+knockback_strength = 1000.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Root/Hitbox"]
 shape = SubResource("RectangleShape2D_2k81i")

@@ -12,14 +12,22 @@ class_name Hitbox
 extends Area2D
 ## Area that deals damage.
 
-
 @export var damage: float = 1.0
-
+@export var knockback_enabled: bool = false
+@export var knockback_strength: float = 500.0
 
 func _ready() -> void:
 	area_entered.connect(_area_entered)
 
 
-func _area_entered(area: Area2D) -> void:
-	var hurtbox := area as Hurtbox
-	hurtbox.take_damage(damage, self)
+func _area_entered(hurtbox: Hurtbox) -> void:
+	if hurtbox.owner == owner:
+		return
+	hurtbox.take_damage(damage, get_knockback())
+
+
+func get_knockback() -> Vector2:
+	var knockback: Vector2
+	if knockback_enabled:
+		knockback = Vector2.RIGHT.rotated(global_rotation) * knockback_strength
+	return knockback

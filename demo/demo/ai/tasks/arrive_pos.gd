@@ -34,6 +34,8 @@ func _tick(_delta: float) -> Status:
 	vertical_factor = clampf(vertical_factor, 0.0, 1.0)
 	var dir: Vector2 = agent.global_position.direction_to(target_pos)
 	dir.y *= vertical_factor
-	agent.velocity = dir.normalized() * speed
+	var desired_velocity: Vector2 = dir.normalized() * speed
+	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()
+	agent.update_facing()
 	return RUNNING
