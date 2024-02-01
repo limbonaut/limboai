@@ -3509,7 +3509,8 @@ fixed_fps = 60
 
 [node name="WeaponNinjaStar" type="Sprite2D" parent="Root"]
 visible = false
-position = Vector2(-55, -76)
+position = Vector2(-71.6739, -72.9077)
+rotation = 0.204683
 scale = Vector2(0.999983, 0.999976)
 texture = ExtResource("4_1c5xq")
 

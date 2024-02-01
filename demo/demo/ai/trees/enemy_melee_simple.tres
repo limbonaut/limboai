@@ -40,11 +40,11 @@ blend = 0.1
 [sub_resource type="BTAction" id="BTAction_ulbrf"]
 script = ExtResource("1_2jpsu")
 group = &"player"
-output_var = "_target"
+output_var = "target"
 
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
 script = ExtResource("2_h5db5")
-target_var = "_target"
+target_var = "target"
 speed_var = "speed"
 approach_distance = 100.0
 
@@ -58,7 +58,7 @@ children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"),
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
 script = ExtResource("3_bpmfp")
-target_var = "_target"
+target_var = "target"
 
 [sub_resource type="BTWait" id="BTWait_tadkc"]
 duration = 0.1

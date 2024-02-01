@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bsig1usigbbuy"]
+[gd_scene load_steps=13 format=3 uid="uid://bsig1usigbbuy"]
 
 [ext_resource type="Texture2D" uid="uid://b3g14elmg0m36" path="res://demo/assets/env_rocks.png" id="1_145kx"]
 [ext_resource type="PackedScene" uid="uid://dt2jlrqffpyw" path="res://demo/scenes/clouds.tscn" id="1_gsxmp"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bpd1wmw2f7bvg" path="res://demo/props/gong.tscn" id="3_nbto3"]
 [ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
 [ext_resource type="PackedScene" uid="uid://ci3x5esepbu5v" path="res://demo/agents/agent_ranged.tscn" id="6_76icr"]
+[ext_resource type="PackedScene" uid="uid://blxmw2w1h2s0s" path="res://demo/agents/agent_melee_combo.tscn" id="7_jlgir"]
 [ext_resource type="PackedScene" uid="uid://2e4ohaqjaawb" path="res://demo/agents/agent_melee_nuanced.tscn" id="8_ovfbp"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
@@ -2885,12 +2886,6 @@ position = Vector2(227, 231)
 [node name="AgentMeleeNuanced5" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
 position = Vector2(592, -163)
 
-[node name="AgentMeleeNuanced6" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(1589, -87)
-
-[node name="AgentMeleeNuanced7" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(-154, 726)
-
 [node name="Player" parent="YSort/Agents" instance=ExtResource("5_cmgoj")]
 position = Vector2(633, 256)
 
@@ -2906,6 +2901,9 @@ drag_bottom_margin = 0.1
 
 [node name="AgentRanged" parent="YSort/Agents" instance=ExtResource("6_76icr")]
 position = Vector2(2067, 543)
+
+[node name="AgentMeleeCombo" parent="YSort/Agents" instance=ExtResource("7_jlgir")]
+position = Vector2(1778, 22)
 
 [node name="Props" type="Node2D" parent="YSort"]
 y_sort_enabled = true

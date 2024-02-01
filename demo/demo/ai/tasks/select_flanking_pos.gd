@@ -14,7 +14,7 @@ extends BTAction
 ## Returns FAILURE, if the target is not valid.
 
 ## Blackboard variable that holds current target (should be a Node2D instance).
-@export var target_var: String = "_target"
+@export var target_var: String = "target"
 
 ## Should closest side be selected?
 @export var closest_side: bool = false

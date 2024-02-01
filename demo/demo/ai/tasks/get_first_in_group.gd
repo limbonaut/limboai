@@ -18,7 +18,7 @@ extends BTAction
 
 
 func _generate_name() -> String:
-	return "GetFirstNodeInGroup \"%s\" -> %s" % [
+	return "GetFirstNodeInGroup \"%s\"  ➜%s" % [
 		group,
 		LimboUtility.decorate_var(output_var)
 		]
