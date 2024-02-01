@@ -55,7 +55,7 @@ attack={
 [layer_names]
 
 2d_physics/layer_1="Obstacle"
-2d_physics/layer_2="Player"
+2d_physics/layer_2="Agent"
 2d_physics/layer_3="BoxPlayer"
 2d_physics/layer_4="BoxEnemy"
 

@@ -43,7 +43,7 @@ size = Vector2(100, 35)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_26abe"]
 size = Vector2(70, 35)
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_aa16q"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_0c228"]
 
 [sub_resource type="Animation" id="Animation_nvm4d"]
 resource_name = "RESET"
@@ -3424,7 +3424,11 @@ _data = {
 }
 
 [node name="AgentBase" type="CharacterBody2D"]
-collision_layer = 0
+collision_layer = 2
+collision_mask = 3
+motion_mode = 1
+wall_min_slide_angle = 0.0174533
+safe_margin = 0.001
 script = ExtResource("1_n8vy2")
 
 [node name="Root" type="Node2D" parent="."]
@@ -3535,7 +3539,7 @@ metadata/_edit_lock_ = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-1, -7)
 rotation = 1.5708
-shape = SubResource("CapsuleShape2D_aa16q")
+shape = SubResource("CircleShape2D_0c228")
 
 [node name="Health" type="Node" parent="."]
 script = ExtResource("4_qwtrf")

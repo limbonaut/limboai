@@ -2873,6 +2873,24 @@ metadata/_edit_lock_ = true
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
+[node name="AgentMeleeNuanced" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(1513, 262)
+
+[node name="AgentMeleeNuanced3" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(1125, 748)
+
+[node name="AgentMeleeNuanced4" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(227, 231)
+
+[node name="AgentMeleeNuanced5" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(592, -163)
+
+[node name="AgentMeleeNuanced6" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(1589, -87)
+
+[node name="AgentMeleeNuanced7" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+position = Vector2(-154, 726)
+
 [node name="Player" parent="YSort/Agents" instance=ExtResource("5_cmgoj")]
 position = Vector2(633, 256)
 
@@ -2885,9 +2903,6 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
-
-[node name="AgentMeleeNuanced" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(-180, 552)
 
 [node name="AgentRanged" parent="YSort/Agents" instance=ExtResource("6_76icr")]
 position = Vector2(2067, 543)
