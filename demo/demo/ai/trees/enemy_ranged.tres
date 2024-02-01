@@ -1,9 +1,10 @@
-[gd_resource type="BehaviorTree" load_steps=29 format=3 uid="uid://cqluon1y1hnn5"]
+[gd_resource type="BehaviorTree" load_steps=40 format=3 uid="uid://cqluon1y1hnn5"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_3j1v8"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_vbh52"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_20ffh"]
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_x8yor"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="5_mexvv"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -28,19 +29,55 @@ max_duration = 2.5
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
 script = ExtResource("1_3j1v8")
 group = &"player"
-output_var = "_target"
+output_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
 custom_name = "Take a break"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8"), SubResource("BTAction_c4cxo")]
 
+[sub_resource type="BTComment" id="BTComment_qhsko"]
+custom_name = "He is bored attacking player all the time ;)"
+
+[sub_resource type="BTAction" id="BTAction_lpk67"]
+script = ExtResource("5_mexvv")
+range_min = 300.0
+range_max = 500.0
+position_var = "pos"
+
+[sub_resource type="BBNode" id="BBNode_ok0r5"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_unftu"]
+animation_player = SubResource("BBNode_ok0r5")
+animation_name = &"walk"
+blend = 0.1
+
+[sub_resource type="BTAction" id="BTAction_apfsn"]
+script = ExtResource("3_20ffh")
+target_position_var = "pos"
+speed_var = "speed"
+tolerance = 50.0
+
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_baob7"]
+time_limit = 3.0
+children = [SubResource("BTAction_apfsn")]
+
+[sub_resource type="BTSequence" id="BTSequence_0gdqn"]
+custom_name = "Random Walk"
+children = [SubResource("BTComment_qhsko"), SubResource("BTAction_lpk67"), SubResource("BTPlayAnimation_unftu"), SubResource("BTTimeLimit_baob7")]
+
+[sub_resource type="BTProbability" id="BTProbability_sat88"]
+run_chance = 0.3
+children = [SubResource("BTSequence_0gdqn")]
+
 [sub_resource type="BTAction" id="BTAction_kuuw2"]
 script = ExtResource("2_vbh52")
-target_var = "_target"
+target_var = "target"
 closest_side = true
-range_min = 400.0
-range_max = 1000.0
-position_var = "_shoot_pos"
+range_min = 400
+range_max = 1000
+position_var = "shoot_pos"
 
 [sub_resource type="BBNode" id="BBNode_kc64r"]
 saved_value = NodePath("AnimationPlayer")
@@ -53,7 +90,7 @@ blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_66hsk"]
 script = ExtResource("3_20ffh")
-target_position_var = "_shoot_pos"
+target_position_var = "shoot_pos"
 speed_var = "speed"
 tolerance = 50.0
 
@@ -62,10 +99,10 @@ children = [SubResource("BTAction_66hsk")]
 
 [sub_resource type="BTAction" id="BTAction_enw2m"]
 script = ExtResource("4_x8yor")
-target_var = "_target"
+target_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_lhg7f"]
-custom_name = "Reposition"
+custom_name = "Get into position"
 children = [SubResource("BTAction_kuuw2"), SubResource("BTPlayAnimation_panch"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m")]
 metadata/_weight_ = 1.0
 
@@ -110,9 +147,16 @@ metadata/_weight_ = 1.0
 times = 3
 children = [SubResource("BTSequence_rgbq3")]
 
+[sub_resource type="BTSequence" id="BTSequence_h2tm0"]
+custom_name = "Align and shoot"
+children = [SubResource("BTSequence_lhg7f"), SubResource("BTRepeat_g08ia")]
+
+[sub_resource type="BTSelector" id="BTSelector_1rrya"]
+children = [SubResource("BTProbability_sat88"), SubResource("BTSequence_h2tm0")]
+
 [sub_resource type="BTSequence" id="BTSequence_pxl2k"]
 custom_name = "Main"
-children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_lhg7f"), SubResource("BTRepeat_g08ia")]
+children = [SubResource("BTSequence_yhjh1"), SubResource("BTSelector_1rrya")]
 
 [resource]
 blackboard_plan = SubResource("BlackboardPlan_46tbn")

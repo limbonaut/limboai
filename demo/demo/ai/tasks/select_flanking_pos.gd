@@ -30,7 +30,7 @@ extends BTAction
 
 # Display a customized name (requires @tool).
 func _generate_name() -> String:
-	return "SelectFlankingPos  target: %s  range: [%s, %s]  closest: %s  ➜ %s" % [
+	return "SelectFlankingPos  target: %s  range: [%s, %s]  closest: %s  ➜%s" % [
 		LimboUtility.decorate_var(target_var),
 		range_min,
 		range_max,

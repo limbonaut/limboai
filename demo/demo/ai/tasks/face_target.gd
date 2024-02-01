@@ -21,7 +21,7 @@ func _generate_name() -> String:
 
 # Called each time this task is ticked (aka executed).
 func _tick(_delta: float) -> Status:
-	var target := blackboard.get_var(target_var) as CharacterBody2D
+	var target: Node2D = blackboard.get_var(target_var)
 	if not is_instance_valid(target):
 		return FAILURE
 	var dir: float = target.global_position.x - agent.global_position.x

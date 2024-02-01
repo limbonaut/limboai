@@ -10,11 +10,11 @@
 #*
 @tool
 extends BTAction
-## Pursue target.
+## Pursue: Move towards target until agent is flanking it.
 ##
-## Returns RUNNING, while moving towards target but not yet at the desired distance.
-## Returns SUCCESS, when at the desired distance from target.
-## Returns FAILURE, if target is not a valid instance.
+## Returns RUNNING, while moving towards target but not yet at the desired position.
+## Returns SUCCESS, when at the desired position from target (flanking it).
+## Returns FAILURE, if target is not a valid Node2D instance.
 
 
 const TOLERANCE := 30.0
@@ -23,33 +23,48 @@ const TOLERANCE := 30.0
 @export var speed_var: String = "speed"
 @export var approach_distance: float = 100.0
 
-var _side: float
+#var _side: float
+var _waypoint: Vector2
 
 # Display a customized name (requires @tool).
 func _generate_name() -> String:
 	return "Pursue %s" % [LimboUtility.decorate_var(target_var)]
 
-# Called each time this task is entered.
+
 func _enter() -> void:
-	_side = 0.0
+	var target: Node2D = blackboard.get_var(target_var, null)
+	if is_instance_valid(target):
+		_select_new_waypoint(_get_desired_position(target))
+
 
 # Called each time this task is ticked (aka executed).
 func _tick(_delta: float) -> Status:
-	var target := blackboard.get_var(target_var, null) as CharacterBody2D
+	var target: Node2D = blackboard.get_var(target_var, null)
 	if not is_instance_valid(target):
 		return FAILURE
 
-	if _side == 0:
-		var dir: Vector2 = agent.global_position - target.global_position
-		_side = signf(dir.x)
-	var target_pos := Vector2(
-		target.global_position.x + approach_distance * _side,
-		target.global_position.y)
-
-	if agent.global_position.distance_to(target_pos) < TOLERANCE:
+	var desired_pos: Vector2 = _get_desired_position(target)
+	if agent.global_position.distance_to(desired_pos) < TOLERANCE:
 		return SUCCESS
 
 	var speed: float = blackboard.get_var(speed_var, 200.0)
-	agent.velocity = agent.global_position.direction_to(target_pos) * speed
+	if agent.global_position.distance_to(_waypoint) < TOLERANCE:
+		_select_new_waypoint(desired_pos)
+	agent.velocity = agent.global_position.direction_to(_waypoint) * speed
 	agent.move_and_slide()
 	return RUNNING
+
+
+## Get closest flanking position to target.
+func _get_desired_position(target: Node2D) -> Vector2:
+	var side: float = signf(agent.global_position.x - target.global_position.x)
+	var desired_pos: Vector2 = target.global_position
+	desired_pos.x += approach_distance * side
+	return desired_pos
+
+
+## Select an intermidiate waypoint towards the desired position.
+func _select_new_waypoint(desired_position: Vector2) -> void:
+	var distance_vector: Vector2 = desired_position - agent.global_position
+	var angle_variation: float = randf_range(-0.2, 0.2)
+	_waypoint = agent.global_position + distance_vector.limit_length(150.0).rotated(angle_variation)
