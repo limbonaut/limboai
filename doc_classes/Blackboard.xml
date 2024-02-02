@@ -45,7 +45,7 @@
 			<return type="bool" />
 			<param index="0" name="p_name" type="String" />
 			<description>
-				Returns [code]true[/code] if the Blackboard contains the [param p_key] variable, including the parent scopes.
+				Returns [code]true[/code] if the Blackboard contains the [param p_name] variable, including the parent scopes.
 			</description>
 		</method>
 		<method name="prefetch_nodepath_vars">
