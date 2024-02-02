@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://co6yeafaljbq0" path="res://demo/agents/agent_skirmisher.tscn" id="8_a0psq"]
 [ext_resource type="PackedScene" uid="uid://2e4ohaqjaawb" path="res://demo/agents/agent_melee_nuanced.tscn" id="8_ovfbp"]
 [ext_resource type="PackedScene" uid="uid://g1pnvanyxcpa" path="res://demo/agents/agent_charger.tscn" id="9_k8jcc"]
-[ext_resource type="PackedScene" uid="uid://jb504ogmwmjk" path="res://demo/agents/agent_demon.tscn" id="10_nds64"]
+[ext_resource type="PackedScene" uid="uid://dbmcufef0cc4b" path="res://demo/agents/agent_demon.tscn" id="10_76xnn"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
 length = 0.001
@@ -2920,11 +2920,11 @@ process_mode = 4
 visible = false
 position = Vector2(1400, 382)
 
-[node name="AgentDemon" parent="YSort/Agents" instance=ExtResource("10_nds64")]
-position = Vector2(1417, 503)
+[node name="AgentDemon" parent="YSort/Agents" instance=ExtResource("10_76xnn")]
+position = Vector2(-49, 292)
 
-[node name="AgentDemon2" parent="YSort/Agents" instance=ExtResource("10_nds64")]
-position = Vector2(70, 537)
+[node name="AgentDemon2" parent="YSort/Agents" instance=ExtResource("10_76xnn")]
+position = Vector2(1637, 514)
 
 [node name="Props" type="Node2D" parent="YSort"]
 y_sort_enabled = true
