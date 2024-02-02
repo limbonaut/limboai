@@ -24,7 +24,7 @@
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "scene/gui/check_box.h"
 #endif // LIMBO_MODULE
