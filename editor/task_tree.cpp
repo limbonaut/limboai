@@ -20,7 +20,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

@@ -19,7 +19,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_interface.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/panel_container.h"
 #include "scene/resources/style_box_flat.h"
