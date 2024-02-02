@@ -13,6 +13,7 @@ extends CharacterBody2D
 ## Base agent script.
 
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
+const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var health: Health = $Health
@@ -52,6 +53,13 @@ func throw_ninja_star() -> void:
 	ninja_star.dir = get_facing()
 	get_parent().add_child(ninja_star)
 	ninja_star.global_position = global_position + Vector2.RIGHT * 100.0 * get_facing()
+
+
+func spit_fire() -> void:
+	var fireball := Fireball.instantiate()
+	fireball.dir = get_facing()
+	get_parent().add_child(fireball)
+	fireball.global_position = global_position + Vector2.RIGHT * 100.0 * get_facing()
 
 
 func _damaged(_amount: float, knockback: Vector2) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bsig1usigbbuy"]
+[gd_scene load_steps=16 format=3 uid="uid://bsig1usigbbuy"]
 
 [ext_resource type="Texture2D" uid="uid://b3g14elmg0m36" path="res://demo/assets/env_rocks.png" id="1_145kx"]
 [ext_resource type="PackedScene" uid="uid://dt2jlrqffpyw" path="res://demo/scenes/clouds.tscn" id="1_gsxmp"]
@@ -8,7 +8,10 @@
 [ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
 [ext_resource type="PackedScene" uid="uid://ci3x5esepbu5v" path="res://demo/agents/agent_ranged.tscn" id="6_76icr"]
 [ext_resource type="PackedScene" uid="uid://blxmw2w1h2s0s" path="res://demo/agents/agent_melee_combo.tscn" id="7_jlgir"]
+[ext_resource type="PackedScene" uid="uid://co6yeafaljbq0" path="res://demo/agents/agent_skirmisher.tscn" id="8_a0psq"]
 [ext_resource type="PackedScene" uid="uid://2e4ohaqjaawb" path="res://demo/agents/agent_melee_nuanced.tscn" id="8_ovfbp"]
+[ext_resource type="PackedScene" uid="uid://g1pnvanyxcpa" path="res://demo/agents/agent_charger.tscn" id="9_k8jcc"]
+[ext_resource type="PackedScene" uid="uid://jb504ogmwmjk" path="res://demo/agents/agent_demon.tscn" id="10_nds64"]
 
 [sub_resource type="Animation" id="Animation_gwtgs"]
 length = 0.001
@@ -2874,16 +2877,14 @@ metadata/_edit_lock_ = true
 y_sort_enabled = true
 metadata/_edit_lock_ = true
 
-[node name="AgentMeleeNuanced" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(1513, 262)
-
 [node name="AgentMeleeNuanced3" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(1125, 748)
-
-[node name="AgentMeleeNuanced4" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
-position = Vector2(227, 231)
+process_mode = 4
+visible = false
+position = Vector2(350, 657)
 
 [node name="AgentMeleeNuanced5" parent="YSort/Agents" instance=ExtResource("8_ovfbp")]
+process_mode = 4
+visible = false
 position = Vector2(592, -163)
 
 [node name="Player" parent="YSort/Agents" instance=ExtResource("5_cmgoj")]
@@ -2900,10 +2901,30 @@ drag_top_margin = 0.1
 drag_bottom_margin = 0.1
 
 [node name="AgentRanged" parent="YSort/Agents" instance=ExtResource("6_76icr")]
+process_mode = 4
+visible = false
 position = Vector2(2067, 543)
 
 [node name="AgentMeleeCombo" parent="YSort/Agents" instance=ExtResource("7_jlgir")]
+process_mode = 4
+visible = false
 position = Vector2(1778, 22)
+
+[node name="AgentSkirmisher" parent="YSort/Agents" instance=ExtResource("8_a0psq")]
+process_mode = 4
+visible = false
+position = Vector2(-162, 498)
+
+[node name="AgentCharger" parent="YSort/Agents" instance=ExtResource("9_k8jcc")]
+process_mode = 4
+visible = false
+position = Vector2(1400, 382)
+
+[node name="AgentDemon" parent="YSort/Agents" instance=ExtResource("10_nds64")]
+position = Vector2(1417, 503)
+
+[node name="AgentDemon2" parent="YSort/Agents" instance=ExtResource("10_nds64")]
+position = Vector2(70, 537)
 
 [node name="Props" type="Node2D" parent="YSort"]
 y_sort_enabled = true

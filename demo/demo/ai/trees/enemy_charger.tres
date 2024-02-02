@@ -1,0 +1,115 @@
+[gd_resource type="BehaviorTree" load_steps=27 format=3 uid="uid://ylife72ym5et"]
+
+[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="1_3ovx6"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_g3c1d"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_l3434"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_km0bx"]
+[ext_resource type="Script" path="res://demo/ai/tasks/leap_forward.gd" id="5_socam"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_qd806"]
+var/speed/name = "speed"
+var/speed/type = 3
+var/speed/value = 400.0
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
+var/charge_speed/name = "charge_speed"
+var/charge_speed/type = 3
+var/charge_speed/value = 800.0
+var/charge_speed/hint = 1
+var/charge_speed/hint_string = "10,1000,10"
+
+[sub_resource type="BBNode" id="BBNode_yrurg"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ha2ag"]
+animation_player = SubResource("BBNode_yrurg")
+animation_name = &"idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_cedqr"]
+min_duration = 2.0
+max_duration = 5.0
+
+[sub_resource type="BTSequence" id="BTSequence_l3v31"]
+custom_name = "Short break"
+children = [SubResource("BTPlayAnimation_ha2ag"), SubResource("BTRandomWait_cedqr")]
+
+[sub_resource type="BTAction" id="BTAction_pp23y"]
+script = ExtResource("1_g3c1d")
+group = &"player"
+output_var = "target"
+
+[sub_resource type="BTAction" id="BTAction_pmvd0"]
+script = ExtResource("1_3ovx6")
+target_var = "target"
+closest_side = false
+flank_side = 0
+range_min = 500
+range_max = 600
+position_var = "flank_pos"
+
+[sub_resource type="BBNode" id="BBNode_xh3wr"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_h0poo"]
+animation_player = SubResource("BBNode_xh3wr")
+animation_name = &"walk"
+blend = 0.1
+
+[sub_resource type="BTAction" id="BTAction_87mi0"]
+script = ExtResource("2_l3434")
+target_position_var = "flank_pos"
+speed_var = "speed"
+tolerance = 50.0
+
+[sub_resource type="BTSequence" id="BTSequence_p6pgg"]
+custom_name = "Flank target"
+children = [SubResource("BTAction_pp23y"), SubResource("BTAction_pmvd0"), SubResource("BTPlayAnimation_h0poo"), SubResource("BTAction_87mi0")]
+
+[sub_resource type="BTAction" id="BTAction_q5g4a"]
+script = ExtResource("4_km0bx")
+target_var = "target"
+
+[sub_resource type="BBNode" id="BBNode_bfijg"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_4okoy"]
+await_completion = 2.0
+animation_player = SubResource("BBNode_bfijg")
+animation_name = &"charge_prepare"
+blend = 0.1
+
+[sub_resource type="BTWait" id="BTWait_ovu3r"]
+
+[sub_resource type="BTSequence" id="BTSequence_mde2g"]
+custom_name = "Anticipation"
+children = [SubResource("BTAction_q5g4a"), SubResource("BTPlayAnimation_4okoy"), SubResource("BTWait_ovu3r")]
+
+[sub_resource type="BBNode" id="BBNode_kpp70"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_8s1wq"]
+animation_player = SubResource("BBNode_kpp70")
+animation_name = &"charge"
+blend = 0.05
+
+[sub_resource type="BTAction" id="BTAction_o18uk"]
+script = ExtResource("5_socam")
+force = 1000.0
+duration = 2.0
+
+[sub_resource type="BTSequence" id="BTSequence_8lur1"]
+custom_name = "Charge!"
+children = [SubResource("BTPlayAnimation_8s1wq"), SubResource("BTAction_o18uk")]
+
+[sub_resource type="BTSequence" id="BTSequence_pjuov"]
+custom_name = "Charge Attack"
+children = [SubResource("BTSequence_l3v31"), SubResource("BTSequence_p6pgg"), SubResource("BTSequence_mde2g"), SubResource("BTSequence_8lur1")]
+
+[resource]
+blackboard_plan = SubResource("BlackboardPlan_qd806")
+root_task = SubResource("BTSequence_pjuov")

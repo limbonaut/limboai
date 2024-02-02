@@ -10,6 +10,12 @@
 [ext_resource type="Script" path="res://demo/agents/scripts/hitbox.gd" id="5_taq6b"]
 [ext_resource type="Script" path="res://demo/agents/scripts/hurtbox.gd" id="6_jnvxm"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2k81i"]
+size = Vector2(130, 35)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_26abe"]
+size = Vector2(80, 35)
+
 [sub_resource type="Curve" id="Curve_noh01"]
 _data = [Vector2(0, 0.010989), 0.0, 0.0, 0, 0, Vector2(0.151111, 1), 1.3559, 1.3559, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 3
@@ -36,12 +42,6 @@ damping_max = 200.0
 scale_min = 0.8
 scale_max = 1.2
 scale_curve = SubResource("CurveTexture_sb0wp")
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_2k81i"]
-size = Vector2(130, 35)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_26abe"]
-size = Vector2(80, 35)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0c228"]
 
@@ -266,7 +266,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -338,7 +338,7 @@ tracks/23/keys = {
 tracks/24/type = "value"
 tracks/24/imported = false
 tracks/24/enabled = true
-tracks/24/path = NodePath("Root/FX/Death:emitting")
+tracks/24/path = NodePath("FX/Death:emitting")
 tracks/24/interp = 1
 tracks/24/loop_wrap = true
 tracks/24/keys = {
@@ -1133,7 +1133,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -1423,6 +1423,30 @@ tracks/20/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(1, 1)]
+}
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("Root/Hitbox/CollisionShape2D:disabled")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [false, false]
+}
+tracks/22/type = "value"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("Root/Hitbox:knockback_enabled")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, true]
 }
 
 [sub_resource type="Animation" id="Animation_sva81"]
@@ -2161,7 +2185,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = false
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -2221,7 +2245,7 @@ tracks/22/keys = {
 tracks/23/type = "value"
 tracks/23/imported = false
 tracks/23/enabled = true
-tracks/23/path = NodePath("Root/FX/Death:emitting")
+tracks/23/path = NodePath("FX/Death:emitting")
 tracks/23/interp = 1
 tracks/23/loop_wrap = true
 tracks/23/keys = {
@@ -2454,7 +2478,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -2735,7 +2759,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -4203,7 +4227,7 @@ tracks/17/keys = {
 tracks/18/type = "value"
 tracks/18/imported = false
 tracks/18/enabled = true
-tracks/18/path = NodePath("Root/FX/Cloud:visible")
+tracks/18/path = NodePath("FX/Cloud:visible")
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
@@ -4295,35 +4319,12 @@ texture = ExtResource("1_1u51b")
 region_enabled = true
 region_rect = Rect2(111, 34, 26.9272, 26.6298)
 
-[node name="FX" type="Node2D" parent="Root"]
-position = Vector2(0, -68)
-metadata/_edit_lock_ = true
-
-[node name="Cloud" type="Sprite2D" parent="Root/FX"]
-visible = false
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_lv102")
-region_enabled = true
-region_rect = Rect2(300, 0, 100, 70)
-
-[node name="Death" type="GPUParticles2D" parent="Root/FX"]
-position = Vector2(0, 52)
-emitting = false
-amount = 16
-process_material = SubResource("ParticleProcessMaterial_f5i1x")
-texture = ExtResource("4_mnb6v")
-lifetime = 0.7
-one_shot = true
-explosiveness = 0.7
-fixed_fps = 60
-
 [node name="WeaponNinjaStar" type="Sprite2D" parent="Root"]
 visible = false
 position = Vector2(-55, -76)
 texture = ExtResource("4_1c5xq")
 
 [node name="Hitbox" type="Area2D" parent="Root"]
-visible = false
 position = Vector2(50, 0)
 collision_layer = 0
 collision_mask = 4
@@ -4337,7 +4338,6 @@ debug_color = Color(0.933131, 0.0801983, 0.605982, 0.42)
 metadata/_edit_lock_ = true
 
 [node name="Hurtbox" type="Area2D" parent="Root" node_paths=PackedStringArray("health")]
-visible = false
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("6_jnvxm")
@@ -4347,6 +4347,28 @@ health = NodePath("../../Health")
 shape = SubResource("RectangleShape2D_26abe")
 debug_color = Color(0.466325, 0.590206, 0.107862, 0.42)
 metadata/_edit_lock_ = true
+
+[node name="FX" type="Node2D" parent="."]
+position = Vector2(0, -68)
+metadata/_edit_lock_ = true
+
+[node name="Cloud" type="Sprite2D" parent="FX"]
+visible = false
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_lv102")
+region_enabled = true
+region_rect = Rect2(300, 0, 100, 70)
+
+[node name="Death" type="GPUParticles2D" parent="FX"]
+position = Vector2(0, 52)
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_f5i1x")
+texture = ExtResource("4_mnb6v")
+lifetime = 0.7
+one_shot = true
+explosiveness = 0.7
+fixed_fps = 60
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
