@@ -351,6 +351,10 @@ _data = {
 
 [node name="Rig" type="Node2D" parent="."]
 
+[node name="Shadow" type="Sprite2D" parent="Rig"]
+modulate = Color(1, 1, 1, 0.290196)
+texture = ExtResource("2_535g7")
+
 [node name="Stick" type="Sprite2D" parent="Rig"]
 position = Vector2(0, -1)
 texture = ExtResource("1_vdhcl")
@@ -364,10 +368,6 @@ texture = ExtResource("1_vdhcl")
 offset = Vector2(-1, -56)
 region_enabled = true
 region_rect = Rect2(0, 0, 99.6683, 136)
-
-[node name="Shadow" type="Sprite2D" parent="Rig"]
-modulate = Color(1, 1, 1, 0.67451)
-texture = ExtResource("2_535g7")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {

@@ -816,6 +816,7 @@ height = 186.37
 metadata/_edit_horizontal_guides_ = [111.0]
 
 [node name="Shadow" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.329412)
 position = Vector2(0, -8)
 scale = Vector2(2.31, 1.7)
 texture = ExtResource("1_vl1mv")
