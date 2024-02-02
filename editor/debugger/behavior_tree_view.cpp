@@ -24,7 +24,7 @@
 #include "core/object/callable_method_pointer.h"
 #include "core/os/time.h"
 #include "core/typedefs.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #include "editor/editor_settings.h"
 #include "scene/resources/style_box.h"
 #endif // LIMBOAI_MODULE
