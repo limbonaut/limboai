@@ -88,6 +88,14 @@ void BTTask::_set_children(Array p_children) {
 	}
 }
 
+void BTTask::set_display_collapsed(bool p_display_collapsed) {
+	data.display_collapsed = p_display_collapsed;
+}
+
+bool BTTask::is_displayed_collapsed() const {
+	return data.display_collapsed;
+}
+
 String BTTask::get_task_name() {
 	if (data.custom_name.is_empty()) {
 #ifdef LIMBOAI_MODULE
