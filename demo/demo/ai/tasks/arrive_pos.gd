@@ -13,7 +13,7 @@ extends BTAction
 ## Arrive to a position, with a bias to horizontal movement.
 
 
-@export var target_position_var := "target_position"
+@export var target_position_var := "pos"
 @export var speed_var := "speed"
 @export var tolerance := 50.0
 

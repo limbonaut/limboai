@@ -53,6 +53,7 @@ speed = 1.5
 script = ExtResource("2_fl3fr")
 target_var = "_target"
 closest_side = false
+flank_side = 1
 range_min = 400
 range_max = 600
 position_var = "_flank_pos"

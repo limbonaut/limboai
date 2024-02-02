@@ -39,6 +39,7 @@ children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud
 script = ExtResource("2_ifiw3")
 target_var = "target"
 closest_side = true
+flank_side = 0
 range_min = 300
 range_max = 400
 position_var = "pos"

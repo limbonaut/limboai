@@ -75,6 +75,7 @@ children = [SubResource("BTSequence_0gdqn")]
 script = ExtResource("2_vbh52")
 target_var = "target"
 closest_side = true
+flank_side = 0
 range_min = 400
 range_max = 1000
 position_var = "shoot_pos"
