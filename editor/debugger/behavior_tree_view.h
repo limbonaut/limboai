@@ -54,6 +54,7 @@ private:
 	void _draw_running_status(Object *p_obj, Rect2 p_rect);
 	void _draw_failure_status(Object *p_obj, Rect2 p_rect);
 	void _item_collapsed(Object *p_obj);
+	double _get_editor_scale() const;
 
 protected:
 	void _do_update_theme_item_cache();
@@ -63,7 +64,7 @@ protected:
 	static void _bind_methods();
 
 public:
-	void update_tree(const BehaviorTreeData &p_data);
+	void update_tree(const Ref<BehaviorTreeData> &p_data);
 	void clear();
 
 	BehaviorTreeView();

@@ -61,7 +61,15 @@ void BehaviorTreeView::_item_collapsed(Object *p_obj) {
 	}
 }
 
-void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
+double BehaviorTreeView::_get_editor_scale() const {
+	if (Engine::get_singleton()->is_editor_hint()) {
+		return EDSCALE;
+	} else {
+		return 0.0;
+	}
+}
+
+void BehaviorTreeView::update_tree(const Ref<BehaviorTreeData> &p_data) {
 	// Remember selected.
 	int selected_id = -1;
 	if (tree->get_selected()) {
@@ -71,7 +79,7 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 	tree->clear();
 	TreeItem *parent = nullptr;
 	List<Pair<TreeItem *, int>> parents;
-	for (const BehaviorTreeData::TaskData &task_data : p_data.tasks) {
+	for (const BehaviorTreeData::TaskData &task_data : p_data->tasks) {
 		// Figure out parent.
 		parent = nullptr;
 		if (parents.size()) {
@@ -99,7 +107,7 @@ void BehaviorTreeView::update_tree(const BehaviorTreeData &p_data) {
 
 		String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
 		item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(cors));
-		item->set_icon_max_width(0, 16 * EDSCALE); // Force user icon size.
+		item->set_icon_max_width(0, 16 * _get_editor_scale()); // Force user icon size.
 
 		if (task_data.status == BTTask::SUCCESS) {
 			item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
@@ -164,10 +172,13 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 	theme_cache.sbf_failure->set_border_width(SIDE_LEFT, 4.0);
 	theme_cache.sbf_failure->set_border_width(SIDE_RIGHT, 4.0);
 
-	double extra_spacing = EDITOR_GET("interface/theme/additional_spacing");
-	extra_spacing *= 2.0;
-	tree->set_column_custom_minimum_width(1, 18.0 * EDSCALE);
-	tree->set_column_custom_minimum_width(2, (50.0 + extra_spacing) * EDSCALE);
+	double extra_spacing = 0.0;
+	if (Engine::get_singleton()->is_editor_hint()) {
+		extra_spacing = EDITOR_GET("interface/theme/additional_spacing");
+		extra_spacing *= 2.0;
+	}
+	tree->set_column_custom_minimum_width(1, 18 * _get_editor_scale());
+	tree->set_column_custom_minimum_width(2, (50 + extra_spacing) * _get_editor_scale());
 }
 
 void BehaviorTreeView::_notification(int p_what) {
@@ -189,6 +200,7 @@ void BehaviorTreeView::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_draw_success_status"), &BehaviorTreeView::_draw_success_status);
 	ClassDB::bind_method(D_METHOD("_draw_failure_status"), &BehaviorTreeView::_draw_failure_status);
 	ClassDB::bind_method(D_METHOD("_item_collapsed"), &BehaviorTreeView::_item_collapsed);
+	ClassDB::bind_method(D_METHOD("update_tree", "p_behavior_tree_data"), &BehaviorTreeView::update_tree);
 }
 
 BehaviorTreeView::BehaviorTreeView() {

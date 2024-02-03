@@ -84,7 +84,7 @@ public:
 	void update_active_bt_players(const Array &p_node_paths);
 	BehaviorTreeView *get_behavior_tree_view() const { return bt_view; }
 	String get_selected_bt_player();
-	void update_behavior_tree(const BehaviorTreeData &p_data);
+	void update_behavior_tree(const Ref<BehaviorTreeData> &p_data);
 
 	void setup(Ref<EditorDebuggerSession> p_session, CompatWindowWrapper *p_wrapper);
 	LimboDebuggerTab();
