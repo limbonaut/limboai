@@ -1,10 +1,10 @@
-[gd_resource type="BehaviorTree" load_steps=32 format=3 uid="uid://c2bxoo68ywb27"]
+[gd_resource type="BehaviorTree" load_steps=30 format=3 uid="uid://c2bxoo68ywb27"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_sqcak"]
-[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="2_b40lk"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="3_j237c"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="4_fqn6n"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="5_wlc74"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_qgdmn"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_kcs76"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="3_cy2w4"]
+[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="4_lorkr"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_1vcyu"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -12,11 +12,6 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
-
-[sub_resource type="BTAction" id="BTAction_5j8nr"]
-script = ExtResource("1_sqcak")
-group = &"player"
-output_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_3y70b"]
 saved_value = NodePath("AnimationPlayer")
@@ -27,25 +22,21 @@ animation_player = SubResource("BBNode_3y70b")
 animation_name = &"walk"
 blend = 0.1
 
-[sub_resource type="BTAction" id="BTAction_wjm6d"]
-script = ExtResource("3_j237c")
-target_var = "target"
-
 [sub_resource type="BTAction" id="BTAction_chmiy"]
-script = ExtResource("4_fqn6n")
+script = ExtResource("1_qgdmn")
 range_min = 200.0
 range_max = 500.0
 position_var = "pos"
 
 [sub_resource type="BTAction" id="BTAction_5kivl"]
-script = ExtResource("5_wlc74")
+script = ExtResource("2_kcs76")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
 
 [sub_resource type="BTSequence" id="BTSequence_k184c"]
 custom_name = "Chaotic Walk"
-children = [SubResource("BTAction_5j8nr"), SubResource("BTPlayAnimation_klk26"), SubResource("BTAction_wjm6d"), SubResource("BTAction_chmiy"), SubResource("BTAction_5kivl")]
+children = [SubResource("BTPlayAnimation_klk26"), SubResource("BTAction_chmiy"), SubResource("BTAction_5kivl")]
 
 [sub_resource type="BTProbability" id="BTProbability_ifsry"]
 run_chance = 0.6
@@ -78,12 +69,12 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_ulbrf"]
-script = ExtResource("1_sqcak")
+script = ExtResource("3_cy2w4")
 group = &"player"
 output_var = "target"
 
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
-script = ExtResource("2_b40lk")
+script = ExtResource("4_lorkr")
 target_var = "target"
 speed_var = "speed"
 approach_distance = 100.0
@@ -97,7 +88,7 @@ custom_name = "Pursue player"
 children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"), SubResource("BTTimeLimit_xek5v")]
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
-script = ExtResource("3_j237c")
+script = ExtResource("5_1vcyu")
 target_var = "target"
 
 [sub_resource type="BTWait" id="BTWait_tadkc"]
