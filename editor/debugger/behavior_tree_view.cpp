@@ -186,7 +186,6 @@ void BehaviorTreeView::_notification(int p_what) {
 		case NOTIFICATION_READY: {
 			tree->connect(LW_NAME(item_collapsed), callable_mp(this, &BehaviorTreeView::_item_collapsed));
 		} break;
-		case NOTIFICATION_POSTINITIALIZE:
 		case NOTIFICATION_LAYOUT_DIRECTION_CHANGED:
 		case NOTIFICATION_TRANSLATION_CHANGED:
 		case NOTIFICATION_THEME_CHANGED: {
