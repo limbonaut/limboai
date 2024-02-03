@@ -23,7 +23,7 @@ func _ready() -> void:
 func _area_entered(hurtbox: Hurtbox) -> void:
 	if hurtbox.owner == owner:
 		return
-	hurtbox.take_damage(damage, get_knockback())
+	hurtbox.take_damage(damage, get_knockback(), self)
 
 
 func get_knockback() -> Vector2:

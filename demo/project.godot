@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="LimboAI Demo"
-run/main_scene="res://demo/scenes/demo.tscn"
+run/main_scene="res://demo/scenes/arena.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://demo/icon.svg"
 
