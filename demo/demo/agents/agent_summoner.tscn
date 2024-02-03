@@ -1,17 +1,25 @@
-[gd_scene load_steps=3 format=3 uid="uid://bycvi2fb0f7ue"]
+[gd_scene load_steps=5 format=3 uid="uid://bycvi2fb0f7ue"]
 
 [ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_neifu"]
 [ext_resource type="Texture2D" uid="uid://ombnpn2edldt" path="res://demo/assets/agent_summoner.png" id="2_fcti4"]
+[ext_resource type="BehaviorTree" uid="uid://cpxk7jnqpwwlc" path="res://demo/ai/trees/enemy_summoner.tres" id="3_bunpq"]
 
-[node name="Bobby" instance=ExtResource("1_neifu")]
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_bqv3d"]
+var/speed/name = "speed"
+var/speed/type = 3
+var/speed/value = 300.0
+var/speed/hint = 1
+var/speed/hint_string = "10,1000,10"
 
-[node name="LegL" parent="Root/Rig" index="0"]
+[node name="AgentSummoner" instance=ExtResource("1_neifu")]
+
+[node name="LegL" parent="Root/Rig" index="1"]
 texture = ExtResource("2_fcti4")
 
-[node name="LegR" parent="Root/Rig" index="1"]
+[node name="LegR" parent="Root/Rig" index="2"]
 texture = ExtResource("2_fcti4")
 
-[node name="Body" parent="Root/Rig" index="2"]
+[node name="Body" parent="Root/Rig" index="3"]
 texture = ExtResource("2_fcti4")
 
 [node name="Hat" parent="Root/Rig/Body" index="0"]
@@ -22,3 +30,7 @@ texture = ExtResource("2_fcti4")
 
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_fcti4")
+
+[node name="BTPlayer" type="BTPlayer" parent="." index="5"]
+behavior_tree = ExtResource("3_bunpq")
+blackboard_plan = SubResource("BlackboardPlan_bqv3d")

@@ -12,6 +12,7 @@ extends CharacterBody2D
 
 ## Base agent script.
 
+const MINION_RESOURCE := "res://demo/agents/agent_imp.tscn"
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
@@ -19,6 +20,7 @@ const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 @onready var health: Health = $Health
 @onready var root: Node2D = $Root
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
+@onready var summoning_effect: GPUParticles2D = $FX/Summoned
 
 
 var _frames_since_facing_update: int = 0
@@ -43,7 +45,8 @@ func face_dir(dir: float) -> void:
 		root.scale.x = -1.0;
 		_frames_since_facing_update = 0
 
-
+## Returns 1.0 when agent is facing right.
+## Returns -1.0 when agent is facing left.
 func get_facing() -> float:
 	return signf(root.scale.x)
 
@@ -60,6 +63,27 @@ func spit_fire() -> void:
 	fireball.dir = get_facing()
 	get_parent().add_child(fireball)
 	fireball.global_position = global_position + Vector2.RIGHT * 100.0 * get_facing()
+
+
+func summon_minion(p_position: Vector2) -> void:
+	var minion: CharacterBody2D = load(MINION_RESOURCE).instantiate()
+	get_parent().add_child(minion)
+	minion.position = p_position
+	minion.play_summoning_effect()
+
+
+func play_summoning_effect() -> void:
+	summoning_effect.emitting = true
+
+
+## Is specified position inside the arena (not inside obstacle)?
+func is_good_position(p_position: Vector2) -> bool:
+	var space_state := get_world_2d().direct_space_state
+	var params := PhysicsPointQueryParameters2D.new()
+	params.position = p_position
+	params.collision_mask = 1 # Obstacle layer has value 1
+	var collision := space_state.intersect_point(params)
+	return collision.is_empty()
 
 
 func _damaged(_amount: float, knockback: Vector2) -> void:

@@ -31,6 +31,7 @@ custom_name = "Chill"
 children = [SubResource("BTPlayAnimation_p3e7a"), SubResource("BTRandomWait_j6cjm")]
 
 [sub_resource type="BTCooldown" id="BTCooldown_oms7a"]
+trigger_on_failure = true
 children = [SubResource("BTSequence_5thv4")]
 
 [sub_resource type="BTAction" id="BTAction_ohfp7"]

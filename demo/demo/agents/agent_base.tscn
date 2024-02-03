@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://ooigbfhfy4wa"]
+[gd_scene load_steps=36 format=3 uid="uid://ooigbfhfy4wa"]
 
 [ext_resource type="Texture2D" uid="uid://dlo1ine6p5di4" path="res://demo/assets/agent_bobby.png" id="1_1u51b"]
 [ext_resource type="Script" path="res://demo/agents/scripts/agent_base.gd" id="1_n8vy2"]
@@ -42,6 +42,34 @@ damping_max = 200.0
 scale_min = 0.8
 scale_max = 1.2
 scale_curve = SubResource("CurveTexture_sb0wp")
+
+[sub_resource type="Curve" id="Curve_e33mb"]
+_data = [Vector2(0, 0.010989), 0.0, 0.0, 0, 0, Vector2(0.151111, 1), 1.3559, 1.3559, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_qti8k"]
+curve = SubResource("Curve_e33mb")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_gmal1"]
+lifetime_randomness = 0.5
+particle_flag_disable_z = true
+emission_shape = 3
+emission_box_extents = Vector3(40, 1, 1)
+direction = Vector3(0, -1, 0)
+spread = 90.0
+initial_velocity_min = 150.0
+initial_velocity_max = 250.0
+angular_velocity_min = -90.0
+angular_velocity_max = 90.0
+gravity = Vector3(0, 0, 0)
+radial_accel_min = -90.0
+radial_accel_max = 90.0
+damping_min = 200.0
+damping_max = 200.0
+scale_min = 0.8
+scale_max = 1.2
+scale_curve = SubResource("CurveTexture_qti8k")
+color = Color(0.913725, 0.8, 0.898039, 1)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_0c228"]
 
@@ -3247,7 +3275,6 @@ tracks/17/keys = {
 
 [sub_resource type="Animation" id="Animation_5mxvi"]
 resource_name = "summon"
-length = 0.5
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -3255,7 +3282,7 @@ tracks/0/path = NodePath("Root/Rig/LegL:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(-29, 65), Vector2(-29, 65)]
@@ -3267,7 +3294,7 @@ tracks/1/path = NodePath("Root/Rig/LegL:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 0.0]
@@ -3279,7 +3306,7 @@ tracks/2/path = NodePath("Root/Rig/LegL:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1)]
@@ -3291,7 +3318,7 @@ tracks/3/path = NodePath("Root/Rig/LegR:position")
 tracks/3/interp = 2
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(31, 65), Vector2(47, 54), Vector2(43, 56.75), Vector2(47, 54), Vector2(43, 56.75), Vector2(31, 65)]
@@ -3303,7 +3330,7 @@ tracks/4/path = NodePath("Root/Rig/LegR:rotation")
 tracks/4/interp = 2
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, -0.40126, -0.768424, -0.40126, -0.768424, 0.0]
@@ -3315,7 +3342,7 @@ tracks/5/path = NodePath("Root/Rig/LegR:scale")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1)]
@@ -3327,7 +3354,7 @@ tracks/6/path = NodePath("Root/Rig/Body:position")
 tracks/6/interp = 2
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.3, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.6, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(5, 53), Vector2(5, 53), Vector2(5, 53), Vector2(5, 53)]
@@ -3339,7 +3366,7 @@ tracks/7/path = NodePath("Root/Rig/Body:rotation")
 tracks/7/interp = 2
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.3, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.6, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 0,
 "values": [0.0, -0.179614, -0.179614, 0.0]
@@ -3351,7 +3378,7 @@ tracks/8/path = NodePath("Root/Rig/Body:scale")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.9, 1.1), Vector2(1, 1), Vector2(0.9, 1.1), Vector2(1, 1)]
@@ -3363,7 +3390,7 @@ tracks/9/path = NodePath("Root/Rig/Body/Hat:position")
 tracks/9/interp = 2
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(2, -91), Vector2(2, -91)]
@@ -3375,7 +3402,7 @@ tracks/10/path = NodePath("Root/Rig/Body/Hat:rotation")
 tracks/10/interp = 2
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 0.0]
@@ -3387,7 +3414,7 @@ tracks/11/path = NodePath("Root/Rig/Body/Hat:scale")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(0, 0.5),
+"times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1)]
@@ -3399,7 +3426,7 @@ tracks/12/path = NodePath("Root/Rig/Body/HandL:position")
 tracks/12/interp = 2
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(-60, -53), Vector2(-71.1271, -84.0591), Vector2(-76.1533, -94.4691), Vector2(-71.1271, -84.0591), Vector2(-76.1533, -94.4691), Vector2(-60, -53)]
@@ -3411,7 +3438,7 @@ tracks/13/path = NodePath("Root/Rig/Body/HandL:rotation")
 tracks/13/interp = 2
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, -0.836345, 0.0, -0.836345, 0.0]
@@ -3423,7 +3450,7 @@ tracks/14/path = NodePath("Root/Rig/Body/HandL:scale")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1)]
@@ -3435,7 +3462,7 @@ tracks/15/path = NodePath("Root/Rig/Body/HandR:position")
 tracks/15/interp = 2
 tracks/15/loop_wrap = true
 tracks/15/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(51, -51), Vector2(61.8744, -83.286), Vector2(62.8802, -95.0655), Vector2(61.8744, -83.286), Vector2(62.8802, -95.0655), Vector2(51, -51)]
@@ -3447,7 +3474,7 @@ tracks/16/path = NodePath("Root/Rig/Body/HandR:rotation")
 tracks/16/interp = 2
 tracks/16/loop_wrap = true
 tracks/16/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [0.0, 0.0, -0.887813, 0.0, -0.887813, 0.0]
@@ -3459,7 +3486,7 @@ tracks/17/path = NodePath("Root/Rig/Body/HandR:scale")
 tracks/17/interp = 1
 tracks/17/loop_wrap = true
 tracks/17/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 0,
 "values": [Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1), Vector2(1, 1)]
@@ -4322,6 +4349,7 @@ region_rect = Rect2(111, 34, 26.9272, 26.6298)
 [node name="WeaponNinjaStar" type="Sprite2D" parent="Root"]
 visible = false
 position = Vector2(-55, -76)
+scale = Vector2(0.999985, 0.999984)
 texture = ExtResource("4_1c5xq")
 
 [node name="Hitbox" type="Area2D" parent="Root"]
@@ -4329,6 +4357,7 @@ position = Vector2(50, 0)
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("5_taq6b")
+damage = null
 knockback_strength = 1000.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Root/Hitbox"]
@@ -4368,6 +4397,17 @@ texture = ExtResource("4_mnb6v")
 lifetime = 0.7
 one_shot = true
 explosiveness = 0.7
+fixed_fps = 60
+
+[node name="Summoned" type="GPUParticles2D" parent="FX"]
+position = Vector2(0, 83)
+emitting = false
+amount = 16
+process_material = SubResource("ParticleProcessMaterial_gmal1")
+texture = ExtResource("4_mnb6v")
+lifetime = 1.4
+one_shot = true
+explosiveness = 0.5
 fixed_fps = 60
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
