@@ -58,6 +58,7 @@ def get_doc_classes():
         "BBVector4",
         "BBVector4i",
         "BehaviorTree",
+        "BehaviorTreeData",
         "BehaviorTreeView",
         "Blackboard",
         "BlackboardPlan",

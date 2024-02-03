@@ -14,7 +14,12 @@
 
 #include "../../bt/tasks/bt_task.h"
 
-class BehaviorTreeData {
+class BehaviorTreeData : public RefCounted {
+	GDCLASS(BehaviorTreeData, RefCounted);
+
+protected:
+	static void _bind_methods();
+
 public:
 	struct TaskData {
 		int id = 0;
@@ -44,11 +49,12 @@ public:
 	NodePath bt_player_path;
 	String bt_resource_path;
 
-	void serialize(Array &p_arr);
-	void deserialize(const Array &p_arr);
+public:
+	static Array serialize(const Ref<BTTask> &p_tree_instance, const NodePath &p_player_path, const String &p_bt_resource_path);
+	static Ref<BehaviorTreeData> deserialize(const Array &p_array);
+	static Ref<BehaviorTreeData> create_from_tree_instance(const Ref<BTTask> &p_tree_instance);
 
-	BehaviorTreeData(const Ref<BTTask> &p_instance, const NodePath &p_player_path, const String &p_bt_resource);
-	BehaviorTreeData() {}
+	BehaviorTreeData();
 };
 
 #endif // BEHAVIOR_TREE_DATA_H

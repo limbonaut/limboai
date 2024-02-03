@@ -90,8 +90,8 @@ String LimboDebuggerTab::get_selected_bt_player() {
 	return bt_player_list->get_item_text(bt_player_list->get_selected_items()[0]);
 }
 
-void LimboDebuggerTab::update_behavior_tree(const BehaviorTreeData &p_data) {
-	resource_header->set_text(p_data.bt_resource_path);
+void LimboDebuggerTab::update_behavior_tree(const Ref<BehaviorTreeData> &p_data) {
+	resource_header->set_text(p_data->bt_resource_path);
 	resource_header->set_disabled(false);
 	bt_view->update_tree(p_data);
 	info_message->hide();
@@ -315,9 +315,8 @@ bool LimboDebuggerPlugin::_capture(const String &p_message, const Array &p_data,
 	if (p_message == "limboai:active_bt_players") {
 		tab->update_active_bt_players(p_data);
 	} else if (p_message == "limboai:bt_update") {
-		BehaviorTreeData data = BehaviorTreeData();
-		data.deserialize(p_data);
-		if (data.bt_player_path == NodePath(tab->get_selected_bt_player())) {
+		Ref<BehaviorTreeData> data = BehaviorTreeData::deserialize(p_data);
+		if (data->bt_player_path == NodePath(tab->get_selected_bt_player())) {
 			tab->update_behavior_tree(data);
 		}
 	} else {

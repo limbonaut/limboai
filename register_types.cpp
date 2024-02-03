@@ -128,6 +128,10 @@ static LimboUtility *_limbo_utility = nullptr;
 
 void initialize_limboai_module(ModuleInitializationLevel p_level) {
 	if (p_level == MODULE_INITIALIZATION_LEVEL_SCENE) {
+#ifdef TOOLS_ENABLED
+		GDREGISTER_CLASS(BehaviorTreeView);
+#endif // TOOLS_ENABLED
+		GDREGISTER_CLASS(BehaviorTreeData);
 #ifdef LIMBOAI_GDEXTENSION
 		GDREGISTER_CLASS(LimboDebugger);
 #endif
@@ -251,7 +255,6 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(CompatShortcutBin);
 		GDREGISTER_CLASS(CompatScreenSelect);
 		GDREGISTER_CLASS(CompatWindowWrapper);
-		GDREGISTER_CLASS(BehaviorTreeView);
 		GDREGISTER_CLASS(LimboDebuggerTab);
 		GDREGISTER_CLASS(LimboDebuggerPlugin);
 		GDREGISTER_CLASS(BlackboardPlanEditor);
