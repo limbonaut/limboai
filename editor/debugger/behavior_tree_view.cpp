@@ -177,6 +177,7 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 		extra_spacing = EDITOR_GET("interface/theme/additional_spacing");
 		extra_spacing *= 2.0;
 	}
+	tree->set_column_clip_content(0, true);
 	tree->set_column_custom_minimum_width(1, 18 * _get_editor_scale());
 	tree->set_column_custom_minimum_width(2, (50 + extra_spacing) * _get_editor_scale());
 }
