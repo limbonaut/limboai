@@ -109,11 +109,11 @@ offset_bottom = 39.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="Label" type="Label" parent="UI Layer/Control/VBoxContainer"]
+[node name="Controls" type="Label" parent="UI Layer/Control/VBoxContainer"]
 layout_mode = 2
 text = "Move      WASD
 Attack    ENTER or F
-Dash      SPACE"
+Dodge    SPACE"
 label_settings = SubResource("LabelSettings_0r6iv")
 
 [node name="HPBar" type="TextureProgressBar" parent="UI Layer/Control"]

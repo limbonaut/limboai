@@ -1,11 +1,11 @@
 extends LimboState
-## Idle state.
+## Dodge state.
 
 
 @export var animation_player: AnimationPlayer
 @export var animation: StringName
 @export var duration: float = 0.4
-@export var dash_speed: float = 1000.0
+@export var dodge_speed: float = 1000.0
 @export var hurtbox_collision: CollisionShape2D
 
 var move_dir: Vector2
@@ -32,7 +32,7 @@ func _exit() -> void:
 
 func _update(p_delta: float) -> void:
 	elapsed_time += p_delta
-	var desired_velocity: Vector2 = move_dir * dash_speed
+	var desired_velocity: Vector2 = move_dir * dodge_speed
 	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()
 	if elapsed_time > duration:

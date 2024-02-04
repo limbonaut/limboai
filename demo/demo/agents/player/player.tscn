@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://demo/agents/player/states/idle_state.gd" id="3_ekb12"]
 [ext_resource type="Script" path="res://demo/agents/player/states/move_state.gd" id="4_paikn"]
 [ext_resource type="Script" path="res://demo/agents/player/states/attack_state.gd" id="5_mpgu6"]
-[ext_resource type="Script" path="res://demo/agents/player/DashState.gd" id="6_hdeid"]
+[ext_resource type="Script" path="res://demo/agents/player/DodgeState.gd" id="6_7o4a6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8pofm"]
 size = Vector2(130, 45)
@@ -14,7 +14,7 @@ size = Vector2(130, 45)
 collision_layer = 0
 collision_mask = 1
 script = ExtResource("2_24nyi")
-dash_cooldown = 0.4
+dodge_cooldown = 0.4
 
 [node name="WeaponNinjaStar" parent="Root" index="1"]
 position = Vector2(-55, -76)
@@ -51,8 +51,8 @@ animation_player = NodePath("../../AnimationPlayer")
 animations = Array[StringName]([&"attack_1", &"attack_2", &"attack_3"])
 hitbox = NodePath("../../Root/Hitbox")
 
-[node name="DashState" type="LimboState" parent="LimboHSM" index="3" node_paths=PackedStringArray("animation_player", "hurtbox_collision")]
-script = ExtResource("6_hdeid")
+[node name="DodgeState" type="LimboState" parent="LimboHSM" index="3" node_paths=PackedStringArray("animation_player", "hurtbox_collision")]
+script = ExtResource("6_7o4a6")
 animation_player = NodePath("../../AnimationPlayer")
-animation = &"dash"
+animation = &"dodge"
 hurtbox_collision = NodePath("../../Root/Hurtbox/HurtboxCollisionShape2D")
