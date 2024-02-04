@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3ae14mc2ty3y"]
+[gd_scene load_steps=11 format=3 uid="uid://b3ae14mc2ty3y"]
 
 [ext_resource type="Script" path="res://demo/scenes/agent_showcase.gd" id="1_frr2n"]
 [ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_hb4lh"]
@@ -6,6 +6,7 @@
 [ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="4_tju7a"]
 [ext_resource type="FontFile" uid="uid://n231m6uqsq6x" path="res://demo/assets/fonts/junction_bold.otf" id="5_0fprc"]
 [ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/arena.tscn" id="6_6awy2"]
+[ext_resource type="Script" path="res://demo/scenes/toggle_fullscreen.gd" id="6_y6c7b"]
 [ext_resource type="PackedScene" uid="uid://c5fhe3tulhlco" path="res://demo/props/dummy.tscn" id="7_ao7an"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3uhve"]
@@ -146,6 +147,18 @@ text = "demo project"
 label_settings = SubResource("LabelSettings_la4ui")
 horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 120.0
+offset_bottom = 53.0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_tju7a")
+theme_override_font_sizes/font_size = 22
+text = "Toggle Fullscreen"
+script = ExtResource("6_y6c7b")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 0)

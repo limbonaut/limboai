@@ -1,10 +1,10 @@
 [gd_resource type="BehaviorTree" load_steps=27 format=3 uid="uid://ylife72ym5et"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="1_3ovx6"]
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_g3c1d"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_l3434"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_km0bx"]
-[ext_resource type="Script" path="res://demo/ai/tasks/leap_forward.gd" id="5_socam"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_657p6"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_t3udh"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_u2ra5"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_xwjl7"]
+[ext_resource type="Script" path="res://demo/ai/tasks/leap_forward.gd" id="5_f6dg8"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_qd806"]
 var/speed/name = "speed"
@@ -36,12 +36,12 @@ custom_name = "Short break"
 children = [SubResource("BTPlayAnimation_ha2ag"), SubResource("BTRandomWait_cedqr")]
 
 [sub_resource type="BTAction" id="BTAction_pp23y"]
-script = ExtResource("1_g3c1d")
+script = ExtResource("1_657p6")
 group = &"player"
 output_var = "target"
 
 [sub_resource type="BTAction" id="BTAction_pmvd0"]
-script = ExtResource("1_3ovx6")
+script = ExtResource("2_t3udh")
 target_var = "target"
 closest_side = false
 flank_side = 0
@@ -59,7 +59,7 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_87mi0"]
-script = ExtResource("2_l3434")
+script = ExtResource("3_u2ra5")
 target_position_var = "flank_pos"
 speed_var = "speed"
 tolerance = 50.0
@@ -69,7 +69,7 @@ custom_name = "Flank target"
 children = [SubResource("BTAction_pp23y"), SubResource("BTAction_pmvd0"), SubResource("BTPlayAnimation_h0poo"), SubResource("BTAction_87mi0")]
 
 [sub_resource type="BTAction" id="BTAction_q5g4a"]
-script = ExtResource("4_km0bx")
+script = ExtResource("4_xwjl7")
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_bfijg"]
@@ -98,7 +98,7 @@ animation_name = &"charge"
 blend = 0.05
 
 [sub_resource type="BTAction" id="BTAction_o18uk"]
-script = ExtResource("5_socam")
+script = ExtResource("5_f6dg8")
 force = 1000.0
 duration = 2.0
 

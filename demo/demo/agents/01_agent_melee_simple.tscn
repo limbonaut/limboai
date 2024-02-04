@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_l180o"]
 [ext_resource type="Texture2D" uid="uid://cw8s50856x8ct" path="res://demo/assets/agent_melee_simple.png" id="2_bvbes"]
-[ext_resource type="BehaviorTree" uid="uid://bpdm5jnegi38" path="res://demo/ai/trees/enemy_melee_simple.tres" id="3_tb7cx"]
+[ext_resource type="BehaviorTree" uid="uid://bpdm5jnegi38" path="res://demo/ai/trees/01_agent_melee_simple.tres" id="3_tb7cx"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_s08ac"]
 var/speed/name = "speed"

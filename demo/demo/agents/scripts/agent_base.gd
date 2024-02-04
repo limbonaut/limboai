@@ -12,7 +12,7 @@ extends CharacterBody2D
 
 ## Base agent script.
 
-const MINION_RESOURCE := "res://demo/agents/agent_imp.tscn"
+const MINION_RESOURCE := "res://demo/agents/03_agent_imp.tscn"
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
@@ -112,6 +112,8 @@ func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
 
 
 func die() -> void:
+	if _is_dead:
+		return
 	_is_dead = true
 	root.process_mode = Node.PROCESS_MODE_DISABLED
 	animation_player.play(&"death")

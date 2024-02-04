@@ -78,4 +78,3 @@ func _on_agent_selection_id_pressed(id: int) -> void:
 	agent_selection.text = bt_player.behavior_tree.resource_path.get_file()
 	previous.disabled = id == 0
 	next.disabled = id == 8
-

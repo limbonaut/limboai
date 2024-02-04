@@ -1,10 +1,10 @@
 [gd_resource type="BehaviorTree" load_steps=30 format=3 uid="uid://c2bxoo68ywb27"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_qgdmn"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_kcs76"]
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="3_cy2w4"]
-[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="4_lorkr"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_1vcyu"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_cdtqu"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_31fsn"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="3_y1r1a"]
+[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="4_jlgat"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_o4ggh"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -23,13 +23,13 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_chmiy"]
-script = ExtResource("1_qgdmn")
+script = ExtResource("1_cdtqu")
 range_min = 200.0
 range_max = 500.0
 position_var = "pos"
 
 [sub_resource type="BTAction" id="BTAction_5kivl"]
-script = ExtResource("2_kcs76")
+script = ExtResource("2_31fsn")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
@@ -69,12 +69,12 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_ulbrf"]
-script = ExtResource("3_cy2w4")
+script = ExtResource("3_y1r1a")
 group = &"player"
 output_var = "target"
 
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
-script = ExtResource("4_lorkr")
+script = ExtResource("4_jlgat")
 target_var = "target"
 speed_var = "speed"
 approach_distance = 100.0
@@ -88,7 +88,7 @@ custom_name = "Pursue player"
 children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"), SubResource("BTTimeLimit_xek5v")]
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
-script = ExtResource("5_1vcyu")
+script = ExtResource("5_o4ggh")
 target_var = "target"
 
 [sub_resource type="BTWait" id="BTWait_tadkc"]

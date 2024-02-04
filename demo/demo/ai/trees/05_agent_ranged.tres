@@ -1,10 +1,10 @@
 [gd_resource type="BehaviorTree" load_steps=40 format=3 uid="uid://cqluon1y1hnn5"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_3j1v8"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_vbh52"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_20ffh"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_x8yor"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="5_mexvv"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_4xk1i"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="2_647kx"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_q4r2p"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="4_53hao"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_aexyq"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -27,7 +27,7 @@ min_duration = 1.2
 max_duration = 2.5
 
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
-script = ExtResource("1_3j1v8")
+script = ExtResource("1_4xk1i")
 group = &"player"
 output_var = "target"
 
@@ -39,7 +39,7 @@ children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud
 custom_name = "He is bored attacking player all the time ;)"
 
 [sub_resource type="BTAction" id="BTAction_lpk67"]
-script = ExtResource("5_mexvv")
+script = ExtResource("2_647kx")
 range_min = 300.0
 range_max = 500.0
 position_var = "pos"
@@ -54,7 +54,7 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_apfsn"]
-script = ExtResource("3_20ffh")
+script = ExtResource("3_q4r2p")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
@@ -72,7 +72,7 @@ run_chance = 0.3
 children = [SubResource("BTSequence_0gdqn")]
 
 [sub_resource type="BTAction" id="BTAction_kuuw2"]
-script = ExtResource("2_vbh52")
+script = ExtResource("4_53hao")
 target_var = "target"
 closest_side = true
 flank_side = 0
@@ -90,7 +90,7 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_66hsk"]
-script = ExtResource("3_20ffh")
+script = ExtResource("3_q4r2p")
 target_position_var = "shoot_pos"
 speed_var = "speed"
 tolerance = 50.0
@@ -99,7 +99,7 @@ tolerance = 50.0
 children = [SubResource("BTAction_66hsk")]
 
 [sub_resource type="BTAction" id="BTAction_enw2m"]
-script = ExtResource("4_x8yor")
+script = ExtResource("5_aexyq")
 target_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_lhg7f"]

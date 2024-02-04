@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_oa4xm"]
 [ext_resource type="Texture2D" uid="uid://cjts4ennjtepg" path="res://demo/assets/agent_ranged.png" id="2_37lvn"]
-[ext_resource type="BehaviorTree" uid="uid://cqluon1y1hnn5" path="res://demo/ai/trees/enemy_ranged.tres" id="3_f7r5w"]
+[ext_resource type="BehaviorTree" uid="uid://cqluon1y1hnn5" path="res://demo/ai/trees/05_agent_ranged.tres" id="3_f7r5w"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_2kwy7"]
 var/speed/name = "speed"
