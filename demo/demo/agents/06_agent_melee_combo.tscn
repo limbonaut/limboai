@@ -4,12 +4,17 @@
 [ext_resource type="Texture2D" uid="uid://bo0ibp7tvjbba" path="res://demo/assets/agent_combo.png" id="2_4rqld"]
 [ext_resource type="BehaviorTree" uid="uid://cpncl1db8j12f" path="res://demo/ai/trees/06_agent_melee_combo.tres" id="3_l805q"]
 
-[sub_resource type="BlackboardPlan" id="BlackboardPlan_78rmu"]
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_67ric"]
 var/speed/name = "speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/charge_speed/name = "charge_speed"
+var/charge_speed/type = 3
+var/charge_speed/value = 1000.0
+var/charge_speed/hint = 0
+var/charge_speed/hint_string = ""
 
 [node name="AgentMeleeCombo" instance=ExtResource("1_dny3b")]
 
@@ -31,11 +36,9 @@ texture = ExtResource("2_4rqld")
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_4rqld")
 
-[node name="WeaponNinjaStar" parent="Root" index="2"]
-position = Vector2(-55, -76)
-rotation = 0.0
+[node name="WeaponNinjaStar" parent="Root" index="1"]
 scale = Vector2(0.999983, 0.999976)
 
 [node name="BTPlayer" type="BTPlayer" parent="." index="4"]
 behavior_tree = ExtResource("3_l805q")
-blackboard_plan = SubResource("BlackboardPlan_78rmu")
+blackboard_plan = SubResource("BlackboardPlan_67ric")

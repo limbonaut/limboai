@@ -23,9 +23,7 @@ enum AgentSide {
 ## Blackboard variable that holds current target (should be a Node2D instance).
 @export var target_var: String = "target"
 
-## Should closest side be selected?
-@export var closest_side: bool = false
-
+## Which agent's side should we flank?
 @export var flank_side: AgentSide = AgentSide.CLOSEST
 
 ## Minimum range relative to the target.
@@ -37,6 +35,7 @@ enum AgentSide {
 ## Blackboard variable that will be used to store selected position.
 @export var position_var: String = "pos"
 
+
 # Display a customized name (requires @tool).
 func _generate_name() -> String:
 	return "SelectFlankingPos  target: %s  range: [%s, %s]  side: %s  ➜%s" % [
@@ -46,17 +45,18 @@ func _generate_name() -> String:
 		AgentSide.keys()[flank_side],
 		LimboUtility.decorate_var(position_var)]
 
+
 # Called each time this task is ticked (aka executed).
 func _tick(_delta: float) -> Status:
 	var target := blackboard.get_var(target_var) as Node2D
 	if not is_instance_valid(target):
 		return FAILURE
 
-	var dir: float
+	var dir: float  # 1.0 is right, -1.0 is left (relative to target)
 	match flank_side:
 		AgentSide.FARTHEST:
 			dir = signf(target.global_position.x - agent.global_position.x)
-		AgentSide.CLOSEST:
+		AgentSide.CLOSEST :
 			dir = -signf(target.global_position.x - agent.global_position.x)
 		AgentSide.BACK:
 			dir = -target.get_facing()

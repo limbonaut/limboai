@@ -77,4 +77,4 @@ func _on_agent_selection_id_pressed(id: int) -> void:
 	_load_agent("res://demo/agents/".path_join(agent_files[id]))
 	agent_selection.text = bt_player.behavior_tree.resource_path.get_file()
 	previous.disabled = id == 0
-	next.disabled = id == 8
+	next.disabled = id == (agent_files.size()-1)

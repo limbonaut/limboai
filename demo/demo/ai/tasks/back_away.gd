@@ -13,14 +13,19 @@ extends BTAction
 ## BackAway
 ## Returns RUNNING always.
 
+## Blackboard variable that stores desired speed.
 @export var speed_var: String = "speed"
+
+## How much can we deviate from the "away" direction (in radians).
 @export var max_angle_deviation: float = 0.7
 
 var _dir: Vector2
 var _desired_velocity: Vector2
 
+
 # Called each time this task is entered.
 func _enter() -> void:
+	# Determine "away" direction and desired velocity
 	_dir = Vector2.LEFT * agent.get_facing()
 	var speed: float = blackboard.get_var(speed_var, 200.0)
 	var rand_angle = randf_range(-max_angle_deviation, max_angle_deviation)

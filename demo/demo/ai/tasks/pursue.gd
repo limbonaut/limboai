@@ -16,24 +16,32 @@ extends BTAction
 ## Returns SUCCESS, when at the desired position from target (flanking it).
 ## Returns FAILURE, if target is not a valid Node2D instance.
 
-
+## How close should the agent be to the desired position to return SUCCESS.
 const TOLERANCE := 30.0
 
+## Blackboard variable that stores our target (expecting Node2D).
 @export var target_var: String = "target"
+
+## Blackboard variable that stores desired speed.
 @export var speed_var: String = "speed"
+
+## Desired distance from target.
 @export var approach_distance: float = 100.0
 
-#var _side: float
 var _waypoint: Vector2
+
 
 # Display a customized name (requires @tool).
 func _generate_name() -> String:
 	return "Pursue %s" % [LimboUtility.decorate_var(target_var)]
 
 
+# Called each time this task is entered.
 func _enter() -> void:
 	var target: Node2D = blackboard.get_var(target_var, null)
 	if is_instance_valid(target):
+		# Movement is performed in smaller steps.
+		# For each step, we select a new waypoint.
 		_select_new_waypoint(_get_desired_position(target))
 
 
@@ -47,9 +55,10 @@ func _tick(_delta: float) -> Status:
 	if agent.global_position.distance_to(desired_pos) < TOLERANCE:
 		return SUCCESS
 
-	var speed: float = blackboard.get_var(speed_var, 200.0)
 	if agent.global_position.distance_to(_waypoint) < TOLERANCE:
 		_select_new_waypoint(desired_pos)
+
+	var speed: float = blackboard.get_var(speed_var, 200.0)
 	var desired_velocity: Vector2 = agent.global_position.direction_to(_waypoint) * speed
 	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()
@@ -57,7 +66,7 @@ func _tick(_delta: float) -> Status:
 	return RUNNING
 
 
-## Get closest flanking position to target.
+## Get the closest flanking position to target.
 func _get_desired_position(target: Node2D) -> Vector2:
 	var side: float = signf(agent.global_position.x - target.global_position.x)
 	var desired_pos: Vector2 = target.global_position

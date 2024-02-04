@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_t3udh"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_u2ra5"]
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_xwjl7"]
-[ext_resource type="Script" path="res://demo/ai/tasks/leap_forward.gd" id="5_f6dg8"]
+[ext_resource type="Script" path="res://demo/ai/tasks/move_forward.gd" id="5_ucvak"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_qd806"]
 var/speed/name = "speed"
@@ -14,7 +14,7 @@ var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 var/charge_speed/name = "charge_speed"
 var/charge_speed/type = 3
-var/charge_speed/value = 800.0
+var/charge_speed/value = 1000.0
 var/charge_speed/hint = 1
 var/charge_speed/hint_string = "10,1000,10"
 
@@ -43,7 +43,6 @@ output_var = "target"
 [sub_resource type="BTAction" id="BTAction_pmvd0"]
 script = ExtResource("2_t3udh")
 target_var = "target"
-closest_side = false
 flank_side = 0
 range_min = 500
 range_max = 600
@@ -98,8 +97,8 @@ animation_name = &"charge"
 blend = 0.05
 
 [sub_resource type="BTAction" id="BTAction_o18uk"]
-script = ExtResource("5_f6dg8")
-force = 1000.0
+script = ExtResource("5_ucvak")
+speed_var = "charge_speed"
 duration = 2.0
 
 [sub_resource type="BTSequence" id="BTSequence_8lur1"]

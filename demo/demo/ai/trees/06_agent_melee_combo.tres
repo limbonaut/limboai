@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_5nwkp"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_3tom2"]
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_hi228"]
-[ext_resource type="Script" path="res://demo/ai/tasks/leap_forward.gd" id="5_fpbac"]
+[ext_resource type="Script" path="res://demo/ai/tasks/move_forward.gd" id="5_au5yc"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -12,6 +12,11 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/charge_speed/name = "charge_speed"
+var/charge_speed/type = 3
+var/charge_speed/value = 1000.0
+var/charge_speed/hint = 0
+var/charge_speed/hint_string = ""
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
 saved_value = NodePath("AnimationPlayer")
@@ -38,7 +43,6 @@ children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud
 [sub_resource type="BTAction" id="BTAction_85keo"]
 script = ExtResource("2_5nwkp")
 target_var = "target"
-closest_side = true
 flank_side = 0
 range_min = 300
 range_max = 400
@@ -83,8 +87,8 @@ animation_player = SubResource("BBNode_s8evu")
 animation_name = &"attack_1"
 
 [sub_resource type="BTAction" id="BTAction_u22bc"]
-script = ExtResource("5_fpbac")
-force = 1000.0
+script = ExtResource("5_au5yc")
+speed_var = "charge_speed"
 duration = 0.1
 
 [sub_resource type="BTParallel" id="BTParallel_ec2e3"]
@@ -104,8 +108,8 @@ animation_player = SubResource("BBNode_3oljv")
 animation_name = &"attack_2"
 
 [sub_resource type="BTAction" id="BTAction_yuxl3"]
-script = ExtResource("5_fpbac")
-force = 1000.0
+script = ExtResource("5_au5yc")
+speed_var = "charge_speed"
 duration = 0.1
 
 [sub_resource type="BTParallel" id="BTParallel_thojy"]
@@ -125,8 +129,8 @@ animation_player = SubResource("BBNode_ot40l")
 animation_name = &"attack_3"
 
 [sub_resource type="BTAction" id="BTAction_rwp18"]
-script = ExtResource("5_fpbac")
-force = 1000.0
+script = ExtResource("5_au5yc")
+speed_var = "charge_speed"
 duration = 0.1
 
 [sub_resource type="BTParallel" id="BTParallel_qmdfb"]

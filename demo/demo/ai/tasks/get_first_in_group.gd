@@ -10,10 +10,13 @@
 #*
 @tool
 extends BTAction
-
 ## Get first node in group and save it to the blackboard.
+## Returns FAILURE if group contains 0 nodes.
 
+## Name of the SceneTree group.
 @export var group: StringName
+
+## Blackboard variable in which the task will store the acquired node.
 @export var output_var: String = "target"
 
 
@@ -24,6 +27,8 @@ func _generate_name() -> String:
 		]
 
 func _tick(_delta: float) -> Status:
-	var node = agent.get_tree().get_first_node_in_group(group)
-	blackboard.set_var(output_var, node)
+	var nodes: Array[Node] = agent.get_tree().get_nodes_in_group(group)
+	if nodes.size() == 0:
+		return FAILURE
+	blackboard.set_var(output_var, nodes[0])
 	return SUCCESS

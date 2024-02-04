@@ -12,7 +12,6 @@ class_name Hurtbox
 extends Area2D
 ## Area that registers damage.
 
-
 @export var health: Health
 
 var last_attack_vector: Vector2

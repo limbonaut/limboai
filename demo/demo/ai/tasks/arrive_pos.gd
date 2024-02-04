@@ -10,11 +10,17 @@
 #*
 @tool
 extends BTAction
-## Arrive to a position, with a bias to horizontal movement.
+## ArrivePos: Arrive to a position, with a bias to horizontal movement.
+## Returns SUCCESS when close to the target position (see tolerance);
+## otherwise returns RUNNING.
 
-
+## Blackboard variable that stores the target position (Vector2)
 @export var target_position_var := "pos"
+
+## Variable that stores desired speed (float)
 @export var speed_var := "speed"
+
+## How close should the agent be to the target position to return SUCCESS.
 @export var tolerance := 50.0
 
 
@@ -30,10 +36,13 @@ func _tick(_delta: float) -> Status:
 
 	var speed: float = blackboard.get_var(speed_var, 10.0)
 	var dist: float = absf(agent.global_position.x - target_pos.x)
+	var dir: Vector2 = agent.global_position.direction_to(target_pos)
+
+	# Prefer horizontal movement:
 	var vertical_factor: float = remap(dist, 200.0, 500.0, 1.0, 0.0)
 	vertical_factor = clampf(vertical_factor, 0.0, 1.0)
-	var dir: Vector2 = agent.global_position.direction_to(target_pos)
 	dir.y *= vertical_factor
+
 	var desired_velocity: Vector2 = dir.normalized() * speed
 	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
 	agent.move_and_slide()

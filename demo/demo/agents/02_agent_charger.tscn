@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://ce16nc0wy2s8" path="res://demo/assets/agent_charger.png" id="2_y7pic"]
 [ext_resource type="BehaviorTree" uid="uid://ylife72ym5et" path="res://demo/ai/trees/02_agent_charger.tres" id="3_nacc3"]
 
-[sub_resource type="BlackboardPlan" id="BlackboardPlan_b4r3u"]
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_pmyhf"]
 var/speed/name = "speed"
 var/speed/type = 3
 var/speed/value = 400.0
@@ -12,7 +12,7 @@ var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 var/charge_speed/name = "charge_speed"
 var/charge_speed/type = 3
-var/charge_speed/value = 800.0
+var/charge_speed/value = 1000.0
 var/charge_speed/hint = 1
 var/charge_speed/hint_string = "10,1000,10"
 
@@ -38,4 +38,4 @@ texture = ExtResource("2_y7pic")
 
 [node name="BTPlayer" type="BTPlayer" parent="." index="4"]
 behavior_tree = ExtResource("3_nacc3")
-blackboard_plan = SubResource("BlackboardPlan_b4r3u")
+blackboard_plan = SubResource("BlackboardPlan_pmyhf")

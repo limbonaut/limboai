@@ -10,9 +10,12 @@
 #*
 extends CharacterBody2D
 
-## Base agent script.
+## Base agent script that is shared by all agents.
 
+# Resource file to use in summon_minion() method.
 const MINION_RESOURCE := "res://demo/agents/03_agent_imp.tscn"
+
+# Projectile resource.
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
@@ -22,21 +25,21 @@ const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var summoning_effect: GPUParticles2D = $FX/Summoned
 
-
 var _frames_since_facing_update: int = 0
 var _is_dead: bool = false
+
 
 func _ready() -> void:
 	health.damaged.connect(_damaged)
 	health.death.connect(die)
 
-
+## Update agent's facing in the velocity direction.
 func update_facing() -> void:
 	_frames_since_facing_update += 1
 	if _frames_since_facing_update > 3:
 		face_dir(velocity.x)
 
-
+## Face specified direction.
 func face_dir(dir: float) -> void:
 	if dir > 0.0 and root.scale.x < 0.0:
 		root.scale.x = 1.0;
@@ -72,6 +75,7 @@ func summon_minion(p_position: Vector2) -> void:
 	minion.play_summoning_effect()
 
 
+## Method is used when this agent is summoned from the dungeons of the castle AaaAaaAAAAAaaAAaaaaaa
 func play_summoning_effect() -> void:
 	summoning_effect.emitting = true
 
@@ -86,6 +90,7 @@ func is_good_position(p_position: Vector2) -> bool:
 	return collision.is_empty()
 
 
+## When agent is damaged...
 func _damaged(_amount: float, knockback: Vector2) -> void:
 	apply_knockback(knockback)
 	animation_player.play(&"hurt")
@@ -102,6 +107,7 @@ func _damaged(_amount: float, knockback: Vector2) -> void:
 		hsm.set_active(true)
 
 
+## Push agent in the knockback direction for the specified number of physics frames.
 func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
 	if knockback.is_zero_approx():
 		return

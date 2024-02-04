@@ -10,8 +10,10 @@
 #*
 @tool
 extends BTAction
-## FaceTarget
+## FaceTarget and return SUCCESS.
+## Returns FAILURE if target is not a valid Node2D instance.
 
+## Blackboard variable that stores our target (expecting Node2D).
 @export var target_var: String = "target"
 
 # Display a customized name (requires @tool).
