@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=27 format=3 uid="uid://ylife72ym5et"]
+[gd_resource type="BehaviorTree" load_steps=28 format=3 uid="uid://ylife72ym5et"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_657p6"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_t3udh"]
@@ -28,8 +28,7 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_cedqr"]
-min_duration = 2.0
-max_duration = 5.0
+max_duration = 3.0
 
 [sub_resource type="BTSequence" id="BTSequence_l3v31"]
 custom_name = "Short break"
@@ -63,9 +62,13 @@ target_position_var = "flank_pos"
 speed_var = "speed"
 tolerance = 50.0
 
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_is5ag"]
+time_limit = 3.0
+children = [SubResource("BTAction_87mi0")]
+
 [sub_resource type="BTSequence" id="BTSequence_p6pgg"]
 custom_name = "Flank target"
-children = [SubResource("BTAction_pp23y"), SubResource("BTAction_pmvd0"), SubResource("BTPlayAnimation_h0poo"), SubResource("BTAction_87mi0")]
+children = [SubResource("BTAction_pp23y"), SubResource("BTAction_pmvd0"), SubResource("BTPlayAnimation_h0poo"), SubResource("BTTimeLimit_is5ag")]
 
 [sub_resource type="BTAction" id="BTAction_q5g4a"]
 script = ExtResource("4_xwjl7")

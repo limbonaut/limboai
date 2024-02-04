@@ -36,6 +36,12 @@ texture = ExtResource("2_y7pic")
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_y7pic")
 
+[node name="Hitbox" parent="Root" index="2"]
+damage = 2.0
+
+[node name="Health" parent="." index="3"]
+max_health = 8.0
+
 [node name="BTPlayer" type="BTPlayer" parent="." index="4"]
 behavior_tree = ExtResource("3_nacc3")
 blackboard_plan = SubResource("BlackboardPlan_pmyhf")

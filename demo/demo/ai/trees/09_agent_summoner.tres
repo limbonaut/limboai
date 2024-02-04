@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=28 format=3 uid="uid://cpxk7jnqpwwlc"]
+[gd_resource type="BehaviorTree" load_steps=33 format=3 uid="uid://cpxk7jnqpwwlc"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_sgn0p"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_pshl2"]
@@ -14,6 +14,24 @@ var/summon_cooldown/type = 1
 var/summon_cooldown/value = false
 var/summon_cooldown/hint = 0
 var/summon_cooldown/hint_string = ""
+
+[sub_resource type="BBNode" id="BBNode_b7euf"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_sot6a"]
+animation_player = SubResource("BBNode_b7euf")
+animation_name = &"idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_0wc6p"]
+
+[sub_resource type="BTSequence" id="BTSequence_kwkxc"]
+custom_name = "Summoning sickness"
+children = [SubResource("BTPlayAnimation_sot6a"), SubResource("BTRandomWait_0wc6p")]
+
+[sub_resource type="BTRunLimit" id="BTRunLimit_x2jr4"]
+children = [SubResource("BTSequence_kwkxc")]
 
 [sub_resource type="BTComment" id="BTComment_ef6y0"]
 custom_name = "Variable $summon_cooldown is updated by the Cooldown task below"
@@ -62,6 +80,7 @@ method = &"summon_minion"
 args = Array[BBVariant]([SubResource("BBVariant_wfjwy")])
 
 [sub_resource type="BTCooldown" id="BTCooldown_25f70"]
+duration = 6.0
 cooldown_state_var = "summon_cooldown"
 children = [SubResource("BTCallMethod_4ath5")]
 
@@ -117,7 +136,7 @@ custom_name = "Reposition"
 children = [SubResource("BTAction_33wje"), SubResource("BTPlayAnimation_qbxm8"), SubResource("BTTimeLimit_i05cm"), SubResource("BTSequence_ks71q")]
 
 [sub_resource type="BTSelector" id="BTSelector_gp6q5"]
-children = [SubResource("BTSequence_2n742"), SubResource("BTSequence_dss4d")]
+children = [SubResource("BTRunLimit_x2jr4"), SubResource("BTSequence_2n742"), SubResource("BTSequence_dss4d")]
 
 [resource]
 blackboard_plan = SubResource("BlackboardPlan_58oq1")

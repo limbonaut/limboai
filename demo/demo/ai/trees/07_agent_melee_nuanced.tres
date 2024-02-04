@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=45 format=3 uid="uid://c2u6sljqkim0n"]
+[gd_resource type="BehaviorTree" load_steps=46 format=3 uid="uid://c2u6sljqkim0n"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_08fik"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_te3yo"]
@@ -28,7 +28,6 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
-max_duration = 3.0
 
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
 script = ExtResource("1_08fik")
@@ -52,7 +51,6 @@ speed = 1.5
 [sub_resource type="BTAction" id="BTAction_6e48s"]
 script = ExtResource("2_te3yo")
 target_var = "target"
-closest_side = false
 flank_side = 1
 range_min = 400
 range_max = 600
@@ -124,7 +122,6 @@ metadata/_weight_ = 4.0
 [sub_resource type="BTAction" id="BTAction_mf87t"]
 script = ExtResource("2_te3yo")
 target_var = "target"
-closest_side = false
 flank_side = 0
 range_min = 350
 range_max = 600
@@ -145,6 +142,10 @@ target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
 
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_tidwl"]
+time_limit = 3.0
+children = [SubResource("BTAction_6nx58")]
+
 [sub_resource type="BTAction" id="BTAction_8q20y"]
 script = ExtResource("4_mvsyw")
 target_var = "target"
@@ -160,7 +161,6 @@ blend = 0.1
 speed = 0.7
 
 [sub_resource type="BTWait" id="BTWait_gbcyb"]
-duration = 1.3
 
 [sub_resource type="BBNode" id="BBNode_qkfqt"]
 saved_value = NodePath("AnimationPlayer")
@@ -181,11 +181,11 @@ node = SubResource("BBNode_1yxc5")
 method = &"throw_ninja_star"
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_2pmoe"]
-min_duration = 1.5
+max_duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_rgbq3"]
 custom_name = "Throw ninja star"
-children = [SubResource("BTAction_mf87t"), SubResource("BTPlayAnimation_mfbeu"), SubResource("BTAction_6nx58"), SubResource("BTAction_8q20y"), SubResource("BTPlayAnimation_qa8jy"), SubResource("BTWait_gbcyb"), SubResource("BTPlayAnimation_0ktds"), SubResource("BTCallMethod_yx4fk"), SubResource("BTRandomWait_2pmoe")]
+children = [SubResource("BTAction_mf87t"), SubResource("BTPlayAnimation_mfbeu"), SubResource("BTTimeLimit_tidwl"), SubResource("BTAction_8q20y"), SubResource("BTPlayAnimation_qa8jy"), SubResource("BTWait_gbcyb"), SubResource("BTPlayAnimation_0ktds"), SubResource("BTCallMethod_yx4fk"), SubResource("BTRandomWait_2pmoe")]
 metadata/_weight_ = 2.0
 
 [sub_resource type="BTProbabilitySelector" id="BTProbabilitySelector_rjsiq"]

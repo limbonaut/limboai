@@ -74,7 +74,6 @@ children = [SubResource("BTSequence_0gdqn")]
 [sub_resource type="BTAction" id="BTAction_kuuw2"]
 script = ExtResource("4_53hao")
 target_var = "target"
-closest_side = true
 flank_side = 0
 range_min = 400
 range_max = 1000

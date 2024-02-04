@@ -14,6 +14,7 @@ extends LimboState
 
 @export var animation_player: AnimationPlayer
 @export var animations: Array[StringName]
+@export var hitbox: Hitbox
 
 var attack_pressed: int
 
@@ -27,7 +28,9 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _enter() -> void:
 	attack_pressed = 0
+	hitbox.damage = 1
 	for idx in animations.size():
+		hitbox.damage = 2 if idx == 2 else 1  # deal 2 damage on third attack
 		animation_player.play(animations[idx])
 		await animation_player.animation_finished
 		if attack_pressed <= 0 or not is_active():
@@ -37,3 +40,7 @@ func _enter() -> void:
 		attack_pressed -= 1
 	if is_active():
 		get_root().dispatch(EVENT_FINISHED)
+
+
+func _exit() -> void:
+	hitbox.damage = 1

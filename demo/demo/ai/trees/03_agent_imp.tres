@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=30 format=3 uid="uid://c2bxoo68ywb27"]
+[gd_resource type="BehaviorTree" load_steps=35 format=3 uid="uid://c2bxoo68ywb27"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_cdtqu"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_31fsn"]
@@ -12,6 +12,24 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+
+[sub_resource type="BBNode" id="BBNode_6xa35"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_4q5m7"]
+animation_player = SubResource("BBNode_6xa35")
+animation_name = &"idle"
+blend = 0.1
+
+[sub_resource type="BTRandomWait" id="BTRandomWait_025eh"]
+
+[sub_resource type="BTSequence" id="BTSequence_ds6uq"]
+custom_name = "Idle"
+children = [SubResource("BTPlayAnimation_4q5m7"), SubResource("BTRandomWait_025eh")]
+
+[sub_resource type="BTCooldown" id="BTCooldown_u2lrv"]
+children = [SubResource("BTSequence_ds6uq")]
 
 [sub_resource type="BBNode" id="BBNode_3y70b"]
 saved_value = NodePath("AnimationPlayer")
@@ -52,7 +70,7 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
-min_duration = 0.7
+min_duration = 0.5
 max_duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
@@ -112,7 +130,7 @@ custom_name = "Engage player"
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]
 
 [sub_resource type="BTSelector" id="BTSelector_y3llm"]
-children = [SubResource("BTProbability_ifsry"), SubResource("BTSequence_pxl2k")]
+children = [SubResource("BTCooldown_u2lrv"), SubResource("BTProbability_ifsry"), SubResource("BTSequence_pxl2k")]
 
 [resource]
 blackboard_plan = SubResource("BlackboardPlan_46tbn")

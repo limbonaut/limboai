@@ -9,8 +9,9 @@
 #* =============================================================================
 #*
 extends CharacterBody2D
-
 ## Base agent script that is shared by all agents.
+
+signal death
 
 # Resource file to use in summon_minion() method.
 const MINION_RESOURCE := "res://demo/agents/03_agent_imp.tscn"
@@ -19,14 +20,14 @@ const MINION_RESOURCE := "res://demo/agents/03_agent_imp.tscn"
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
+var _frames_since_facing_update: int = 0
+var _is_dead: bool = false
+
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var health: Health = $Health
 @onready var root: Node2D = $Root
 @onready var collision_shape_2d: CollisionShape2D = $CollisionShape2D
 @onready var summoning_effect: GPUParticles2D = $FX/Summoned
-
-var _frames_since_facing_update: int = 0
-var _is_dead: bool = false
 
 
 func _ready() -> void:
@@ -120,6 +121,7 @@ func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
 func die() -> void:
 	if _is_dead:
 		return
+	death.emit()
 	_is_dead = true
 	root.process_mode = Node.PROCESS_MODE_DISABLED
 	animation_player.play(&"death")
@@ -129,5 +131,10 @@ func die() -> void:
 		if child is BTPlayer or child is LimboHSM:
 			child.set_active(false)
 
-	await get_tree().create_timer(10.0).timeout
-	queue_free()
+	if get_tree():
+		await get_tree().create_timer(10.0).timeout
+		queue_free()
+
+
+func get_health() -> Health:
+	return health

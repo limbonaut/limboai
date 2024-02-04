@@ -13,11 +13,11 @@ extends LimboState
 
 
 @export var animation_player: AnimationPlayer
-@export var animation: StringName
+@export var idle_animation: StringName
 
 
 func _enter() -> void:
-	animation_player.play(animation, 0.1)
+	animation_player.play(idle_animation, 0.1)
 
 
 func _update(_delta: float) -> void:

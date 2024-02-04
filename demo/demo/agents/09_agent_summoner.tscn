@@ -10,6 +10,11 @@ var/speed/type = 3
 var/speed/value = 300.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/summon_cooldown/name = "summon_cooldown"
+var/summon_cooldown/type = 1
+var/summon_cooldown/value = false
+var/summon_cooldown/hint = 0
+var/summon_cooldown/hint_string = ""
 
 [node name="AgentSummoner" instance=ExtResource("1_neifu")]
 
@@ -30,6 +35,13 @@ texture = ExtResource("2_fcti4")
 
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_fcti4")
+
+[node name="WeaponNinjaStar" parent="Root" index="1"]
+position = Vector2(-55, -76)
+rotation = 0.0
+
+[node name="Health" parent="." index="3"]
+max_health = 8.0
 
 [node name="BTPlayer" type="BTPlayer" parent="." index="5"]
 behavior_tree = ExtResource("3_bunpq")

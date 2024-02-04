@@ -1,15 +1,18 @@
-[gd_scene load_steps=8 format=3 uid="uid://bpd1wmw2f7bvg"]
+[gd_scene load_steps=12 format=3 uid="uid://bpd1wmw2f7bvg"]
 
+[ext_resource type="Script" path="res://demo/props/gong.gd" id="1_77c1i"]
 [ext_resource type="Texture2D" uid="uid://i476iia1ua8q" path="res://demo/assets/env_gong.png" id="1_kbnv6"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="1_vl1mv"]
 [ext_resource type="Texture2D" uid="uid://dj4oayt5ttvh8" path="res://demo/assets/fx.png" id="2_dib3m"]
+[ext_resource type="Script" path="res://demo/agents/scripts/hurtbox.gd" id="5_xeb5y"]
+[ext_resource type="Script" path="res://demo/agents/scripts/health.gd" id="6_6a3q1"]
 
 [sub_resource type="Animation" id="Animation_i5ovs"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Gong:position")
+tracks/0/path = NodePath("Root/Gong:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -21,7 +24,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Gong:rotation")
+tracks/1/path = NodePath("Root/Gong:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -33,7 +36,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Gong:scale")
+tracks/2/path = NodePath("Root/Gong:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -408,7 +411,7 @@ resource_name = "struck"
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Gong:position")
+tracks/0/path = NodePath("Root/Gong:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -420,7 +423,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Gong:rotation")
+tracks/1/path = NodePath("Root/Gong:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -432,7 +435,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Gong:scale")
+tracks/2/path = NodePath("Root/Gong:scale")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -812,20 +815,29 @@ _data = {
 radius = 20.91
 height = 186.37
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ru7jf"]
+radius = 39.2
+height = 253.42
+
 [node name="Gong" type="StaticBody2D"]
+script = ExtResource("1_77c1i")
 metadata/_edit_horizontal_guides_ = [111.0]
 
-[node name="Shadow" type="Sprite2D" parent="."]
+[node name="Root" type="Node2D" parent="."]
+metadata/_edit_lock_ = true
+
+[node name="Shadow" type="Sprite2D" parent="Root"]
 modulate = Color(1, 1, 1, 0.329412)
 position = Vector2(0, -8)
 scale = Vector2(2.31, 1.7)
 texture = ExtResource("1_vl1mv")
 
-[node name="Gong" type="Sprite2D" parent="."]
+[node name="Gong" type="Sprite2D" parent="Root"]
 texture = ExtResource("1_kbnv6")
 offset = Vector2(0, -110)
 
 [node name="FX" type="Node2D" parent="."]
+metadata/_edit_lock_ = true
 
 [node name="WaveL1" type="Sprite2D" parent="FX"]
 visible = false
@@ -898,3 +910,21 @@ libraries = {
 position = Vector2(0, -14.395)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_nixvt")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 8
+collision_mask = 0
+script = ExtResource("5_xeb5y")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -14.395)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_ru7jf")
+debug_color = Color(0.886275, 0.109804, 0.756863, 0.419608)
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("6_6a3q1")
+max_health = 1e+11
+
+[connection signal="damaged" from="Health" to="." method="_on_health_damaged"]

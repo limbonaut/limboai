@@ -41,7 +41,7 @@ output_var = "target"
 
 [sub_resource type="BTCondition" id="BTCondition_7a5nv"]
 script = ExtResource("2_atyuj")
-distance_min = 50.0
+distance_min = 0.0
 distance_max = 150.0
 target_var = "target"
 
@@ -115,7 +115,6 @@ blend = 0.1
 [sub_resource type="BTAction" id="BTAction_4mmh0"]
 script = ExtResource("5_dho0d")
 target_var = "target"
-closest_side = false
 flank_side = 0
 range_min = 300
 range_max = 700

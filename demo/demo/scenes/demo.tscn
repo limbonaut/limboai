@@ -1,12 +1,147 @@
-[gd_scene load_steps=3 format=3 uid="uid://clyhgbpfpmtw7"]
+[gd_scene load_steps=15 format=3 uid="uid://clyhgbpfpmtw7"]
 
+[ext_resource type="Script" path="res://demo/scenes/demo.gd" id="1_foif6"]
 [ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/arena.tscn" id="1_rab6h"]
+[ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_e6mlj"]
+[ext_resource type="PackedScene" uid="uid://bpd1wmw2f7bvg" path="res://demo/props/gong.tscn" id="3_nbeay"]
+[ext_resource type="Texture2D" uid="uid://tyu0ua1ju38l" path="res://demo/assets/logo.png" id="3_t7by8"]
+[ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="4_xx6j3"]
+[ext_resource type="Script" path="res://demo/scenes/toggle_fullscreen.gd" id="5_2oy30"]
 [ext_resource type="PackedScene" uid="uid://d07ag5dcje13i" path="res://demo/agents/player/player.tscn" id="5_cmgoj"]
+[ext_resource type="Texture2D" uid="uid://dlw15foygohrk" path="res://demo/assets/hp_under.png" id="6_3dtym"]
+[ext_resource type="Texture2D" uid="uid://cls8jtnu413o8" path="res://demo/assets/hp_over.png" id="7_3xolo"]
+[ext_resource type="Texture2D" uid="uid://hnwi23oef752" path="res://demo/assets/hp_bar.png" id="8_ee1p0"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_628x3"]
+font = ExtResource("4_xx6j3")
+font_size = 36
+font_color = Color(1, 1, 0.239216, 1)
+outline_size = 20
+outline_color = Color(0.211521, 0.23888, 0.290166, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0r6iv"]
+font = ExtResource("4_xx6j3")
+font_size = 37
+outline_size = 15
+outline_color = Color(0.211521, 0.23888, 0.290166, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_qvxvp"]
+font = ExtResource("4_xx6j3")
+font_size = 33
+outline_size = 11
+outline_color = Color(0.258915, 0.234974, 0.191974, 1)
 
 [node name="Demo" type="Node2D"]
 y_sort_enabled = true
+script = ExtResource("1_foif6")
+
+[node name="UI Layer" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="UI Layer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_e6mlj")
+
+[node name="Logo" type="TextureRect" parent="UI Layer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1899.0
+offset_top = -130.0
+offset_right = -1643.0
+offset_bottom = -45.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_t7by8")
+
+[node name="Demo project" type="Label" parent="UI Layer/Control/Logo"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -316.0
+offset_top = -72.0
+offset_right = 13.0
+offset_bottom = 74.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "demo project"
+label_settings = SubResource("LabelSettings_628x3")
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -214.0
+offset_top = 30.0
+offset_right = -31.0
+offset_bottom = 75.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_xx6j3")
+theme_override_font_sizes/font_size = 22
+text = "Toggle Fullscreen"
+script = ExtResource("5_2oy30")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -394.0
+offset_top = -231.0
+offset_right = 99.0
+offset_bottom = 39.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Label" type="Label" parent="UI Layer/Control/VBoxContainer"]
+layout_mode = 2
+text = "Move      WASD
+Attack    ENTER or F
+Dash      SPACE"
+label_settings = SubResource("LabelSettings_0r6iv")
+
+[node name="HPBar" type="TextureProgressBar" parent="UI Layer/Control"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 25.0
+offset_top = 24.0
+offset_right = 405.0
+offset_bottom = 84.0
+value = 100.0
+texture_under = ExtResource("6_3dtym")
+texture_over = ExtResource("7_3xolo")
+texture_progress = ExtResource("8_ee1p0")
+
+[node name="RoundCounter" type="Label" parent="UI Layer/Control"]
+unique_name_in_owner = true
+layout_mode = 1
+offset_left = 441.0
+offset_top = 29.0
+offset_right = 610.0
+offset_bottom = 81.0
+text = "Round: 0/1"
+label_settings = SubResource("LabelSettings_qvxvp")
 
 [node name="Arena" parent="." instance=ExtResource("1_rab6h")]
+
+[node name="Gong" parent="." instance=ExtResource("3_nbeay")]
+position = Vector2(923, -21)
 
 [node name="Player" parent="." instance=ExtResource("5_cmgoj")]
 position = Vector2(843, 455)
@@ -19,3 +154,37 @@ drag_horizontal_enabled = true
 drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="SpawnPosition1" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(512, -180)
+
+[node name="SpawnPosition2" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(1421, -150)
+
+[node name="SpawnPosition3" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(1512, 300)
+
+[node name="SpawnPosition4" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(2264, 345)
+
+[node name="SpawnPosition5" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(1655, 789)
+
+[node name="SpawnPosition6" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(823, 826)
+
+[node name="SpawnPosition7" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(67, 648)
+
+[node name="SpawnPosition8" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(-399, 434)
+
+[node name="SpawnPosition9" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(629, 417)
+
+[node name="SpawnPosition10" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(1859, 3)
+
+[connection signal="gong_struck" from="Gong" to="." method="_on_gong_gong_struck"]

@@ -31,6 +31,13 @@ texture = ExtResource("2_37lvn")
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_37lvn")
 
+[node name="WeaponNinjaStar" parent="Root" index="1"]
+position = Vector2(-55, -76)
+rotation = 0.0
+
+[node name="Health" parent="." index="3"]
+max_health = 6.0
+
 [node name="BTPlayer" type="BTPlayer" parent="." index="4"]
 behavior_tree = ExtResource("3_f7r5w")
 blackboard_plan = SubResource("BlackboardPlan_2kwy7")
