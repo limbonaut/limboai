@@ -1,10 +1,10 @@
-[gd_resource type="BehaviorTree" load_steps=41 format=3 uid="uid://c2u6sljqkim0n"]
+[gd_resource type="BehaviorTree" load_steps=45 format=3 uid="uid://c2u6sljqkim0n"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_uvue5"]
-[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="2_aanv5"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_fl3fr"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="3_r5itf"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_x6gkn"]
+[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_08fik"]
+[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_te3yo"]
+[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_svwk8"]
+[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="4_mvsyw"]
+[ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="5_r1ou0"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = "speed"
@@ -31,9 +31,9 @@ blend = 0.1
 max_duration = 3.0
 
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
-script = ExtResource("1_uvue5")
+script = ExtResource("1_08fik")
 group = &"player"
-output_var = "_target"
+output_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
 custom_name = "Pause before action"
@@ -50,17 +50,17 @@ blend = 0.1
 speed = 1.5
 
 [sub_resource type="BTAction" id="BTAction_6e48s"]
-script = ExtResource("2_fl3fr")
-target_var = "_target"
+script = ExtResource("2_te3yo")
+target_var = "target"
 closest_side = false
 flank_side = 1
 range_min = 400
 range_max = 600
-position_var = "_flank_pos"
+position_var = "flank_pos"
 
 [sub_resource type="BTAction" id="BTAction_66hsk"]
-script = ExtResource("3_x6gkn")
-target_position_var = "_flank_pos"
+script = ExtResource("3_svwk8")
+target_position_var = "flank_pos"
 speed_var = "flank_speed"
 tolerance = 50.0
 
@@ -68,8 +68,8 @@ tolerance = 50.0
 children = [SubResource("BTAction_66hsk")]
 
 [sub_resource type="BTAction" id="BTAction_enw2m"]
-script = ExtResource("3_r5itf")
-target_var = "_target"
+script = ExtResource("4_mvsyw")
+target_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_lhg7f"]
 custom_name = "Flank player"
@@ -91,8 +91,8 @@ animation_name = &"walk"
 blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
-script = ExtResource("2_aanv5")
-target_var = "_target"
+script = ExtResource("5_r1ou0")
+target_var = "target"
 speed_var = "speed"
 approach_distance = 100.0
 
@@ -101,8 +101,8 @@ time_limit = 2.0
 children = [SubResource("BTAction_a4jqi")]
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
-script = ExtResource("3_r5itf")
-target_var = "_target"
+script = ExtResource("4_mvsyw")
+target_var = "target"
 
 [sub_resource type="BTWait" id="BTWait_tadkc"]
 duration = 0.1
@@ -119,11 +119,35 @@ animation_name = &"attack_3"
 [sub_resource type="BTSequence" id="BTSequence_1xfnq"]
 custom_name = "Approach and melee attack"
 children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTTimeLimit_xek5v"), SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd")]
-metadata/_weight_ = 3.0
+metadata/_weight_ = 4.0
+
+[sub_resource type="BTAction" id="BTAction_mf87t"]
+script = ExtResource("2_te3yo")
+target_var = "target"
+closest_side = false
+flank_side = 0
+range_min = 350
+range_max = 600
+position_var = "pos"
+
+[sub_resource type="BBNode" id="BBNode_cx111"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_mfbeu"]
+animation_player = SubResource("BBNode_cx111")
+animation_name = &"walk"
+blend = 0.1
+
+[sub_resource type="BTAction" id="BTAction_6nx58"]
+script = ExtResource("3_svwk8")
+target_position_var = "pos"
+speed_var = "speed"
+tolerance = 50.0
 
 [sub_resource type="BTAction" id="BTAction_8q20y"]
-script = ExtResource("3_r5itf")
-target_var = "_target"
+script = ExtResource("4_mvsyw")
+target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_s6vt4"]
 saved_value = NodePath("AnimationPlayer")
@@ -161,8 +185,8 @@ min_duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_rgbq3"]
 custom_name = "Throw ninja star"
-children = [SubResource("BTAction_8q20y"), SubResource("BTPlayAnimation_qa8jy"), SubResource("BTWait_gbcyb"), SubResource("BTPlayAnimation_0ktds"), SubResource("BTCallMethod_yx4fk"), SubResource("BTRandomWait_2pmoe")]
-metadata/_weight_ = 1.0
+children = [SubResource("BTAction_mf87t"), SubResource("BTPlayAnimation_mfbeu"), SubResource("BTAction_6nx58"), SubResource("BTAction_8q20y"), SubResource("BTPlayAnimation_qa8jy"), SubResource("BTWait_gbcyb"), SubResource("BTPlayAnimation_0ktds"), SubResource("BTCallMethod_yx4fk"), SubResource("BTRandomWait_2pmoe")]
+metadata/_weight_ = 2.0
 
 [sub_resource type="BTProbabilitySelector" id="BTProbabilitySelector_rjsiq"]
 abort_on_failure = true

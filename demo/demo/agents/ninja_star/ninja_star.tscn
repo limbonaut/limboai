@@ -51,6 +51,11 @@ texture = ExtResource("2_2rj5a")
 position = Vector2(0, -93)
 texture = ExtResource("1_ptof7")
 
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/NinjaStar"]
+remote_path = NodePath("../../../Death")
+update_rotation = false
+update_scale = false
+
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 4
@@ -61,6 +66,7 @@ shape = SubResource("CircleShape2D_7uc1b")
 debug_color = Color(0.839216, 0.192157, 0.815686, 0.419608)
 
 [node name="Death" type="GPUParticles2D" parent="."]
+position = Vector2(0, -93)
 emitting = false
 amount = 1
 process_material = SubResource("ParticleProcessMaterial_gilhy")

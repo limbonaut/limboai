@@ -28,7 +28,7 @@ var _is_dead: bool = false
 
 func _ready() -> void:
 	health.damaged.connect(_damaged)
-	health.death.connect(_die)
+	health.death.connect(die)
 
 
 func update_facing() -> void:
@@ -111,7 +111,7 @@ func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
 		await get_tree().physics_frame
 
 
-func _die() -> void:
+func die() -> void:
 	_is_dead = true
 	root.process_mode = Node.PROCESS_MODE_DISABLED
 	animation_player.play(&"death")
