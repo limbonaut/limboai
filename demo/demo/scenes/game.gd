@@ -81,3 +81,7 @@ func _on_agent_death() -> void:
 func _on_player_death() -> void:
 	await get_tree().create_timer(3.0).timeout
 	get_tree().reload_current_scene()
+
+
+func _on_switch_to_showcase_pressed() -> void:
+	get_tree().change_scene_to_file("res://demo/scenes/showcase.tscn")

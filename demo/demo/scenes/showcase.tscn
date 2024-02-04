@@ -1,22 +1,22 @@
 [gd_scene load_steps=11 format=3 uid="uid://b3ae14mc2ty3y"]
 
-[ext_resource type="Script" path="res://demo/scenes/agent_showcase.gd" id="1_frr2n"]
-[ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_hb4lh"]
-[ext_resource type="Texture2D" uid="uid://tyu0ua1ju38l" path="res://demo/assets/logo.png" id="3_v6wtt"]
-[ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="4_tju7a"]
-[ext_resource type="FontFile" uid="uid://n231m6uqsq6x" path="res://demo/assets/fonts/junction_bold.otf" id="5_0fprc"]
-[ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/arena.tscn" id="6_6awy2"]
-[ext_resource type="Script" path="res://demo/scenes/toggle_fullscreen.gd" id="6_y6c7b"]
-[ext_resource type="PackedScene" uid="uid://c5fhe3tulhlco" path="res://demo/props/dummy.tscn" id="7_ao7an"]
+[ext_resource type="Script" path="res://demo/scenes/showcase.gd" id="1_l12ql"]
+[ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_3d7dj"]
+[ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="3_7vli5"]
+[ext_resource type="FontFile" uid="uid://n231m6uqsq6x" path="res://demo/assets/fonts/junction_bold.otf" id="4_7ubu6"]
+[ext_resource type="Texture2D" uid="uid://tyu0ua1ju38l" path="res://demo/assets/logo.png" id="5_rwygb"]
+[ext_resource type="Script" path="res://demo/scenes/base/toggle_fullscreen.gd" id="6_uggpo"]
+[ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="7_42nq6"]
+[ext_resource type="PackedScene" uid="uid://c5fhe3tulhlco" path="res://demo/props/dummy.tscn" id="8_apshw"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_3uhve"]
-font = ExtResource("4_tju7a")
+font = ExtResource("3_7vli5")
 font_size = 29
 outline_size = 10
 outline_color = Color(0.145083, 0.168536, 0.203708, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_la4ui"]
-font = ExtResource("4_tju7a")
+font = ExtResource("3_7vli5")
 font_size = 36
 font_color = Color(1, 1, 0.239216, 1)
 outline_size = 20
@@ -24,7 +24,7 @@ outline_color = Color(0.211521, 0.23888, 0.290166, 1)
 
 [node name="AgentShowcase" type="Node2D"]
 y_sort_enabled = true
-script = ExtResource("1_frr2n")
+script = ExtResource("1_l12ql")
 metadata/_edit_horizontal_guides_ = [1019.0]
 
 [node name="UI Layer" type="CanvasLayer" parent="."]
@@ -36,7 +36,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2_hb4lh")
+theme = ExtResource("2_3d7dj")
 
 [node name="Panel" type="Panel" parent="UI Layer/Control"]
 custom_minimum_size = Vector2(600, 0)
@@ -87,7 +87,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_fonts/font = ExtResource("5_0fprc")
+theme_override_fonts/font = ExtResource("4_7ubu6")
 theme_override_font_sizes/font_size = 30
 text = "02_agent_imp.tres
 "
@@ -128,7 +128,7 @@ offset_right = -1643.0
 offset_bottom = -45.0
 grow_horizontal = 0
 grow_vertical = 0
-texture = ExtResource("3_v6wtt")
+texture = ExtResource("5_rwygb")
 
 [node name="Demo project" type="Label" parent="UI Layer/Control/Logo"]
 layout_mode = 1
@@ -148,17 +148,27 @@ label_settings = SubResource("LabelSettings_la4ui")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control"]
 layout_mode = 0
 offset_left = 8.0
 offset_top = 8.0
-offset_right = 120.0
+offset_right = 191.0
 offset_bottom = 53.0
+
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/HBoxContainer"]
+layout_mode = 2
 focus_mode = 0
-theme_override_fonts/font = ExtResource("4_tju7a")
+theme_override_fonts/font = ExtResource("3_7vli5")
 theme_override_font_sizes/font_size = 22
 text = "Toggle Fullscreen"
-script = ExtResource("6_y6c7b")
+script = ExtResource("6_uggpo")
+
+[node name="SwitchToGame" type="Button" parent="UI Layer/Control/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("3_7vli5")
+theme_override_font_sizes/font_size = 22
+text = "Switch to Game"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 0)
@@ -172,8 +182,10 @@ drag_top_margin = 0.1
 drag_right_margin = 0.0
 drag_bottom_margin = 0.1
 
-[node name="Arena" parent="." instance=ExtResource("6_6awy2")]
+[node name="Arena" parent="." instance=ExtResource("7_42nq6")]
 metadata/_edit_lock_ = true
 
-[node name="Dummy" parent="." instance=ExtResource("7_ao7an")]
+[node name="Dummy" parent="." instance=ExtResource("8_apshw")]
 position = Vector2(1106, 423)
+
+[connection signal="pressed" from="UI Layer/Control/HBoxContainer/SwitchToGame" to="." method="_on_switch_to_game_pressed"]
