@@ -24,6 +24,7 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_j6cjm"]
+min_duration = 2.0
 max_duration = 3.0
 
 [sub_resource type="BTSequence" id="BTSequence_5thv4"]
@@ -125,6 +126,7 @@ script = ExtResource("6_0pfsl")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_jyks2"]
 children = [SubResource("BTAction_vb5c3")]
@@ -170,7 +172,7 @@ node = SubResource("BBNode_dv5b5")
 method = &"spit_fire"
 
 [sub_resource type="BTComment" id="BTComment_fndxk"]
-custom_name = "Short break after"
+custom_name = "Wind down"
 
 [sub_resource type="BBNode" id="BBNode_m68ui"]
 saved_value = NodePath("AnimationPlayer")
@@ -182,7 +184,7 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_v0el8"]
-min_duration = 0.5
+min_duration = 0.7
 max_duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_djtph"]

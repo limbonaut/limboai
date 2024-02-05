@@ -5,10 +5,10 @@
 [ext_resource type="Script" path="res://demo/agents/player/states/idle_state.gd" id="3_ekb12"]
 [ext_resource type="Script" path="res://demo/agents/player/states/move_state.gd" id="4_paikn"]
 [ext_resource type="Script" path="res://demo/agents/player/states/attack_state.gd" id="5_mpgu6"]
-[ext_resource type="Script" path="res://demo/agents/player/DodgeState.gd" id="6_7o4a6"]
+[ext_resource type="Script" path="res://demo/agents/player/states/dodge_state.gd" id="6_7o4a6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8pofm"]
-size = Vector2(130, 45)
+size = Vector2(150, 50)
 
 [node name="Player" groups=["player"] instance=ExtResource("1_mswd4")]
 collision_layer = 0
@@ -17,9 +17,7 @@ script = ExtResource("2_24nyi")
 dodge_cooldown = 0.4
 
 [node name="WeaponNinjaStar" parent="Root" index="1"]
-position = Vector2(-55, -76)
-rotation = 0.0
-scale = Vector2(0.999983, 0.999976)
+scale = Vector2(0.999983, 0.999974)
 
 [node name="Hitbox" parent="Root" index="2"]
 collision_mask = 8

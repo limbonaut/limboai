@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bdusy0qqtw0th" path="res://demo/assets/smoke.png" id="5_t37aw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7uc1b"]
-radius = 25.13
+radius = 28.0
 
 [sub_resource type="Curve" id="Curve_ugmtv"]
 _data = [Vector2(0, 0.010989), 0.0, 0.0, 0, 0, Vector2(0.151111, 1), 1.3559, 1.3559, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]

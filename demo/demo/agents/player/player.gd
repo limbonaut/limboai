@@ -21,6 +21,7 @@ extends "res://demo/agents/scripts/agent_base.gd"
 @onready var dodge_state: LimboState = $LimboHSM/DodgeState
 
 var can_dodge: bool = true
+var attack_pressed: bool = false
 
 
 func _ready() -> void:
@@ -34,9 +35,17 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
 	if event.is_action_pressed("attack"):
-		hsm.dispatch("attack!")
+		attack_pressed = true
+		_process_attack_input()
 	if event.is_action_pressed("dodge"):
 		hsm.dispatch("dodge!")
+
+
+func _process_attack_input() -> void:
+	if not attack_pressed or hsm.get_active_state() == attack_state:
+		return
+	hsm.dispatch("attack!")
+	attack_pressed = false
 
 
 func _init_state_machine() -> void:
@@ -47,7 +56,14 @@ func _init_state_machine() -> void:
 	hsm.add_transition(attack_state, move_state, attack_state.EVENT_FINISHED)
 	hsm.add_transition(hsm.ANYSTATE, dodge_state, "dodge!")
 	hsm.add_transition(dodge_state, move_state, dodge_state.EVENT_FINISHED)
+
 	dodge_state.set_guard(_can_dodge)
+	attack_state.set_guard(attack_state.can_enter)
+
+	# Process attack input buffer when move_state is entered.
+	# This way we can buffer the attack button presses and chain the attacks.
+	move_state.call_on_enter(_process_attack_input)
+
 	hsm.initialize(self)
 	hsm.set_active(true)
 	hsm.set_guard(_can_dodge)

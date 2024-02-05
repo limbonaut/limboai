@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=37 format=3 uid="uid://cpncl1db8j12f"]
+[gd_resource type="BehaviorTree" load_steps=39 format=3 uid="uid://cpncl1db8j12f"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_sf4l8"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_5nwkp"]
@@ -62,6 +62,7 @@ script = ExtResource("3_3tom2")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
 children = [SubResource("BTAction_ygjnc")]
@@ -74,8 +75,17 @@ children = [SubResource("BTAction_85keo"), SubResource("BTPlayAnimation_olf37"),
 script = ExtResource("4_hi228")
 target_var = "target"
 
+[sub_resource type="BBNode" id="BBNode_giv5l"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_usdja"]
+animation_player = SubResource("BBNode_giv5l")
+animation_name = &"idle"
+blend = 0.1
+
 [sub_resource type="BTWait" id="BTWait_tadkc"]
-duration = 0.2
+duration = 0.4
 
 [sub_resource type="BBNode" id="BBNode_s8evu"]
 saved_value = NodePath("AnimationPlayer")
@@ -142,7 +152,7 @@ duration = 0.5
 
 [sub_resource type="BTSequence" id="BTSequence_ww5v2"]
 custom_name = "Combo Melee attack"
-children = [SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTParallel_ec2e3"), SubResource("BTWait_c0lo0"), SubResource("BTParallel_thojy"), SubResource("BTWait_y3pmv"), SubResource("BTParallel_qmdfb"), SubResource("BTWait_nxyko")]
+children = [SubResource("BTAction_kidxn"), SubResource("BTPlayAnimation_usdja"), SubResource("BTWait_tadkc"), SubResource("BTParallel_ec2e3"), SubResource("BTWait_c0lo0"), SubResource("BTParallel_thojy"), SubResource("BTWait_y3pmv"), SubResource("BTParallel_qmdfb"), SubResource("BTWait_nxyko")]
 
 [sub_resource type="BTSequence" id="BTSequence_pxl2k"]
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]

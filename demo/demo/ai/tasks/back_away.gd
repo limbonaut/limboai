@@ -34,7 +34,6 @@ func _enter() -> void:
 
 # Called each time this task is ticked (aka executed).
 func _tick(_delta: float) -> Status:
-	agent.velocity = lerp(agent.velocity, _desired_velocity, 0.2)
-	agent.move_and_slide()
+	agent.move(_desired_velocity)
 	agent.face_dir(-signf(_dir.x))
 	return RUNNING

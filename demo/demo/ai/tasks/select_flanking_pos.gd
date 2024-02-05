@@ -63,8 +63,12 @@ func _tick(_delta: float) -> Status:
 		AgentSide.FRONT:
 			dir = target.get_facing()
 
-	var flank_pos: Vector2 = target.global_position
-	flank_pos.x += dir * randf_range(range_min, range_max)
+	var flank_pos: Vector2
+	var offset := Vector2(dir * randf_range(range_min, range_max), 0.0)
+	flank_pos = target.global_position + offset
+	if not agent.is_good_position(flank_pos):
+		# Choose the opposite side if preferred is not good (i.e., inside a collision shape).
+		flank_pos = target.global_position - offset
 	blackboard.set_var(position_var, flank_pos)
 	return SUCCESS
 

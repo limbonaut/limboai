@@ -11,7 +11,8 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_3uhve"]
 font = ExtResource("3_7vli5")
-font_size = 29
+font_size = 26
+font_color = Color(0.804089, 0.811917, 0.823636, 1)
 outline_size = 10
 outline_color = Color(0.145083, 0.168536, 0.203708, 1)
 
@@ -38,51 +39,69 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_3d7dj")
 
-[node name="Panel" type="Panel" parent="UI Layer/Control"]
-custom_minimum_size = Vector2(600, 0)
+[node name="Toolbar" type="PanelContainer" parent="UI Layer/Control"]
+custom_minimum_size = Vector2(0, 54.26)
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
+anchors_preset = 10
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -600.0
-grow_horizontal = 0
-grow_vertical = 2
+offset_right = -612.0
+offset_bottom = 58.0
+grow_horizontal = 2
 
-[node name="ClickToSelect" type="Label" parent="UI Layer/Control"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/Toolbar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("3_7vli5")
+theme_override_font_sizes/font_size = 22
+text = "Toggle Fullscreen"
+script = ExtResource("6_uggpo")
+
+[node name="SwitchToGame" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("3_7vli5")
+theme_override_font_sizes/font_size = 22
+text = "Switch to Game"
+
+[node name="ClickToSelect" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-offset_left = 992.0
-offset_top = -2.0
-offset_right = 1305.0
-offset_bottom = 52.0
+size_flags_horizontal = 10
 text = "Select Agent ➤"
 label_settings = SubResource("LabelSettings_3uhve")
 horizontal_alignment = 2
-vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control"]
-custom_minimum_size = Vector2(600, 0)
+[node name="BehaviorInspector" type="PanelContainer" parent="UI Layer/Control"]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -612.0
 grow_horizontal = 0
 grow_vertical = 2
-theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control/BehaviorInspector"]
+custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
+theme_override_constants/separation = 4
 
-[node name="Previous" type="Button" parent="UI Layer/Control/VBoxContainer/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/BehaviorInspector/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Previous" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
 text = "⬅"
 
-[node name="AgentSelection" type="MenuButton" parent="UI Layer/Control/VBoxContainer/HBoxContainer"]
+[node name="AgentSelection" type="MenuButton" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
@@ -93,23 +112,14 @@ text = "02_agent_imp.tres
 "
 flat = false
 
-[node name="Next" type="Button" parent="UI Layer/Control/VBoxContainer/HBoxContainer"]
+[node name="Next" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
 text = "➡"
 
-[node name="ResourceName" type="Label" parent="UI Layer/Control/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-text = "o2_agent_imp.tres"
-label_settings = SubResource("LabelSettings_3uhve")
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="BehaviorTreeView" type="BehaviorTreeView" parent="UI Layer/Control/VBoxContainer"]
+[node name="BehaviorTreeView" type="BehaviorTreeView" parent="UI Layer/Control/BehaviorInspector/VBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
@@ -148,28 +158,6 @@ label_settings = SubResource("LabelSettings_la4ui")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 191.0
-offset_bottom = 53.0
-
-[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/HBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-theme_override_fonts/font = ExtResource("3_7vli5")
-theme_override_font_sizes/font_size = 22
-text = "Toggle Fullscreen"
-script = ExtResource("6_uggpo")
-
-[node name="SwitchToGame" type="Button" parent="UI Layer/Control/HBoxContainer"]
-layout_mode = 2
-focus_mode = 0
-theme_override_fonts/font = ExtResource("3_7vli5")
-theme_override_font_sizes/font_size = 22
-text = "Switch to Game"
-
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(400, 0)
 zoom = Vector2(0.88, 0.88)
@@ -188,4 +176,4 @@ metadata/_edit_lock_ = true
 [node name="Dummy" parent="." instance=ExtResource("8_apshw")]
 position = Vector2(1106, 423)
 
-[connection signal="pressed" from="UI Layer/Control/HBoxContainer/SwitchToGame" to="." method="_on_switch_to_game_pressed"]
+[connection signal="pressed" from="UI Layer/Control/Toolbar/HBoxContainer/SwitchToGame" to="." method="_on_switch_to_game_pressed"]

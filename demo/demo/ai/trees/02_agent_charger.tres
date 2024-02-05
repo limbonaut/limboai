@@ -61,6 +61,7 @@ script = ExtResource("3_u2ra5")
 target_position_var = "flank_pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_is5ag"]
 time_limit = 3.0
@@ -85,6 +86,7 @@ animation_name = &"charge_prepare"
 blend = 0.1
 
 [sub_resource type="BTWait" id="BTWait_ovu3r"]
+duration = 0.6
 
 [sub_resource type="BTSequence" id="BTSequence_mde2g"]
 custom_name = "Anticipation"
@@ -102,7 +104,7 @@ blend = 0.05
 [sub_resource type="BTAction" id="BTAction_o18uk"]
 script = ExtResource("5_ucvak")
 speed_var = "charge_speed"
-duration = 2.0
+duration = 1.5
 
 [sub_resource type="BTSequence" id="BTSequence_8lur1"]
 custom_name = "Charge!"

@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=46 format=3 uid="uid://c2u6sljqkim0n"]
+[gd_resource type="BehaviorTree" load_steps=49 format=3 uid="uid://c2u6sljqkim0n"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_08fik"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_te3yo"]
@@ -28,6 +28,8 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
+min_duration = 0.7
+max_duration = 1.5
 
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
 script = ExtResource("1_08fik")
@@ -61,6 +63,7 @@ script = ExtResource("3_svwk8")
 target_position_var = "flank_pos"
 speed_var = "flank_speed"
 tolerance = 50.0
+avoid_var = "target"
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_24ath"]
 children = [SubResource("BTAction_66hsk")]
@@ -105,18 +108,30 @@ target_var = "target"
 [sub_resource type="BTWait" id="BTWait_tadkc"]
 duration = 0.1
 
-[sub_resource type="BBNode" id="BBNode_s8evu"]
+[sub_resource type="BBNode" id="BBNode_g8qww"]
 saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
 
-[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ppmxd"]
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_a8yqu"]
 await_completion = 2.0
-animation_player = SubResource("BBNode_s8evu")
+animation_player = SubResource("BBNode_g8qww")
+animation_name = &"attack_2"
+
+[sub_resource type="BTWait" id="BTWait_vjstl"]
+duration = 0.1
+
+[sub_resource type="BBNode" id="BBNode_rfop0"]
+saved_value = NodePath("AnimationPlayer")
+resource_name = "AnimationPlayer"
+
+[sub_resource type="BTPlayAnimation" id="BTPlayAnimation_8oyw6"]
+await_completion = 2.0
+animation_player = SubResource("BBNode_rfop0")
 animation_name = &"attack_3"
 
 [sub_resource type="BTSequence" id="BTSequence_1xfnq"]
 custom_name = "Approach and melee attack"
-children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTTimeLimit_xek5v"), SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_ppmxd")]
+children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTTimeLimit_xek5v"), SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_a8yqu"), SubResource("BTWait_vjstl"), SubResource("BTPlayAnimation_8oyw6")]
 metadata/_weight_ = 4.0
 
 [sub_resource type="BTAction" id="BTAction_mf87t"]
@@ -141,6 +156,7 @@ script = ExtResource("3_svwk8")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_tidwl"]
 time_limit = 3.0

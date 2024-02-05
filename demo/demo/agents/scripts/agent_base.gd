@@ -20,8 +20,11 @@ const MINION_RESOURCE := "res://demo/agents/03_agent_imp.tscn"
 const NinjaStar := preload("res://demo/agents/ninja_star/ninja_star.tscn")
 const Fireball := preload("res://demo/agents/fireball/fireball.tscn")
 
+var summon_count: int = 0
+
 var _frames_since_facing_update: int = 0
 var _is_dead: bool = false
+var _moved_this_frame: bool = false
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var health: Health = $Health
@@ -33,6 +36,23 @@ var _is_dead: bool = false
 func _ready() -> void:
 	health.damaged.connect(_damaged)
 	health.death.connect(die)
+
+
+func _physics_process(_delta: float) -> void:
+	_post_physics_process.call_deferred()
+
+
+func _post_physics_process() -> void:
+	if not _moved_this_frame:
+		velocity = lerp(velocity, Vector2.ZERO, 0.5)
+	_moved_this_frame = false
+
+
+func move(p_velocity: Vector2) -> void:
+	velocity = lerp(velocity, p_velocity, 0.2)
+	move_and_slide()
+	_moved_this_frame = true
+
 
 ## Update agent's facing in the velocity direction.
 func update_facing() -> void:
@@ -74,6 +94,8 @@ func summon_minion(p_position: Vector2) -> void:
 	get_parent().add_child(minion)
 	minion.position = p_position
 	minion.play_summoning_effect()
+	summon_count += 1
+	minion.death.connect(func(): summon_count -= 1)
 
 
 ## Method is used when this agent is summoned from the dungeons of the castle AaaAaaAAAAAaaAAaaaaaa
@@ -113,8 +135,7 @@ func apply_knockback(knockback: Vector2, frames: int = 10) -> void:
 	if knockback.is_zero_approx():
 		return
 	for i in range(frames):
-		velocity = lerp(velocity, knockback, 0.2)
-		move_and_slide()
+		move(knockback)
 		await get_tree().physics_frame
 
 

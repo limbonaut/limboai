@@ -13,14 +13,13 @@ const Summoner := preload("res://demo/agents/09_agent_summoner.tscn")
 const WAVES: Array = [
 	[Simple, Simple, Nuanced],
 	[Simple, Nuanced, Charger],
-	[Simple, Simple, Ranged, Nuanced],
+	[Simple, Simple, Simple, Ranged, Nuanced],
 	[Simple, Simple, Summoner],
-	[Ranged, Skirmisher, Nuanced, Simple],
-	[Nuanced, Nuanced, Combo, Ranged],
-	[Demon, Charger, Simple, Simple, Skirmisher],
-	[Demon, Nuanced, Combo, Demon],
-	[Summoner, Ranged, Nuanced, Nuanced, Ranged, Skirmisher],
-
+	[Ranged, Skirmisher, Nuanced, Simple, Simple],
+	[Nuanced, Nuanced, Combo, Ranged, Simple],
+	[Demon, Charger, Simple, Simple, Simple, Skirmisher],
+	[Demon, Demon, Nuanced, Combo],
+	[Summoner, Ranged, Nuanced, Nuanced, Ranged, Skirmisher, Simple],
 	[Demon, Demon, Summoner, Skirmisher, Nuanced, Nuanced, Combo],
 ]
 
@@ -38,11 +37,9 @@ func _ready() -> void:
 	hp_bar.max_value = player.get_health().max_health
 	player.get_health().damaged.connect(func(_a,_b): hp_bar.value = player.get_health().get_current())
 	player.death.connect(_on_player_death)
-	round_counter.hide()
 
 
 func _update_round_counter() -> void:
-	round_counter.show()
 	round_counter.text = "Round %s/%s" % [wave_index + 1, WAVES.size()]
 
 

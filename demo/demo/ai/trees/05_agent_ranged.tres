@@ -1,7 +1,7 @@
-[gd_resource type="BehaviorTree" load_steps=40 format=3 uid="uid://cqluon1y1hnn5"]
+[gd_resource type="BehaviorTree" load_steps=41 format=3 uid="uid://cqluon1y1hnn5"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_4xk1i"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="2_647kx"]
+[ext_resource type="Script" path="res://demo/ai/tasks/is_aligned_with_target.gd" id="2_a8qex"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_q4r2p"]
 [ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="4_53hao"]
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_aexyq"]
@@ -12,6 +12,11 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/run_speed/name = "run_speed"
+var/run_speed/type = 3
+var/run_speed/value = 600.0
+var/run_speed/hint = 1
+var/run_speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
 saved_value = NodePath("AnimationPlayer")
@@ -23,8 +28,8 @@ animation_name = &"idle"
 blend = 0.1
 
 [sub_resource type="BTRandomWait" id="BTRandomWait_xlud8"]
-min_duration = 1.2
-max_duration = 2.5
+min_duration = 0.7
+max_duration = 1.5
 
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
 script = ExtResource("1_4xk1i")
@@ -35,15 +40,6 @@ output_var = "target"
 custom_name = "Take a break"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8"), SubResource("BTAction_c4cxo")]
 
-[sub_resource type="BTComment" id="BTComment_qhsko"]
-custom_name = "He is bored attacking player all the time ;)"
-
-[sub_resource type="BTAction" id="BTAction_lpk67"]
-script = ExtResource("2_647kx")
-range_min = 300.0
-range_max = 500.0
-position_var = "pos"
-
 [sub_resource type="BBNode" id="BBNode_ok0r5"]
 saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
@@ -52,24 +48,42 @@ resource_name = "AnimationPlayer"
 animation_player = SubResource("BBNode_ok0r5")
 animation_name = &"walk"
 blend = 0.1
+speed = 1.5
 
-[sub_resource type="BTAction" id="BTAction_apfsn"]
+[sub_resource type="BTAction" id="BTAction_op6l6"]
+script = ExtResource("4_53hao")
+target_var = "target"
+flank_side = 1
+range_min = 400
+range_max = 1000
+position_var = "pos"
+
+[sub_resource type="BTAction" id="BTAction_ycjun"]
 script = ExtResource("3_q4r2p")
 target_position_var = "pos"
-speed_var = "speed"
+speed_var = "run_speed"
 tolerance = 50.0
+avoid_var = "target"
 
-[sub_resource type="BTTimeLimit" id="BTTimeLimit_baob7"]
-time_limit = 3.0
-children = [SubResource("BTAction_apfsn")]
+[sub_resource type="BTTimeLimit" id="BTTimeLimit_gadc6"]
+time_limit = 7.0
+children = [SubResource("BTAction_ycjun")]
+
+[sub_resource type="BTAction" id="BTAction_poqpu"]
+script = ExtResource("5_aexyq")
+target_var = "target"
 
 [sub_resource type="BTSequence" id="BTSequence_0gdqn"]
-custom_name = "Random Walk"
-children = [SubResource("BTComment_qhsko"), SubResource("BTAction_lpk67"), SubResource("BTPlayAnimation_unftu"), SubResource("BTTimeLimit_baob7")]
+custom_name = "Change flank"
+children = [SubResource("BTPlayAnimation_unftu"), SubResource("BTAction_op6l6"), SubResource("BTTimeLimit_gadc6"), SubResource("BTAction_poqpu")]
 
-[sub_resource type="BTProbability" id="BTProbability_sat88"]
-run_chance = 0.3
+[sub_resource type="BTCooldown" id="BTCooldown_2lneu"]
+duration = 7.0
 children = [SubResource("BTSequence_0gdqn")]
+
+[sub_resource type="BTProbability" id="BTProbability_6sydk"]
+run_chance = 0.3
+children = [SubResource("BTCooldown_2lneu")]
 
 [sub_resource type="BTAction" id="BTAction_kuuw2"]
 script = ExtResource("4_53hao")
@@ -93,6 +107,7 @@ script = ExtResource("3_q4r2p")
 target_position_var = "shoot_pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_24ath"]
 children = [SubResource("BTAction_66hsk")]
@@ -101,10 +116,10 @@ children = [SubResource("BTAction_66hsk")]
 script = ExtResource("5_aexyq")
 target_var = "target"
 
-[sub_resource type="BTSequence" id="BTSequence_lhg7f"]
-custom_name = "Get into position"
-children = [SubResource("BTAction_kuuw2"), SubResource("BTPlayAnimation_panch"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m")]
-metadata/_weight_ = 1.0
+[sub_resource type="BTCondition" id="BTCondition_1fnyc"]
+script = ExtResource("2_a8qex")
+target_var = "target"
+tolerance = 150.0
 
 [sub_resource type="BBNode" id="BBNode_s6vt4"]
 saved_value = NodePath("AnimationPlayer")
@@ -147,12 +162,13 @@ metadata/_weight_ = 1.0
 times = 3
 children = [SubResource("BTSequence_rgbq3")]
 
-[sub_resource type="BTSequence" id="BTSequence_h2tm0"]
-custom_name = "Align and shoot"
-children = [SubResource("BTSequence_lhg7f"), SubResource("BTRepeat_g08ia")]
+[sub_resource type="BTSequence" id="BTSequence_lhg7f"]
+custom_name = "Get into position"
+children = [SubResource("BTAction_kuuw2"), SubResource("BTPlayAnimation_panch"), SubResource("BTTimeLimit_24ath"), SubResource("BTAction_enw2m"), SubResource("BTCondition_1fnyc"), SubResource("BTRepeat_g08ia")]
+metadata/_weight_ = 1.0
 
 [sub_resource type="BTSelector" id="BTSelector_1rrya"]
-children = [SubResource("BTProbability_sat88"), SubResource("BTSequence_h2tm0")]
+children = [SubResource("BTProbability_6sydk"), SubResource("BTSequence_lhg7f")]
 
 [sub_resource type="BTSequence" id="BTSequence_pxl2k"]
 custom_name = "Main"

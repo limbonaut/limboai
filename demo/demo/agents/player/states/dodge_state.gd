@@ -1,3 +1,13 @@
+#*
+#* dodge_state.gd
+#* =============================================================================
+#* Copyright 2021-2024 Serhii Snitsaruk
+#*
+#* Use of this source code is governed by an MIT-style
+#* license that can be found in the LICENSE file or at
+#* https://opensource.org/licenses/MIT.
+#* =============================================================================
+#*
 extends LimboState
 ## Dodge state.
 
@@ -33,7 +43,6 @@ func _exit() -> void:
 func _update(p_delta: float) -> void:
 	elapsed_time += p_delta
 	var desired_velocity: Vector2 = move_dir * dodge_speed
-	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
-	agent.move_and_slide()
+	agent.move(desired_velocity)
 	if elapsed_time > duration:
 		get_root().dispatch(EVENT_FINISHED)

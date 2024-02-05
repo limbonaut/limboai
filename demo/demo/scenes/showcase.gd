@@ -2,7 +2,6 @@ extends Node2D
 
 @onready var behavior_tree_view: BehaviorTreeView = %BehaviorTreeView
 @onready var camera: Camera2D = $Camera2D
-@onready var resource_name: Label = %ResourceName
 @onready var agent_selection: MenuButton = %AgentSelection
 @onready var previous: Button = %Previous
 @onready var next: Button = %Next
@@ -68,7 +67,6 @@ func _load_agent(file_name: String) -> void:
 	add_child(agent)
 	bt_player = agent.find_child("BTPlayer")
 	_attach_camera(agent)
-	resource_name.text = bt_player.behavior_tree.resource_path.get_file()
 
 
 func _on_agent_selection_id_pressed(id: int) -> void:

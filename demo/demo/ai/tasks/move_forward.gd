@@ -31,8 +31,7 @@ func _tick(_delta: float) -> Status:
 	var facing: float = agent.get_facing()
 	var speed: float = blackboard.get_var(speed_var, 100.0)
 	var desired_velocity: Vector2 = Vector2.RIGHT * facing * speed
-	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
-	agent.move_and_slide()
+	agent.move(desired_velocity)
 	agent.update_facing()
 	if elapsed_time > duration:
 		return SUCCESS

@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=33 format=3 uid="uid://cpxk7jnqpwwlc"]
+[gd_resource type="BehaviorTree" load_steps=35 format=3 uid="uid://cpxk7jnqpwwlc"]
 
 [ext_resource type="Script" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_sgn0p"]
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_pshl2"]
@@ -32,6 +32,16 @@ children = [SubResource("BTPlayAnimation_sot6a"), SubResource("BTRandomWait_0wc6
 
 [sub_resource type="BTRunLimit" id="BTRunLimit_x2jr4"]
 children = [SubResource("BTSequence_kwkxc")]
+
+[sub_resource type="BBVariant" id="BBVariant_y3x7n"]
+type = 2
+saved_value = 6
+resource_name = "6"
+
+[sub_resource type="BTCheckAgentProperty" id="BTCheckAgentProperty_olmdj"]
+property = &"summon_count"
+check_type = 1
+value = SubResource("BBVariant_y3x7n")
 
 [sub_resource type="BTComment" id="BTComment_ef6y0"]
 custom_name = "Variable $summon_cooldown is updated by the Cooldown task below"
@@ -85,11 +95,10 @@ cooldown_state_var = "summon_cooldown"
 children = [SubResource("BTCallMethod_4ath5")]
 
 [sub_resource type="BTWait" id="BTWait_tdhfn"]
-duration = 0.5
 
 [sub_resource type="BTSequence" id="BTSequence_2n742"]
-custom_name = "Summon"
-children = [SubResource("BTCheckVar_hc3o3"), SubResource("BTPlayAnimation_6leni"), SubResource("BTWait_8og18"), SubResource("BTAction_yeyns"), SubResource("BTCooldown_25f70"), SubResource("BTWait_tdhfn")]
+custom_name = "Summon minion"
+children = [SubResource("BTCheckAgentProperty_olmdj"), SubResource("BTCheckVar_hc3o3"), SubResource("BTPlayAnimation_6leni"), SubResource("BTWait_8og18"), SubResource("BTAction_yeyns"), SubResource("BTCooldown_25f70"), SubResource("BTWait_tdhfn")]
 
 [sub_resource type="BTAction" id="BTAction_33wje"]
 script = ExtResource("1_sgn0p")
@@ -111,6 +120,7 @@ script = ExtResource("2_pshl2")
 target_position_var = "pos"
 speed_var = "speed"
 tolerance = 50.0
+avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_i05cm"]
 time_limit = 3.0

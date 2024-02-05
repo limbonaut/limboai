@@ -23,11 +23,17 @@ extends BTAction
 ## How close should the agent be to the target position to return SUCCESS.
 @export var tolerance := 50.0
 
+## Specifies the node to avoid (valid Node2D is expected).
+## If not empty, agent will circle around the node while moving into position.
+@export var avoid_var: String
+
 
 func _generate_name() -> String:
-	return "Arrive  pos: %s" % [
+	return "Arrive  pos: %s%s" % [
 		LimboUtility.decorate_var(target_position_var),
+		"" if avoid_var.is_empty() else "  avoid: " + LimboUtility.decorate_var(avoid_var)
 	]
+
 
 func _tick(_delta: float) -> Status:
 	var target_pos: Vector2 = blackboard.get_var(target_position_var, Vector2.ZERO)
@@ -43,8 +49,21 @@ func _tick(_delta: float) -> Status:
 	vertical_factor = clampf(vertical_factor, 0.0, 1.0)
 	dir.y *= vertical_factor
 
+	# Avoid the node specified by `avoid_var`.
+	# I.e., if `avoid_var` is set, agent will circle around that node while moving into position.
+	if not avoid_var.is_empty():
+		var avoid_node: Node2D = blackboard.get_var(avoid_var)
+		if is_instance_valid(avoid_node):
+			var distance_vector: Vector2 = avoid_node.global_position - agent.global_position
+			if dir.dot(distance_vector) > 0.0:
+				var side := dir.rotated(PI * 0.5).normalized()
+				# The closer we are to the avoid target, the stronger is the avoidance.
+				var strength: float = remap(distance_vector.length(), 200.0, 400.0, 1.0, 0.0)
+				strength = clampf(strength, 0.0, 1.0)
+				var avoidance := side * signf(-side.dot(distance_vector)) * strength
+				dir += avoidance
+
 	var desired_velocity: Vector2 = dir.normalized() * speed
-	agent.velocity = lerp(agent.velocity, desired_velocity, 0.2)
-	agent.move_and_slide()
+	agent.move(desired_velocity)
 	agent.update_facing()
 	return RUNNING
