@@ -179,7 +179,11 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 	}
 	tree->set_column_clip_content(0, true);
 	tree->set_column_custom_minimum_width(1, 18 * _get_editor_scale());
-	tree->set_column_custom_minimum_width(2, (50 + extra_spacing) * _get_editor_scale());
+
+	Ref<Font> font = tree->get_theme_font(LW_NAME(font), LW_NAME(Tree));
+	int font_size = tree->get_theme_font_size(LW_NAME(font_size), LW_NAME(Tree));
+	int timings_size = font->get_string_size("0.00", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 12 + extra_spacing;
+	tree->set_column_custom_minimum_width(2, timings_size * _get_editor_scale());
 }
 
 void BehaviorTreeView::_notification(int p_what) {
