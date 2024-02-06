@@ -65,7 +65,7 @@ double BehaviorTreeView::_get_editor_scale() const {
 	if (Engine::get_singleton()->is_editor_hint()) {
 		return EDSCALE;
 	} else {
-		return 0.0;
+		return 1.0;
 	}
 }
 
@@ -103,6 +103,7 @@ void BehaviorTreeView::update_tree(const Ref<BehaviorTreeData> &p_data) {
 			item->set_custom_font(0, theme_cache.font_custom_name);
 		}
 
+		item->set_text_alignment(2, HORIZONTAL_ALIGNMENT_RIGHT);
 		item->set_text(2, rtos(Math::snapped(task_data.elapsed_time, 0.01)).pad_decimals(2));
 
 		String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
@@ -180,9 +181,9 @@ void BehaviorTreeView::_do_update_theme_item_cache() {
 	tree->set_column_clip_content(0, true);
 	tree->set_column_custom_minimum_width(1, 18 * _get_editor_scale());
 
-	Ref<Font> font = tree->get_theme_font(LW_NAME(font), LW_NAME(Tree));
-	int font_size = tree->get_theme_font_size(LW_NAME(font_size), LW_NAME(Tree));
-	int timings_size = font->get_string_size("0.00", HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x + 12 + extra_spacing;
+	Ref<Font> font = tree->get_theme_font(LW_NAME(font));
+	int font_size = tree->get_theme_font_size(LW_NAME(font_size));
+	int timings_size = font->get_string_size("00.00", HORIZONTAL_ALIGNMENT_RIGHT, -1, font_size).x + 16 + extra_spacing;
 	tree->set_column_custom_minimum_width(2, timings_size * _get_editor_scale());
 }
 
