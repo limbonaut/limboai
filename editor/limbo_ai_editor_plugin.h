@@ -217,7 +217,7 @@ public:
 	void apply_changes();
 
 #ifdef LIMBOAI_GDEXTENSION
-	virtual void _input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
+	virtual void _shortcut_input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
 #endif
 
 	LimboAIEditor();

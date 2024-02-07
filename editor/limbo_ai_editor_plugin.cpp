@@ -357,7 +357,7 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 
 	if (LW_IS_SHORTCUT("limbo_ai/open_debugger", p_event)) {
 		_misc_option_selected(MISC_OPEN_DEBUGGER);
-		accept_event();
+		get_viewport()->set_input_as_handled();
 	}
 
 	// * Local shortcuts.
@@ -386,7 +386,7 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		return;
 	}
 
-	accept_event();
+	get_viewport()->set_input_as_handled();
 }
 
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
@@ -1167,7 +1167,7 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
 
-	set_process_input(true);
+	set_process_shortcut_input(true);
 
 	save_dialog = memnew(FileDialog);
 	save_dialog->set_file_mode(FileDialog::FILE_MODE_SAVE_FILE);
