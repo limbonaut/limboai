@@ -42,6 +42,9 @@ LimboStringNames::LimboStringNames() {
 	_update_banners = SN("_update_banners");
 	_weight_ = SN("_weight_");
 	accent_color = SN("accent_color");
+	ActionCopy = SN("ActionCopy");
+	ActionCut = SN("ActionCut");
+	ActionPaste = SN("ActionPaste");
 	Add = SN("Add");
 	add_child = SN("add_child");
 	add_child_at_index = SN("add_child_at_index");
