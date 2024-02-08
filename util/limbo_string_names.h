@@ -56,6 +56,9 @@ public:
 	StringName _update;
 	StringName _weight_;
 	StringName accent_color;
+	StringName ActionCopy;
+	StringName ActionCut;
+	StringName ActionPaste;
 	StringName add_child_at_index;
 	StringName add_child;
 	StringName Add;

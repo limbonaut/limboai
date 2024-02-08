@@ -76,15 +76,35 @@ Array BTTask::_get_children() const {
 }
 
 void BTTask::_set_children(Array p_children) {
-	data.children.clear();
 	const int num_children = p_children.size();
+	int num_null = 0;
+
+	data.children.clear();
 	data.children.resize(num_children);
+
 	for (int i = 0; i < num_children; i++) {
-		Variant task_var = p_children[i];
-		Ref<BTTask> task_ref = task_var;
-		task_ref->data.parent = this;
-		task_ref->data.index = i;
-		data.children.set(i, task_var);
+		Ref<BTTask> task = p_children[i];
+		if (task.is_null()) {
+			ERR_PRINT("Invalid BTTask reference.");
+			num_null += 1;
+			continue;
+		}
+		if (task->data.parent != nullptr && task->data.parent != this) {
+			task = task->clone();
+			if (task.is_null()) {
+				// * BTComment::clone() returns nullptr at runtime - we omit those.
+				num_null += 1;
+				continue;
+			}
+		}
+		int idx = i - num_null;
+		task->data.parent = this;
+		task->data.index = idx;
+		data.children.set(idx, task);
+	}
+
+	if (num_null > 0) {
+		data.children.resize(num_children - num_null);
 	}
 }
 
@@ -145,24 +165,8 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 
 Ref<BTTask> BTTask::clone() const {
 	Ref<BTTask> inst = duplicate(false);
-	inst->data.parent = nullptr;
-	inst->data.agent = nullptr;
-	inst->data.blackboard.unref();
-	int num_null = 0;
-	for (int i = 0; i < data.children.size(); i++) {
-		Ref<BTTask> c = get_child(i)->clone();
-		if (c.is_valid()) {
-			c->data.parent = inst.ptr();
-			c->data.index = i;
-			inst->data.children.set(i - num_null, c);
-		} else {
-			num_null += 1;
-		}
-	}
-	if (num_null > 0) {
-		// * BTComment tasks return nullptr at runtime - we remove those.
-		inst->data.children.resize(data.children.size() - num_null);
-	}
+
+	// * Children are duplicated via children property. See _set_children().
 
 #ifdef LIMBOAI_MODULE
 	// Make BBParam properties unique.
@@ -279,9 +283,9 @@ void BTTask::add_child_at_index(Ref<BTTask> p_child, int p_idx) {
 	if (p_idx < 0 || p_idx > data.children.size()) {
 		p_idx = data.children.size();
 	}
-	data.children.insert(p_idx, p_child);
 	p_child->data.parent = this;
 	p_child->data.index = p_idx;
+	data.children.insert(p_idx, p_child);
 	for (int i = p_idx + 1; i < data.children.size(); i++) {
 		get_child(i)->data.index = i;
 	}
