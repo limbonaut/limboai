@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BehaviorTreeView" inherits="Control" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
-        Visualizes the current state of a [BehaviorTree] instance.
+		Visualizes the current state of a [BehaviorTree] instance.
 	</brief_description>
 	<description>
-        Visualizes the current state of a [BehaviorTree] instance. See also [BehaviorTreeData].
+		Visualizes the current state of a [BehaviorTree] instance. See also [BehaviorTreeData].
 	</description>
 	<tutorials>
 	</tutorials>
@@ -13,7 +13,7 @@
 			<return type="void" />
 			<param index="0" name="p_behavior_tree_data" type="BehaviorTreeData" />
 			<description>
-                Updates the representation of a [BehaviorTree] instance. See also [BehaviorTreeData].
+				Updates the representation of a [BehaviorTree] instance. See also [BehaviorTreeData].
 			</description>
 		</method>
 	</methods>
