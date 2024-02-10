@@ -128,9 +128,17 @@ String BTTask::get_task_name() {
 		}
 		return _generate_name();
 #elif LIMBOAI_GDEXTENSION
-		String s;
-		VCALL_OR_NATIVE_V(_generate_name, String, s);
-		return s;
+		Ref<Script> task_script = get_script();
+		if (task_script.is_valid() && task_script->is_tool()) {
+			Variant call_result;
+			VCALL_OR_NATIVE_V(_generate_name, Variant, call_result);
+			ERR_FAIL_COND_V(call_result.get_type() == Variant::NIL, _generate_name());
+			String task_name = call_result;
+			ERR_FAIL_COND_V(task_name.is_empty(), _generate_name());
+			return task_name;
+		} else {
+			return _generate_name();
+		}
 #endif
 	}
 	return data.custom_name;
@@ -343,7 +351,10 @@ PackedStringArray BTTask::get_configuration_warnings() {
 	PackedStringArray ret;
 
 	PackedStringArray warnings;
-	VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
+	Ref<Script> task_script = get_script();
+	if (task_script.is_valid() && task_script->is_tool()) {
+		VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
+	}
 	ret.append_array(warnings);
 	ret.append_array(_get_configuration_warnings());
 

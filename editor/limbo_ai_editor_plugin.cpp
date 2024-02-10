@@ -124,7 +124,7 @@ Ref<BTTask> LimboAIEditor::_create_task_by_class_or_path(const String &p_class_o
 
 	if (p_class_or_path.begins_with("res:")) {
 		Ref<Script> s = RESOURCE_LOAD(p_class_or_path, "Script");
-		ERR_FAIL_COND_V_MSG(s.is_null() || !s->can_instantiate(), nullptr, vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
+		ERR_FAIL_COND_V_MSG(s.is_null(), nullptr, vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
 		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
 		ERR_FAIL_COND_V_MSG(inst == Variant(), nullptr, vformat("LimboAI: Failed to instantiate base type \"%s\".", s->get_instance_base_type()));
 
