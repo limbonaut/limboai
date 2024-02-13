@@ -36,7 +36,7 @@ texture = ExtResource("2_y7pic")
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_y7pic")
 
-[node name="Hitbox" parent="Root" index="2"]
+[node name="Hitbox" parent="Root" index="1"]
 damage = 2.0
 
 [node name="Health" parent="." index="3"]

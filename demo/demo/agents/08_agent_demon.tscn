@@ -31,10 +31,6 @@ texture = ExtResource("2_cb5f2")
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_cb5f2")
 
-[node name="WeaponNinjaStar" parent="Root" index="1"]
-position = Vector2(-55, -76)
-rotation = 0.0
-
 [node name="Health" parent="." index="3"]
 max_health = 8.0
 

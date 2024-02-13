@@ -16,16 +16,13 @@ collision_mask = 1
 script = ExtResource("2_24nyi")
 dodge_cooldown = 0.4
 
-[node name="WeaponNinjaStar" parent="Root" index="1"]
-scale = Vector2(0.999983, 0.999974)
-
-[node name="Hitbox" parent="Root" index="2"]
+[node name="Hitbox" parent="Root" index="1"]
 collision_mask = 8
 
 [node name="HitboxCollisionShape2D" parent="Root/Hitbox" index="0"]
 shape = SubResource("RectangleShape2D_8pofm")
 
-[node name="Hurtbox" parent="Root" index="3"]
+[node name="Hurtbox" parent="Root" index="2"]
 collision_layer = 4
 
 [node name="Health" parent="." index="3"]

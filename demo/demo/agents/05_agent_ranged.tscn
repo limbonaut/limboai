@@ -10,6 +10,11 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/run_speed/name = "run_speed"
+var/run_speed/type = 3
+var/run_speed/value = 600.0
+var/run_speed/hint = 1
+var/run_speed/hint_string = "10,1000,10"
 
 [node name="AgentRanged" instance=ExtResource("1_oa4xm")]
 
@@ -30,10 +35,6 @@ texture = ExtResource("2_37lvn")
 
 [node name="HandR" parent="Root/Rig/Body" index="2"]
 texture = ExtResource("2_37lvn")
-
-[node name="WeaponNinjaStar" parent="Root" index="1"]
-position = Vector2(-55, -76)
-rotation = 0.0
 
 [node name="Health" parent="." index="3"]
 max_health = 6.0

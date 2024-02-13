@@ -378,7 +378,7 @@ tracks/24/keys = {
 tracks/25/type = "value"
 tracks/25/imported = false
 tracks/25/enabled = true
-tracks/25/path = NodePath("Root/WeaponNinjaStar:visible")
+tracks/25/path = NodePath("Root/Rig/Body/HandL/WeaponNinjaStar:visible")
 tracks/25/interp = 1
 tracks/25/loop_wrap = true
 tracks/25/keys = {
@@ -2321,7 +2321,7 @@ tracks/23/keys = {
 tracks/24/type = "value"
 tracks/24/imported = false
 tracks/24/enabled = true
-tracks/24/path = NodePath("Root/WeaponNinjaStar:visible")
+tracks/24/path = NodePath("Root/Rig/Body/HandL/WeaponNinjaStar:visible")
 tracks/24/interp = 1
 tracks/24/loop_wrap = true
 tracks/24/keys = {
@@ -2870,7 +2870,7 @@ tracks/20/keys = {
 tracks/21/type = "value"
 tracks/21/imported = false
 tracks/21/enabled = true
-tracks/21/path = NodePath("Root/WeaponNinjaStar:visible")
+tracks/21/path = NodePath("Root/Rig/Body/HandL/WeaponNinjaStar:visible")
 tracks/21/interp = 1
 tracks/21/loop_wrap = true
 tracks/21/keys = {
@@ -3835,7 +3835,7 @@ tracks/20/keys = {
 tracks/21/type = "value"
 tracks/21/imported = false
 tracks/21/enabled = true
-tracks/21/path = NodePath("Root/WeaponNinjaStar:visible")
+tracks/21/path = NodePath("Root/Rig/Body/HandL/WeaponNinjaStar:visible")
 tracks/21/interp = 1
 tracks/21/loop_wrap = true
 tracks/21/keys = {
@@ -4105,14 +4105,14 @@ tracks/20/keys = {
 tracks/21/type = "value"
 tracks/21/imported = false
 tracks/21/enabled = true
-tracks/21/path = NodePath("Root/WeaponNinjaStar:visible")
+tracks/21/path = NodePath("Root/Rig/Body/HandL/WeaponNinjaStar:visible")
 tracks/21/interp = 1
 tracks/21/loop_wrap = true
 tracks/21/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [true, false]
+"values": [true, true]
 }
 
 [sub_resource type="Animation" id="Animation_fh06e"]
@@ -4443,9 +4443,9 @@ texture = ExtResource("1_1u51b")
 region_enabled = true
 region_rect = Rect2(111.022, 6.27016, 27.6329, 27.1423)
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/Rig/Body/HandL"]
-remote_path = NodePath("../../../../WeaponNinjaStar")
-update_scale = false
+[node name="WeaponNinjaStar" type="Sprite2D" parent="Root/Rig/Body/HandL"]
+visible = false
+texture = ExtResource("4_1c5xq")
 
 [node name="HandR" type="Sprite2D" parent="Root/Rig/Body"]
 show_behind_parent = true
@@ -4453,12 +4453,6 @@ position = Vector2(51, -51)
 texture = ExtResource("1_1u51b")
 region_enabled = true
 region_rect = Rect2(111, 34, 26.9272, 26.6298)
-
-[node name="WeaponNinjaStar" type="Sprite2D" parent="Root"]
-visible = false
-position = Vector2(-55, -76)
-scale = Vector2(0.999982, 0.999981)
-texture = ExtResource("4_1c5xq")
 
 [node name="Hitbox" type="Area2D" parent="Root"]
 position = Vector2(50, 0)
