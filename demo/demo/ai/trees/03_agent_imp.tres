@@ -115,5 +115,6 @@ children = [SubResource("BTSequence_n5ltc"), SubResource("BTSequence_1xfnq"), Su
 children = [SubResource("BTProbability_ifsry"), SubResource("BTSequence_pxl2k")]
 
 [resource]
+description = "Here, the [dec]Probability[/dec] decorator allows the execution of its branch in 50% of cases. This introduces a slight variation to the behavior each time the [comp]Chaotic walk[/comp] sequence is considered by the [comp]Selector[/comp]. This sequence can be selected several times in a row as long as the Probability decorator permits it. The [comp]Engage player[/comp] sequence is only executed if Probability returns [FAILURE]."
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSelector_y3llm")

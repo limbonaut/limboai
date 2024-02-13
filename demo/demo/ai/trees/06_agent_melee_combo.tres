@@ -158,5 +158,6 @@ children = [SubResource("BTAction_kidxn"), SubResource("BTPlayAnimation_usdja"),
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]
 
 [resource]
+description = "In some scenarios, you might need to execute multiple tasks at the same time until specific conditions are fulfilled. To achieve this, the [comp]Parallel[/comp] composite is an invaluable tool. This composite task allows its children to be executed simultaneously during each tick until a specified number of successes or failures is reached. In this example, it will execute both the [act]PlayAnimation[/act] and [act]MoveForward[/act] actions each tick until both actions have finished with a [SUCCESS] status."
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSequence_pxl2k")

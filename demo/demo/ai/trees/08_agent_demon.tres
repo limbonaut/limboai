@@ -195,5 +195,6 @@ children = [SubResource("BTComment_mqte5"), SubResource("BTPlayAnimation_vjtpq")
 children = [SubResource("BTCooldown_oms7a"), SubResource("BTSequence_eikr4"), SubResource("BTSequence_wh4dl"), SubResource("BTSequence_djtph")]
 
 [resource]
+description = "Here, we use the [con]InRange[/con] condition task together with [comp]Sequence[/comp] and [comp]Selector[/comp] to create a reactive behavior for this agent. When the player comes close, this agent will attempt to hit them with a melee attack and move away afterward for a better ranged position."
 blackboard_plan = SubResource("BlackboardPlan_8ay3j")
 root_task = SubResource("BTSelector_feba6")

@@ -182,5 +182,9 @@ children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"),
 children = [SubResource("BTRunLimit_tq3e1"), SubResource("BTCooldown_ksvfy"), SubResource("BTSequence_y12eg"), SubResource("BTSequence_rgwic")]
 
 [resource]
+description = "Like actions, conditions do not contain child tasks within them. Instead, they evaluate specific criteria and return either a [SUCCESS] or [FAILURE] based on the agent's or environment's state (for example, \"IsLowOnHealth\", \"IsTargetInSight\"). Conditions are commonly employed alongside sequences to interrupt their execution if a particular requirement is not met.
+
+In our example, if the target is not within the specified range, the [con]InRange[/con] condition will return [FAILURE], causing the [comp]sequence[/comp] to be aborted.
+"
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSelector_2jnau")

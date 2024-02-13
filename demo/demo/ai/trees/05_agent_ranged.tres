@@ -175,5 +175,8 @@ custom_name = "Main"
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSelector_1rrya")]
 
 [resource]
+description = "Here, the [dec]Probability[/dec] decorator permits the execution of its branch in 30% of cases. This introduces a slight variation to the behavior each time the \"Change flank\" sequence is considered by the [comp]Selector[/comp].
+
+The [dec]Repeat[/dec] decorator is handy for doing something multiple times within a behavior tree. In our example, it's used to make the [comp]Throw ninja star[/comp] sequence perform three times in a row."
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSequence_pxl2k")

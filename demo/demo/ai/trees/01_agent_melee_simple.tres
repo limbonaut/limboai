@@ -80,5 +80,9 @@ children = [SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResou
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTSequence_1xfnq"), SubResource("BTSequence_ww5v2")]
 
 [resource]
+description = "Welcome to the [b]LimboAI[/b] demo project! This demo project consists of three parts:
+- If you're new to behavior trees, you can access the [b]Tutorial[/b] by clicking the \"Begin Tutorial\" button on the toolbar.
+- To experience the demo game, just click the \"Switch to Game\" button.
+- On this screen, you can inspect the AI behavior tree in action for each agent in the game."
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSequence_pxl2k")

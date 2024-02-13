@@ -213,5 +213,7 @@ custom_name = "Main"
 children = [SubResource("BTSequence_yhjh1"), SubResource("BTProbabilitySelector_rjsiq")]
 
 [resource]
+description = "[comp]ProbabilitySelector[/comp] chooses a child task to execute based on attached probabilities. Probability distribution is calculated based on weights assigned to each child task.
+"
 blackboard_plan = SubResource("BlackboardPlan_46tbn")
 root_task = SubResource("BTSequence_pxl2k")

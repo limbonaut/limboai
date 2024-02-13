@@ -115,5 +115,6 @@ custom_name = "Charge Attack"
 children = [SubResource("BTSequence_l3v31"), SubResource("BTSequence_p6pgg"), SubResource("BTSequence_mde2g"), SubResource("BTSequence_8lur1")]
 
 [resource]
+description = "A [dec]Decorator[/dec] is a type of task that typically has only one child. Decorators are commonly used to alter the behavior or status of their child task. In this behavior tree, the [dec]TimeLimit[/dec] decorator sets a maximum time for the [act]Arrive[/act] action to complete its work. If the child task exceeds this time limit without finishing, it will be aborted, and the TimeLimit decorator will return [FAILURE]."
 blackboard_plan = SubResource("BlackboardPlan_qd806")
 root_task = SubResource("BTSequence_pjuov")

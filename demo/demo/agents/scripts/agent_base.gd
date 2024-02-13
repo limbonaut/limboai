@@ -103,7 +103,7 @@ func play_summoning_effect() -> void:
 	summoning_effect.emitting = true
 
 
-## Is specified position inside the arena (not inside obstacle)?
+## Is specified position inside the arena (not inside an obstacle)?
 func is_good_position(p_position: Vector2) -> bool:
 	var space_state := get_world_2d().direct_space_state
 	var params := PhysicsPointQueryParameters2D.new()

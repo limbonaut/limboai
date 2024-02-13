@@ -149,5 +149,7 @@ children = [SubResource("BTAction_33wje"), SubResource("BTPlayAnimation_qbxm8"),
 children = [SubResource("BTRunLimit_x2jr4"), SubResource("BTSequence_2n742"), SubResource("BTSequence_dss4d")]
 
 [resource]
+description = "[con]CheckAgentProperty[/con] examines the agent’s property value and compares it to a given value or a blackboard variable. In this example, it checks if the [color=cyan]summon_count[/color] property is less than 6.
+You can also check or share a [dec]Cooldown[/dec] in different parts of the behavior tree if you provide a blackboard variable for the [dec]Cooldown[/dec] decorator to use. [con]CheckVar[/con] is responsible here for examining the cooldown variable named \"summon_cooldown\"."
 blackboard_plan = SubResource("BlackboardPlan_58oq1")
 root_task = SubResource("BTSelector_gp6q5")

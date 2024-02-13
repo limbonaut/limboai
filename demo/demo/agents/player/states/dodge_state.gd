@@ -37,7 +37,7 @@ func _enter() -> void:
 
 
 func _exit() -> void:
-	hurtbox_collision.disabled = false
+	hurtbox_collision.set_deferred(&"disabled", false)
 
 
 func _update(p_delta: float) -> void:
