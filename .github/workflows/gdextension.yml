@@ -85,8 +85,15 @@ jobs:
             arch: universal
             should-build: true
 
+          - name: 🌐 Web (wasm32, release)
+            runner: ubuntu-20.04
+            platform: web
+            target: template_release
+            arch: wasm32
+            should-build: true
+
         exclude:
-          - { opts: {should-build: false }}
+          - { opts: { should-build: false } }
 
     env:
       BIN: liblimboai.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}
@@ -134,8 +141,8 @@ jobs:
         if: matrix.opts.platform == 'windows' || matrix.opts.platform == 'macos'
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
-          architecture: 'x64'
+          python-version: "3.x"
+          architecture: "x64"
 
       - name: Set up scons
         if: matrix.opts.platform == 'windows' || matrix.opts.platform == 'macos'
@@ -167,7 +174,6 @@ jobs:
           ls -l
           echo "---"
           ls -l -R ./demo/
-
 
       - name: Compilation
         shell: bash
