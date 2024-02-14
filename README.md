@@ -11,7 +11,7 @@
 ![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)
 ![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)
 
-**LimboAI** is an open-source C++ module for **Godot Engine 4** providing a combination of
+**LimboAI** is an open-source C++ plugin for **Godot Engine 4** providing a combination of
 **Behavior Trees** and **State Machines**, which can be used together to create complex AI behaviors.
 It comes with a behavior tree editor, built-in documentation, visual debugger, and more!
 While it is implemented in C++, it fully supports GDScript for [creating your own tasks](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html) and states.
@@ -52,6 +52,8 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 - **GDExtension:** LimboAI can be [used as extension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html). Custom engine builds are not necessary.
 
+- **Demo project:** Check out our extensive demo project with a tutorial!
+
 ## Getting LimboAI
 
 LimboAI can be used as either a C++ module or as a GDExtension shared library. GDExtension version is more convenient to use but somewhat limited in features. Whichever you choose to use, your project will stay compatible with both and you can switch from one to the other any time. See [Using GDExtension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html).
@@ -81,7 +83,7 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 All contributions are welcome! Feel free to open issues with bug reports and feature requests, and submit PRs.
 
 Got an idea for a behavior tree task that you think would be useful on a variety of projects?
-Feel free to open an issue and describe your concept.
+I invite you to open an issue and describe your concept.
 
 ## Social
 
@@ -94,9 +96,9 @@ I also write about LimboAI development on the Mastodon: https://mastodon.gamedev
 Features and improvements that may be implemented in the future:
 - ~~Providing precompiled builds for download.~~ 🗸
 - ~~Tests and CI.~~ 🗸
+- ~~GDExtension support.~~ 🗸
+- ~~Non-trivial demo project.~~ 🗸
 - Expanding the library of commonly useful tasks.
-- Creating a non-trivial demo project to showcase the capabilities of LimboAI.
 - Exploring the execution history of behavior trees in the visual debugger.
 - Per-project ignore list for tasks that users may want to hide in the task palette.
 - GUI editor for state machines.
-~~- Supporting GDExtension in the future, once it matures.~~ 🗸
