@@ -97,7 +97,7 @@ output_var = "target"
 children = [SubResource("BTSequence_cgwor"), SubResource("BTSequence_vx4uy"), SubResource("BTAction_2murg")]
 
 [resource]
-description = "The [comp]Selector[/comp] is another essential composite task. It executes its children sequentially, from first to last, until one of them returns [SUCCESS] or all of them result in [FAILURE]. In other words, when a child task results in [FAILURE], it moves on to the next one until it finds the one that returns [SUCCESS]. Once a child task results in [SUCCESS], the Selector stops and also returns [SUCCESS].
+description = "The [comp]Selector[/comp] is another essential composite task. It executes its child tasks sequentially, from first to last, until one of them returns [SUCCESS] or all of them result in [FAILURE]. In other words, when a child task results in [FAILURE], it moves on to the next one until it finds the one that returns [SUCCESS]. Once a child task results in [SUCCESS], the Selector stops and also returns [SUCCESS].
 
 To understand the [comp]Selector[/comp], it helps to see it as the opposite of the [comp]Sequence[/comp]. While the Sequence continues iterating over children as long as they return [SUCCESS], the Selector does the same but as long as they return [FAILURE]. The purpose of the Selector is to find a child that succeeds. It's often useful to place higher priority tasks at the top so that the Selector attempts them first.
 
