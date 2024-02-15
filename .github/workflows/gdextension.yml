@@ -210,7 +210,7 @@ jobs:
           mkdir out
           mv demo/addons/ out/
           cp limboai/{README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
-          cp -R limboai/demo/demo out/demo
+          cp -R limboai/demo/{demo,LICENSE_ASSETS.md} out/demo
           rm -f out/addons/limboai/bin/*.{exp,lib,pdb}
           echo "---"
           ls -R out/
