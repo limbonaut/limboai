@@ -17,6 +17,7 @@ on:
 jobs:
   package-demo:
     runs-on: ubuntu-latest
+    name: Package demo
 
     steps:
       - name: Clone LimboAI module
