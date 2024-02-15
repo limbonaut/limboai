@@ -33,10 +33,14 @@ Behavior Trees are powerful hierarchical structures used to model and control th
     - Control execution flow using composite, decorator, and condition tasks.
     - [Create custom tasks](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html) by extending core classes: `BTAction`, `BTCondition`, `BTDecorator`, and `BTComposite`.
     - Built-in class documentation. Check out the `BehaviorTree` class documentation to get started.
-    - Share data seamlessly between tasks using the `Blackboard`.
-    - Blackboard scopes isolate variable namespaces and enable advanced techniques like sharing data between agents in a group.
+    - Blackboard: Share data seamlessly between tasks using the `Blackboard`.
+      - Blackboard plans: Define variables in the BehaviorTree resource and override their values in the BTPlayer node.
+      - Blackboard scopes: Isolate variable namespaces and enable advanced techniques like sharing data between several agents in a group.
+      - Blackboard parameters: Export BB parameter, for which user can provide a value or bind it to a blackboard variable (can be used in custom tasks).
+      - Editor support: Blackboard plan editor, and inspector property editor for exported string properties ending with "_var".
     - Use the `BTSubtree` task to execute a tree from a different resource file, promoting organization and reusability.
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
+    - Visualize BT in-game using `BehaviorTreeView` node (for custom in-game tools).
     - Monitor tree performance with custom performance monitors.
 
 - **Hierarchical State Machines (HSM):**
@@ -52,7 +56,7 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 - **GDExtension:** LimboAI can be [used as extension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html). Custom engine builds are not necessary.
 
-- **Demo project:** Check out our extensive demo project with a tutorial!
+- **Demo Project:** Check out our extensive demo project with a tutorial (an introduction to behavior trees with examples)!
 
 ## Getting LimboAI
 
@@ -89,7 +93,7 @@ I invite you to open an issue and describe your concept.
 
 We have a fresh new Discord server: https://discord.gg/N5MGC95GpP
 
-I also write about LimboAI development on the Mastodon: https://mastodon.gamedev.place/@limbo.
+I write about LimboAI development on the Mastodon: https://mastodon.gamedev.place/@limbo.
 
 ## Roadmap
 
