@@ -216,7 +216,7 @@ jobs:
           ls -R out/
 
       - name: Strip lib
-        if: matrix.opts.platform != 'windows'
+        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web'
         run: |
           ls -l -R out/addons/limboai/bin/
           echo "---"
