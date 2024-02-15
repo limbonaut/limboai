@@ -27,6 +27,7 @@ var attack_pressed: bool = false
 func _ready() -> void:
 	super._ready()
 	can_dodge = true
+	_init_input_events()
 	_init_state_machine()
 	death.connect(func(): remove_from_group(&"player"))
 
@@ -67,6 +68,28 @@ func _init_state_machine() -> void:
 	hsm.initialize(self)
 	hsm.set_active(true)
 	hsm.set_guard(_can_dodge)
+
+
+func _init_input_events() -> void:
+	# Note: Ensures that input events are present even if project.godot wasn't imported.
+	_add_action(&"move_left", KEY_A)
+	_add_action(&"move_right", KEY_D)
+	_add_action(&"move_up", KEY_W)
+	_add_action(&"move_down", KEY_S)
+	_add_action(&"dodge", KEY_SPACE)
+	_add_action(&"attack", KEY_ENTER, KEY_F)
+
+
+func _add_action(p_action: StringName, p_key: Key, p_alt: Key = KEY_NONE) -> void:
+	if not InputMap.has_action(p_action):
+		InputMap.add_action(p_action)
+		var event := InputEventKey.new()
+		event.keycode = p_key
+		InputMap.action_add_event(p_action, event)
+		if p_alt != KEY_NONE:
+			var alt := InputEventKey.new()
+			alt.keycode = p_alt
+			InputMap.action_add_event(p_action, alt)
 
 
 func set_victorious() -> void:

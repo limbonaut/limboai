@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://clyhgbpfpmtw7"]
+[gd_scene load_steps=15 format=3 uid="uid://clyhgbpfpmtw7"]
 
 [ext_resource type="Script" path="res://demo/scenes/game.gd" id="1_qw71e"]
 [ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_r21q3"]
@@ -24,6 +24,12 @@ font_size = 36
 font_color = Color(1, 1, 0.239216, 1)
 outline_size = 20
 outline_color = Color(0.211521, 0.23888, 0.290166, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_grcwx"]
+font = ExtResource("4_w0vii")
+font_size = 37
+outline_size = 12
+outline_color = Color(0.317525, 0.344884, 0.388373, 1)
 
 [node name="Game" type="Node2D"]
 y_sort_enabled = true
@@ -115,6 +121,25 @@ text = "demo project"
 label_settings = SubResource("LabelSettings_628x3")
 horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="Keys" type="Label" parent="UI Layer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -336.0
+offset_top = -208.0
+offset_right = -18.0
+offset_bottom = -25.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Move       WASD
+Dodge     SPACE     
+Attack    ENTER / F
+"
+label_settings = SubResource("LabelSettings_grcwx")
 
 [node name="Arena" parent="." instance=ExtResource("9_k3uu1")]
 metadata/_edit_lock_ = true
