@@ -93,6 +93,8 @@ Example 1: A simple action
        return FAILURE
 
 
+.. _example_in_range:
+
 Example 2: InRange condition
 ----------------------------
 
