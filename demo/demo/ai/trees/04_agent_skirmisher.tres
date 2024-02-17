@@ -25,9 +25,14 @@ var/slow_speed/value = 300.0
 var/slow_speed/hint = 1
 var/slow_speed/hint_string = "10,1000,10"
 
+[sub_resource type="BTAction" id="BTAction_ulbrf"]
+script = ExtResource("1_2883n")
+group = &"player"
+output_var = "target"
+
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_qiw21"]
 animation_player = SubResource("BBNode_nrd4b")
@@ -40,7 +45,7 @@ max_duration = 3.0
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
 custom_name = "Summoning sickness"
-children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
+children = [SubResource("BTAction_ulbrf"), SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
 
 [sub_resource type="BTRunLimit" id="BTRunLimit_tq3e1"]
 children = [SubResource("BTSequence_yhjh1")]
@@ -52,8 +57,8 @@ distance_max = 300.0
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_7c0g0"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_sty80"]
 animation_player = SubResource("BBNode_7c0g0")
@@ -68,8 +73,8 @@ speed_var = "speed"
 approach_distance = 100.0
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_lkphr"]
-time_limit = 1.0
 children = [SubResource("BTAction_jryg6")]
+time_limit = 1.0
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
 script = ExtResource("4_57x51")
@@ -79,8 +84,8 @@ target_var = "target"
 duration = 0.2
 
 [sub_resource type="BBNode" id="BBNode_kcqly"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_hngi6"]
 await_completion = 2.0
@@ -95,8 +100,8 @@ custom_name = "Melee attack"
 children = [SubResource("BTCondition_uk4dg"), SubResource("BTPlayAnimation_sty80"), SubResource("BTTimeLimit_lkphr"), SubResource("BTAction_kidxn"), SubResource("BTWait_tadkc"), SubResource("BTPlayAnimation_hngi6"), SubResource("BTWait_cm8jy")]
 
 [sub_resource type="BTCooldown" id="BTCooldown_ksvfy"]
-duration = 2.0
 children = [SubResource("BTSequence_ww5v2")]
+duration = 2.0
 
 [sub_resource type="BTCondition" id="BTCondition_fpufi"]
 script = ExtResource("5_p5dih")
@@ -105,8 +110,8 @@ distance_max = 300.0
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_3iqcf"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ee0ff"]
 animation_player = SubResource("BBNode_3iqcf")
@@ -120,15 +125,15 @@ speed_var = "slow_speed"
 max_angle_deviation = 0.7
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_cns1i"]
-time_limit = 1.5
 children = [SubResource("BTAction_4ye2y")]
+time_limit = 1.5
 
 [sub_resource type="BTAlwaysSucceed" id="BTAlwaysSucceed_nw4ep"]
 children = [SubResource("BTTimeLimit_cns1i")]
 
 [sub_resource type="BBNode" id="BBNode_81x7t"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_e61er"]
 animation_player = SubResource("BBNode_81x7t")
@@ -142,19 +147,14 @@ custom_name = "Disengage"
 children = [SubResource("BTCondition_fpufi"), SubResource("BTPlayAnimation_ee0ff"), SubResource("BTAlwaysSucceed_nw4ep"), SubResource("BTPlayAnimation_e61er"), SubResource("BTRandomWait_jw0cm")]
 
 [sub_resource type="BBNode" id="BBNode_wpj6d"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_olf37"]
 animation_player = SubResource("BBNode_wpj6d")
 animation_name = &"walk"
 blend = 0.1
 speed = 1.2
-
-[sub_resource type="BTAction" id="BTAction_ulbrf"]
-script = ExtResource("1_2883n")
-group = &"player"
-output_var = "target"
 
 [sub_resource type="BTAction" id="BTAction_g5ayy"]
 script = ExtResource("2_cjso2")
@@ -176,7 +176,7 @@ children = [SubResource("BTAction_tv4lt")]
 
 [sub_resource type="BTSequence" id="BTSequence_rgwic"]
 custom_name = "Flank from behind"
-children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"), SubResource("BTAction_g5ayy"), SubResource("BTTimeLimit_xek5v")]
+children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_g5ayy"), SubResource("BTTimeLimit_xek5v")]
 
 [sub_resource type="BTSelector" id="BTSelector_2jnau"]
 children = [SubResource("BTRunLimit_tq3e1"), SubResource("BTCooldown_ksvfy"), SubResource("BTSequence_y12eg"), SubResource("BTSequence_rgwic")]
