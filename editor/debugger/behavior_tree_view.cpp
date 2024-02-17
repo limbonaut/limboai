@@ -22,6 +22,7 @@
 #include "core/math/color.h"
 #include "core/math/math_defs.h"
 #include "core/object/callable_method_pointer.h"
+#include "core/os/time.h"
 #include "core/typedefs.h"
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
@@ -30,6 +31,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/time.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
@@ -74,6 +76,12 @@ inline void _item_set_elapsed_time(TreeItem *p_item, double p_elapsed) {
 }
 
 void BehaviorTreeView::update_tree(const Ref<BehaviorTreeData> &p_data) {
+	update_data = p_data;
+	update_pending = true;
+	_notification(NOTIFICATION_PROCESS);
+}
+
+void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 	// Remember selected.
 	uint64_t selected_id = 0;
 	if (tree->get_selected()) {
@@ -258,6 +266,17 @@ void BehaviorTreeView::_notification(int p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
 		} break;
+		case NOTIFICATION_VISIBILITY_CHANGED: {
+			set_process(is_visible_in_tree());
+		}
+		case NOTIFICATION_PROCESS: {
+			int ticks_msec = Time::get_singleton()->get_ticks_msec();
+			if (update_pending && (ticks_msec - last_update_msec) >= update_interval_msec) {
+				_update_tree(update_data);
+				update_pending = false;
+				last_update_msec = ticks_msec;
+			}
+		} break;
 	}
 }
 
@@ -267,6 +286,10 @@ void BehaviorTreeView::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_draw_failure_status"), &BehaviorTreeView::_draw_failure_status);
 	ClassDB::bind_method(D_METHOD("_item_collapsed"), &BehaviorTreeView::_item_collapsed);
 	ClassDB::bind_method(D_METHOD("update_tree", "p_behavior_tree_data"), &BehaviorTreeView::update_tree);
+
+	ClassDB::bind_method(D_METHOD("set_update_interval_msec", "p_milliseconds"), &BehaviorTreeView::set_update_interval_msec);
+	ClassDB::bind_method(D_METHOD("get_update_interval_msec"), &BehaviorTreeView::get_update_interval_msec);
+	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_interval_msec"), "set_update_interval_msec", "get_update_interval_msec");
 }
 
 BehaviorTreeView::BehaviorTreeView() {
