@@ -19,8 +19,8 @@ var/charge_speed/hint = 1
 var/charge_speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_yrurg"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ha2ag"]
 animation_player = SubResource("BBNode_yrurg")
@@ -48,8 +48,8 @@ range_max = 600
 position_var = "flank_pos"
 
 [sub_resource type="BBNode" id="BBNode_xh3wr"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_h0poo"]
 animation_player = SubResource("BBNode_xh3wr")
@@ -64,8 +64,8 @@ tolerance = 50.0
 avoid_var = ""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_is5ag"]
-time_limit = 3.0
 children = [SubResource("BTAction_87mi0")]
+time_limit = 3.0
 
 [sub_resource type="BTSequence" id="BTSequence_p6pgg"]
 custom_name = "Flank target"
@@ -76,8 +76,8 @@ script = ExtResource("4_xwjl7")
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_bfijg"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_4okoy"]
 await_completion = 2.0
@@ -93,8 +93,8 @@ custom_name = "Anticipation"
 children = [SubResource("BTAction_q5g4a"), SubResource("BTPlayAnimation_4okoy"), SubResource("BTWait_ovu3r")]
 
 [sub_resource type="BBNode" id="BBNode_kpp70"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_8s1wq"]
 animation_player = SubResource("BBNode_kpp70")

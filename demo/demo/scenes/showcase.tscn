@@ -1,11 +1,13 @@
-[gd_scene load_steps=13 format=3 uid="uid://b3ae14mc2ty3y"]
+[gd_scene load_steps=15 format=3 uid="uid://b3ae14mc2ty3y"]
 
 [ext_resource type="Script" path="res://demo/scenes/showcase.gd" id="1_l12ql"]
 [ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_3d7dj"]
 [ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="3_7vli5"]
 [ext_resource type="FontFile" uid="uid://n231m6uqsq6x" path="res://demo/assets/fonts/junction_bold.otf" id="4_7ubu6"]
+[ext_resource type="Texture2D" uid="uid://dc1wu244fnetf" path="res://demo/assets/arrow_left.png" id="5_bvrtp"]
 [ext_resource type="Texture2D" uid="uid://tyu0ua1ju38l" path="res://demo/assets/logo.png" id="5_rwygb"]
 [ext_resource type="Script" path="res://demo/scenes/base/toggle_fullscreen.gd" id="6_uggpo"]
+[ext_resource type="Texture2D" uid="uid://bjakugmqbbtw7" path="res://demo/assets/arrow_right.png" id="7_5do2y"]
 [ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="7_42nq6"]
 [ext_resource type="PackedScene" uid="uid://c5fhe3tulhlco" path="res://demo/props/dummy.tscn" id="8_apshw"]
 
@@ -127,7 +129,7 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
-text = "⬅"
+icon = ExtResource("5_bvrtp")
 
 [node name="AgentSelection" type="MenuButton" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
@@ -145,7 +147,7 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
-text = "➡"
+icon = ExtResource("7_5do2y")
 
 [node name="BehaviorTreeView" type="BehaviorTreeView" parent="UI Layer/Control/BehaviorInspector/VBoxContainer"]
 unique_name_in_owner = true

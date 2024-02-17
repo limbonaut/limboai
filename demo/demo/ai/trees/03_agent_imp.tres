@@ -14,8 +14,8 @@ var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_3y70b"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_klk26"]
 animation_player = SubResource("BBNode_3y70b")
@@ -43,8 +43,8 @@ children = [SubResource("BTPlayAnimation_klk26"), SubResource("BTAction_chmiy"),
 children = [SubResource("BTSequence_k184c")]
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_qiw21"]
 animation_player = SubResource("BBNode_nrd4b")
@@ -60,8 +60,8 @@ custom_name = "Pause before action"
 children = [SubResource("BTPlayAnimation_qiw21"), SubResource("BTRandomWait_xlud8")]
 
 [sub_resource type="BBNode" id="BBNode_wpj6d"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_olf37"]
 animation_player = SubResource("BBNode_wpj6d")
@@ -80,8 +80,8 @@ speed_var = "speed"
 approach_distance = 100.0
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
-time_limit = 2.0
 children = [SubResource("BTAction_a4jqi")]
+time_limit = 2.0
 
 [sub_resource type="BTSequence" id="BTSequence_1xfnq"]
 custom_name = "Pursue player"
@@ -95,8 +95,8 @@ target_var = "target"
 duration = 0.1
 
 [sub_resource type="BBNode" id="BBNode_s8evu"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_ppmxd"]
 await_completion = 2.0
