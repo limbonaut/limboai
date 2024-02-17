@@ -142,6 +142,8 @@ void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 	} else {
 		// * Create new tree.
 
+		last_root_id = p_data->tasks.size() > 0 ? p_data->tasks[0].id : 0;
+
 		tree->clear();
 		TreeItem *parent = nullptr;
 		List<Pair<TreeItem *, int>> parents;
@@ -201,13 +203,13 @@ void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 				parents.push_front(Pair<TreeItem *, int>(item, task_data.num_children));
 			}
 		}
-		last_root_id = p_data->tasks.size() > 0 ? p_data->tasks[0].id : 0;
 	}
 }
 
 void BehaviorTreeView::clear() {
 	tree->clear();
 	collapsed_ids.clear();
+	last_root_id = 0;
 }
 
 void BehaviorTreeView::_do_update_theme_item_cache() {
