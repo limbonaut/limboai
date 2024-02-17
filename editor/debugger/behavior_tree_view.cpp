@@ -270,7 +270,7 @@ void BehaviorTreeView::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_VISIBILITY_CHANGED: {
 			set_process(is_visible_in_tree());
-		}
+		} break;
 		case NOTIFICATION_PROCESS: {
 			int ticks_msec = Time::get_singleton()->get_ticks_msec();
 			if (update_pending && (ticks_msec - last_update_msec) >= update_interval_msec) {
