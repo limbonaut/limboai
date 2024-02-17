@@ -48,11 +48,13 @@ private:
 		Ref<Font> font_custom_name;
 	} theme_cache;
 
-	Vector<int> collapsed_ids;
+	Vector<uint64_t> collapsed_ids;
+	uint64_t last_root_id = 0;
 
 	void _draw_success_status(Object *p_obj, Rect2 p_rect);
 	void _draw_running_status(Object *p_obj, Rect2 p_rect);
 	void _draw_failure_status(Object *p_obj, Rect2 p_rect);
+	void _draw_fresh(Object *p_obj, Rect2 p_rect) {}
 	void _item_collapsed(Object *p_obj);
 	double _get_editor_scale() const;
 

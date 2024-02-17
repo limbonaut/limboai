@@ -52,7 +52,7 @@ void BehaviorTreeView::_item_collapsed(Object *p_obj) {
 	if (!item) {
 		return;
 	}
-	int id = item->get_metadata(0);
+	uint64_t id = item->get_metadata(0);
 	bool collapsed = item->is_collapsed();
 	if (!collapsed_ids.has(id) && collapsed) {
 		collapsed_ids.push_back(item->get_metadata(0));
@@ -69,70 +69,131 @@ double BehaviorTreeView::_get_editor_scale() const {
 	}
 }
 
+inline void _item_set_elapsed_time(TreeItem *p_item, double p_elapsed) {
+	p_item->set_text(2, rtos(Math::snapped(p_elapsed, 0.01)).pad_decimals(2));
+}
+
 void BehaviorTreeView::update_tree(const Ref<BehaviorTreeData> &p_data) {
 	// Remember selected.
-	int selected_id = -1;
+	uint64_t selected_id = 0;
 	if (tree->get_selected()) {
 		selected_id = tree->get_selected()->get_metadata(0);
 	}
 
-	tree->clear();
-	TreeItem *parent = nullptr;
-	List<Pair<TreeItem *, int>> parents;
-	for (const BehaviorTreeData::TaskData &task_data : p_data->tasks) {
-		// Figure out parent.
-		parent = nullptr;
-		if (parents.size()) {
-			Pair<TreeItem *, int> &p = parents[0];
-			parent = p.first;
-			if (!(--p.second)) {
-				// No children left, remove it.
-				parents.pop_front();
+	if (last_root_id != 0 && p_data->tasks.size() > 0 && last_root_id == (uint64_t)p_data->tasks[0].id) {
+		// * Update tree.
+		// ! Update routine is built on assumption that the behavior tree does NOT mutate. With little work it could detect mutations.
+
+		TreeItem *item = tree->get_root();
+		int idx = 0;
+		while (item) {
+			ERR_FAIL_COND(idx >= p_data->tasks.size());
+
+			const BTTask::Status current_status = (BTTask::Status)p_data->tasks[idx].status;
+			const BTTask::Status last_status = VariantCaster<BTTask::Status>::cast(item->get_metadata(1));
+			const bool status_changed = last_status != p_data->tasks[idx].status;
+
+			if (status_changed) {
+				item->set_metadata(1, current_status);
+				if (current_status == BTTask::SUCCESS) {
+					item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
+					item->set_icon(1, theme_cache.icon_success);
+				} else if (current_status == BTTask::FAILURE) {
+					item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
+					item->set_icon(1, theme_cache.icon_failure);
+				} else if (current_status == BTTask::RUNNING) {
+					item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
+					item->set_icon(1, theme_cache.icon_running);
+				} else {
+					item->set_custom_draw(0, this, LW_NAME(_draw_fresh));
+					item->set_icon(1, nullptr);
+				}
+			}
+
+			if (status_changed || current_status == BTTask::RUNNING) {
+				_item_set_elapsed_time(item, p_data->tasks[idx].elapsed_time);
+			}
+
+			if (item->get_first_child()) {
+				item = item->get_first_child();
+			} else if (item->get_next()) {
+				item = item->get_next();
+			} else {
+				while (item) {
+					item = item->get_parent();
+					if (item && item->get_next()) {
+						item = item->get_next();
+						break;
+					}
+				}
+			}
+
+			idx += 1;
+		}
+		ERR_FAIL_COND(idx != p_data->tasks.size());
+	} else {
+		// * Create new tree.
+
+		tree->clear();
+		TreeItem *parent = nullptr;
+		List<Pair<TreeItem *, int>> parents;
+		for (const BehaviorTreeData::TaskData &task_data : p_data->tasks) {
+			// Figure out parent.
+			parent = nullptr;
+			if (parents.size()) {
+				Pair<TreeItem *, int> &p = parents[0];
+				parent = p.first;
+				if (!(--p.second)) {
+					// No children left, remove it.
+					parents.pop_front();
+				}
+			}
+
+			TreeItem *item = tree->create_item(parent);
+			// Do this first because it resets properties of the cell...
+			item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
+			item->set_cell_mode(1, TreeItem::CELL_MODE_ICON);
+
+			item->set_metadata(0, task_data.id);
+			item->set_metadata(1, task_data.status);
+
+			item->set_text(0, task_data.name);
+			if (task_data.is_custom_name) {
+				item->set_custom_font(0, theme_cache.font_custom_name);
+			}
+
+			item->set_text_alignment(2, HORIZONTAL_ALIGNMENT_RIGHT);
+			_item_set_elapsed_time(item, task_data.elapsed_time);
+
+			String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
+			item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(cors));
+			item->set_icon_max_width(0, 16 * _get_editor_scale()); // Force user icon size.
+
+			if (task_data.status == BTTask::SUCCESS) {
+				item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
+				item->set_icon(1, theme_cache.icon_success);
+			} else if (task_data.status == BTTask::FAILURE) {
+				item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
+				item->set_icon(1, theme_cache.icon_failure);
+			} else if (task_data.status == BTTask::RUNNING) {
+				item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
+				item->set_icon(1, theme_cache.icon_running);
+			}
+
+			if (task_data.id == selected_id) {
+				tree->set_selected(item, 0);
+			}
+
+			if (collapsed_ids.has(task_data.id)) {
+				item->set_collapsed(true);
+			}
+
+			// Add in front of parents stack if children are expected.
+			if (task_data.num_children) {
+				parents.push_front(Pair<TreeItem *, int>(item, task_data.num_children));
 			}
 		}
-
-		TreeItem *item = tree->create_item(parent);
-		// Do this first because it resets properties of the cell...
-		item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
-		item->set_cell_mode(1, TreeItem::CELL_MODE_ICON);
-
-		item->set_metadata(0, task_data.id);
-
-		item->set_text(0, task_data.name);
-		if (task_data.is_custom_name) {
-			item->set_custom_font(0, theme_cache.font_custom_name);
-		}
-
-		item->set_text_alignment(2, HORIZONTAL_ALIGNMENT_RIGHT);
-		item->set_text(2, rtos(Math::snapped(task_data.elapsed_time, 0.01)).pad_decimals(2));
-
-		String cors = (task_data.script_path.is_empty()) ? task_data.type_name : task_data.script_path;
-		item->set_icon(0, LimboUtility::get_singleton()->get_task_icon(cors));
-		item->set_icon_max_width(0, 16 * _get_editor_scale()); // Force user icon size.
-
-		if (task_data.status == BTTask::SUCCESS) {
-			item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
-			item->set_icon(1, theme_cache.icon_success);
-		} else if (task_data.status == BTTask::FAILURE) {
-			item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
-			item->set_icon(1, theme_cache.icon_failure);
-		} else if (task_data.status == BTTask::RUNNING) {
-			item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
-			item->set_icon(1, theme_cache.icon_running);
-		}
-
-		if (task_data.id == selected_id) {
-			tree->set_selected(item, 0);
-		}
-
-		if (collapsed_ids.has(task_data.id)) {
-			item->set_collapsed(true);
-		}
-
-		// Add in front of parents stack if it expects children.
-		if (task_data.num_children) {
-			parents.push_front(Pair<TreeItem *, int>(item, task_data.num_children));
-		}
+		last_root_id = p_data->tasks.size() > 0 ? p_data->tasks[0].id : 0;
 	}
 }
 
