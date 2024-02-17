@@ -19,7 +19,7 @@
 	</methods>
 	<members>
 		<member name="update_interval_msec" type="int" setter="set_update_interval_msec" getter="get_update_interval_msec" default="0">
-		Minimum delay between two updates (in milliseconds). Set to higher values for a lower CPU load.
+			Minimum delay between two updates (in milliseconds). Set to higher values for a lower CPU load.
 		</member>
 	</members>
 </class>
