@@ -28,6 +28,7 @@ LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
 	_draw_failure_status = SN("_draw_failure_status");
+	_draw_fresh = SN("_draw_fresh");
 	_draw_probability = SN("_draw_probability");
 	_draw_running_status = SN("_draw_running_status");
 	_draw_success_status = SN("_draw_success_status");

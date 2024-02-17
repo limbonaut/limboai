@@ -22,6 +22,7 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
+#include "editor/gui/editor_spin_slider.h"
 #include "editor/plugins/editor_debugger_plugin.h"
 #include "editor/window_wrapper.h"
 #include "scene/gui/box_container.h"
@@ -35,6 +36,7 @@
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/editor_debugger_plugin.hpp>
 #include <godot_cpp/classes/editor_debugger_session.hpp>
+#include <godot_cpp/classes/editor_spin_slider.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/h_split_container.hpp>
 #include <godot_cpp/classes/item_list.hpp>
@@ -64,6 +66,7 @@ private:
 	LineEdit *filter_players = nullptr;
 	Button *resource_header = nullptr;
 	Button *make_floating = nullptr;
+	EditorSpinSlider *update_interval = nullptr;
 	CompatWindowWrapper *window_wrapper = nullptr;
 
 	void _reset_controls();

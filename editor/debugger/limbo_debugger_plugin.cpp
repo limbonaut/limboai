@@ -16,6 +16,7 @@
 #include "../../bt/behavior_tree.h"
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
+#include "../../util/limbo_compat.h"
 #include "../../util/limbo_utility.h"
 #include "limbo_debugger.h"
 
@@ -29,6 +30,7 @@
 #include "core/string/ustring.h"
 #include "core/variant/array.h"
 #include "editor/editor_interface.h"
+#include "editor/editor_paths.h"
 #include "editor/editor_scale.h"
 #include "editor/filesystem_dock.h"
 #include "editor/plugins/editor_debugger_plugin.h"
@@ -37,16 +39,20 @@
 #include "scene/gui/item_list.h"
 #include "scene/gui/label.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/separator.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
 #include "scene/gui/texture_rect.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/config_file.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/editor_paths.hpp>
 #include <godot_cpp/classes/file_system_dock.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/tab_container.hpp>
+#include <godot_cpp/classes/v_separator.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 //**** LimboDebuggerTab
@@ -180,6 +186,23 @@ void LimboDebuggerTab::_notification(int p_what) {
 			resource_header->connect(LW_NAME(pressed), callable_mp(this, &LimboDebuggerTab::_resource_header_pressed));
 			filter_players->connect(LW_NAME(text_changed), callable_mp(this, &LimboDebuggerTab::_filter_changed));
 			bt_player_list->connect(LW_NAME(item_selected), callable_mp(this, &LimboDebuggerTab::_bt_selected));
+			update_interval->connect("value_changed", callable_mp(bt_view, &BehaviorTreeView::set_update_interval_msec));
+
+			Ref<ConfigFile> cf;
+			cf.instantiate();
+			String conf_path = PROJECT_CONFIG_FILE();
+			if (cf->load(conf_path) == OK) {
+				Variant value = cf->get_value("debugger", "update_interval_msec", 0);
+				update_interval->set_value(value);
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			Ref<ConfigFile> cf;
+			cf.instantiate();
+			String conf_path = PROJECT_CONFIG_FILE();
+			cf->load(conf_path);
+			cf->set_value("debugger", "update_interval_msec", update_interval->get_value());
+			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			alert_icon->set_texture(get_theme_icon(LW_NAME(StatusWarning), LW_NAME(EditorIcons)));
@@ -195,7 +218,6 @@ void LimboDebuggerTab::setup(Ref<EditorDebuggerSession> p_session, CompatWindowW
 	if (p_wrapper->is_window_available()) {
 		make_floating = memnew(CompatScreenSelect);
 		make_floating->set_flat(true);
-		make_floating->set_h_size_flags(Control::SIZE_EXPAND | Control::SIZE_SHRINK_END);
 		make_floating->set_tooltip_text(TTR("Make the LimboAI Debugger floating."));
 		make_floating->connect(LW_NAME(request_open_in_screen), callable_mp(window_wrapper, &CompatWindowWrapper::enable_window_on_screen).bind(true));
 		toolbar->add_child(make_floating);
@@ -220,6 +242,22 @@ LimboDebuggerTab::LimboDebuggerTab() {
 	resource_header->set_text(TTR("Inactive"));
 	resource_header->set_tooltip_text(TTR("Debugged BehaviorTree resource.\nClick to open."));
 	resource_header->set_disabled(true);
+
+	Label *interval_label = memnew(Label);
+	toolbar->add_child(interval_label);
+	interval_label->set_text(TTR("Update Interval:"));
+	interval_label->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
+
+	update_interval = memnew(EditorSpinSlider);
+	toolbar->add_child(update_interval);
+	update_interval->set_min(0);
+	update_interval->set_max(1000);
+	update_interval->set_step(1.0);
+	update_interval->set_suffix("ms");
+	update_interval->set_custom_minimum_size(Vector2(100 * EDSCALE, 0));
+
+	VSeparator *sep = memnew(VSeparator);
+	toolbar->add_child(sep);
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(Control::SIZE_EXPAND_FILL);

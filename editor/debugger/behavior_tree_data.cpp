@@ -25,7 +25,6 @@ Array BehaviorTreeData::serialize(const Ref<BTTask> &p_tree_instance, const Node
 	// Flatten tree into list depth first
 	List<Ref<BTTask>> stack;
 	stack.push_back(p_tree_instance);
-	int id = 0;
 	while (stack.size()) {
 		Ref<BTTask> task = stack[0];
 		stack.pop_front();
@@ -41,7 +40,7 @@ Array BehaviorTreeData::serialize(const Ref<BTTask> &p_tree_instance, const Node
 			script_path = s->get_path();
 		}
 
-		arr.push_back(id);
+		arr.push_back(task->get_instance_id());
 		arr.push_back(task->get_task_name());
 		arr.push_back(!task->get_custom_name().is_empty());
 		arr.push_back(num_children);
@@ -49,8 +48,6 @@ Array BehaviorTreeData::serialize(const Ref<BTTask> &p_tree_instance, const Node
 		arr.push_back(task->get_elapsed_time());
 		arr.push_back(task->get_class());
 		arr.push_back(script_path);
-
-		id += 1;
 	}
 
 	return arr;
@@ -89,7 +86,6 @@ Ref<BehaviorTreeData> BehaviorTreeData::create_from_tree_instance(const Ref<BTTa
 	// Flatten tree into list depth first
 	List<Ref<BTTask>> stack;
 	stack.push_back(p_tree_instance);
-	int id = 0;
 	while (stack.size()) {
 		Ref<BTTask> task = stack[0];
 		stack.pop_front();
@@ -106,7 +102,7 @@ Ref<BehaviorTreeData> BehaviorTreeData::create_from_tree_instance(const Ref<BTTa
 		}
 
 		data->tasks.push_back(TaskData(
-				id,
+				task->get_instance_id(),
 				task->get_task_name(),
 				!task->get_custom_name().is_empty(),
 				num_children,
@@ -114,7 +110,6 @@ Ref<BehaviorTreeData> BehaviorTreeData::create_from_tree_instance(const Ref<BTTa
 				task->get_elapsed_time(),
 				task->get_class(),
 				script_path));
-		id += 1;
 	}
 	return data;
 }
