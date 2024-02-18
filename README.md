@@ -36,7 +36,7 @@ Behavior Trees are powerful hierarchical structures used to model and control th
     - Blackboard: Share data seamlessly between tasks using the `Blackboard`.
       - Blackboard plans: Define variables in the BehaviorTree resource and override their values in the BTPlayer node.
       - Blackboard scopes: Isolate variable namespaces and enable advanced techniques like sharing data between several agents in a group.
-      - Blackboard parameters: Export BB parameter, for which user can provide a value or bind it to a blackboard variable (can be used in custom tasks).
+      - Blackboard parameters: Export a BB parameter, for which user can provide a value or bind it to a blackboard variable (can be used in custom tasks).
       - Editor support: Blackboard plan editor, and inspector property editor for exported string properties ending with "_var".
     - Use the `BTSubtree` task to execute a tree from a different resource file, promoting organization and reusability.
     - Visual Debugger: Inspect the execution of any BT in a running scene to identify and troubleshoot issues.
@@ -68,6 +68,8 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 - For release builds, check [**Releases**](https://github.com/limbonaut/limboai/releases).
 
 ### Compiling from source
+
+>**🛈 For GDExtension:** Refer to comments in [setup_gdextension.sh](./gdextension/setup_gdextension.sh) file.
 
 - Download the Godot Engine source code and put this module source into the `modules/limboai` directory.
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
