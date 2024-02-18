@@ -94,6 +94,13 @@ jobs:
             arch: wasm32
             should-build: true
 
+          - name: 🌐 Web (wasm32, debug)
+            runner: ubuntu-20.04
+            platform: web
+            target: template_debug
+            arch: wasm32
+            should-build: true
+
         exclude:
           - { opts: { should-build: false } }
 

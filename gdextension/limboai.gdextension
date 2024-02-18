@@ -21,6 +21,8 @@ android.debug.x86_64 = "res://addons/limboai/bin/liblimboai.android.template_deb
 android.release.x86_64 = "res://addons/limboai/bin/liblimboai.android.template_release.x86_64.so"
 android.debug.arm64 = "res://addons/limboai/bin/liblimboai.android.template_debug.arm64.so"
 android.release.arm64 = "res://addons/limboai/bin/liblimboai.android.template_release.arm64.so"
+web.debug.wasm32 = "res://addons/limboai/bin/liblimboai.web.template_debug.wasm32.wasm"
+web.release.wasm32 = "res://addons/limboai/bin/liblimboai.web.template_release.wasm32.wasm"
 
 [icons]
 
