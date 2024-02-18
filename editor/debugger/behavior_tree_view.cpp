@@ -127,16 +127,16 @@ void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 			if (status_changed) {
 				item->set_metadata(1, current_status);
 				if (current_status == BTTask::SUCCESS) {
-					item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
+					item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_success_status));
 					item->set_icon(1, theme_cache.icon_success);
 				} else if (current_status == BTTask::FAILURE) {
-					item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
+					item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_failure_status));
 					item->set_icon(1, theme_cache.icon_failure);
 				} else if (current_status == BTTask::RUNNING) {
-					item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
+					item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_running_status));
 					item->set_icon(1, theme_cache.icon_running);
 				} else {
-					item->set_custom_draw(0, this, LW_NAME(_draw_fresh));
+					item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_fresh));
 					item->set_icon(1, nullptr);
 				}
 			}
@@ -204,13 +204,13 @@ void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 			item->set_icon_max_width(0, 16 * _get_editor_scale()); // Force user icon size.
 
 			if (task_data.status == BTTask::SUCCESS) {
-				item->set_custom_draw(0, this, LW_NAME(_draw_success_status));
+				item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_success_status));
 				item->set_icon(1, theme_cache.icon_success);
 			} else if (task_data.status == BTTask::FAILURE) {
-				item->set_custom_draw(0, this, LW_NAME(_draw_failure_status));
+				item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_failure_status));
 				item->set_icon(1, theme_cache.icon_failure);
 			} else if (task_data.status == BTTask::RUNNING) {
-				item->set_custom_draw(0, this, LW_NAME(_draw_running_status));
+				item->set_custom_draw_callback(0, callable_mp(this, &BehaviorTreeView::_draw_running_status));
 				item->set_icon(1, theme_cache.icon_running);
 			}
 
