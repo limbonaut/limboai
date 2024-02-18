@@ -68,7 +68,7 @@ func _populate_agent_files(p_path: String = "res://demo/agents/") -> void:
 			if dir.current_is_dir() or file_name.begins_with("agent_base"):
 				file_name = dir.get_next()
 				continue
-			agent_files.append(file_name.get_file())
+			agent_files.append(file_name.get_file().trim_suffix(".remap"))
 			file_name = dir.get_next()
 	dir.list_dir_end()
 
