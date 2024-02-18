@@ -78,8 +78,8 @@ String LimboUtility::get_status_name(int p_status) const {
 Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const {
 	ERR_FAIL_COND_V_MSG(p_class_or_script_path.is_empty(), Variant(), "BTTask: script path or class cannot be empty.");
 
-	// * Using editor theme
 #if defined(TOOLS_ENABLED) && defined(LIMBOAI_MODULE)
+	// * Using editor theme
 	if (Engine::get_singleton()->is_editor_hint()) {
 		Ref<Theme> theme = EditorNode::get_singleton()->get_editor_theme();
 		ERR_FAIL_COND_V(theme.is_null(), nullptr);
@@ -122,7 +122,6 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 
 	String path;
 
-#ifdef LIMBOAI_GDEXTENSION
 	if (p_class_or_script_path.begins_with("res://")) {
 		TypedArray<Dictionary> classes = ProjectSettings::get_singleton()->get_global_class_list();
 		for (int i = 0; i < classes.size(); i++) {
@@ -137,11 +136,8 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 				path = "res://addons/limboai/icons/" + sc->get_instance_base_type() + ".svg";
 			}
 		}
-	}
-#endif // LIMBOAI_GDEXTENSION
-
-	if (path.is_empty() && !p_class_or_script_path.begins_with("res://")) {
-		// Trying addons/limboai/icons/
+	} else {
+		// Trying addon icons
 		path = "res://addons/limboai/icons/" + p_class_or_script_path + ".svg";
 	}
 
@@ -150,7 +146,6 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 		return icon;
 	}
 
-	// * Class icons are not available at runtime as they are part of the editor theme.
 	return nullptr;
 }
 
