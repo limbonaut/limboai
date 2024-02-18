@@ -3,28 +3,37 @@
 Accessing nodes in the scene tree
 =================================
 
-There are several ways to access nodes in the agent's scene tree (agent is the owner of :ref:`BTPlayer<class_BTPlayer>` node):
+There are several ways to access nodes in the agent's scene tree.
 
-1. You can export a :ref:`BBNode<class_BBNode>` variable:
+    **🛈 Note:** Agent is the owner of :ref:`BTPlayer<class_BTPlayer>` node.
+
+
+With ``BBNode`` property
+------------------------
 
 .. code:: gdscript
 
-   @export var cast: BBNode
+   @export var cast_param: BBNode
 
    func _tick(delta) -> Status:
-       var node: ShapeCast3D = cast.get_value(agent, blackboard)
+       var node: ShapeCast3D = cast_param.get_value(agent, blackboard)
 
-2. You can export a ``NodePath``
+
+With ``NodePath`` property
+--------------------------
 
 .. code:: gdscript
 
    @export var cast_path: NodePath
-   var _shape_cast: ShapeCast3D
 
-   func _setup() -> void:
-       _shape_cast = agent.get_node(cast_path)
+   func _tick(delta) -> Status:
+       var node: ShapeCast3D = agent.get_node(cast_path)
 
-3. You can :ref:`create a blackboard variable<editing_plan>` in the editor with the type ``NodePath``
+
+Using blackboard plan
+---------------------
+
+You can :ref:`create a blackboard variable<editing_plan>` in the editor with the type ``NodePath``
 and point it to the proper node in the :ref:`BTPlayer<class_BTPlayer>` blackboard plan.
 
 .. code:: gdscript
