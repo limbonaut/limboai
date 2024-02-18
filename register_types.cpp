@@ -90,6 +90,7 @@
 #include "bt/tasks/scene/bt_stop_animation.h"
 #include "bt/tasks/utility/bt_call_method.h"
 #include "bt/tasks/utility/bt_console_print.h"
+#include "bt/tasks/utility/bt_evaluate_expression.h"
 #include "bt/tasks/utility/bt_fail.h"
 #include "bt/tasks/utility/bt_random_wait.h"
 #include "bt/tasks/utility/bt_wait.h"
@@ -182,6 +183,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BTCondition);
 		LIMBO_REGISTER_TASK(BTAwaitAnimation);
 		LIMBO_REGISTER_TASK(BTCallMethod);
+		LIMBO_REGISTER_TASK(BTEvaluateExpression);
 		LIMBO_REGISTER_TASK(BTConsolePrint);
 		LIMBO_REGISTER_TASK(BTFail);
 		LIMBO_REGISTER_TASK(BTPauseAnimation);
