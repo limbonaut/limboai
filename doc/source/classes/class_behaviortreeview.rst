@@ -23,6 +23,18 @@ Visualizes the current state of a :ref:`BehaviorTree<class_BehaviorTree>` instan
 
 .. rst-class:: classref-reftable-group
 
+Properties
+----------
+
+.. table::
+   :widths: auto
+
+   +-----+-----------------------------------------------------------------------------------+-------+
+   | int | :ref:`update_interval_msec<class_BehaviorTreeView_property_update_interval_msec>` | ``0`` |
+   +-----+-----------------------------------------------------------------------------------+-------+
+
+.. rst-class:: classref-reftable-group
+
 Methods
 -------
 
@@ -32,6 +44,28 @@ Methods
    +------+------------------------------------------------------------------------------------------------------------------------------------------------+
    | void | :ref:`update_tree<class_BehaviorTreeView_method_update_tree>` **(** :ref:`BehaviorTreeData<class_BehaviorTreeData>` p_behavior_tree_data **)** |
    +------+------------------------------------------------------------------------------------------------------------------------------------------------+
+
+.. rst-class:: classref-section-separator
+
+----
+
+.. rst-class:: classref-descriptions-group
+
+Property Descriptions
+---------------------
+
+.. _class_BehaviorTreeView_property_update_interval_msec:
+
+.. rst-class:: classref-property
+
+int **update_interval_msec** = ``0``
+
+.. rst-class:: classref-property-setget
+
+- void **set_update_interval_msec** **(** int value **)**
+- int **get_update_interval_msec** **(** **)**
+
+Minimum delay between two updates (in milliseconds). Set to higher values for a lower CPU load.
 
 .. rst-class:: classref-section-separator
 
