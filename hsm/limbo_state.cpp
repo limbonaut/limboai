@@ -117,6 +117,9 @@ bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
 			return ret;
 		}
 	}
+	else if (this->get_parent()->is_class("LimboState")) {
+		return static_cast<LimboState*>(this->get_parent())->dispatch(p_event, p_cargo);
+	}
 	return false;
 }
 
