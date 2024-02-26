@@ -87,9 +87,12 @@ void LimboHSM::_exit() {
 
 void LimboHSM::_update(double p_delta) {
 	if (active) {
-		ERR_FAIL_COND(active_state == nullptr);
+		ERR_FAIL_NULL(active_state);
+		LimboState *last_active_state = active_state;
 		LimboState::_update(p_delta);
-		active_state->_update(p_delta);
+		if (last_active_state == active_state) {
+			active_state->_update(p_delta);
+		}
 	}
 }
 
