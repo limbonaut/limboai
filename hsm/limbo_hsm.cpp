@@ -127,17 +127,17 @@ void LimboHSM::set_initial_state(LimboState *p_state) {
 	initial_state = Object::cast_to<LimboState>(p_state);
 }
 
-bool LimboHSM::dispatch(const String &p_event, const Variant &p_cargo) {
+bool LimboHSM::_dispatch(const String &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event.is_empty(), false);
 
 	bool event_consumed = false;
 
 	if (active_state) {
-		event_consumed = active_state->dispatch(p_event, p_cargo);
+		event_consumed = active_state->_dispatch(p_event, p_cargo);
 	}
 
 	if (!event_consumed) {
-		event_consumed = LimboState::dispatch(p_event, p_cargo);
+		event_consumed = LimboState::_dispatch(p_event, p_cargo);
 	}
 
 	if (!event_consumed && active_state) {
