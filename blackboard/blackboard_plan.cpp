@@ -283,5 +283,10 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 	}
 }
 
+void BlackboardPlan::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("create_blackboard"), &BlackboardPlan::create_blackboard);
+	ClassDB::bind_method(D_METHOD("populate_blackboard", "p_blackboard", "p_overwrite"), &BlackboardPlan::populate_blackboard);
+}
+
 BlackboardPlan::BlackboardPlan() {
 }
