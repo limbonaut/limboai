@@ -66,6 +66,28 @@ To modify these values:
 2. In the Inspector, locate the "Blackboard Plan" property.
 3. Override the desired values to tailor the blackboard variables for the specific scene.
 
+Task parameters
+---------------
+
+In some cases, it can be beneficial to allow behavior tree tasks to export parameters
+that can either be **bound to a blackboard variable or specified directly** by the user.
+For this purpose, LimboAI provides special parameter types that begin with "BB",
+such as :ref:`BBInt<class_BBInt>`, :ref:`BBBool<class_BBBool>`, :ref:`BBString<class_BBString>`,
+:ref:`BBFloat<class_BBFloat>`, :ref:`BBNode<class_BBNode>`, and more.
+For a complete list, please refer to the :ref:`BBParam<class_BBParam>` class reference.
+
+Usage example:
+
+.. code:: gdscript
+
+    extends BTAction
+
+    @export var speed: BBFloat
+
+    func _tick(delta: float) -> Status:
+        var current_speed: float = speed.get_value(agent, blackboard, 0.0)
+        ...
+
 Advanced topic: Blackboard scopes
 ---------------------------------
 
