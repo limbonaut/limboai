@@ -7,11 +7,11 @@
 [![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
 [![🔎 Unit Tests](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
 [![Documentation Status](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
-![GitHub License](https://img.shields.io/github/license/limbonaut/limboai)
+[![GitHub License](https://img.shields.io/github/license/limbonaut/limboai)](https://github.com/limbonaut/limboai/blob/master/LICENSE.md)
 
-![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)
-![Support this project](https://img.shields.io/badge/Support%20this%20project-red?logo=kofi&logoColor=white&link=https%3A%2F%2Fko-fi.com%2Flimbonaut)
-![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)
+[![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
+[![Support this project](https://img.shields.io/badge/Support%20this%20project-red?logo=kofi&logoColor=white&link=https%3A%2F%2Fko-fi.com%2Flimbonaut)](https://ko-fi.com/limbonaut)
+[![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
 
 **LimboAI** is an open-source C++ plugin for **Godot Engine 4** providing a combination of
