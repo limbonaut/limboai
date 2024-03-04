@@ -56,7 +56,7 @@ private:
 	int drag_index = -1;
 
 	Ref<BlackboardPlan> plan;
-	String default_var_name;
+	StringName default_var_name;
 
 	VBoxContainer *rows_vbox;
 	Button *add_var_tool;
@@ -69,7 +69,7 @@ private:
 
 	void _add_var();
 	void _trash_var(int p_index);
-	void _rename_var(const String &p_new_name, int p_index);
+	void _rename_var(const StringName &p_new_name, int p_index);
 	void _change_var_type(Variant::Type p_new_type, int p_index);
 	void _change_var_hint(PropertyHint p_new_hint, int p_index);
 	void _change_var_hint_string(const String &p_new_hint_string, int p_index);
@@ -95,7 +95,7 @@ public:
 	_FORCE_INLINE_ static BlackboardPlanEditor *get_singleton() { return singleton; }
 
 	void edit_plan(const Ref<BlackboardPlan> &p_plan);
-	void set_next_var_name(const String &p_name);
+	void set_next_var_name(const StringName &p_name);
 
 	BlackboardPlanEditor();
 };
