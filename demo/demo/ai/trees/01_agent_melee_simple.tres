@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="3_bpmfp"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1

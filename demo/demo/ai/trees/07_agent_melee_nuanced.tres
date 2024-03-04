@@ -7,12 +7,12 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="5_r1ou0"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
-var/flank_speed/name = "flank_speed"
+var/flank_speed/name = &"flank_speed"
 var/flank_speed/type = 3
 var/flank_speed/value = 600.0
 var/flank_speed/hint = 1

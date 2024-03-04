@@ -4,15 +4,15 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="2_v5eou"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_ewfwq"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_fq0jf"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_rsejo"]
 animation_player = SubResource("BBNode_fq0jf")
@@ -22,8 +22,8 @@ animation_name = &"idle"
 duration = 3.0
 
 [sub_resource type="BBNode" id="BBNode_6d0yy"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_wsspf"]
 animation_player = SubResource("BBNode_6d0yy")

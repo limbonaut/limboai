@@ -9,17 +9,17 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/back_away.gd" id="6_fkv0k"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
-var/fast_speed/name = "fast_speed"
+var/fast_speed/name = &"fast_speed"
 var/fast_speed/type = 3
 var/fast_speed/value = 600.0
 var/fast_speed/hint = 1
 var/fast_speed/hint_string = "10,1000,10"
-var/slow_speed/name = "slow_speed"
+var/slow_speed/name = &"slow_speed"
 var/slow_speed/type = 3
 var/slow_speed/value = 300.0
 var/slow_speed/hint = 1

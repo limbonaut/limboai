@@ -7,12 +7,12 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/move_forward.gd" id="5_au5yc"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
-var/charge_speed/name = "charge_speed"
+var/charge_speed/name = &"charge_speed"
 var/charge_speed/type = 3
 var/charge_speed/value = 1000.0
 var/charge_speed/hint = 0
