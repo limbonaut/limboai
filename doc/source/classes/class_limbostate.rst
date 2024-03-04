@@ -36,7 +36,7 @@ Properties
    :widths: auto
 
    +---------------------------------------------+-------------------------------------------------------------------+
-   | String                                      | :ref:`EVENT_FINISHED<class_LimboState_property_EVENT_FINISHED>`   |
+   | StringName                                  | :ref:`EVENT_FINISHED<class_LimboState_property_EVENT_FINISHED>`   |
    +---------------------------------------------+-------------------------------------------------------------------+
    | Node                                        | :ref:`agent<class_LimboState_property_agent>`                     |
    +---------------------------------------------+-------------------------------------------------------------------+
@@ -53,35 +53,35 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`_enter<class_LimboState_private_method__enter>` **(** **)** |virtual|                                        |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`_exit<class_LimboState_private_method__exit>` **(** **)** |virtual|                                          |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`_setup<class_LimboState_private_method__setup>` **(** **)** |virtual|                                        |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`_update<class_LimboState_private_method__update>` **(** float p_delta **)** |virtual|                        |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`add_event_handler<class_LimboState_method_add_event_handler>` **(** String p_event, Callable p_handler **)** |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_enter<class_LimboState_method_call_on_enter>` **(** Callable p_callable **)**                        |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_exit<class_LimboState_method_call_on_exit>` **(** Callable p_callable **)**                          |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_update<class_LimboState_method_call_on_update>` **(** Callable p_callable **)**                      |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`clear_guard<class_LimboState_method_clear_guard>` **(** **)**                                                |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | bool                                | :ref:`dispatch<class_LimboState_method_dispatch>` **(** String p_event, Variant p_cargo=null **)**                 |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_root<class_LimboState_method_get_root>` **(** **)** |const|                                              |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | bool                                | :ref:`is_active<class_LimboState_method_is_active>` **(** **)** |const|                                            |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`named<class_LimboState_method_named>` **(** String p_name **)**                                              |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`set_guard<class_LimboState_method_set_guard>` **(** Callable p_guard_callable **)**                          |
-   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------+
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`_enter<class_LimboState_private_method__enter>` **(** **)** |virtual|                                            |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`_exit<class_LimboState_private_method__exit>` **(** **)** |virtual|                                              |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`_setup<class_LimboState_private_method__setup>` **(** **)** |virtual|                                            |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`_update<class_LimboState_private_method__update>` **(** float p_delta **)** |virtual|                            |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`add_event_handler<class_LimboState_method_add_event_handler>` **(** StringName p_event, Callable p_handler **)** |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_enter<class_LimboState_method_call_on_enter>` **(** Callable p_callable **)**                            |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_exit<class_LimboState_method_call_on_exit>` **(** Callable p_callable **)**                              |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`call_on_update<class_LimboState_method_call_on_update>` **(** Callable p_callable **)**                          |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`clear_guard<class_LimboState_method_clear_guard>` **(** **)**                                                    |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | bool                                | :ref:`dispatch<class_LimboState_method_dispatch>` **(** StringName p_event, Variant p_cargo=null **)**                 |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_root<class_LimboState_method_get_root>` **(** **)** |const|                                                  |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | bool                                | :ref:`is_active<class_LimboState_method_is_active>` **(** **)** |const|                                                |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`named<class_LimboState_method_named>` **(** String p_name **)**                                                  |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`set_guard<class_LimboState_method_set_guard>` **(** Callable p_guard_callable **)**                              |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -149,11 +149,11 @@ Property Descriptions
 
 .. rst-class:: classref-property
 
-String **EVENT_FINISHED**
+StringName **EVENT_FINISHED**
 
 .. rst-class:: classref-property-setget
 
-- String **event_finished** **(** **)**
+- StringName **event_finished** **(** **)**
 
 A commonly used event that indicates that the state has finished its work.
 
@@ -268,7 +268,7 @@ Called during the update. Implement your state's behavior with this method.
 
 .. rst-class:: classref-method
 
-void **add_event_handler** **(** String p_event, Callable p_handler **)**
+void **add_event_handler** **(** StringName p_event, Callable p_handler **)**
 
 Registers a ``p_handler`` to be called when ``p_event`` is dispatched.
 
@@ -328,7 +328,7 @@ Clears the guard function, removing the ``Callable`` previously set by :ref:`set
 
 .. rst-class:: classref-method
 
-bool **dispatch** **(** String p_event, Variant p_cargo=null **)**
+bool **dispatch** **(** StringName p_event, Variant p_cargo=null **)**
 
 Recursively dispatches a state machine event named ``p_event`` with an optional argument ``p_cargo``. Returns ``true`` if the event was consumed.
 

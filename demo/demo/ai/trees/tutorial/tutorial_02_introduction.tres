@@ -1,20 +1,20 @@
 [gd_resource type="BehaviorTree" load_steps=9 format=3 uid="uid://b1i0xo0o676va"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_ewfwq"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
-var/flank_speed/name = "flank_speed"
+var/flank_speed/name = &"flank_speed"
 var/flank_speed/type = 3
 var/flank_speed/value = 600.0
 var/flank_speed/hint = 1
 var/flank_speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_wu06u"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_dubaq"]
 animation_player = SubResource("BBNode_wu06u")
@@ -24,8 +24,8 @@ animation_name = &"idle"
 duration = 5.0
 
 [sub_resource type="BBNode" id="BBNode_mgehh"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_0fqno"]
 animation_player = SubResource("BBNode_mgehh")

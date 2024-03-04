@@ -21,7 +21,7 @@ void BTAwaitAnimation::set_animation_player(Ref<BBNode> p_animation_player) {
 	}
 }
 
-void BTAwaitAnimation::set_animation_name(StringName p_animation_name) {
+void BTAwaitAnimation::set_animation_name(const StringName &p_animation_name) {
 	animation_name = p_animation_name;
 	emit_changed();
 }
@@ -40,7 +40,7 @@ PackedStringArray BTAwaitAnimation::get_configuration_warnings() {
 	} else {
 		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value() == Variant()) {
 			warnings.append("Path to AnimationPlayer node is not set.");
-		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable().is_empty()) {
+		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable() == StringName()) {
 			warnings.append("AnimationPlayer blackboard variable is not set.");
 		}
 	}

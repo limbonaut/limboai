@@ -1,7 +1,7 @@
 /**
  * bt_state.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -113,11 +113,11 @@ void BTState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_failure_event"), &BTState::get_failure_event);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "success_event"), "set_success_event", "get_success_event");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "failure_event"), "set_failure_event", "get_failure_event");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "success_event"), "set_success_event", "get_success_event");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "failure_event"), "set_failure_event", "get_failure_event");
 }
 
 BTState::BTState() {
-	success_event = "success";
-	failure_event = "failure";
+	success_event = LW_NAME(EVENT_SUCCESS);
+	failure_event = LW_NAME(EVENT_FAILURE);
 }

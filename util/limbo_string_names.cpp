@@ -78,6 +78,9 @@ LimboStringNames::LimboStringNames() {
 	emit_changed = SN("emit_changed");
 	entered = SN("entered");
 	error_value = SN("error_value");
+	EVENT_FAILURE = SN("failure");
+	EVENT_FINISHED = SN("finished");
+	EVENT_SUCCESS = SN("success");
 	exited = SN("exited");
 	favorite_tasks_changed = SN("favorite_tasks_changed");
 	Favorites = SN("Favorites");
@@ -160,7 +163,6 @@ LimboStringNames::LimboStringNames() {
 	visibility_changed = SN("visibility_changed");
 	window_visibility_changed = SN("window_visibility_changed");
 
-	EVENT_FINISHED = "finished";
 	repeat_forever.parse_utf8("Repeat ∞");
 	output_var_prefix.parse_utf8("➜");
 }

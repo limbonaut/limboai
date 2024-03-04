@@ -1,7 +1,7 @@
 /**
  * blackboard.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -32,7 +32,7 @@ Ref<Blackboard> Blackboard::top() const {
 	return bb;
 }
 
-Variant Blackboard::get_var(const String &p_name, const Variant &p_default, bool p_complain) const {
+Variant Blackboard::get_var(const StringName &p_name, const Variant &p_default, bool p_complain) const {
 	if (data.has(p_name)) {
 		return data.get(p_name).get_value();
 	} else if (parent.is_valid()) {
@@ -45,7 +45,7 @@ Variant Blackboard::get_var(const String &p_name, const Variant &p_default, bool
 	}
 }
 
-void Blackboard::set_var(const String &p_name, const Variant &p_value) {
+void Blackboard::set_var(const StringName &p_name, const Variant &p_value) {
 	if (data.has(p_name)) {
 		// Not checking type - allowing duck-typing.
 		data[p_name].set_value(p_value);
@@ -56,32 +56,32 @@ void Blackboard::set_var(const String &p_name, const Variant &p_value) {
 	}
 }
 
-bool Blackboard::has_var(const String &p_name) const {
+bool Blackboard::has_var(const StringName &p_name) const {
 	return data.has(p_name) || (parent.is_valid() && parent->has_var(p_name));
 }
 
-void Blackboard::erase_var(const String &p_name) {
+void Blackboard::erase_var(const StringName &p_name) {
 	data.erase(p_name);
 }
 
-void Blackboard::bind_var_to_property(const String &p_name, Object *p_object, const StringName &p_property) {
+void Blackboard::bind_var_to_property(const StringName &p_name, Object *p_object, const StringName &p_property) {
 	ERR_FAIL_COND_MSG(!data.has(p_name), "Blackboard: Binding failed - can't bind variable that doesn't exist.");
 	data[p_name].bind(p_object, p_property);
 }
 
-void Blackboard::unbind_var(const String &p_name) {
+void Blackboard::unbind_var(const StringName &p_name) {
 	ERR_FAIL_COND_MSG(data.has(p_name), "Blackboard: Can't unbind variable that doesn't exist.");
 	data[p_name].unbind();
 }
 
-void Blackboard::add_var(const String &p_name, const BBVariable &p_var) {
+void Blackboard::add_var(const StringName &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(data.has(p_name));
 	data.insert(p_name, p_var);
 }
 
 void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 	ERR_FAIL_COND(p_node == nullptr);
-	for (const KeyValue<String, BBVariable> &kv : data) {
+	for (const KeyValue<StringName, BBVariable> &kv : data) {
 		BBVariable var = kv.value;
 		if (var.get_value().get_type() == Variant::NODE_PATH) {
 			Node *fetched_node = p_node->get_node_or_null(var.get_value());

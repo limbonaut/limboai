@@ -7,15 +7,15 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_thvy5"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_ewfwq"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
 
 [sub_resource type="BBNode" id="BBNode_20ku0"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_57u80"]
 animation_player = SubResource("BBNode_20ku0")
@@ -56,8 +56,8 @@ script = ExtResource("5_thvy5")
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_ilr2h"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_mrsu3"]
 animation_player = SubResource("BBNode_ilr2h")
@@ -67,8 +67,8 @@ animation_name = &"attack_1"
 children = [SubResource("BTAction_124bm"), SubResource("BTCondition_n25o8"), SubResource("BTAction_1hfgr"), SubResource("BTPlayAnimation_mrsu3")]
 
 [sub_resource type="BBNode" id="BBNode_fq0jf"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_rsejo"]
 animation_player = SubResource("BBNode_fq0jf")

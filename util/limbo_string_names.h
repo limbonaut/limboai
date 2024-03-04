@@ -92,6 +92,9 @@ public:
 	StringName emit_changed;
 	StringName entered;
 	StringName error_value;
+	StringName EVENT_FAILURE;
+	StringName EVENT_FINISHED;
+	StringName EVENT_SUCCESS;
 	StringName exited;
 	StringName favorite_tasks_changed;
 	StringName Favorites;
@@ -175,7 +178,6 @@ public:
 	StringName visibility_changed;
 	StringName window_visibility_changed;
 
-	String EVENT_FINISHED;
 	String repeat_forever;
 	String output_var_prefix;
 };

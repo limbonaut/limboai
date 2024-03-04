@@ -8,7 +8,7 @@
 [ext_resource type="Script" path="res://demo/ai/tasks/pursue.gd" id="6_rpn40"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_ewfwq"]
-var/speed/name = "speed"
+var/speed/name = &"speed"
 var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
@@ -33,8 +33,8 @@ script = ExtResource("3_orhnl")
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_6d0yy"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_wsspf"]
 await_completion = 5.0
@@ -45,8 +45,8 @@ animation_name = &"attack_1"
 children = [SubResource("BTCondition_m15aa"), SubResource("BTAction_oc76s"), SubResource("BTPlayAnimation_wsspf")]
 
 [sub_resource type="BTCooldown" id="BTCooldown_3tvjt"]
-duration = 5.0
 children = [SubResource("BTSequence_e0f8v")]
+duration = 5.0
 
 [sub_resource type="BTCondition" id="BTCondition_x0uu7"]
 script = ExtResource("2_08b67")
@@ -55,8 +55,8 @@ distance_max = 200.0
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_icf24"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_iiei3"]
 animation_player = SubResource("BBNode_icf24")
@@ -76,8 +76,8 @@ tolerance = 50.0
 avoid_var = ""
 
 [sub_resource type="BBNode" id="BBNode_ayt56"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_l1tdg"]
 animation_player = SubResource("BBNode_ayt56")
@@ -96,8 +96,8 @@ distance_max = 10000.0
 target_var = "target"
 
 [sub_resource type="BBNode" id="BBNode_rpwld"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_dug2k"]
 animation_player = SubResource("BBNode_rpwld")
@@ -110,8 +110,8 @@ speed_var = "speed"
 approach_distance = 100.0
 
 [sub_resource type="BBNode" id="BBNode_aw5jj"]
-saved_value = NodePath("AnimationPlayer")
 resource_name = "AnimationPlayer"
+saved_value = NodePath("AnimationPlayer")
 
 [sub_resource type="BTPlayAnimation" id="BTPlayAnimation_3aihc"]
 animation_player = SubResource("BBNode_aw5jj")

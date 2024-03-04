@@ -1,7 +1,7 @@
 /**
  * limbo_hsm.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -100,11 +100,11 @@ void LimboHSM::update(double p_delta) {
 	_update(p_delta);
 }
 
-void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, const String &p_event) {
+void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event) {
 	ERR_FAIL_COND_MSG(p_from_state != nullptr && p_from_state->get_parent() != this, "LimboHSM: Unable to add a transition from a state that is not an immediate child of mine.");
 	ERR_FAIL_COND_MSG(p_to_state == nullptr, "LimboHSM: Unable to add a transition to a null state.");
 	ERR_FAIL_COND_MSG(p_to_state->get_parent() != this, "LimboHSM: Unable to add a transition to a state that is not an immediate child of mine.");
-	ERR_FAIL_COND_MSG(p_event.is_empty(), "LimboHSM: Failed to add transition due to empty event string.");
+	ERR_FAIL_COND_MSG(p_event == StringName(), "LimboHSM: Failed to add transition due to empty event string.");
 
 	uint64_t key = _get_transition_key(p_from_state, p_event);
 	transitions[key] = Object::cast_to<LimboState>(p_to_state);
@@ -127,8 +127,8 @@ void LimboHSM::set_initial_state(LimboState *p_state) {
 	initial_state = Object::cast_to<LimboState>(p_state);
 }
 
-bool LimboHSM::_dispatch(const String &p_event, const Variant &p_cargo) {
-	ERR_FAIL_COND_V(p_event.is_empty(), false);
+bool LimboHSM::_dispatch(const StringName &p_event, const Variant &p_cargo) {
+	ERR_FAIL_COND_V(p_event == StringName(), false);
 
 	bool event_consumed = false;
 

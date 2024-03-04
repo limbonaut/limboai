@@ -48,25 +48,25 @@ void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
 
 	int suffix = 1;
-	String name = default_var_name;
-	while (plan->has_var(name)) {
+	StringName var_name = default_var_name;
+	while (plan->has_var(var_name)) {
 		suffix += 1;
-		name = default_var_name + itos(suffix);
+		var_name = String(default_var_name) + itos(suffix);
 	}
 
 	BBVariable var(Variant::Type::FLOAT);
-	plan->add_var(name, var);
+	plan->add_var(var_name, var);
 	_refresh();
 }
 
 void BlackboardPlanEditor::_trash_var(int p_index) {
 	ERR_FAIL_NULL(plan);
-	String var_name = plan->get_var_by_index(p_index).first;
+	StringName var_name = plan->get_var_by_index(p_index).first;
 	plan->remove_var(var_name);
 	_refresh();
 }
 
-void BlackboardPlanEditor::_rename_var(const String &p_new_name, int p_index) {
+void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index) {
 	ERR_FAIL_NULL(plan);
 
 	LineEdit *name_edit = _get_name_edit(p_index);
@@ -127,8 +127,8 @@ void BlackboardPlanEditor::edit_plan(const Ref<BlackboardPlan> &p_plan) {
 	_refresh();
 }
 
-void BlackboardPlanEditor::set_next_var_name(const String &p_name) {
-	if (p_name.is_valid_identifier()) {
+void BlackboardPlanEditor::set_next_var_name(const StringName &p_name) {
+	if (String(p_name).is_valid_identifier()) {
 		default_var_name = p_name;
 	}
 }

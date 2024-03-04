@@ -19,7 +19,7 @@
 			<param index="0" name="p_blackboard" type="Blackboard" />
 			<param index="1" name="p_overwrite" type="bool" />
 			<description>
-				Populates [param p_blackboard] with the variables from this plan. If [param p_override] is [code]true[/code], existing variables with the same names will be overwritten.
+				Populates [param p_blackboard] with the variables from this plan. If [param p_overwrite] is [code]true[/code], existing variables with the same names will be overwritten.
 			</description>
 		</method>
 	</methods>
