@@ -1,7 +1,7 @@
 /**
  * bt_pause_animation.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -58,7 +58,7 @@ BT::Status BTPauseAnimation::_tick(double p_delta) {
 //**** Godot
 
 void BTPauseAnimation::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_animation_player", "p_anim_player"), &BTPauseAnimation::set_animation_player);
+	ClassDB::bind_method(D_METHOD("set_animation_player", "animation_player"), &BTPauseAnimation::set_animation_player);
 	ClassDB::bind_method(D_METHOD("get_animation_player"), &BTPauseAnimation::get_animation_player);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "animation_player", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_animation_player", "get_animation_player");

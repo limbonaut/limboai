@@ -170,28 +170,28 @@ void LimboState::_notification(int p_what) {
 void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root"), &LimboState::get_root);
 	ClassDB::bind_method(D_METHOD("get_agent"), &LimboState::get_agent);
-	ClassDB::bind_method(D_METHOD("set_agent", "p_agent"), &LimboState::set_agent);
+	ClassDB::bind_method(D_METHOD("set_agent", "agent"), &LimboState::set_agent);
 	ClassDB::bind_method(D_METHOD("event_finished"), &LimboState::event_finished);
 	ClassDB::bind_method(D_METHOD("is_active"), &LimboState::is_active);
-	ClassDB::bind_method(D_METHOD("_initialize", "p_agent", "p_blackboard"), &LimboState::_initialize);
-	ClassDB::bind_method(D_METHOD("dispatch", "p_event", "p_cargo"), &LimboState::dispatch, Variant());
-	ClassDB::bind_method(D_METHOD("named", "p_name"), &LimboState::named);
-	ClassDB::bind_method(D_METHOD("add_event_handler", "p_event", "p_handler"), &LimboState::add_event_handler);
-	ClassDB::bind_method(D_METHOD("call_on_enter", "p_callable"), &LimboState::call_on_enter);
-	ClassDB::bind_method(D_METHOD("call_on_exit", "p_callable"), &LimboState::call_on_exit);
-	ClassDB::bind_method(D_METHOD("call_on_update", "p_callable"), &LimboState::call_on_update);
-	ClassDB::bind_method(D_METHOD("set_guard", "p_guard_callable"), &LimboState::set_guard);
+	ClassDB::bind_method(D_METHOD("_initialize", "agent", "blackboard"), &LimboState::_initialize);
+	ClassDB::bind_method(D_METHOD("dispatch", "event", "cargo"), &LimboState::dispatch, Variant());
+	ClassDB::bind_method(D_METHOD("named", "name"), &LimboState::named);
+	ClassDB::bind_method(D_METHOD("add_event_handler", "event", "handler"), &LimboState::add_event_handler);
+	ClassDB::bind_method(D_METHOD("call_on_enter", "callable"), &LimboState::call_on_enter);
+	ClassDB::bind_method(D_METHOD("call_on_exit", "callable"), &LimboState::call_on_exit);
+	ClassDB::bind_method(D_METHOD("call_on_update", "callable"), &LimboState::call_on_update);
+	ClassDB::bind_method(D_METHOD("set_guard", "guard_callable"), &LimboState::set_guard);
 	ClassDB::bind_method(D_METHOD("clear_guard"), &LimboState::clear_guard);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &LimboState::get_blackboard);
 
-	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "p_plan"), &LimboState::set_blackboard_plan);
+	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "plan"), &LimboState::set_blackboard_plan);
 	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &LimboState::get_blackboard_plan);
 
 #ifdef LIMBOAI_MODULE
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
 	GDVIRTUAL_BIND(_exit);
-	GDVIRTUAL_BIND(_update, "p_delta");
+	GDVIRTUAL_BIND(_update, "delta");
 #elif LIMBOAI_GDEXTENSION
 	// TODO: Registering virtual functions is not available in godot-cpp...
 #endif
@@ -204,7 +204,7 @@ void LimboState::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("setup"));
 	ADD_SIGNAL(MethodInfo("entered"));
 	ADD_SIGNAL(MethodInfo("exited"));
-	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::FLOAT, "p_delta")));
+	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::FLOAT, "delta")));
 }
 
 LimboState::LimboState() {

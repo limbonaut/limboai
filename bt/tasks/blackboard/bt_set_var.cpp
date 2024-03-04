@@ -70,12 +70,12 @@ PackedStringArray BTSetVar::get_configuration_warnings() {
 }
 
 void BTSetVar::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_variable", "p_variable"), &BTSetVar::set_variable);
+	ClassDB::bind_method(D_METHOD("set_variable", "variable"), &BTSetVar::set_variable);
 	ClassDB::bind_method(D_METHOD("get_variable"), &BTSetVar::get_variable);
-	ClassDB::bind_method(D_METHOD("set_value", "p_value"), &BTSetVar::set_value);
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &BTSetVar::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &BTSetVar::get_value);
 	ClassDB::bind_method(D_METHOD("get_operation"), &BTSetVar::get_operation);
-	ClassDB::bind_method(D_METHOD("set_operation", "p_operation"), &BTSetVar::set_operation);
+	ClassDB::bind_method(D_METHOD("set_operation", "operation"), &BTSetVar::set_operation);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "variable"), "set_variable", "get_variable");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "value", PROPERTY_HINT_RESOURCE_TYPE, "BBVariant"), "set_value", "get_value");

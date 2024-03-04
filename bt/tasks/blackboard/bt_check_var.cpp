@@ -63,11 +63,11 @@ BT::Status BTCheckVar::_tick(double p_delta) {
 }
 
 void BTCheckVar::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_variable", "p_variable"), &BTCheckVar::set_variable);
+	ClassDB::bind_method(D_METHOD("set_variable", "variable"), &BTCheckVar::set_variable);
 	ClassDB::bind_method(D_METHOD("get_variable"), &BTCheckVar::get_variable);
-	ClassDB::bind_method(D_METHOD("set_check_type", "p_check_type"), &BTCheckVar::set_check_type);
+	ClassDB::bind_method(D_METHOD("set_check_type", "check_type"), &BTCheckVar::set_check_type);
 	ClassDB::bind_method(D_METHOD("get_check_type"), &BTCheckVar::get_check_type);
-	ClassDB::bind_method(D_METHOD("set_value", "p_value"), &BTCheckVar::set_value);
+	ClassDB::bind_method(D_METHOD("set_value", "value"), &BTCheckVar::set_value);
 	ClassDB::bind_method(D_METHOD("get_value"), &BTCheckVar::get_value);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "variable"), "set_variable", "get_variable");
