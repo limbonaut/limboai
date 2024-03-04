@@ -38,7 +38,7 @@ Properties
    +----------------------------------------------+----------------------------------------------------------+----------+
    | :ref:`ValueSource<enum_BBParam_ValueSource>` | :ref:`value_source<class_BBParam_property_value_source>` | ``0``    |
    +----------------------------------------------+----------------------------------------------------------+----------+
-   | String                                       | :ref:`variable<class_BBParam_property_variable>`         |          |
+   | StringName                                   | :ref:`variable<class_BBParam_property_variable>`         |          |
    +----------------------------------------------+----------------------------------------------------------+----------+
 
 .. rst-class:: classref-reftable-group
@@ -133,12 +133,12 @@ Specifies the source of the value for BBParam. See :ref:`ValueSource<enum_BBPara
 
 .. rst-class:: classref-property
 
-String **variable**
+StringName **variable**
 
 .. rst-class:: classref-property-setget
 
-- void **set_variable** **(** String value **)**
-- String **get_variable** **(** **)**
+- void **set_variable** **(** StringName value **)**
+- StringName **get_variable** **(** **)**
 
 Stores the name of a :ref:`Blackboard<class_Blackboard>` variable when :ref:`value_source<class_BBParam_property_value_source>` is set to :ref:`BLACKBOARD_VAR<class_BBParam_constant_BLACKBOARD_VAR>`.
 

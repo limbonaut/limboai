@@ -55,7 +55,7 @@ Constructs a new instance of a :ref:`Blackboard<class_Blackboard>` using this pl
 
 void **populate_blackboard** **(** :ref:`Blackboard<class_Blackboard>` p_blackboard, bool p_overwrite **)**
 
-Populates ``p_blackboard`` with the variables from this plan. If ``p_override`` is ``true``, existing variables with the same names will be overwritten.
+Populates ``p_blackboard`` with the variables from this plan. If ``p_overwrite`` is ``true``, existing variables with the same names will be overwritten.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`
