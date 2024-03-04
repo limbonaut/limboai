@@ -40,7 +40,7 @@ PackedStringArray BTStopAnimation::get_configuration_warnings() {
 	} else {
 		if (animation_player_param->get_value_source() == BBParam::SAVED_VALUE && animation_player_param->get_saved_value() == Variant()) {
 			warnings.append("Path to AnimationPlayer node is not set.");
-		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable().is_empty()) {
+		} else if (animation_player_param->get_value_source() == BBParam::BLACKBOARD_VAR && animation_player_param->get_variable() == StringName()) {
 			warnings.append("AnimationPlayer blackboard variable is not set.");
 		}
 	}

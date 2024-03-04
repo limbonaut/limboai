@@ -1,7 +1,7 @@
 /**
  * bb_param.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -49,8 +49,8 @@ void BBParam::set_saved_value(Variant p_value) {
 	emit_changed();
 }
 
-void BBParam::set_variable(const String &p_value) {
-	variable = p_value;
+void BBParam::set_variable(const StringName &p_variable) {
+	variable = p_variable;
 	_update_name();
 	emit_changed();
 }
@@ -96,7 +96,7 @@ void BBParam::_get_property_list(List<PropertyInfo> *p_list) const {
 	if (value_source == ValueSource::SAVED_VALUE) {
 		p_list->push_back(PropertyInfo(get_type(), "saved_value"));
 	} else {
-		p_list->push_back(PropertyInfo(Variant::STRING, "variable"));
+		p_list->push_back(PropertyInfo(Variant::STRING_NAME, "variable"));
 	}
 }
 
@@ -111,7 +111,7 @@ void BBParam::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value,Blackboard Var"), "set_value_source", "get_value_source");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");
 	ADD_PROPERTY(PropertyInfo(Variant::NIL, "saved_value", PROPERTY_HINT_NONE, "", 0), "set_saved_value", "get_saved_value");
 
 	BIND_ENUM_CONSTANT(SAVED_VALUE);
@@ -120,7 +120,6 @@ void BBParam::_bind_methods() {
 
 BBParam::BBParam() {
 	value_source = SAVED_VALUE;
-	variable = "";
 
 	_assign_default_value();
 }

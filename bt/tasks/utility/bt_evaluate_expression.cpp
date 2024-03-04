@@ -1,7 +1,7 @@
 /**
  * bt_evaluate_expression.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  * Copyright 2024 Wilson E. Alvarez
  *
  * Use of this source code is governed by an MIT-style
@@ -55,7 +55,7 @@ void BTEvaluateExpression::set_input_values(const TypedArray<BBVariant> &p_input
 	emit_changed();
 }
 
-void BTEvaluateExpression::set_result_var(const String &p_result_var) {
+void BTEvaluateExpression::set_result_var(const StringName &p_result_var) {
 	result_var = p_result_var;
 	emit_changed();
 }
@@ -101,7 +101,7 @@ String BTEvaluateExpression::_generate_name() {
 	return vformat("EvaluateExpression %s  node: %s  %s",
 			!expression_string.is_empty() ? expression_string : "???",
 			node_param.is_valid() && !node_param->to_string().is_empty() ? node_param->to_string() : "???",
-			result_var.is_empty() ? "" : LimboUtility::get_singleton()->decorate_output_var(result_var));
+			result_var == StringName() ? "" : LimboUtility::get_singleton()->decorate_output_var(result_var));
 }
 
 BT::Status BTEvaluateExpression::_tick(double p_delta) {
@@ -122,7 +122,7 @@ BT::Status BTEvaluateExpression::_tick(double p_delta) {
 	Variant result = expression.execute(processed_input_values, obj, false);
 	ERR_FAIL_COND_V_MSG(expression.has_execute_failed(), FAILURE, "BTEvaluateExpression: Failed to execute: " + expression.get_error_text());
 
-	if (!result_var.is_empty()) {
+	if (result_var != StringName()) {
 		get_blackboard()->set_var(result_var, result);
 	}
 
@@ -148,7 +148,7 @@ void BTEvaluateExpression::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "expression_string"), "set_expression_string", "get_expression_string");
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "result_var"), "set_result_var", "get_result_var");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "result_var"), "set_result_var", "get_result_var");
 	ADD_GROUP("Inputs", "input_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "input_include_delta"), "set_input_include_delta", "is_input_delta_included");
 	ADD_PROPERTY(PropertyInfo(Variant::PACKED_STRING_ARRAY, "input_names", PROPERTY_HINT_ARRAY_TYPE, "String"), "set_input_names", "get_input_names");
