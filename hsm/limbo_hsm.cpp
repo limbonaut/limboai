@@ -240,20 +240,20 @@ void LimboHSM::_notification(int p_what) {
 }
 
 void LimboHSM::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_update_mode", "p_mode"), &LimboHSM::set_update_mode);
+	ClassDB::bind_method(D_METHOD("set_update_mode", "mode"), &LimboHSM::set_update_mode);
 	ClassDB::bind_method(D_METHOD("get_update_mode"), &LimboHSM::get_update_mode);
 
-	ClassDB::bind_method(D_METHOD("set_initial_state", "p_state"), &LimboHSM::set_initial_state);
+	ClassDB::bind_method(D_METHOD("set_initial_state", "state"), &LimboHSM::set_initial_state);
 	ClassDB::bind_method(D_METHOD("get_initial_state"), &LimboHSM::get_initial_state);
 
 	ClassDB::bind_method(D_METHOD("get_active_state"), &LimboHSM::get_active_state);
 	ClassDB::bind_method(D_METHOD("get_leaf_state"), &LimboHSM::get_leaf_state);
-	ClassDB::bind_method(D_METHOD("set_active", "p_active"), &LimboHSM::set_active);
-	ClassDB::bind_method(D_METHOD("update", "p_delta"), &LimboHSM::update);
-	ClassDB::bind_method(D_METHOD("add_transition", "p_from_state", "p_to_state", "p_event"), &LimboHSM::add_transition);
+	ClassDB::bind_method(D_METHOD("set_active", "active"), &LimboHSM::set_active);
+	ClassDB::bind_method(D_METHOD("update", "delta"), &LimboHSM::update);
+	ClassDB::bind_method(D_METHOD("add_transition", "from_state", "to_state", "event"), &LimboHSM::add_transition);
 	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);
 
-	ClassDB::bind_method(D_METHOD("initialize", "p_agent", "p_parent_scope"), &LimboHSM::initialize, Variant());
+	ClassDB::bind_method(D_METHOD("initialize", "agent", "parent_scope"), &LimboHSM::initialize, Variant());
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
@@ -263,7 +263,7 @@ void LimboHSM::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "", "anystate");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "initial_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "set_initial_state", "get_initial_state");
 
-	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "p_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0)));
+	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0)));
 }
 
 LimboHSM::LimboHSM() {

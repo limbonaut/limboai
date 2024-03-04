@@ -134,15 +134,15 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 //**** Godot
 
 void BTCallMethod::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_method", "p_method"), &BTCallMethod::set_method);
+	ClassDB::bind_method(D_METHOD("set_method", "method_name"), &BTCallMethod::set_method);
 	ClassDB::bind_method(D_METHOD("get_method"), &BTCallMethod::get_method);
-	ClassDB::bind_method(D_METHOD("set_node_param", "p_param"), &BTCallMethod::set_node_param);
+	ClassDB::bind_method(D_METHOD("set_node_param", "param"), &BTCallMethod::set_node_param);
 	ClassDB::bind_method(D_METHOD("get_node_param"), &BTCallMethod::get_node_param);
-	ClassDB::bind_method(D_METHOD("set_args", "p_args"), &BTCallMethod::set_args);
+	ClassDB::bind_method(D_METHOD("set_args", "args"), &BTCallMethod::set_args);
 	ClassDB::bind_method(D_METHOD("get_args"), &BTCallMethod::get_args);
-	ClassDB::bind_method(D_METHOD("set_include_delta", "p_include_delta"), &BTCallMethod::set_include_delta);
+	ClassDB::bind_method(D_METHOD("set_include_delta", "include_delta"), &BTCallMethod::set_include_delta);
 	ClassDB::bind_method(D_METHOD("is_delta_included"), &BTCallMethod::is_delta_included);
-	ClassDB::bind_method(D_METHOD("set_result_var", "p_result_var"), &BTCallMethod::set_result_var);
+	ClassDB::bind_method(D_METHOD("set_result_var", "variable"), &BTCallMethod::set_result_var);
 	ClassDB::bind_method(D_METHOD("get_result_var"), &BTCallMethod::get_result_var);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");
@@ -151,8 +151,6 @@ void BTCallMethod::_bind_methods() {
 	ADD_GROUP("Arguments", "args_");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "args_include_delta"), "set_include_delta", "is_delta_included");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "args", PROPERTY_HINT_ARRAY_TYPE, RESOURCE_TYPE_HINT("BBVariant")), "set_args", "get_args");
-
-	// ADD_PROPERTY_DEFAULT("args_include_delta", false);
 }
 
 BTCallMethod::BTCallMethod() {

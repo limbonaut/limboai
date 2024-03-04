@@ -45,19 +45,19 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`add_transition<class_LimboHSM_method_add_transition>` **(** :ref:`LimboState<class_LimboState>` p_from_state, :ref:`LimboState<class_LimboState>` p_to_state, StringName p_event **)** |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_active_state<class_LimboHSM_method_get_active_state>` **(** **)** |const|                                                                                                          |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>` **(** **)** |const|                                                                                                              |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`initialize<class_LimboHSM_method_initialize>` **(** Node p_agent, :ref:`Blackboard<class_Blackboard>` p_parent_scope=null **)**                                                        |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`set_active<class_LimboHSM_method_set_active>` **(** bool p_active **)**                                                                                                                |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`update<class_LimboHSM_method_update>` **(** float p_delta **)**                                                                                                                        |
-   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`add_transition<class_LimboHSM_method_add_transition>` **(** :ref:`LimboState<class_LimboState>` from_state, :ref:`LimboState<class_LimboState>` to_state, StringName event **)** |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_active_state<class_LimboHSM_method_get_active_state>` **(** **)** |const|                                                                                                    |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>` **(** **)** |const|                                                                                                        |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`initialize<class_LimboHSM_method_initialize>` **(** Node agent, :ref:`Blackboard<class_Blackboard>` parent_scope=null **)**                                                      |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`set_active<class_LimboHSM_method_set_active>` **(** bool active **)**                                                                                                            |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`update<class_LimboHSM_method_update>` **(** float delta **)**                                                                                                                    |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -72,7 +72,7 @@ Signals
 
 .. rst-class:: classref-signal
 
-**state_changed** **(** :ref:`LimboState<class_LimboState>` p_state **)**
+**state_changed** **(** :ref:`LimboState<class_LimboState>` state **)**
 
 Emitted when the currently active substate is switched to a different substate.
 
@@ -183,9 +183,9 @@ Method Descriptions
 
 .. rst-class:: classref-method
 
-void **add_transition** **(** :ref:`LimboState<class_LimboState>` p_from_state, :ref:`LimboState<class_LimboState>` p_to_state, StringName p_event **)**
+void **add_transition** **(** :ref:`LimboState<class_LimboState>` from_state, :ref:`LimboState<class_LimboState>` to_state, StringName event **)**
 
-Establishes a transition from one state to another when ``p_event`` is dispatched. Both ``p_from_state`` and ``p_to_state`` must be immediate children of this state.
+Establishes a transition from one state to another when ``event`` is dispatched. Both ``from_state`` and ``to_state`` must be immediate children of this state.
 
 .. rst-class:: classref-item-separator
 
@@ -219,7 +219,7 @@ Returns the currently active leaf state within the state machine.
 
 .. rst-class:: classref-method
 
-void **initialize** **(** Node p_agent, :ref:`Blackboard<class_Blackboard>` p_parent_scope=null **)**
+void **initialize** **(** Node agent, :ref:`Blackboard<class_Blackboard>` parent_scope=null **)**
 
 Initiates the state and calls :ref:`LimboState._setup<class_LimboState_private_method__setup>` for both itself and all substates.
 
@@ -231,7 +231,7 @@ Initiates the state and calls :ref:`LimboState._setup<class_LimboState_private_m
 
 .. rst-class:: classref-method
 
-void **set_active** **(** bool p_active **)**
+void **set_active** **(** bool active **)**
 
 When set to ``true``, switches the state to :ref:`initial_state<class_LimboHSM_property_initial_state>` and activates state processing according to :ref:`update_mode<class_LimboHSM_property_update_mode>`.
 
@@ -243,7 +243,7 @@ When set to ``true``, switches the state to :ref:`initial_state<class_LimboHSM_p
 
 .. rst-class:: classref-method
 
-void **update** **(** float p_delta **)**
+void **update** **(** float delta **)**
 
 Calls :ref:`LimboState._update<class_LimboState_private_method__update>` on itself and the active substate, with the call cascading down to the leaf state. This method is automatically triggered if :ref:`update_mode<class_LimboHSM_property_update_mode>` is not set to :ref:`MANUAL<class_LimboHSM_constant_MANUAL>`.
 

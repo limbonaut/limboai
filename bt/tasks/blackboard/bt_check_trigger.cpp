@@ -44,7 +44,7 @@ BT::Status BTCheckTrigger::_tick(double p_delta) {
 }
 
 void BTCheckTrigger::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_variable", "p_variable"), &BTCheckTrigger::set_variable);
+	ClassDB::bind_method(D_METHOD("set_variable", "variable"), &BTCheckTrigger::set_variable);
 	ClassDB::bind_method(D_METHOD("get_variable"), &BTCheckTrigger::get_variable);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "variable"), "set_variable", "get_variable");

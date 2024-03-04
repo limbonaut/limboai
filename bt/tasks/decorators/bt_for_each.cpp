@@ -70,9 +70,9 @@ BT::Status BTForEach::_tick(double p_delta) {
 //**** Godot
 
 void BTForEach::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_array_var", "p_variable"), &BTForEach::set_array_var);
+	ClassDB::bind_method(D_METHOD("set_array_var", "variable"), &BTForEach::set_array_var);
 	ClassDB::bind_method(D_METHOD("get_array_var"), &BTForEach::get_array_var);
-	ClassDB::bind_method(D_METHOD("set_save_var", "p_variable"), &BTForEach::set_save_var);
+	ClassDB::bind_method(D_METHOD("set_save_var", "variable"), &BTForEach::set_save_var);
 	ClassDB::bind_method(D_METHOD("get_save_var"), &BTForEach::get_save_var);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "array_var"), "set_array_var", "get_array_var");

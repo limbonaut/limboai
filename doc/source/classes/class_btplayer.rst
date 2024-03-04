@@ -62,7 +62,7 @@ Methods
    +-----------------------------+-----------------------------------------------------------------------------------+
    | void                        | :ref:`restart<class_BTPlayer_method_restart>` **(** **)**                         |
    +-----------------------------+-----------------------------------------------------------------------------------+
-   | void                        | :ref:`update<class_BTPlayer_method_update>` **(** float p_delta **)**             |
+   | void                        | :ref:`update<class_BTPlayer_method_update>` **(** float delta **)**               |
    +-----------------------------+-----------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
@@ -78,11 +78,11 @@ Signals
 
 .. rst-class:: classref-signal
 
-**behavior_tree_finished** **(** int p_status **)**
+**behavior_tree_finished** **(** int status **)**
 
 Emitted when the behavior tree has finished executing and returned ``SUCCESS`` or ``FAILURE``.
 
-Argument ``p_status`` holds the status returned by the behavior tree. See :ref:`Status<enum_BT_Status>`.
+Argument ``status`` holds the status returned by the behavior tree. See :ref:`Status<enum_BT_Status>`.
 
 .. rst-class:: classref-item-separator
 
@@ -92,11 +92,11 @@ Argument ``p_status`` holds the status returned by the behavior tree. See :ref:`
 
 .. rst-class:: classref-signal
 
-**updated** **(** int p_status **)**
+**updated** **(** int status **)**
 
 Emitted when BTPlayer has finished the behavior tree update.
 
-Argument ``p_status`` holds the status returned by the behavior tree. See :ref:`Status<enum_BT_Status>`.
+Argument ``status`` holds the status returned by the behavior tree. See :ref:`Status<enum_BT_Status>`.
 
 .. rst-class:: classref-section-separator
 
@@ -305,7 +305,7 @@ Resets the behavior tree's execution. Each running task will be aborted and the 
 
 .. rst-class:: classref-method
 
-void **update** **(** float p_delta **)**
+void **update** **(** float delta **)**
 
 Executes the root task of the behavior tree instance if :ref:`active<class_BTPlayer_property_active>` is ``true``. Call this method when :ref:`update_mode<class_BTPlayer_property_update_mode>` is set to :ref:`MANUAL<class_BTPlayer_constant_MANUAL>`. When :ref:`update_mode<class_BTPlayer_property_update_mode>` is not :ref:`MANUAL<class_BTPlayer_constant_MANUAL>`, the :ref:`update<class_BTPlayer_method_update>` will be called automatically. See :ref:`UpdateMode<enum_BTPlayer_UpdateMode>`.
 

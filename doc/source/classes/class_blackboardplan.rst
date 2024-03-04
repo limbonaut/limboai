@@ -22,11 +22,11 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`Blackboard<class_Blackboard>` | :ref:`create_blackboard<class_BlackboardPlan_method_create_blackboard>` **(** **)**                                                                        |
-   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`populate_blackboard<class_BlackboardPlan_method_populate_blackboard>` **(** :ref:`Blackboard<class_Blackboard>` p_blackboard, bool p_overwrite **)** |
-   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`Blackboard<class_Blackboard>` | :ref:`create_blackboard<class_BlackboardPlan_method_create_blackboard>` **(** **)**                                                                    |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | void                                | :ref:`populate_blackboard<class_BlackboardPlan_method_populate_blackboard>` **(** :ref:`Blackboard<class_Blackboard>` blackboard, bool overwrite **)** |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -53,9 +53,9 @@ Constructs a new instance of a :ref:`Blackboard<class_Blackboard>` using this pl
 
 .. rst-class:: classref-method
 
-void **populate_blackboard** **(** :ref:`Blackboard<class_Blackboard>` p_blackboard, bool p_overwrite **)**
+void **populate_blackboard** **(** :ref:`Blackboard<class_Blackboard>` blackboard, bool overwrite **)**
 
-Populates ``p_blackboard`` with the variables from this plan. If ``p_overwrite`` is ``true``, existing variables with the same names will be overwritten.
+Populates ``blackboard`` with the variables from this plan. If ``overwrite`` is ``true``, existing variables with the same names will be overwritten.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`

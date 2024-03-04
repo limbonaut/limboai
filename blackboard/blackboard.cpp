@@ -93,14 +93,14 @@ void Blackboard::prefetch_nodepath_vars(Node *p_node) {
 }
 
 void Blackboard::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_var", "p_name", "p_default", "p_complain"), &Blackboard::get_var, Variant(), true);
-	ClassDB::bind_method(D_METHOD("set_var", "p_name", "p_value"), &Blackboard::set_var);
-	ClassDB::bind_method(D_METHOD("has_var", "p_name"), &Blackboard::has_var);
-	ClassDB::bind_method(D_METHOD("set_parent", "p_blackboard"), &Blackboard::set_parent);
+	ClassDB::bind_method(D_METHOD("get_var", "var_name", "default", "complain"), &Blackboard::get_var, Variant(), true);
+	ClassDB::bind_method(D_METHOD("set_var", "var_name", "value"), &Blackboard::set_var);
+	ClassDB::bind_method(D_METHOD("has_var", "var_name"), &Blackboard::has_var);
+	ClassDB::bind_method(D_METHOD("set_parent", "blackboard"), &Blackboard::set_parent);
 	ClassDB::bind_method(D_METHOD("get_parent"), &Blackboard::get_parent);
-	ClassDB::bind_method(D_METHOD("erase_var", "p_name"), &Blackboard::erase_var);
-	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "p_node"), &Blackboard::prefetch_nodepath_vars);
+	ClassDB::bind_method(D_METHOD("erase_var", "var_name"), &Blackboard::erase_var);
+	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "node"), &Blackboard::prefetch_nodepath_vars);
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
-	ClassDB::bind_method(D_METHOD("bind_var_to_property", "p_name", "p_object", "p_property"), &Blackboard::bind_var_to_property);
-	ClassDB::bind_method(D_METHOD("unbind_var", "p_name"), &Blackboard::unbind_var);
+	ClassDB::bind_method(D_METHOD("bind_var_to_property", "var_name", "object", "property"), &Blackboard::bind_var_to_property);
+	ClassDB::bind_method(D_METHOD("unbind_var", "var_name"), &Blackboard::unbind_var);
 }

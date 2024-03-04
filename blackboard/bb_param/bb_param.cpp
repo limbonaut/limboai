@@ -101,14 +101,14 @@ void BBParam::_get_property_list(List<PropertyInfo> *p_list) const {
 }
 
 void BBParam::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_value_source", "p_value_source"), &BBParam::set_value_source);
+	ClassDB::bind_method(D_METHOD("set_value_source", "value_source"), &BBParam::set_value_source);
 	ClassDB::bind_method(D_METHOD("get_value_source"), &BBParam::get_value_source);
-	ClassDB::bind_method(D_METHOD("set_saved_value", "p_value"), &BBParam::set_saved_value);
+	ClassDB::bind_method(D_METHOD("set_saved_value", "value"), &BBParam::set_saved_value);
 	ClassDB::bind_method(D_METHOD("get_saved_value"), &BBParam::get_saved_value);
-	ClassDB::bind_method(D_METHOD("set_variable", "p_variable_name"), &BBParam::set_variable);
+	ClassDB::bind_method(D_METHOD("set_variable", "variable_name"), &BBParam::set_variable);
 	ClassDB::bind_method(D_METHOD("get_variable"), &BBParam::get_variable);
 	ClassDB::bind_method(D_METHOD("get_type"), &BBParam::get_type);
-	ClassDB::bind_method(D_METHOD("get_value", "p_agent", "p_blackboard", "p_default"), &BBParam::get_value, Variant());
+	ClassDB::bind_method(D_METHOD("get_value", "agent", "blackboard", "default"), &BBParam::get_value, Variant());
 
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "value_source", PROPERTY_HINT_ENUM, "Saved Value,Blackboard Var"), "set_value_source", "get_value_source");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "variable", PROPERTY_HINT_NONE, "", 0), "set_variable", "get_variable");

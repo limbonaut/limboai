@@ -101,15 +101,15 @@ void BTState::_notification(int p_notification) {
 }
 
 void BTState::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_behavior_tree", "p_value"), &BTState::set_behavior_tree);
+	ClassDB::bind_method(D_METHOD("set_behavior_tree", "behavior_tree"), &BTState::set_behavior_tree);
 	ClassDB::bind_method(D_METHOD("get_behavior_tree"), &BTState::get_behavior_tree);
 
 	ClassDB::bind_method(D_METHOD("get_tree_instance"), &BTState::get_tree_instance);
 
-	ClassDB::bind_method(D_METHOD("set_success_event", "p_event_name"), &BTState::set_success_event);
+	ClassDB::bind_method(D_METHOD("set_success_event", "event"), &BTState::set_success_event);
 	ClassDB::bind_method(D_METHOD("get_success_event"), &BTState::get_success_event);
 
-	ClassDB::bind_method(D_METHOD("set_failure_event", "p_event_name"), &BTState::set_failure_event);
+	ClassDB::bind_method(D_METHOD("set_failure_event", "event"), &BTState::set_failure_event);
 	ClassDB::bind_method(D_METHOD("get_failure_event"), &BTState::get_failure_event);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");

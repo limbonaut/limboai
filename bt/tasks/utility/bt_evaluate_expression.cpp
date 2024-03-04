@@ -133,17 +133,17 @@ BT::Status BTEvaluateExpression::_tick(double p_delta) {
 
 void BTEvaluateExpression::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("parse"), &BTEvaluateExpression::parse);
-	ClassDB::bind_method(D_METHOD("set_expression_string", "p_method"), &BTEvaluateExpression::set_expression_string);
+	ClassDB::bind_method(D_METHOD("set_expression_string", "expression_string"), &BTEvaluateExpression::set_expression_string);
 	ClassDB::bind_method(D_METHOD("get_expression_string"), &BTEvaluateExpression::get_expression_string);
-	ClassDB::bind_method(D_METHOD("set_node_param", "p_param"), &BTEvaluateExpression::set_node_param);
+	ClassDB::bind_method(D_METHOD("set_node_param", "param"), &BTEvaluateExpression::set_node_param);
 	ClassDB::bind_method(D_METHOD("get_node_param"), &BTEvaluateExpression::get_node_param);
-	ClassDB::bind_method(D_METHOD("set_input_names", "p_input_names"), &BTEvaluateExpression::set_input_names);
+	ClassDB::bind_method(D_METHOD("set_input_names", "input_names"), &BTEvaluateExpression::set_input_names);
 	ClassDB::bind_method(D_METHOD("get_input_names"), &BTEvaluateExpression::get_input_names);
-	ClassDB::bind_method(D_METHOD("set_input_values", "p_input_values"), &BTEvaluateExpression::set_input_values);
+	ClassDB::bind_method(D_METHOD("set_input_values", "input_values"), &BTEvaluateExpression::set_input_values);
 	ClassDB::bind_method(D_METHOD("get_input_values"), &BTEvaluateExpression::get_input_values);
-	ClassDB::bind_method(D_METHOD("set_input_include_delta", "p_input_include_delta"), &BTEvaluateExpression::set_input_include_delta);
+	ClassDB::bind_method(D_METHOD("set_input_include_delta", "input_include_delta"), &BTEvaluateExpression::set_input_include_delta);
 	ClassDB::bind_method(D_METHOD("is_input_delta_included"), &BTEvaluateExpression::is_input_delta_included);
-	ClassDB::bind_method(D_METHOD("set_result_var", "p_result_var"), &BTEvaluateExpression::set_result_var);
+	ClassDB::bind_method(D_METHOD("set_result_var", "variable"), &BTEvaluateExpression::set_result_var);
 	ClassDB::bind_method(D_METHOD("get_result_var"), &BTEvaluateExpression::get_result_var);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "node", PROPERTY_HINT_RESOURCE_TYPE, "BBNode"), "set_node_param", "get_node_param");

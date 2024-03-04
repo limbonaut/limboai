@@ -93,15 +93,15 @@ void BTCooldown::_on_timeout() {
 //**** Godot
 
 void BTCooldown::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("set_duration", "p_value"), &BTCooldown::set_duration);
+	ClassDB::bind_method(D_METHOD("set_duration", "duration"), &BTCooldown::set_duration);
 	ClassDB::bind_method(D_METHOD("get_duration"), &BTCooldown::get_duration);
-	ClassDB::bind_method(D_METHOD("set_process_pause", "p_value"), &BTCooldown::set_process_pause);
+	ClassDB::bind_method(D_METHOD("set_process_pause", "enable"), &BTCooldown::set_process_pause);
 	ClassDB::bind_method(D_METHOD("get_process_pause"), &BTCooldown::get_process_pause);
-	ClassDB::bind_method(D_METHOD("set_start_cooled", "p_value"), &BTCooldown::set_start_cooled);
+	ClassDB::bind_method(D_METHOD("set_start_cooled", "enable"), &BTCooldown::set_start_cooled);
 	ClassDB::bind_method(D_METHOD("get_start_cooled"), &BTCooldown::get_start_cooled);
-	ClassDB::bind_method(D_METHOD("set_trigger_on_failure", "p_value"), &BTCooldown::set_trigger_on_failure);
+	ClassDB::bind_method(D_METHOD("set_trigger_on_failure", "enable"), &BTCooldown::set_trigger_on_failure);
 	ClassDB::bind_method(D_METHOD("get_trigger_on_failure"), &BTCooldown::get_trigger_on_failure);
-	ClassDB::bind_method(D_METHOD("set_cooldown_state_var", "p_value"), &BTCooldown::set_cooldown_state_var);
+	ClassDB::bind_method(D_METHOD("set_cooldown_state_var", "variable"), &BTCooldown::set_cooldown_state_var);
 	ClassDB::bind_method(D_METHOD("get_cooldown_state_var"), &BTCooldown::get_cooldown_state_var);
 	ClassDB::bind_method(D_METHOD("_on_timeout"), &BTCooldown::_on_timeout);
 
