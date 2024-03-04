@@ -1,7 +1,7 @@
 /**
  * limbo_state.cpp
  * =============================================================================
- * Copyright 2021-2023 Serhii Snitsaruk
+ * Copyright 2021-2024 Serhii Snitsaruk
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
@@ -34,7 +34,7 @@ LimboState *LimboState::get_root() const {
 	return const_cast<LimboState *>(state);
 }
 
-LimboState *LimboState::named(String p_name) {
+LimboState *LimboState::named(const String &p_name) {
 	set_name(p_name);
 	return this;
 }
@@ -80,8 +80,8 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	_setup();
 }
 
-bool LimboState::_dispatch(const String &p_event, const Variant &p_cargo) {
-	ERR_FAIL_COND_V(p_event.is_empty(), false);
+bool LimboState::_dispatch(const StringName &p_event, const Variant &p_cargo) {
+	ERR_FAIL_COND_V(p_event == StringName(), false);
 	if (handlers.size() > 0 && handlers.has(p_event)) {
 		Variant ret;
 
@@ -120,13 +120,13 @@ bool LimboState::_dispatch(const String &p_event, const Variant &p_cargo) {
 	return false;
 }
 
-void LimboState::add_event_handler(const String &p_event, const Callable &p_handler) {
-	ERR_FAIL_COND(p_event.is_empty());
+void LimboState::add_event_handler(const StringName &p_event, const Callable &p_handler) {
+	ERR_FAIL_COND(p_event == StringName());
 	ERR_FAIL_COND(!p_handler.is_valid());
 	handlers.insert(p_event, p_handler);
 }
 
-bool LimboState::dispatch(const String &p_event, const Variant &p_cargo) {
+bool LimboState::dispatch(const StringName &p_event, const Variant &p_cargo) {
 	return get_root()->_dispatch(p_event, p_cargo);
 }
 
@@ -196,7 +196,7 @@ void LimboState::_bind_methods() {
 	// TODO: Registering virtual functions is not available in godot-cpp...
 #endif
 
-	ADD_PROPERTY(PropertyInfo(Variant::STRING, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
+	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", 0), "set_agent", "get_agent");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", 0), "", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT), "set_blackboard_plan", "get_blackboard_plan");
