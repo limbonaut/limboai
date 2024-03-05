@@ -60,6 +60,7 @@ public:
 	StringName ActionCopy;
 	StringName ActionCut;
 	StringName ActionPaste;
+	StringName active_state_changed;
 	StringName add_child_at_index;
 	StringName add_child;
 	StringName Add;
@@ -156,7 +157,6 @@ public:
 	StringName set_v_scroll;
 	StringName setup;
 	StringName started;
-	StringName state_changed;
 	StringName StatusWarning;
 	StringName stopped;
 	StringName task_activated;

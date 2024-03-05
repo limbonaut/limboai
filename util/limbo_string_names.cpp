@@ -46,6 +46,7 @@ LimboStringNames::LimboStringNames() {
 	ActionCopy = SN("ActionCopy");
 	ActionCut = SN("ActionCut");
 	ActionPaste = SN("ActionPaste");
+	active_state_changed = SN("active_state_changed");
 	Add = SN("Add");
 	add_child = SN("add_child");
 	add_child_at_index = SN("add_child_at_index");
@@ -141,7 +142,6 @@ LimboStringNames::LimboStringNames() {
 	set_v_scroll = SN("set_v_scroll");
 	setup = SN("setup");
 	started = SN("started");
-	state_changed = SN("state_changed");
 	StatusWarning = SN("StatusWarning");
 	stopped = SN("stopped");
 	task_activated = SN("task_activated");

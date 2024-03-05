@@ -28,6 +28,7 @@ private:
 	UpdateMode update_mode;
 	LimboState *initial_state;
 	LimboState *active_state;
+	LimboState *previous_active;
 	HashMap<uint64_t, LimboState *> transitions;
 
 	_FORCE_INLINE_ uint64_t _get_transition_key(LimboState *p_from_state, const StringName &p_event) {
@@ -58,6 +59,7 @@ public:
 	UpdateMode get_update_mode() const { return update_mode; }
 
 	LimboState *get_active_state() const { return active_state; }
+	LimboState *get_previous_active_state() const { return previous_active; }
 	LimboState *get_leaf_state() const;
 	void set_active(bool p_active);
 
