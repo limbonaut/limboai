@@ -30,6 +30,12 @@
 				Returns the currently active leaf state within the state machine.
 			</description>
 		</method>
+		<method name="get_previous_active_state" qualifiers="const">
+			<return type="LimboState" />
+			<description>
+				Returns the previously active substate.
+			</description>
+		</method>
 		<method name="initialize">
 			<return type="void" />
 			<param index="0" name="agent" type="Node" />
@@ -65,8 +71,9 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="state_changed">
-			<param index="0" name="state" type="LimboState" />
+		<signal name="active_state_changed">
+			<param index="0" name="current" type="LimboState" />
+			<param index="1" name="previous" type="LimboState" />
 			<description>
 				Emitted when the currently active substate is switched to a different substate.
 			</description>

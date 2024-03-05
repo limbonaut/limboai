@@ -61,12 +61,13 @@ void LimboHSM::_change_state(LimboState *p_state) {
 
 	if (active_state) {
 		active_state->_exit();
+		previous_active = active_state;
 	}
 
 	active_state = p_state;
 	active_state->_enter();
 
-	emit_signal(LimboStringNames::get_singleton()->state_changed, active_state);
+	emit_signal(LimboStringNames::get_singleton()->active_state_changed, active_state, previous_active);
 }
 
 void LimboHSM::_enter() {
@@ -247,6 +248,7 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_initial_state"), &LimboHSM::get_initial_state);
 
 	ClassDB::bind_method(D_METHOD("get_active_state"), &LimboHSM::get_active_state);
+	ClassDB::bind_method(D_METHOD("get_previous_active_state"), &LimboHSM::get_previous_active_state);
 	ClassDB::bind_method(D_METHOD("get_leaf_state"), &LimboHSM::get_leaf_state);
 	ClassDB::bind_method(D_METHOD("set_active", "active"), &LimboHSM::set_active);
 	ClassDB::bind_method(D_METHOD("update", "delta"), &LimboHSM::update);
@@ -263,11 +265,14 @@ void LimboHSM::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "ANYSTATE", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "", "anystate");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "initial_state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0), "set_initial_state", "get_initial_state");
 
-	ADD_SIGNAL(MethodInfo("state_changed", PropertyInfo(Variant::OBJECT, "state", PROPERTY_HINT_RESOURCE_TYPE, "LimboState", 0)));
+	ADD_SIGNAL(MethodInfo("active_state_changed",
+			PropertyInfo(Variant::OBJECT, "current", PROPERTY_HINT_RESOURCE_TYPE, "LimboState"),
+			PropertyInfo(Variant::OBJECT, "previous", PROPERTY_HINT_RESOURCE_TYPE, "LimboState")));
 }
 
 LimboHSM::LimboHSM() {
 	update_mode = UpdateMode::PHYSICS;
 	active_state = nullptr;
+	previous_active = nullptr;
 	initial_state = nullptr;
 }

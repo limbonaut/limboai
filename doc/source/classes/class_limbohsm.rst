@@ -52,6 +52,8 @@ Methods
    +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>` **(** **)** |const|                                                                                                        |
    +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_previous_active_state<class_LimboHSM_method_get_previous_active_state>` **(** **)** |const|                                                                                  |
+   +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | void                                | :ref:`initialize<class_LimboHSM_method_initialize>` **(** Node agent, :ref:`Blackboard<class_Blackboard>` parent_scope=null **)**                                                      |
    +-------------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | void                                | :ref:`set_active<class_LimboHSM_method_set_active>` **(** bool active **)**                                                                                                            |
@@ -68,11 +70,11 @@ Methods
 Signals
 -------
 
-.. _class_LimboHSM_signal_state_changed:
+.. _class_LimboHSM_signal_active_state_changed:
 
 .. rst-class:: classref-signal
 
-**state_changed** **(** :ref:`LimboState<class_LimboState>` state **)**
+**active_state_changed** **(** :ref:`LimboState<class_LimboState>` current, :ref:`LimboState<class_LimboState>` previous **)**
 
 Emitted when the currently active substate is switched to a different substate.
 
@@ -210,6 +212,18 @@ Returns the currently active substate.
 :ref:`LimboState<class_LimboState>` **get_leaf_state** **(** **)** |const|
 
 Returns the currently active leaf state within the state machine.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_LimboHSM_method_get_previous_active_state:
+
+.. rst-class:: classref-method
+
+:ref:`LimboState<class_LimboState>` **get_previous_active_state** **(** **)** |const|
+
+Returns the previously active substate.
 
 .. rst-class:: classref-item-separator
 
