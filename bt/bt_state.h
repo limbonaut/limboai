@@ -33,6 +33,8 @@ protected:
 
 	void _notification(int p_notification);
 
+	virtual bool _should_use_new_scope() const override { return true; }
+
 	virtual void _setup() override;
 	virtual void _exit() override;
 	virtual void _update(double p_delta) override;

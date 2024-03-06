@@ -34,6 +34,7 @@ void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		if (p_tree.is_valid()) {
 			p_tree->connect(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan));
 		}
+		_update_blackboard_plan();
 	}
 	behavior_tree = p_tree;
 }
@@ -48,6 +49,7 @@ void BTState::_update_blackboard_plan() {
 void BTState::_setup() {
 	LimboState::_setup();
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
+	// TODO: BBNode relies on agent to be scene owner, so if the user provides anything else, the behavior tree can break.
 	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard());
 
 #ifdef DEBUG_ENABLED

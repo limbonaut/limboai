@@ -17,7 +17,7 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 
 	Ref<Blackboard> bb;
 	if (blackboard_plan.is_valid()) {
-		bb = blackboard_plan->create_blackboard();
+		bb = blackboard_plan->create_blackboard(p_agent);
 	} else {
 		bb = Ref<Blackboard>(memnew(Blackboard));
 	}

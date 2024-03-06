@@ -52,9 +52,6 @@ void BTPlayer::_load_tree() {
 	tree_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Behavior tree has no valid root task.");
-	if (prefetch_nodepath_vars == true) {
-		blackboard->prefetch_nodepath_vars(this);
-	}
 	tree_instance = behavior_tree->instantiate(get_owner(), blackboard);
 #ifdef DEBUG_ENABLED
 	if (IS_DEBUGGER_ACTIVE()) {
@@ -187,7 +184,7 @@ void BTPlayer::_notification(int p_notification) {
 					blackboard = Ref<Blackboard>(memnew(Blackboard));
 				}
 				if (blackboard_plan.is_valid()) {
-					blackboard_plan->populate_blackboard(blackboard, false);
+					blackboard_plan->populate_blackboard(blackboard, false, this);
 				}
 				if (behavior_tree.is_valid()) {
 					_load_tree();
@@ -231,8 +228,6 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_active"), &BTPlayer::get_active);
 	ClassDB::bind_method(D_METHOD("set_blackboard", "blackboard"), &BTPlayer::set_blackboard);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTPlayer::get_blackboard);
-	ClassDB::bind_method(D_METHOD("set_prefetch_nodepath_vars", "enable"), &BTPlayer::set_prefetch_nodepath_vars);
-	ClassDB::bind_method(D_METHOD("get_prefetch_nodepath_vars"), &BTPlayer::get_prefetch_nodepath_vars);
 
 	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "plan"), &BTPlayer::set_blackboard_plan);
 	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &BTPlayer::get_blackboard_plan);
@@ -248,7 +243,6 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "set_blackboard", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_plan", "get_blackboard_plan");
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars"), "set_prefetch_nodepath_vars", "get_prefetch_nodepath_vars");
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);

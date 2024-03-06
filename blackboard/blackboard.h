@@ -56,8 +56,6 @@ public:
 
 	void add_var(const StringName &p_name, const BBVariable &p_var);
 
-	void prefetch_nodepath_vars(Node *p_node);
-
 	// TODO: Add serialization API.
 };
 

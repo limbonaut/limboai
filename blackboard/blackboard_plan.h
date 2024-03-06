@@ -36,6 +36,9 @@ private:
 	// and only the values can be different in those variables.
 	Ref<BlackboardPlan> base;
 
+	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
+	bool prefetch_nodepath_vars = true;
+
 protected:
 	static void _bind_methods();
 
@@ -49,12 +52,15 @@ public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
 
+	void set_prefetch_nodepath_vars(bool p_enable);
+	bool is_prefetching_nodepath_vars() const;
+
 	void add_var(const StringName &p_name, const BBVariable &p_var);
 	void remove_var(const StringName &p_name);
 	BBVariable get_var(const StringName &p_name);
 	Pair<StringName, BBVariable> get_var_by_index(int p_index);
-	bool has_var(const StringName &p_name) { return var_map.has(p_name); }
-	bool is_empty() const { return var_map.is_empty(); }
+	_FORCE_INLINE_ bool has_var(const StringName &p_name) { return var_map.has(p_name); }
+	_FORCE_INLINE_ bool is_empty() const { return var_map.is_empty(); }
 	int get_var_count() const { return var_map.size(); }
 
 	PackedStringArray list_vars() const;
@@ -66,8 +72,8 @@ public:
 	void sync_with_base_plan();
 	bool is_derived() const { return base.is_valid(); }
 
-	Ref<Blackboard> create_blackboard();
-	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite);
+	Ref<Blackboard> create_blackboard(Node *p_agent);
+	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node);
 
 	BlackboardPlan();
 };

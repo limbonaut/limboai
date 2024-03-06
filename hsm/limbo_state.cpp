@@ -28,7 +28,7 @@
 
 LimboState *LimboState::get_root() const {
 	const LimboState *state = this;
-	while (state->get_parent() && state->get_parent()->is_class("LimboState")) {
+	while (state->get_parent() && IS_CLASS(state->get_parent(), LimboState)) {
 		state = Object::cast_to<LimboState>(get_parent());
 	}
 	return const_cast<LimboState *>(state);
@@ -68,13 +68,13 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	ERR_FAIL_COND(p_agent == nullptr);
 	agent = p_agent;
 
-	if (!p_blackboard.is_null()) {
-		if (blackboard_plan.is_valid() && !blackboard_plan->is_empty()) {
-			blackboard = blackboard_plan->create_blackboard();
-			blackboard->set_parent(p_blackboard);
-		} else {
-			blackboard = p_blackboard;
-		}
+	if (_should_use_new_scope()) {
+		blackboard->set_parent(p_blackboard);
+	} else {
+		blackboard = p_blackboard;
+	}
+	if (blackboard_plan.is_valid() && !blackboard_plan->is_empty()) {
+		blackboard_plan->populate_blackboard(blackboard, true, this);
 	}
 
 	_setup();

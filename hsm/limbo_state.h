@@ -15,6 +15,7 @@
 #include "../blackboard/blackboard.h"
 #include "../blackboard/blackboard_plan.h"
 
+#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
@@ -56,6 +57,8 @@ protected:
 	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
 	virtual bool _dispatch(const StringName &p_event, const Variant &p_cargo = Variant());
 
+	virtual bool _should_use_new_scope() const { return blackboard_plan.is_valid() || is_root(); }
+
 	virtual void _setup();
 	virtual void _enter();
 	virtual void _exit();
@@ -87,6 +90,7 @@ public:
 
 	_FORCE_INLINE_ StringName event_finished() const { return LW_NAME(EVENT_FINISHED); }
 	LimboState *get_root() const;
+	_FORCE_INLINE_ bool is_root() const { return !(get_parent() && IS_CLASS(get_parent(), LimboState)); }
 	bool is_active() const { return active; }
 
 	void set_guard(const Callable &p_guard_callable);

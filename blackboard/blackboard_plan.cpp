@@ -119,6 +119,19 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	notify_property_list_changed();
 }
 
+void BlackboardPlan::set_prefetch_nodepath_vars(bool p_enable) {
+	prefetch_nodepath_vars = p_enable;
+	emit_changed();
+}
+
+bool BlackboardPlan::is_prefetching_nodepath_vars() const {
+	if (is_derived()) {
+		return base->is_prefetching_nodepath_vars();
+	} else {
+		return prefetch_nodepath_vars;
+	}
+}
+
 void BlackboardPlan::add_var(const StringName &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(var_map.has(p_name));
 	var_map.insert(p_name, p_var);
@@ -263,15 +276,33 @@ void BlackboardPlan::sync_with_base_plan() {
 	}
 }
 
-Ref<Blackboard> BlackboardPlan::create_blackboard() {
+// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
+inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, const StringName &p_name, const BBVariable &p_var, bool p_prefetch, Node *p_node) {
+	if (unlikely(p_prefetch && p_var.get_type() == Variant::NODE_PATH)) {
+		Node *n = p_node->get_node_or_null(p_var.get_value());
+		BBVariable var = p_var.duplicate();
+		if (n != nullptr) {
+			var.set_value(n);
+		} else {
+			ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
+		}
+		p_blackboard->add_var(p_name, var);
+	} else {
+		p_blackboard->add_var(p_name, p_var.duplicate());
+	}
+}
+
+Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_node) {
+	ERR_FAIL_COND_V(p_node == nullptr && prefetch_nodepath_vars, memnew(Blackboard));
 	Ref<Blackboard> bb = memnew(Blackboard);
 	for (const Pair<StringName, BBVariable> &p : var_list) {
-		bb->add_var(p.first, p.second.duplicate());
+		bb_add_var_dup_with_prefetch(bb, p.first, p.second, prefetch_nodepath_vars, p_node);
 	}
 	return bb;
 }
 
-void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite) {
+void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node) {
+	ERR_FAIL_COND(p_node == nullptr && prefetch_nodepath_vars);
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		if (p_blackboard->has_var(p.first)) {
 			if (overwrite) {
@@ -280,13 +311,18 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 				continue;
 			}
 		}
-		p_blackboard->add_var(p.first, p.second.duplicate());
+		bb_add_var_dup_with_prefetch(p_blackboard, p.first, p.second, prefetch_nodepath_vars, p_node);
 	}
 }
 
 void BlackboardPlan::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("create_blackboard"), &BlackboardPlan::create_blackboard);
-	ClassDB::bind_method(D_METHOD("populate_blackboard", "blackboard", "overwrite"), &BlackboardPlan::populate_blackboard);
+	ClassDB::bind_method(D_METHOD("set_prefetch_nodepath_vars", "enable"), &BlackboardPlan::set_prefetch_nodepath_vars);
+	ClassDB::bind_method(D_METHOD("is_prefetching_nodepath_vars"), &BlackboardPlan::is_prefetching_nodepath_vars);
+
+	ClassDB::bind_method(D_METHOD("create_blackboard", "node"), &BlackboardPlan::create_blackboard);
+	ClassDB::bind_method(D_METHOD("populate_blackboard", "blackboard", "overwrite", "node"), &BlackboardPlan::populate_blackboard);
+
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_prefetch_nodepath_vars", "is_prefetching_nodepath_vars");
 }
 
 BlackboardPlan::BlackboardPlan() {

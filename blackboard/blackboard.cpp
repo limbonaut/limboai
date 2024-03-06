@@ -79,19 +79,6 @@ void Blackboard::add_var(const StringName &p_name, const BBVariable &p_var) {
 	data.insert(p_name, p_var);
 }
 
-void Blackboard::prefetch_nodepath_vars(Node *p_node) {
-	ERR_FAIL_COND(p_node == nullptr);
-	for (const KeyValue<StringName, BBVariable> &kv : data) {
-		BBVariable var = kv.value;
-		if (var.get_value().get_type() == Variant::NODE_PATH) {
-			Node *fetched_node = p_node->get_node_or_null(var.get_value());
-			if (fetched_node != nullptr) {
-				var.set_value(fetched_node);
-			}
-		}
-	}
-}
-
 void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_var", "var_name", "default", "complain"), &Blackboard::get_var, Variant(), true);
 	ClassDB::bind_method(D_METHOD("set_var", "var_name", "value"), &Blackboard::set_var);
@@ -99,7 +86,6 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_parent", "blackboard"), &Blackboard::set_parent);
 	ClassDB::bind_method(D_METHOD("get_parent"), &Blackboard::get_parent);
 	ClassDB::bind_method(D_METHOD("erase_var", "var_name"), &Blackboard::erase_var);
-	ClassDB::bind_method(D_METHOD("prefetch_nodepath_vars", "node"), &Blackboard::prefetch_nodepath_vars);
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
 	ClassDB::bind_method(D_METHOD("bind_var_to_property", "var_name", "object", "property"), &Blackboard::bind_var_to_property);
 	ClassDB::bind_method(D_METHOD("unbind_var", "var_name"), &Blackboard::unbind_var);
