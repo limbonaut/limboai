@@ -176,6 +176,11 @@ void BlackboardPlanEditor::_add_var_pressed() {
 	scroll_container->call_deferred(LW_NAME(call_deferred), LW_NAME(set_v_scroll), 888888888);
 }
 
+void BlackboardPlanEditor::_prefetching_toggled(bool p_toggle_on) {
+	ERR_FAIL_COND(plan.is_null());
+	plan->set_prefetch_nodepath_vars(p_toggle_on);
+}
+
 void BlackboardPlanEditor::_drag_button_down(Control *p_row) {
 	drag_index = p_row->get_index();
 	drag_start = drag_index;
@@ -240,7 +245,7 @@ void BlackboardPlanEditor::_refresh() {
 		child->queue_free();
 	}
 
-	// TODO: Name validation
+	nodepath_prefetching->set_pressed(plan->is_prefetching_nodepath_vars());
 
 	PackedStringArray names = plan->list_vars();
 	int idx = 0;
@@ -345,6 +350,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 			connect(LW_NAME(visibility_changed), callable_mp(this, &BlackboardPlanEditor::_visibility_changed));
 			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
+			nodepath_prefetching->connect(LW_NAME(toggled), callable_mp(this, &BlackboardPlanEditor::_prefetching_toggled));
 
 			for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
 				hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
@@ -376,6 +382,13 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 	toolbar->add_child(add_var_tool);
 	add_var_tool->set_focus_mode(Control::FOCUS_NONE);
 	add_var_tool->set_text(TTR("Add variable"));
+
+	nodepath_prefetching = memnew(CheckBox);
+	toolbar->add_child(nodepath_prefetching);
+	nodepath_prefetching->set_text(TTR("NodePath Prefetching"));
+	nodepath_prefetching->set_tooltip_text(TTR("If checked, NodePath variables will be prefetched on Blackboard initialization."));
+	nodepath_prefetching->set_h_size_flags(Control::SIZE_EXPAND | Control::SIZE_SHRINK_END);
+	nodepath_prefetching->set_focus_mode(Control::FOCUS_NONE);
 
 	{
 		// * Header

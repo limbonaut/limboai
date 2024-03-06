@@ -18,11 +18,13 @@
 
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_inspector.h"
+#include "scene/gui/check_box.h"
 #include "scene/gui/dialogs.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/accept_dialog.hpp>
+#include <godot_cpp/classes/check_box.hpp>
 #include <godot_cpp/classes/editor_inspector_plugin.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
@@ -60,6 +62,7 @@ private:
 
 	VBoxContainer *rows_vbox;
 	Button *add_var_tool;
+	CheckBox *nodepath_prefetching;
 	PanelContainer *header_row;
 	ScrollContainer *scroll_container;
 	PopupMenu *type_menu;
@@ -78,6 +81,7 @@ private:
 	void _type_chosen(int id);
 	void _hint_chosen(int id);
 	void _add_var_pressed();
+	void _prefetching_toggled(bool p_toggle_on);
 
 	void _drag_button_down(Control *p_row);
 	void _drag_button_up();

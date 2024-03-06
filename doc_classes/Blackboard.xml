@@ -49,13 +49,6 @@
 				Returns [code]true[/code] if the Blackboard contains the [param var_name] variable, including the parent scopes.
 			</description>
 		</method>
-		<method name="prefetch_nodepath_vars">
-			<return type="void" />
-			<param index="0" name="node" type="Node" />
-			<description>
-				If [code]true[/code], any [NodePath] variables in the [Blackboard] are replaced with [Node] references when the tree is instantiated. References are retrieved by calling [method Node.get_node] on the agent instance.
-			</description>
-		</method>
 		<method name="set_parent">
 			<return type="void" />
 			<param index="0" name="blackboard" type="Blackboard" />

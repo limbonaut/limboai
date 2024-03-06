@@ -41,7 +41,6 @@ private:
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
 	Ref<Blackboard> blackboard;
-	bool prefetch_nodepath_vars = true;
 	int last_status = -1;
 
 	Ref<BTTask> tree_instance;
@@ -69,9 +68,6 @@ public:
 
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	void set_blackboard(const Ref<Blackboard> &p_blackboard) { blackboard = p_blackboard; }
-
-	void set_prefetch_nodepath_vars(bool p_value) { prefetch_nodepath_vars = p_value; }
-	bool get_prefetch_nodepath_vars() const { return prefetch_nodepath_vars; }
 
 	void update(double p_delta);
 	void restart();
