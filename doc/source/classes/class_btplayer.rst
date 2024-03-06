@@ -31,21 +31,19 @@ Properties
 .. table::
    :widths: auto
 
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | bool                                        | :ref:`active<class_BTPlayer_property_active>`                                 | ``true``  |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | :ref:`BehaviorTree<class_BehaviorTree>`     | :ref:`behavior_tree<class_BTPlayer_property_behavior_tree>`                   |           |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | :ref:`Blackboard<class_Blackboard>`         | :ref:`blackboard<class_BTPlayer_property_blackboard>`                         |           |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | :ref:`BlackboardPlan<class_BlackboardPlan>` | :ref:`blackboard_plan<class_BTPlayer_property_blackboard_plan>`               |           |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | bool                                        | :ref:`monitor_performance<class_BTPlayer_property_monitor_performance>`       | ``false`` |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | bool                                        | :ref:`prefetch_nodepath_vars<class_BTPlayer_property_prefetch_nodepath_vars>` | ``true``  |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
-   | :ref:`UpdateMode<enum_BTPlayer_UpdateMode>` | :ref:`update_mode<class_BTPlayer_property_update_mode>`                       | ``1``     |
-   +---------------------------------------------+-------------------------------------------------------------------------------+-----------+
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | bool                                        | :ref:`active<class_BTPlayer_property_active>`                           | ``true``  |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | :ref:`BehaviorTree<class_BehaviorTree>`     | :ref:`behavior_tree<class_BTPlayer_property_behavior_tree>`             |           |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | :ref:`Blackboard<class_Blackboard>`         | :ref:`blackboard<class_BTPlayer_property_blackboard>`                   |           |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | :ref:`BlackboardPlan<class_BlackboardPlan>` | :ref:`blackboard_plan<class_BTPlayer_property_blackboard_plan>`         |           |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | bool                                        | :ref:`monitor_performance<class_BTPlayer_property_monitor_performance>` | ``false`` |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
+   | :ref:`UpdateMode<enum_BTPlayer_UpdateMode>` | :ref:`update_mode<class_BTPlayer_property_update_mode>`                 | ``1``     |
+   +---------------------------------------------+-------------------------------------------------------------------------+-----------+
 
 .. rst-class:: classref-reftable-group
 
@@ -221,23 +219,6 @@ Stores and manages variables that will be used in constructing new :ref:`Blackbo
 bool **monitor_performance** = ``false``
 
 If ``true``, adds a performance monitor to "Debugger->Monitors" for each instance of this **BTPlayer** node.
-
-.. rst-class:: classref-item-separator
-
-----
-
-.. _class_BTPlayer_property_prefetch_nodepath_vars:
-
-.. rst-class:: classref-property
-
-bool **prefetch_nodepath_vars** = ``true``
-
-.. rst-class:: classref-property-setget
-
-- void **set_prefetch_nodepath_vars** **(** bool value **)**
-- bool **get_prefetch_nodepath_vars** **(** **)**
-
-If ``true``, any ``NodePath`` variables in the :ref:`Blackboard<class_Blackboard>` are replaced with ``Node`` references when the tree is instantiated. References are retrieved by calling :ref:`Node.get_node<class_Node_method_get_node>` on the agent instance (agent is the owner of the BTPlayer node).
 
 .. rst-class:: classref-item-separator
 

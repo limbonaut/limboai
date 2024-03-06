@@ -44,8 +44,6 @@ Methods
    +-------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
    | bool                                | :ref:`has_var<class_Blackboard_method_has_var>` **(** StringName var_name **)** |const|                                                       |
    +-------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-   | void                                | :ref:`prefetch_nodepath_vars<class_Blackboard_method_prefetch_nodepath_vars>` **(** Node node **)**                                           |
-   +-------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
    | void                                | :ref:`set_parent<class_Blackboard_method_set_parent>` **(** :ref:`Blackboard<class_Blackboard>` blackboard **)**                              |
    +-------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
    | void                                | :ref:`set_var<class_Blackboard_method_set_var>` **(** StringName var_name, Variant value **)**                                                |
@@ -119,18 +117,6 @@ Returns variable value or ``default`` if variable doesn't exist. If ``complain``
 bool **has_var** **(** StringName var_name **)** |const|
 
 Returns ``true`` if the Blackboard contains the ``var_name`` variable, including the parent scopes.
-
-.. rst-class:: classref-item-separator
-
-----
-
-.. _class_Blackboard_method_prefetch_nodepath_vars:
-
-.. rst-class:: classref-method
-
-void **prefetch_nodepath_vars** **(** Node node **)**
-
-If ``true``, any ``NodePath`` variables in the **Blackboard** are replaced with ``Node`` references when the tree is instantiated. References are retrieved by calling :ref:`Node.get_node<class_Node_method_get_node>` on the agent instance.
 
 .. rst-class:: classref-item-separator
 
