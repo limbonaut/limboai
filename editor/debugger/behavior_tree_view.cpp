@@ -98,6 +98,7 @@ inline void _item_set_elapsed_time(TreeItem *p_item, double p_elapsed) {
 }
 
 void BehaviorTreeView::update_tree(const Ref<BehaviorTreeData> &p_data) {
+	ERR_FAIL_COND_MSG(p_data.is_null(), "Invalid data. View won't update.");
 	update_data = p_data;
 	update_pending = true;
 	_notification(NOTIFICATION_PROCESS);
