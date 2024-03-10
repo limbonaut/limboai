@@ -31,21 +31,9 @@ env:
   EM_CACHE_FOLDER: "emsdk-cache"
 
 jobs:
-  # Workaround for issue: https://github.com/mymindstorm/setup-emsdk/issues/20
-  init-emscripten:
-    name: Init Emscripten
-    runs-on: "ubuntu-20.04"
-    steps:
-      - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@v12
-        with:
-          version: ${{env.EM_VERSION}}
-          actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
-
   web-builds:
     runs-on: "ubuntu-20.04"
     name: ${{ matrix.name }}
-    needs: init-emscripten
     strategy:
       fail-fast: false
       matrix:
@@ -85,14 +73,14 @@ jobs:
       # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
-      # - name: Set up Emscripten cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ${{env.EM_CACHE_FOLDER}}
-      #     key: ${{env.EM_VERSION}}-${{runner.os}}-libs
+      - name: Set up Emscripten cache
+        uses: actions/cache@v3
+        with:
+          path: ${{env.EM_CACHE_FOLDER}}
+          key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@v12
+        uses: mymindstorm/setup-emsdk@v14
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
