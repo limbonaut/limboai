@@ -64,7 +64,7 @@ jobs:
           cd ..
 
       - name: Set up scons cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{env.GODOT_REF}}-${{github.ref}}-${{github.sha}}
@@ -75,7 +75,7 @@ jobs:
         continue-on-error: true
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.x"
           architecture: "x64"

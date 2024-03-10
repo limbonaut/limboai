@@ -74,7 +74,7 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Emscripten cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
@@ -97,7 +97,7 @@ jobs:
           scons --version
 
       - name: Set up scons cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.CACHE_NAME}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}

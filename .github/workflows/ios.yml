@@ -22,7 +22,6 @@ on:
         type: string
         default: master
 
-
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
@@ -31,7 +30,6 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-
   ios-builds:
     runs-on: "macos-latest"
     name: ${{ matrix.name }}
@@ -76,7 +74,6 @@ jobs:
       BIN: godot.ios.${{matrix.target}}.${{matrix.arch}}
 
     steps:
-
       - name: Clone Godot
         uses: actions/checkout@v4
         with:
@@ -93,10 +90,10 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-          architecture: 'x64'
+          python-version: "3.x"
+          architecture: "x64"
 
       - name: Set up scons
         run: |
@@ -114,7 +111,7 @@ jobs:
           sh misc/scripts/install_vulkan_sdk_macos.sh
 
       - name: Set up scons cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}
@@ -141,7 +138,6 @@ jobs:
     needs: ios-builds
 
     steps:
-
       - name: Clone Godot
         uses: actions/checkout@v4
         with:

@@ -118,7 +118,7 @@ jobs:
             should-build: ${{ !inputs.test-build }}
 
         exclude:
-          - { opts: {should-build: false }}
+          - { opts: { should-build: false } }
 
     env:
       BIN: godot.linuxbsd.${{matrix.opts.target}}.${{matrix.opts.arch}}${{  matrix.opts.build-mono == true && '.mono' || ''  }}
@@ -162,7 +162,7 @@ jobs:
           cd ..
 
       - name: Set up scons cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{inputs.godot-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}

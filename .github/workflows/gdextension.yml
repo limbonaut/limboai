@@ -148,14 +148,14 @@ jobs:
 
       - name: Set up Python 3.x
         if: matrix.opts.platform == 'windows' || matrix.opts.platform == 'macos'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.x"
           architecture: "x64"
 
       - name: Set up Emscripten cache
         if: matrix.opts.platform == 'web'
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
@@ -185,7 +185,7 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Set up scons cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{inputs.godot-cpp-treeish}}-${{inputs.limboai-treeish}}-${{env.LIMBOAI_VERSION}}
