@@ -26,6 +26,14 @@
 #ifdef LIMBOAI_GDEXTENSION
 #endif
 
+void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
+	blackboard_plan = p_plan;
+	_update_blackboard_plan();
+}
+
+void LimboState::_update_blackboard_plan() {
+}
+
 LimboState *LimboState::get_root() const {
 	const LimboState *state = this;
 	while (state->get_parent() && IS_CLASS(state->get_parent(), LimboState)) {
@@ -159,6 +167,11 @@ void LimboState::clear_guard() {
 
 void LimboState::_notification(int p_what) {
 	switch (p_what) {
+		case NOTIFICATION_READY: {
+			if (Engine::get_singleton()->is_editor_hint()) {
+				_update_blackboard_plan();
+			}
+		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			if (active) {
 				_exit();

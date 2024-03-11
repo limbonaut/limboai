@@ -88,7 +88,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		BBVariable var = p.second;
 
 		// * Editor
-		if (!is_derived() || !var_name.begins_with("_")) {
+		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
 			p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
 		}
 

@@ -58,6 +58,7 @@ protected:
 	virtual bool _dispatch(const StringName &p_event, const Variant &p_cargo = Variant());
 
 	virtual bool _should_use_new_scope() const { return blackboard_plan.is_valid() || is_root(); }
+	virtual void _update_blackboard_plan();
 
 	virtual void _setup();
 	virtual void _enter();
@@ -72,7 +73,7 @@ protected:
 #endif // LIMBOAI_MODULE
 
 public:
-	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) { blackboard_plan = p_plan; }
+	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
 	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
