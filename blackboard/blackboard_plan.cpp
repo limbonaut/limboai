@@ -284,7 +284,10 @@ inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, co
 		if (n != nullptr) {
 			var.set_value(n);
 		} else {
-			ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
+			// Print error only if the variable is not present (it can be initialized by the user or in the parent scope).
+			if (!p_blackboard->has_var(p_name)) {
+				ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
+			}
 		}
 		p_blackboard->add_var(p_name, var);
 	} else {
