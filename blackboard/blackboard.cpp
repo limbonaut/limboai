@@ -36,7 +36,7 @@ Variant Blackboard::get_var(const StringName &p_name, const Variant &p_default, 
 	if (data.has(p_name)) {
 		return data.get(p_name).get_value();
 	} else if (parent.is_valid()) {
-		return parent->get_var(p_name, p_default);
+		return parent->get_var(p_name, p_default, p_complain);
 	} else {
 		if (p_complain) {
 			ERR_PRINT(vformat("Blackboard: Variable \"%s\" not found.", p_name));
