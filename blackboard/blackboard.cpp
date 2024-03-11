@@ -74,8 +74,7 @@ void Blackboard::unbind_var(const StringName &p_name) {
 	data[p_name].unbind();
 }
 
-void Blackboard::add_var(const StringName &p_name, const BBVariable &p_var) {
-	ERR_FAIL_COND(data.has(p_name));
+void Blackboard::assign_var(const StringName &p_name, const BBVariable &p_var) {
 	data.insert(p_name, p_var);
 }
 
