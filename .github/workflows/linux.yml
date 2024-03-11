@@ -211,6 +211,7 @@ jobs:
           pushd out/
           zip -r godot-limboai.editor.linux.zip *
           rm godot.*
+          rm -rf GodotSharp/
           echo -e "## Why another ZIP inside?\n\nWorkaround for: https://github.com/actions/upload-artifact/issues/38\n" > README.md
           popd
 
