@@ -270,6 +270,24 @@ void BlackboardPlan::sync_with_base_plan() {
 		}
 	}
 
+	// Sync order of variables.
+	// Glossary: E - element of current plan, B - element of base plan, F - element of current plan (used for forward search).
+	ERR_FAIL_COND(base->var_list.size() != var_list.size());
+	List<Pair<StringName, BBVariable>>::Element *B = base->var_list.front();
+	for (List<Pair<StringName, BBVariable>>::Element *E = var_list.front(); E; E = E->next()) {
+		if (E->get().first != B->get().first) {
+			List<Pair<StringName, BBVariable>>::Element *F = E;
+			while ((F = F->next())) {
+				if (F->get().first == B->get().first) {
+					var_list.move_before(F, E);
+					E = F;
+					break;
+				}
+			}
+		}
+		B = B->next();
+	}
+
 	if (changed) {
 		notify_property_list_changed();
 		emit_changed();
