@@ -56,6 +56,8 @@ public:
 
 	void assign_var(const StringName &p_name, const BBVariable &p_var);
 
+	void link_var(const StringName &p_name, const Ref<Blackboard> &p_target_blackboard, const StringName &p_target_var);
+
 	// TODO: Add serialization API.
 };
 

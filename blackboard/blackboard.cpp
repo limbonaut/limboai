@@ -78,6 +78,13 @@ void Blackboard::assign_var(const StringName &p_name, const BBVariable &p_var) {
 	data.insert(p_name, p_var);
 }
 
+void Blackboard::link_var(const StringName &p_name, const Ref<Blackboard> &p_target_blackboard, const StringName &p_target_var) {
+	ERR_FAIL_COND_MSG(!data.has(p_name), "Blackboard: Can't link variable that doesn't exist (var: " + p_name + ").");
+	ERR_FAIL_COND_MSG(p_target_blackboard.is_null(), "Blackboard: Can't link variable to target blackboard that is null (var: " + p_name + ").");
+	ERR_FAIL_COND_MSG(!p_target_blackboard->data.has(p_target_var), "Blackboard: Can't link variable to non-existent target (var: " + p_name + ", target: " + p_target_var + ").");
+	data[p_name] = p_target_blackboard->data[p_target_var];
+}
+
 void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_var", "var_name", "default", "complain"), &Blackboard::get_var, Variant(), true);
 	ClassDB::bind_method(D_METHOD("set_var", "var_name", "value"), &Blackboard::set_var);
@@ -88,4 +95,5 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
 	ClassDB::bind_method(D_METHOD("bind_var_to_property", "var_name", "object", "property"), &Blackboard::bind_var_to_property);
 	ClassDB::bind_method(D_METHOD("unbind_var", "var_name"), &Blackboard::unbind_var);
+	ClassDB::bind_method(D_METHOD("link_var", "var_name", "target_blackboard", "target_var"), &Blackboard::link_var);
 }
