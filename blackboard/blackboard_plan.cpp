@@ -276,13 +276,14 @@ void BlackboardPlan::sync_with_base_plan() {
 	List<Pair<StringName, BBVariable>>::Element *B = base->var_list.front();
 	for (List<Pair<StringName, BBVariable>>::Element *E = var_list.front(); E; E = E->next()) {
 		if (E->get().first != B->get().first) {
-			List<Pair<StringName, BBVariable>>::Element *F = E;
-			while ((F = F->next())) {
+			List<Pair<StringName, BBVariable>>::Element *F = E->next();
+			while (F) {
 				if (F->get().first == B->get().first) {
 					var_list.move_before(F, E);
 					E = F;
 					break;
 				}
+				F = F->next();
 			}
 		}
 		B = B->next();

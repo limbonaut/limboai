@@ -19,13 +19,6 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/object/gdvirtual.gen.inc"
-#include "core/object/object.h"
-#include "core/string/string_name.h"
-#include "core/string/ustring.h"
-#include "core/templates/hash_map.h"
-#include "core/variant/callable.h"
-#include "core/variant/variant.h"
 #include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
 

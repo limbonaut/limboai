@@ -14,16 +14,10 @@
 #include "../util/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/typedefs.h"
-#include "core/variant/array.h"
-#include "core/variant/callable.h"
-#include "core/variant/variant.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
 #endif
 
 void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
