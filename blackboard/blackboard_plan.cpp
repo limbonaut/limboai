@@ -88,7 +88,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		BBVariable var = p.second;
 
 		// * Editor
-		if (!is_derived() || !var_name.begins_with("_")) {
+		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
 			p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
 		}
 
@@ -270,6 +270,25 @@ void BlackboardPlan::sync_with_base_plan() {
 		}
 	}
 
+	// Sync order of variables.
+	// Glossary: E - element of current plan, B - element of base plan, F - element of current plan (used for forward search).
+	ERR_FAIL_COND(base->var_list.size() != var_list.size());
+	List<Pair<StringName, BBVariable>>::Element *B = base->var_list.front();
+	for (List<Pair<StringName, BBVariable>>::Element *E = var_list.front(); E; E = E->next()) {
+		if (E->get().first != B->get().first) {
+			List<Pair<StringName, BBVariable>>::Element *F = E->next();
+			while (F) {
+				if (F->get().first == B->get().first) {
+					var_list.move_before(F, E);
+					E = F;
+					break;
+				}
+				F = F->next();
+			}
+		}
+		B = B->next();
+	}
+
 	if (changed) {
 		notify_property_list_changed();
 		emit_changed();
@@ -284,11 +303,16 @@ inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, co
 		if (n != nullptr) {
 			var.set_value(n);
 		} else {
+			if (p_blackboard->has_var(p_name)) {
+				// Not adding: Assuming variable was initialized by the user or in the parent scope.
+				return;
+			}
 			ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
+			var.set_value(Variant());
 		}
-		p_blackboard->add_var(p_name, var);
+		p_blackboard->assign_var(p_name, var);
 	} else {
-		p_blackboard->add_var(p_name, p_var.duplicate());
+		p_blackboard->assign_var(p_name, p_var.duplicate());
 	}
 }
 
