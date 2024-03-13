@@ -328,12 +328,8 @@ Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_node) {
 void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node) {
 	ERR_FAIL_COND(p_node == nullptr && prefetch_nodepath_vars);
 	for (const Pair<StringName, BBVariable> &p : var_list) {
-		if (p_blackboard->has_var(p.first)) {
-			if (overwrite) {
-				p_blackboard->erase_var(p.first);
-			} else {
-				continue;
-			}
+		if (p_blackboard->has_var(p.first) && !overwrite) {
+			continue;
 		}
 		bb_add_var_dup_with_prefetch(p_blackboard, p.first, p.second, prefetch_nodepath_vars, p_node);
 	}
