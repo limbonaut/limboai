@@ -171,7 +171,7 @@ void LimboDebuggerTab::_resource_header_pressed() {
 	if (bt_path.is_empty()) {
 		return;
 	}
-	FS_DOCK_SELECT_FILE(bt_path);
+	FS_DOCK_SELECT_FILE(bt_path.get_slice("::", 0));
 	Ref<BehaviorTree> bt = RESOURCE_LOAD(bt_path, "BehaviorTree");
 	ERR_FAIL_COND_MSG(!bt.is_valid(), "Failed to load BehaviorTree. Wrong resource path?");
 	EditorInterface::get_singleton()->edit_resource(bt);
