@@ -16,10 +16,11 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 
 	// * Editor
 	if (var_map.has(p_name)) {
-		var_map[p_name].set_value(p_value);
+		BBVariable &var = var_map[p_name];
+		var.set_value(p_value);
 		if (base.is_valid() && p_value == base->get_var(p_name).get_value()) {
 			// When user pressed reset property button in inspector...
-			var_map[p_name].reset_value_changed();
+			var.reset_value_changed();
 		}
 		return true;
 	}
@@ -90,6 +91,12 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		// * Editor
 		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
 			p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
+		}
+
+		if (is_derived() && (!var.is_value_changed() || var.get_value() == base->var_map[var_name].get_value())) {
+			// Don't store variable if it's not modified in a derived plan.
+			// Variable is considered modified when it's marked as changed and its value is different from the base plan.
+			continue;
 		}
 
 		// * Storage
