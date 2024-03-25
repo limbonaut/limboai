@@ -140,6 +140,7 @@ bool BlackboardPlan::is_prefetching_nodepath_vars() const {
 }
 
 void BlackboardPlan::add_var(const StringName &p_name, const BBVariable &p_var) {
+	ERR_FAIL_COND(p_name == StringName());
 	ERR_FAIL_COND(var_map.has(p_name));
 	var_map.insert(p_name, p_var);
 	var_list.push_back(Pair<StringName, BBVariable>(p_name, p_var));
@@ -198,6 +199,7 @@ void BlackboardPlan::rename_var(const StringName &p_name, const StringName &p_ne
 
 	ERR_FAIL_COND(!is_valid_var_name(p_new_name));
 	ERR_FAIL_COND(!var_map.has(p_name));
+	ERR_FAIL_COND(var_map.has(p_new_name));
 
 	BBVariable var = var_map[p_name];
 	Pair<StringName, BBVariable> new_entry(p_new_name, var);
@@ -270,11 +272,16 @@ void BlackboardPlan::sync_with_base_plan() {
 	}
 
 	// Erase variables that do not exist in the base plan.
+	List<StringName> erase_list;
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		if (!base->has_var(p.first)) {
-			remove_var(p.first);
+			erase_list.push_back(p.first);
 			changed = true;
 		}
+	}
+	while (erase_list.size()) {
+		remove_var(erase_list.front()->get());
+		erase_list.pop_front();
 	}
 
 	// Sync order of variables.
