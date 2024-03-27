@@ -20,7 +20,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -50,7 +50,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	if (p_item->get_parent()) {
 		Ref<BTProbabilitySelector> sel = p_item->get_parent()->get_metadata(0);
 		if (sel.is_valid() && sel->has_probability(p_item->get_index())) {
-			p_item->set_custom_draw(0, this, LW_NAME(_draw_probability));
+			p_item->set_custom_draw_callback(0, callable_mp(this, &TaskTree::_draw_probability));
 			p_item->set_cell_mode(0, TreeItem::CELL_MODE_CUSTOM);
 		}
 	}

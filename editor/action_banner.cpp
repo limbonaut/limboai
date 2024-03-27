@@ -17,7 +17,7 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #include "scene/gui/button.h"
 #endif // LIMBOAI_MODULE
 
