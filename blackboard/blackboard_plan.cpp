@@ -122,6 +122,7 @@ bool BlackboardPlan::_property_get_revert(const StringName &p_name, Variant &r_p
 
 void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	if (p_base == this) {
+		WARN_PRINT_ED("BlackboardPlan: Using same resource for derived blackboard plan is not supported.");
 		base.unref();
 	} else {
 		base = p_base;

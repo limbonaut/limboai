@@ -86,7 +86,12 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 }
 
 void BTPlayer::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
-	blackboard_plan = p_plan;
+	if (p_plan.is_valid() && !RESOURCE_IS_BUILT_IN(p_plan)) {
+		WARN_PRINT_ED("BTPlayer: Using external resource for derived blackboard plan is not supported. Converted to built-in resource.");
+		blackboard_plan = p_plan->duplicate();
+	} else {
+		blackboard_plan = p_plan;
+	}
 	_update_blackboard_plan();
 }
 
