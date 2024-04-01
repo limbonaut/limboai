@@ -25,11 +25,11 @@
 
 void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	if (Engine::get_singleton()->is_editor_hint()) {
-		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan))) {
-			behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan));
+		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan))) {
+			behavior_tree->disconnect(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan));
 		}
 		if (p_tree.is_valid()) {
-			p_tree->connect(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan));
+			p_tree->connect(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan));
 		}
 		behavior_tree = p_tree;
 		_update_blackboard_plan();
@@ -97,8 +97,8 @@ void BTState::_notification(int p_notification) {
 #endif // DEBUG_ENABLED
 
 			if (Engine::get_singleton()->is_editor_hint()) {
-				if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan))) {
-					behavior_tree->disconnect(LW_NAME(changed), callable_mp(this, &BTState::_update_blackboard_plan));
+				if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan))) {
+					behavior_tree->disconnect(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan));
 				}
 			}
 		} break;
