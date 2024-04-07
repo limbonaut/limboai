@@ -33,6 +33,7 @@ jobs:
           cp {README,LICENSE}.md demo/
           mkdir -p demo/addons/limboai/
           cp -R icons/ demo/addons/limboai/icons
+          echo "${LIMBOAI_VERSION}" > demo/version.txt
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
