@@ -70,6 +70,10 @@ void BTState::_exit() {
 
 void BTState::_update(double p_delta) {
 	VCALL_ARGS(_update, p_delta);
+	if (!active) {
+		// Bail out if a transition happened in the meantime.
+		return;
+	}
 	ERR_FAIL_NULL(tree_instance);
 	int status = tree_instance->execute(p_delta);
 	if (status == BTTask::SUCCESS) {
