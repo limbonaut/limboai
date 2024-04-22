@@ -14,8 +14,6 @@ BTSubtree
 
 BT decorator that instantiates and runs a subtree within the larger tree.
 
-Note: BTSubTree is designed as a simpler loader, and does not support updating `subtree` at runtime. A custom subtree decorator is better suited and `somewhat trivial <https://github.com/limbonaut/limboai/issues/94#issuecomment-2068833610>`_ to implement.
-
 .. rst-class:: classref-introduction-group
 
 Description
@@ -24,6 +22,8 @@ Description
 BTSubtree instantiates a :ref:`BehaviorTree<class_BehaviorTree>` and includes its root task as a child during initialization, while also creating a new :ref:`Blackboard<class_Blackboard>` scope.
 
 Returns the status of the subtree's execution.
+
+Note: BTSubTree is designed as a simpler loader, and does not support updating `subtree` at runtime. A custom subtree decorator is better suited and somewhat trivial to implement (https://github.com/limbonaut/limboai/issues/94#issuecomment-2068833610).
 
 .. rst-class:: classref-reftable-group
 
