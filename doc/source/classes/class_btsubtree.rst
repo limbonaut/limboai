@@ -14,6 +14,8 @@ BTSubtree
 
 BT decorator that instantiates and runs a subtree within the larger tree.
 
+Note: BTSubTree is design as a simpler loader, and does not support changing `subtree` at runtime. A custom subtree decorator is better suited and `somewhat trivial <https://github.com/limbonaut/limboai/issues/94#issuecomment-2068833610>`_ to implement.
+
 .. rst-class:: classref-introduction-group
 
 Description
