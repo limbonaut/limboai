@@ -66,7 +66,7 @@ public:
 	virtual String _to_string();
 #endif
 
-	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
+	virtual Variant get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant());
 
 	BBParam();
 };
