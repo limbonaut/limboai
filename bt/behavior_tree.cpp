@@ -92,7 +92,7 @@ void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
 	ClassDB::bind_method(D_METHOD("copy_other", "other"), &BehaviorTree::copy_other);
-	ClassDB::bind_method(D_METHOD("instantiate", "agent", "blackboard"), &BehaviorTree::instantiate);
+	ClassDB::bind_method(D_METHOD("instantiate", "agent", "blackboard", "scene_root"), &BehaviorTree::instantiate);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_plan", "get_blackboard_plan");
