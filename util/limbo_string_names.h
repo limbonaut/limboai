@@ -13,6 +13,7 @@
 #define LIMBO_STRING_NAMES_H
 
 #ifdef LIMBOAI_MODULE
+#include "core/string/node_path.h"
 #include "core/string/string_name.h"
 #include "core/typedefs.h"
 #include "modules/register_module_types.h"
@@ -20,6 +21,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include "godot_cpp/variant/string.hpp"
+#include <godot_cpp/variant/node_path.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
@@ -181,6 +183,8 @@ public:
 
 	String repeat_forever;
 	String output_var_prefix;
+
+	NodePath node_pp;
 };
 
 #define LW_NAME(m_arg) LimboStringNames::get_singleton()->m_arg

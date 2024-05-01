@@ -75,6 +75,7 @@ private:
 		int index = -1;
 		String custom_name;
 		Node *agent = nullptr;
+		Node *scene_root = nullptr;
 		Ref<Blackboard> blackboard;
 		BTTask *parent = nullptr;
 		Vector<Ref<BTTask>> children;
@@ -116,6 +117,8 @@ public:
 	_FORCE_INLINE_ Node *get_agent() const { return data.agent; }
 	void set_agent(Node *p_agent) { data.agent = p_agent; }
 
+	_FORCE_INLINE_ Node *get_scene_root() const { return data.scene_root; }
+
 	void set_display_collapsed(bool p_display_collapsed);
 	bool is_displayed_collapsed() const;
 
@@ -126,7 +129,7 @@ public:
 	Ref<BTTask> get_root() const;
 
 	virtual Ref<BTTask> clone() const;
-	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
+	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root);
 	virtual PackedStringArray get_configuration_warnings(); // ! Native version.
 
 	Status execute(double p_delta);

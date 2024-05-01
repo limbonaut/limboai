@@ -34,7 +34,7 @@ protected:
 	virtual Status _tick(double p_delta) override;
 
 public:
-	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
+	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) override;
 };
 
 #endif // BT_NEW_SCOPE_H

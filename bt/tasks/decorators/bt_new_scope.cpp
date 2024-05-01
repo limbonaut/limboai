@@ -20,7 +20,7 @@ void BTNewScope::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	emit_changed();
 }
 
-void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
+void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) {
 	ERR_FAIL_COND(p_agent == nullptr);
 	ERR_FAIL_COND(p_blackboard == nullptr);
 
@@ -33,7 +33,7 @@ void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) 
 
 	bb->set_parent(p_blackboard);
 
-	BTDecorator::initialize(p_agent, bb);
+	BTDecorator::initialize(p_agent, bb, p_scene_root);
 }
 
 BT::Status BTNewScope::_tick(double p_delta) {

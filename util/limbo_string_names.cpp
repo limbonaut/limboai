@@ -166,4 +166,6 @@ LimboStringNames::LimboStringNames() {
 
 	repeat_forever.parse_utf8("Repeat ∞");
 	output_var_prefix.parse_utf8("➜");
+
+	node_pp = NodePath("..");
 }
