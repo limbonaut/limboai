@@ -73,6 +73,8 @@ void BehaviorTree::copy_other(const Ref<BehaviorTree> &p_other) {
 
 Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) const {
 	ERR_FAIL_COND_V_MSG(root_task == nullptr, memnew(BTTask), "Trying to instance a behavior tree with no valid root task.");
+	ERR_FAIL_NULL_V_MSG(p_agent, memnew(BTTask), "Trying to instance a behavior tree with no valid agent.");
+	ERR_FAIL_NULL_V_MSG(p_scene_root, memnew(BTTask), "Trying to instance a behavior tree with no valid scene root.");
 	Ref<BTTask> inst = root_task->clone();
 	inst->initialize(p_agent, p_blackboard, p_scene_root);
 	return inst;

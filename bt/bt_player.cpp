@@ -55,7 +55,7 @@ void BTPlayer::_load_tree() {
 	Node *agent = GET_NODE(this, agent_node);
 	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
 	Node *scene_root = get_owner();
-	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer.owner is set).");
+	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer's owner property is set).");
 	tree_instance = behavior_tree->instantiate(agent, blackboard, scene_root);
 #ifdef DEBUG_ENABLED
 	if (IS_DEBUGGER_ACTIVE()) {
