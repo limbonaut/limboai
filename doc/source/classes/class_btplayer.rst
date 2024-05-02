@@ -19,7 +19,7 @@ Player of :ref:`BehaviorTree<class_BehaviorTree>` resources.
 Description
 -----------
 
-BTPlayer node is used for the instantiation and playback of :ref:`BehaviorTree<class_BehaviorTree>` resources at runtime. During instantiation, the behavior tree instance is initialized with a reference to the agent and the :ref:`blackboard<class_BTPlayer_property_blackboard>`. Agent is the owner of the BTPlayer node (see :ref:`Node.owner<class_Node_member_owner>`).
+**BTPlayer** node is used to instantiate and play :ref:`BehaviorTree<class_BehaviorTree>` resources at runtime. During initialization, the behavior tree instance is given references to the agent, the :ref:`blackboard<class_BTPlayer_property_blackboard>`, and the current scene root. The agent can be specified by the :ref:`agent_node<class_BTPlayer_property_agent_node>` property (defaults to the BTPlayer's parent node).
 
 For an introduction to behavior trees, see :ref:`BehaviorTree<class_BehaviorTree>`.
 

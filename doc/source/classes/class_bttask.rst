@@ -133,7 +133,7 @@ Node **agent**
 - void **set_agent** **(** Node value **)**
 - Node **get_agent** **(** **)**
 
-The agent is a contextual object for the task's :ref:`BehaviorTree<class_BehaviorTree>` instance. Usually, agent is the owner of the :ref:`BTPlayer<class_BTPlayer>` node containing the :ref:`BehaviorTree<class_BehaviorTree>` resource.
+The agent is the contextual object for the :ref:`BehaviorTree<class_BehaviorTree>` instance. This is usually the parent of the :ref:`BTPlayer<class_BTPlayer>` node that utilizes the :ref:`BehaviorTree<class_BehaviorTree>` resource.
 
 .. rst-class:: classref-item-separator
 
@@ -202,7 +202,7 @@ Node **scene_root**
 
 - Node **get_scene_root** **(** **)**
 
-Root node of the scene the behavior tree is used in (e.g., the owner of the node that contains the behavior tree). Can be uses to retrieve ``NodePath`` references.
+Root node of the scene the behavior tree is used in (e.g., the owner of the :ref:`BTPlayer<class_BTPlayer>` node). Can be uses to retrieve ``NodePath`` references.
 
 \ **Example:**\ 
 
