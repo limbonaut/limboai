@@ -93,6 +93,13 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	}
 }
 
+void BTPlayer::set_agent_node(const NodePath &p_agent_node) {
+	agent_node = p_agent_node;
+	if (tree_instance.is_valid()) {
+		ERR_PRINT("BTPlayer: Agent node cannot be set after the behavior tree is instantiated. This change will not affect the behavior tree instance.");
+	}
+}
+
 void BTPlayer::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	blackboard_plan = p_plan;
 	_update_blackboard_plan();

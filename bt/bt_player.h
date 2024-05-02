@@ -58,7 +58,7 @@ public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_tree);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; };
 
-	void set_agent_node(const NodePath &p_agent_node) { agent_node = p_agent_node; }
+	void set_agent_node(const NodePath &p_agent_node);
 	NodePath get_agent_node() const { return agent_node; }
 
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
