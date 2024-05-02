@@ -37,7 +37,7 @@ public:
 
 private:
 	Ref<BehaviorTree> behavior_tree;
-	NodePath agent;
+	NodePath agent_node;
 	Ref<BlackboardPlan> blackboard_plan;
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
@@ -58,8 +58,8 @@ public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_tree);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; };
 
-	void set_agent(const NodePath &p_agent) { agent = p_agent; }
-	NodePath get_agent() const { return agent; }
+	void set_agent_node(const NodePath &p_agent_node) { agent_node = p_agent_node; }
+	NodePath get_agent_node() const { return agent_node; }
 
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
 	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
