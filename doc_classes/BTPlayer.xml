@@ -40,6 +40,9 @@
 		<member name="active" type="bool" setter="set_active" getter="get_active" default="true">
 			If [code]true[/code], the behavior tree will be executed during update.
 		</member>
+		<member name="agent_node" type="NodePath" setter="set_agent_node" getter="get_agent_node" default="NodePath(&quot;..&quot;)">
+			Path to the node that will be used as the agent. Setting it after instantiation will have no effect.
+		</member>
 		<member name="behavior_tree" type="BehaviorTree" setter="set_behavior_tree" getter="get_behavior_tree">
 			[BehaviorTree] resource to instantiate and execute at runtime.
 		</member>
