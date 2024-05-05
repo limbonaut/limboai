@@ -515,6 +515,7 @@ PackedInt32Array LimboUtility::get_property_hints_allowed_for_type(Variant::Type
 		case Variant::Type::PACKED_STRING_ARRAY:
 		case Variant::Type::PACKED_VECTOR2_ARRAY:
 		case Variant::Type::PACKED_VECTOR3_ARRAY:
+		case Variant::Type::PACKED_VECTOR4_ARRAY:
 		case Variant::Type::PACKED_COLOR_ARRAY:
 		case Variant::Type::VARIANT_MAX: {
 		} break;
