@@ -71,10 +71,12 @@ void BehaviorTree::copy_other(const Ref<BehaviorTree> &p_other) {
 	root_task = p_other->get_root_task();
 }
 
-Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard) const {
+Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) const {
 	ERR_FAIL_COND_V_MSG(root_task == nullptr, memnew(BTTask), "Trying to instance a behavior tree with no valid root task.");
+	ERR_FAIL_NULL_V_MSG(p_agent, memnew(BTTask), "Trying to instance a behavior tree with no valid agent.");
+	ERR_FAIL_NULL_V_MSG(p_scene_root, memnew(BTTask), "Trying to instance a behavior tree with no valid scene root.");
 	Ref<BTTask> inst = root_task->clone();
-	inst->initialize(p_agent, p_blackboard);
+	inst->initialize(p_agent, p_blackboard, p_scene_root);
 	return inst;
 }
 
@@ -92,7 +94,7 @@ void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_root_task"), &BehaviorTree::get_root_task);
 	ClassDB::bind_method(D_METHOD("clone"), &BehaviorTree::clone);
 	ClassDB::bind_method(D_METHOD("copy_other", "other"), &BehaviorTree::copy_other);
-	ClassDB::bind_method(D_METHOD("instantiate", "agent", "blackboard"), &BehaviorTree::instantiate);
+	ClassDB::bind_method(D_METHOD("instantiate", "agent", "blackboard", "scene_root"), &BehaviorTree::instantiate);
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "description", PROPERTY_HINT_MULTILINE_TEXT), "set_description", "get_description");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT), "set_blackboard_plan", "get_blackboard_plan");

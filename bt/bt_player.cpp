@@ -50,9 +50,13 @@ void BTPlayer::_load_tree() {
 	}
 #endif
 	tree_instance.unref();
-	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Needs a valid behavior tree.");
-	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Behavior tree has no valid root task.");
-	tree_instance = behavior_tree->instantiate(get_owner(), blackboard);
+	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Initialization failed - needs a valid behavior tree.");
+	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
+	Node *agent = GET_NODE(this, agent_node);
+	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
+	Node *scene_root = get_owner();
+	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer's owner property is set).");
+	tree_instance = behavior_tree->instantiate(agent, blackboard, scene_root);
 #ifdef DEBUG_ENABLED
 	if (IS_DEBUGGER_ACTIVE()) {
 		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
@@ -86,6 +90,13 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		if (get_owner()) {
 			_load_tree();
 		}
+	}
+}
+
+void BTPlayer::set_agent_node(const NodePath &p_agent_node) {
+	agent_node = p_agent_node;
+	if (tree_instance.is_valid()) {
+		ERR_PRINT("BTPlayer: Agent node cannot be set after the behavior tree is instantiated. This change will not affect the behavior tree instance.");
 	}
 }
 
@@ -228,6 +239,8 @@ void BTPlayer::_notification(int p_notification) {
 void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_behavior_tree", "behavior_tree"), &BTPlayer::set_behavior_tree);
 	ClassDB::bind_method(D_METHOD("get_behavior_tree"), &BTPlayer::get_behavior_tree);
+	ClassDB::bind_method(D_METHOD("set_agent_node", "agent_node"), &BTPlayer::set_agent_node);
+	ClassDB::bind_method(D_METHOD("get_agent_node"), &BTPlayer::get_agent_node);
 	ClassDB::bind_method(D_METHOD("set_update_mode", "update_mode"), &BTPlayer::set_update_mode);
 	ClassDB::bind_method(D_METHOD("get_update_mode"), &BTPlayer::get_update_mode);
 	ClassDB::bind_method(D_METHOD("set_active", "active"), &BTPlayer::set_active);
@@ -245,6 +258,7 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_tree_instance"), &BTPlayer::get_tree_instance);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
+	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "set_blackboard", "get_blackboard");
@@ -266,6 +280,7 @@ void BTPlayer::_bind_methods() {
 
 BTPlayer::BTPlayer() {
 	blackboard = Ref<Blackboard>(memnew(Blackboard));
+	agent_node = LW_NAME(node_pp);
 }
 
 BTPlayer::~BTPlayer() {

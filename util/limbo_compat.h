@@ -53,6 +53,7 @@
 #define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable, Variant()))
 #define GET_SCRIPT(m_obj) (m_obj->get_script_instance() ? m_obj->get_script_instance()->get_script() : nullptr)
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_style_override(m_name, m_stylebox))
+#define GET_NODE(m_parent, m_path) m_parent->get_node(m_path)
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
 	bool r_valid;
@@ -137,6 +138,7 @@ using namespace godot;
 #define PERFORMANCE_ADD_CUSTOM_MONITOR(m_id, m_callable) (Performance::get_singleton()->add_custom_monitor(m_id, m_callable))
 #define GET_SCRIPT(m_obj) (m_obj->get_script())
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_stylebox_override(m_name, m_stylebox))
+#define GET_NODE(m_parent, m_path) m_parent->get_node_internal(m_path)
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
 	return Variant(p_obj).has_key(p_prop);

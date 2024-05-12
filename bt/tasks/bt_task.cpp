@@ -159,13 +159,15 @@ void BTTask::set_custom_name(const String &p_name) {
 	}
 };
 
-void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
-	ERR_FAIL_COND(p_agent == nullptr);
-	ERR_FAIL_COND(p_blackboard == nullptr);
+void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) {
+	ERR_FAIL_NULL(p_agent);
+	ERR_FAIL_NULL(p_blackboard);
+	ERR_FAIL_NULL(p_scene_root);
 	data.agent = p_agent;
 	data.blackboard = p_blackboard;
+	data.scene_root = p_scene_root;
 	for (int i = 0; i < data.children.size(); i++) {
-		get_child(i)->initialize(p_agent, p_blackboard);
+		get_child(i)->initialize(p_agent, p_blackboard, p_scene_root);
 	}
 
 	VCALL_OR_NATIVE(_setup);
@@ -378,7 +380,7 @@ void BTTask::_bind_methods() {
 	// Public Methods.
 	ClassDB::bind_method(D_METHOD("is_root"), &BTTask::is_root);
 	ClassDB::bind_method(D_METHOD("get_root"), &BTTask::get_root);
-	ClassDB::bind_method(D_METHOD("initialize", "agent", "blackboard"), &BTTask::initialize);
+	ClassDB::bind_method(D_METHOD("initialize", "agent", "blackboard", "scene_root"), &BTTask::initialize);
 	ClassDB::bind_method(D_METHOD("clone"), &BTTask::clone);
 	ClassDB::bind_method(D_METHOD("execute", "delta"), &BTTask::execute);
 	ClassDB::bind_method(D_METHOD("get_child", "idx"), &BTTask::get_child);
@@ -399,6 +401,7 @@ void BTTask::_bind_methods() {
 	// Properties, setters and getters.
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
 	ClassDB::bind_method(D_METHOD("set_agent", "agent"), &BTTask::set_agent);
+	ClassDB::bind_method(D_METHOD("get_scene_root"), &BTTask::get_scene_root);
 	ClassDB::bind_method(D_METHOD("_get_children"), &BTTask::_get_children);
 	ClassDB::bind_method(D_METHOD("_set_children", "children"), &BTTask::_set_children);
 	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTTask::get_blackboard);
@@ -410,6 +413,7 @@ void BTTask::_bind_methods() {
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING, "custom_name"), "set_custom_name", "get_custom_name");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", PROPERTY_USAGE_NONE), "set_agent", "get_agent");
+	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "scene_root", PROPERTY_HINT_NODE_TYPE, "Node", PROPERTY_USAGE_NONE), "", "get_scene_root");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_RESOURCE_TYPE, "Blackboard", PROPERTY_USAGE_NONE), "", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_status");

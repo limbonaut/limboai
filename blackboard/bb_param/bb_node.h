@@ -21,7 +21,7 @@ protected:
 	virtual Variant::Type get_type() const override { return Variant::NODE_PATH; }
 
 public:
-	virtual Variant get_value(Object *p_agent, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant()) override;
+	virtual Variant get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant()) override;
 };
 
 #endif // BB_NODE_H
