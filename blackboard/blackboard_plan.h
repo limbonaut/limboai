@@ -36,6 +36,11 @@ private:
 	// and only the values can be different in those variables.
 	Ref<BlackboardPlan> base;
 
+	// Mapping between variables in this plan and their parent scope names.
+	// Used for linking variables to their parent scope counterparts upon Blackboard creation/population.
+	HashMap<StringName, StringName> parent_scope_mapping;
+	bool mapping_allowed = true;
+
 	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
 	bool prefetch_nodepath_vars = true;
 
@@ -51,6 +56,10 @@ protected:
 public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
+
+	void set_mapping_allowed(bool p_mapping_allowed);
+	bool is_mapping_allowed() const { return mapping_allowed; }
+	bool has_mapping(const StringName &p_name) const;
 
 	void set_prefetch_nodepath_vars(bool p_enable);
 	bool is_prefetching_nodepath_vars() const;
@@ -72,7 +81,7 @@ public:
 	void sync_with_base_plan();
 	_FORCE_INLINE_ bool is_derived() const { return base.is_valid(); }
 
-	Ref<Blackboard> create_blackboard(Node *p_agent);
+	Ref<Blackboard> create_blackboard(Node *p_agent, const Ref<Blackboard> &p_parent_scope = Ref<Blackboard>());
 	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node);
 
 	BlackboardPlan();
