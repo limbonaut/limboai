@@ -24,8 +24,10 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 		}
 		return true;
 	}
-	if (name_str.begins_with("_mapping_")) {
-		StringName mapped_var_name = name_str.trim_prefix("_mapping_");
+
+	// * Mapping
+	if (name_str.begins_with("mapping/")) {
+		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		ERR_FAIL_COND_V(!has_var(mapped_var_name), false);
 		parent_scope_mapping[mapped_var_name] = p_value;
 		return true;
@@ -69,8 +71,11 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 		}
 		return true;
 	}
-	if (name_str.begins_with("_mapping_")) {
-		String mapped_var_name = name_str.trim_prefix("_mapping_");
+
+	// * Mapping
+	if (name_str.begins_with("mapping/")) {
+		StringName mapped_var_name = name_str.get_slicec('/', 1);
+		ERR_FAIL_COND_V(mapped_var_name == StringName(), false);
 		if (parent_scope_mapping.has(mapped_var_name)) {
 			r_ret = parent_scope_mapping[mapped_var_name];
 		} else {
@@ -83,7 +88,6 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	if (!name_str.begins_with("var/")) {
 		return false;
 	}
-
 	StringName var_name = name_str.get_slicec('/', 1);
 	String what = name_str.get_slicec('/', 2);
 	ERR_FAIL_COND_V(!var_map.has(var_name), false);
@@ -131,9 +135,9 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 
 	// * Mapping
 	if (is_mapping_allowed()) {
-		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "_mapping_", PROPERTY_USAGE_GROUP));
+		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
-			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "_mapping_" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
 		}
 	}
 }
