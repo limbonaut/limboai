@@ -28,7 +28,6 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
-		ERR_FAIL_COND_V(!has_var(mapped_var_name), false);
 		parent_scope_mapping[mapped_var_name] = p_value;
 		return true;
 	}
@@ -382,7 +381,7 @@ Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_node, const Ref<Blackb
 	ERR_FAIL_COND_V(p_node == nullptr && prefetch_nodepath_vars, memnew(Blackboard));
 	Ref<Blackboard> bb = memnew(Blackboard);
 	bb->set_parent(p_parent_scope);
-	populate_blackboard(bb, false, p_node);
+	populate_blackboard(bb, true, p_node);
 	return bb;
 }
 

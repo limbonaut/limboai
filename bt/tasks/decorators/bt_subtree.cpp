@@ -30,10 +30,6 @@ void BTSubtree::_update_blackboard_plan() {
 		set_blackboard_plan(Ref<BlackboardPlan>(memnew(BlackboardPlan)));
 	}
 	get_blackboard_plan()->set_base_plan(subtree.is_valid() ? subtree->get_blackboard_plan() : nullptr);
-
-#ifdef TOOLS_ENABLED
-	get_blackboard_plan()->set_parent_scope_plan(get_root()->editor_get_behavior_tree()->get_blackboard_plan());
-#endif // TOOLS_ENABLED
 }
 
 String BTSubtree::_generate_name() {

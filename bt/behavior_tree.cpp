@@ -48,7 +48,6 @@ void BehaviorTree::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 		blackboard_plan->connect(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed));
 	}
 
-	_set_editor_behavior_tree_hint();
 	_plan_changed();
 }
 
