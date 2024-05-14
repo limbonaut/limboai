@@ -28,7 +28,12 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
-		parent_scope_mapping[mapped_var_name] = p_value;
+		StringName value = p_value;
+		if (value == StringName()) {
+			parent_scope_mapping.erase(mapped_var_name);
+		} else {
+			parent_scope_mapping[mapped_var_name] = value;
+		}
 		return true;
 	}
 
@@ -136,16 +141,25 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	if (is_mapping_enabled()) {
 		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
-			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
+			// Serialize only non-empty mappings.
+			PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
 		}
 	}
 }
 
 bool BlackboardPlan::_property_can_revert(const StringName &p_name) const {
+	if (String(p_name).begins_with("mapping/")) {
+		return true;
+	}
 	return base.is_valid() && base->var_map.has(p_name);
 }
 
 bool BlackboardPlan::_property_get_revert(const StringName &p_name, Variant &r_property) const {
+	if (String(p_name).begins_with("mapping/")) {
+		r_property = StringName();
+		return true;
+	}
 	if (base->var_map.has(p_name)) {
 		r_property = base->var_map[p_name].get_value();
 		return true;
