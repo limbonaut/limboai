@@ -48,11 +48,14 @@ void BehaviorTree::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 		blackboard_plan->connect(LW_NAME(changed), callable_mp(this, &BehaviorTree::_plan_changed));
 	}
 
+	_set_editor_behavior_tree_hint();
 	_plan_changed();
 }
 
 void BehaviorTree::set_root_task(const Ref<BTTask> &p_value) {
+	_unset_editor_behavior_tree_hint();
 	root_task = p_value;
+	_set_editor_behavior_tree_hint();
 	emit_changed();
 }
 
@@ -83,6 +86,18 @@ Ref<BTTask> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_bl
 void BehaviorTree::_plan_changed() {
 	emit_signal(LW_NAME(plan_changed));
 	emit_changed();
+}
+
+void BehaviorTree::_set_editor_behavior_tree_hint() {
+	if (root_task.is_valid()) {
+		root_task->data.behavior_tree = Ref<BehaviorTree>(this);
+	}
+}
+
+void BehaviorTree::_unset_editor_behavior_tree_hint() {
+	if (root_task.is_valid()) {
+		root_task->data.behavior_tree.unref();
+	}
 }
 
 void BehaviorTree::_bind_methods() {

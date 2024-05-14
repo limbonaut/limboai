@@ -39,7 +39,9 @@ private:
 	// Mapping between variables in this plan and their parent scope names.
 	// Used for linking variables to their parent scope counterparts upon Blackboard creation/population.
 	HashMap<StringName, StringName> parent_scope_mapping;
-	bool mapping_allowed = true;
+	// BlackboardPlan that will be used in parent scope Blackboard creation at runtime.
+	// Used to provide hints in the inspector. When set, mapping is enabled in the inspector.
+	Ref<BlackboardPlan> parent_scope_plan;
 
 	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
 	bool prefetch_nodepath_vars = true;
@@ -57,8 +59,9 @@ public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
 
-	void set_mapping_allowed(bool p_mapping_allowed);
-	bool is_mapping_allowed() const { return mapping_allowed; }
+	void set_parent_scope_plan(const Ref<BlackboardPlan> &p_plan);
+	Ref<BlackboardPlan> get_parent_scope_plan() const { return parent_scope_plan; }
+	bool is_mapping_enabled() const { return parent_scope_plan.is_valid(); }
 	bool has_mapping(const StringName &p_name) const;
 
 	void set_prefetch_nodepath_vars(bool p_enable);

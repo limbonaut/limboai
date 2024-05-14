@@ -33,6 +33,8 @@ private:
 	Ref<BTTask> root_task;
 
 	void _plan_changed();
+	void _set_editor_behavior_tree_hint();
+	void _unset_editor_behavior_tree_hint();
 
 protected:
 	static void _bind_methods();

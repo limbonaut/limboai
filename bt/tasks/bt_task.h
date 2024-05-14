@@ -42,6 +42,8 @@
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
+class BehaviorTree;
+
 /**
  * Base class for BTTask.
  * Note: In order to properly return Status in the _tick virtual method (GDVIRTUAL1R...)
@@ -82,6 +84,9 @@ private:
 		Status status = FRESH;
 		double elapsed = 0.0;
 		bool display_collapsed = false;
+#ifdef TOOLS_ENABLED
+		Ref<BehaviorTree> behavior_tree;
+#endif
 	} data;
 
 	Array _get_children() const;
@@ -161,6 +166,11 @@ public:
 	Ref<BTTask> next_sibling() const;
 
 	void print_tree(int p_initial_tabs = 0);
+
+#ifdef TOOLS_ENABLED
+	Ref<BehaviorTree> editor_get_behavior_tree();
+	void editor_set_behavior_tree(const Ref<BehaviorTree> &p_bt);
+#endif
 
 	BTTask();
 	~BTTask();

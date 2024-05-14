@@ -134,7 +134,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 
 	// * Mapping
-	if (is_mapping_allowed()) {
+	if (is_mapping_enabled()) {
 		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
 			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT));
@@ -165,13 +165,13 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	notify_property_list_changed();
 }
 
-void BlackboardPlan::set_mapping_allowed(bool p_mapping_allowed) {
-	mapping_allowed = p_mapping_allowed;
-	emit_changed();
+void BlackboardPlan::set_parent_scope_plan(const Ref<BlackboardPlan> &p_plan) {
+	parent_scope_plan = p_plan;
+	notify_property_list_changed();
 }
 
 bool BlackboardPlan::has_mapping(const StringName &p_name) const {
-	return is_mapping_allowed() && parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
+	return is_mapping_enabled() && parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
 }
 
 void BlackboardPlan::set_prefetch_nodepath_vars(bool p_enable) {
@@ -409,6 +409,9 @@ void BlackboardPlan::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_base_plan", "blackboard_plan"), &BlackboardPlan::set_base_plan);
 	ClassDB::bind_method(D_METHOD("get_base_plan"), &BlackboardPlan::get_base_plan);
+	ClassDB::bind_method(D_METHOD("set_parent_scope_plan", "blackboard_plan"), &BlackboardPlan::set_parent_scope_plan);
+	ClassDB::bind_method(D_METHOD("get_parent_scope_plan"), &BlackboardPlan::get_parent_scope_plan);
+	ClassDB::bind_method(D_METHOD("is_mapping_enabled"), &BlackboardPlan::is_mapping_enabled);
 	ClassDB::bind_method(D_METHOD("is_derived"), &BlackboardPlan::is_derived);
 	ClassDB::bind_method(D_METHOD("sync_with_base_plan"), &BlackboardPlan::sync_with_base_plan);
 	ClassDB::bind_method(D_METHOD("create_blackboard", "node"), &BlackboardPlan::create_blackboard);
