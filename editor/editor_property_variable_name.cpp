@@ -71,9 +71,21 @@ void EditorPropertyVariableName::_update_status() {
 	if (plan.is_null()) {
 		return;
 	}
-	if (plan->has_var(name_edit->get_text())) {
-		BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
-		status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
+	String var_name = name_edit->get_text();
+	if (var_name.is_empty() && allow_empty) {
+		BUTTON_SET_ICON(status_btn, theme_cache.var_empty_icon);
+		status_btn->set_tooltip_text(TTR("Variable name not specified.\nClick to open the blackboard plan."));
+	} else if (plan->has_var(var_name)) {
+		if (type_hint == Variant::NIL || plan->get_var(var_name).get_type() == type_hint) {
+			BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
+			status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
+		} else {
+			BUTTON_SET_ICON(status_btn, theme_cache.var_error_icon);
+			status_btn->set_tooltip_text(TTR(vformat(
+					"The %s variable in the blackboard plan is not of the same type as this variable (expected %s).\nClick to open the blackboard plan and fix the variable type.",
+					LimboUtility::get_singleton()->decorate_var(var_name),
+					Variant::get_type_name(type_hint))));
+		}
 	} else if (name_edit->get_text().begins_with("_")) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_private_icon);
 		status_btn->set_tooltip_text(TTR("This variable is private and is not included in the blackboard plan.\nClick to open the blackboard plan."));
@@ -119,8 +131,10 @@ void EditorPropertyVariableName::_update_property() {
 	_update_status();
 }
 
-void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan) {
+void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type_hint) {
 	plan = p_plan;
+	allow_empty = p_allow_empty;
+	type_hint = p_type_hint;
 	_update_status();
 }
 
@@ -148,6 +162,8 @@ void EditorPropertyVariableName::_notification(int p_what) {
 			theme_cache.var_exists_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarExists));
 			theme_cache.var_not_found_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarNotFound));
 			theme_cache.var_private_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarPrivate));
+			theme_cache.var_empty_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarEmpty));
+			theme_cache.var_error_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarError));
 		} break;
 	}
 }
@@ -192,6 +208,10 @@ bool EditorInspectorPluginVariableName::_can_handle(Object *p_object) const {
 	if (param.is_valid()) {
 		return true;
 	}
+	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
+	if (plan.is_valid()) {
+		return true;
+	}
 	return false;
 }
 
@@ -200,13 +220,30 @@ bool EditorInspectorPluginVariableName::parse_property(Object *p_object, const V
 #elif LIMBOAI_GDEXTENSION
 bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide) {
 #endif
-	if (!(p_type == Variant::Type::STRING_NAME || p_type == Variant::Type::STRING) || !(p_path.ends_with("_var") || p_path.ends_with("variable"))) {
+	bool is_mapping = p_path.begins_with("mapping/");
+	if (!(p_type == Variant::Type::STRING_NAME || p_type == Variant::Type::STRING) || !(is_mapping || p_path.ends_with("_var") || p_path.ends_with("variable"))) {
 		return false;
 	}
 
+	Ref<BlackboardPlan> plan;
+	Variant::Type type_hint = Variant::NIL;
+	if (is_mapping) {
+		plan.reference_ptr(Object::cast_to<BlackboardPlan>(p_object));
+		ERR_FAIL_NULL_V(plan, false);
+		String var_name = p_path.trim_prefix("mapping/");
+		if (plan->has_var(var_name)) {
+			BBVariable variable = plan->get_var(var_name);
+			type_hint = variable.get_type();
+		}
+		plan = plan->get_parent_scope_plan();
+		ERR_FAIL_NULL_V(plan, false);
+	} else {
+		plan = plan_getter.call();
+	}
+
 	EditorPropertyVariableName *ed = memnew(EditorPropertyVariableName);
-	ed->setup(plan_getter.call());
-	add_property_editor(p_path, ed);
+	ed->setup(plan, is_mapping, type_hint);
+	add_property_editor(p_path, ed, type_hint);
 
 	return true;
 }

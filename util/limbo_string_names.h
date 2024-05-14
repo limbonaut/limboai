@@ -122,6 +122,8 @@ public:
 	StringName LimboPercent;
 	StringName LimboSelectAll;
 	StringName LimboVarAdd;
+	StringName LimboVarEmpty;
+	StringName LimboVarError;
 	StringName LimboVarExists;
 	StringName LimboVarNotFound;
 	StringName LimboVarPrivate;

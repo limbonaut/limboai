@@ -33,14 +33,19 @@ class EditorPropertyVariableName : public EditorProperty {
 
 private:
 	struct ThemeCache {
+		Ref<Texture2D> var_add_icon;
+		Ref<Texture2D> var_empty_icon;
+		Ref<Texture2D> var_error_icon;
 		Ref<Texture2D> var_exists_icon;
 		Ref<Texture2D> var_not_found_icon;
-		Ref<Texture2D> var_add_icon;
 		Ref<Texture2D> var_private_icon;
 	};
 	ThemeCache theme_cache;
 
 	Ref<BlackboardPlan> plan;
+
+	bool allow_empty = false;
+	Variant::Type type_hint = Variant::NIL;
 
 	LineEdit *name_edit;
 	Button *drop_btn;
@@ -68,7 +73,7 @@ public:
 	virtual void _update_property() override;
 #endif
 
-	void setup(const Ref<BlackboardPlan> &p_plan);
+	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty = false, Variant::Type p_type_hint = Variant::NIL);
 	EditorPropertyVariableName();
 };
 
