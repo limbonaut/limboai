@@ -45,7 +45,9 @@ private:
 	Ref<BlackboardPlan> plan;
 
 	bool allow_empty = false;
-	Variant::Type type_hint = Variant::NIL;
+	Variant::Type expected_type = Variant::NIL;
+	PropertyHint expected_hint = PROPERTY_HINT_NONE;
+	String expected_hint_string;
 
 	LineEdit *name_edit;
 	Button *drop_btn;
@@ -73,7 +75,7 @@ public:
 	virtual void _update_property() override;
 #endif
 
-	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty = false, Variant::Type p_type_hint = Variant::NIL);
+	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type = Variant::FLOAT, PropertyHint p_hint = PROPERTY_HINT_NONE, String p_hint_string = "");
 	EditorPropertyVariableName();
 };
 

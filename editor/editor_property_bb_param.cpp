@@ -300,7 +300,7 @@ void EditorPropertyBBParam::update_property() {
 void EditorPropertyBBParam::setup(PropertyHint p_hint, const String &p_hint_text, const Ref<BlackboardPlan> &p_plan) {
 	param_type = p_hint_text;
 	property_hint = p_hint;
-	variable_editor->setup(p_plan);
+	variable_editor->setup(p_plan, false);
 	variable_editor->set_name_split_ratio(0.0);
 }
 

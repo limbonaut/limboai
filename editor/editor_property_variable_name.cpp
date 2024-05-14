@@ -76,7 +76,7 @@ void EditorPropertyVariableName::_update_status() {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_empty_icon);
 		status_btn->set_tooltip_text(TTR("Variable name not specified.\nClick to open the blackboard plan."));
 	} else if (plan->has_var(var_name)) {
-		if (type_hint == Variant::NIL || plan->get_var(var_name).get_type() == type_hint) {
+		if (expected_type == Variant::NIL || plan->get_var(var_name).get_type() == expected_type) {
 			BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
 			status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
 		} else {
@@ -84,7 +84,7 @@ void EditorPropertyVariableName::_update_status() {
 			status_btn->set_tooltip_text(TTR(vformat(
 					"The %s variable in the blackboard plan is not of the same type as this variable (expected %s).\nClick to open the blackboard plan and fix the variable type.",
 					LimboUtility::get_singleton()->decorate_var(var_name),
-					Variant::get_type_name(type_hint))));
+					Variant::get_type_name(expected_type))));
 		}
 	} else if (name_edit->get_text().begins_with("_")) {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_private_icon);
@@ -98,7 +98,7 @@ void EditorPropertyVariableName::_update_status() {
 void EditorPropertyVariableName::_status_pressed() {
 	ERR_FAIL_NULL(plan);
 	if (!plan->has_var(name_edit->get_text())) {
-		BlackboardPlanEditor::get_singleton()->set_next_var_name(name_edit->get_text());
+		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(), expected_type, expected_hint, expected_hint_string);
 	}
 	BlackboardPlanEditor::get_singleton()->edit_plan(plan);
 	BlackboardPlanEditor::get_singleton()->popup_centered();
@@ -131,10 +131,12 @@ void EditorPropertyVariableName::_update_property() {
 	_update_status();
 }
 
-void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type_hint) {
+void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type, PropertyHint p_hint, String p_hint_string) {
 	plan = p_plan;
 	allow_empty = p_allow_empty;
-	type_hint = p_type_hint;
+	expected_type = p_type;
+	expected_hint = p_hint;
+	expected_hint_string = p_hint_string;
 	_update_status();
 }
 
@@ -226,14 +228,18 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 	}
 
 	Ref<BlackboardPlan> plan;
-	Variant::Type type_hint = Variant::NIL;
+	Variant::Type expected_type = Variant::NIL;
+	PropertyHint expected_hint = PROPERTY_HINT_NONE;
+	String expected_hint_string;
 	if (is_mapping) {
 		plan.reference_ptr(Object::cast_to<BlackboardPlan>(p_object));
 		ERR_FAIL_NULL_V(plan, false);
 		String var_name = p_path.trim_prefix("mapping/");
 		if (plan->has_var(var_name)) {
 			BBVariable variable = plan->get_var(var_name);
-			type_hint = variable.get_type();
+			expected_type = variable.get_type();
+			expected_hint = variable.get_hint();
+			expected_hint_string = variable.get_hint_string();
 		}
 		plan = plan->get_parent_scope_plan();
 		ERR_FAIL_NULL_V(plan, false);
@@ -242,8 +248,8 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 	}
 
 	EditorPropertyVariableName *ed = memnew(EditorPropertyVariableName);
-	ed->setup(plan, is_mapping, type_hint);
-	add_property_editor(p_path, ed, type_hint);
+	ed->setup(plan, is_mapping, expected_type, expected_hint, expected_hint_string);
+	add_property_editor(p_path, ed, expected_type);
 
 	return true;
 }
