@@ -85,7 +85,7 @@ private:
 		double elapsed = 0.0;
 		bool display_collapsed = false;
 #ifdef TOOLS_ENABLED
-		Ref<BehaviorTree> behavior_tree;
+		ObjectID behavior_tree_id;
 #endif
 	} data;
 
