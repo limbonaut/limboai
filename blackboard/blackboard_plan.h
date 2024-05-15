@@ -62,7 +62,7 @@ public:
 	void set_parent_scope_plan_provider(const Callable &p_parent_scope_plan_provider);
 	Callable get_parent_scope_plan_provider() const { return parent_scope_plan_provider; }
 
-	bool is_mapping_enabled() const { return parent_scope_plan_provider.is_valid(); }
+	bool is_mapping_enabled() const { return parent_scope_plan_provider.is_valid() && (parent_scope_plan_provider.call() != Ref<BlackboardPlan>()); }
 	bool has_mapping(const StringName &p_name) const;
 
 	void set_prefetch_nodepath_vars(bool p_enable);
