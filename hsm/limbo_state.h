@@ -38,6 +38,8 @@ private:
 	HashMap<StringName, Callable> handlers;
 	Callable guard_callable;
 
+	Ref<BlackboardPlan> _get_parent_scope_plan() const;
+
 protected:
 	friend LimboHSM;
 

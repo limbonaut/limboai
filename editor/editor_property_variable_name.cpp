@@ -241,7 +241,12 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 			expected_hint = variable.get_hint();
 			expected_hint_string = variable.get_hint_string();
 		}
-		plan = plan->get_parent_scope_plan();
+		if (plan->get_parent_scope_plan_provider().is_valid()) {
+			Ref<BlackboardPlan> parent_plan = plan->get_parent_scope_plan_provider().call();
+			if (parent_plan.is_valid()) {
+				plan = parent_plan;
+			}
+		}
 		ERR_FAIL_NULL_V(plan, false);
 	} else {
 		plan = plan_getter.call();

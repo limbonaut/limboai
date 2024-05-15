@@ -178,8 +178,8 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	notify_property_list_changed();
 }
 
-void BlackboardPlan::set_parent_scope_plan(const Ref<BlackboardPlan> &p_plan) {
-	parent_scope_plan = p_plan;
+void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_parent_scope_plan_provider) {
+	parent_scope_plan_provider = p_parent_scope_plan_provider;
 	notify_property_list_changed();
 }
 
@@ -422,8 +422,8 @@ void BlackboardPlan::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_base_plan", "blackboard_plan"), &BlackboardPlan::set_base_plan);
 	ClassDB::bind_method(D_METHOD("get_base_plan"), &BlackboardPlan::get_base_plan);
-	ClassDB::bind_method(D_METHOD("set_parent_scope_plan", "blackboard_plan"), &BlackboardPlan::set_parent_scope_plan);
-	ClassDB::bind_method(D_METHOD("get_parent_scope_plan"), &BlackboardPlan::get_parent_scope_plan);
+	ClassDB::bind_method(D_METHOD("set_parent_scope_plan_provider", "callable"), &BlackboardPlan::set_parent_scope_plan_provider);
+	ClassDB::bind_method(D_METHOD("get_parent_scope_plan_provider"), &BlackboardPlan::get_parent_scope_plan_provider);
 	ClassDB::bind_method(D_METHOD("is_mapping_enabled"), &BlackboardPlan::is_mapping_enabled);
 	ClassDB::bind_method(D_METHOD("is_derived"), &BlackboardPlan::is_derived);
 	ClassDB::bind_method(D_METHOD("sync_with_base_plan"), &BlackboardPlan::sync_with_base_plan);
