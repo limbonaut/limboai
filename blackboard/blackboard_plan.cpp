@@ -11,6 +11,8 @@
 
 #include "blackboard_plan.h"
 
+#include "../util/limbo_utility.h"
+
 bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	String name_str = p_name;
 
@@ -34,6 +36,7 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 		} else {
 			parent_scope_mapping[mapped_var_name] = value;
 		}
+		notify_property_list_changed();
 		return true;
 	}
 
@@ -69,7 +72,7 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	// * Editor
 	if (var_map.has(p_name)) {
 		if (has_mapping(p_name)) {
-			r_ret = "Mapped to $" + parent_scope_mapping[p_name];
+			r_ret = "Mapped to " + LimboUtility::get_singleton()->decorate_var(parent_scope_mapping[p_name]);
 		} else {
 			r_ret = var_map[p_name].get_value();
 		}

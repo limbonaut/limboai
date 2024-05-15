@@ -54,15 +54,22 @@ void EditorPropertyVariableName::_show_variables_popup() {
 	variables_popup->popup(rect);
 }
 
-void EditorPropertyVariableName::_name_changed(const String &p_new_name) {
-	emit_changed(get_edited_property(), p_new_name);
+void EditorPropertyVariableName::_name_changed(const String &p_new_name, bool p_changing) {
+	emit_changed(get_edited_property(), p_new_name, StringName(), p_changing);
 	_update_status();
+}
+
+void EditorPropertyVariableName::_name_submitted() {
+	_name_changed(name_edit->get_text(), false);
+	if (name_edit->has_focus()) {
+		name_edit->release_focus();
+	}
 }
 
 void EditorPropertyVariableName::_variable_selected(int p_id) {
 	String var_name = plan->get_var_by_index(p_id).first;
 	name_edit->set_text(var_name);
-	_name_changed(var_name);
+	_name_submitted();
 }
 
 void EditorPropertyVariableName::_update_status() {
@@ -143,7 +150,9 @@ void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p
 void EditorPropertyVariableName::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			name_edit->connect(LW_NAME(text_changed), callable_mp(this, &EditorPropertyVariableName::_name_changed));
+			name_edit->connect(LW_NAME(text_changed), callable_mp(this, &EditorPropertyVariableName::_name_changed).bind(true));
+			name_edit->connect(LW_NAME(text_submitted), callable_mp(this, &EditorPropertyVariableName::_name_submitted).unbind(1));
+			name_edit->connect(LW_NAME(focus_exited), callable_mp(this, &EditorPropertyVariableName::_name_submitted));
 			variables_popup->connect(LW_NAME(id_pressed), callable_mp(this, &EditorPropertyVariableName::_variable_selected));
 			drop_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorPropertyVariableName::_show_variables_popup));
 			status_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorPropertyVariableName::_status_pressed));

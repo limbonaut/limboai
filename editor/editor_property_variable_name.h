@@ -55,7 +55,8 @@ private:
 	PopupMenu *variables_popup;
 
 	void _show_variables_popup();
-	void _name_changed(const String &p_new_name);
+	void _name_changed(const String &p_new_name, bool p_changing);
+	void _name_submitted();
 	void _variable_selected(int p_id);
 	void _update_status();
 

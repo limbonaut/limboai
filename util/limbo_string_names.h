@@ -101,6 +101,7 @@ public:
 	StringName exited;
 	StringName favorite_tasks_changed;
 	StringName Favorites;
+	StringName focus_exited;
 	StringName font_color;
 	StringName font_size;
 	StringName font;
