@@ -429,7 +429,7 @@ void BlackboardPlan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("sync_with_base_plan"), &BlackboardPlan::sync_with_base_plan);
 	ClassDB::bind_method(D_METHOD("set_parent_scope_plan_provider", "callable"), &BlackboardPlan::set_parent_scope_plan_provider);
 	ClassDB::bind_method(D_METHOD("get_parent_scope_plan_provider"), &BlackboardPlan::get_parent_scope_plan_provider);
-	ClassDB::bind_method(D_METHOD("create_blackboard", "node"), &BlackboardPlan::create_blackboard);
+	ClassDB::bind_method(D_METHOD("create_blackboard", "node", "parent_scope"), &BlackboardPlan::create_blackboard);
 	ClassDB::bind_method(D_METHOD("populate_blackboard", "blackboard", "overwrite", "node"), &BlackboardPlan::populate_blackboard);
 
 	// To avoid cluttering the member namespace, we do not export unnecessary properties in this class.
