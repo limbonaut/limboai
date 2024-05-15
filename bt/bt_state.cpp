@@ -32,10 +32,10 @@ void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 			p_tree->connect(LW_NAME(plan_changed), callable_mp(this, &BTState::_update_blackboard_plan));
 		}
 		behavior_tree = p_tree;
-		_update_blackboard_plan();
 	} else {
 		behavior_tree = p_tree;
 	}
+	_update_blackboard_plan();
 }
 
 void BTState::_update_blackboard_plan() {
