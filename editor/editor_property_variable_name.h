@@ -46,8 +46,9 @@ private:
 
 	bool allow_empty = false;
 	Variant::Type expected_type = Variant::NIL;
-	PropertyHint expected_hint = PROPERTY_HINT_NONE;
-	String expected_hint_string;
+	PropertyHint default_hint = PROPERTY_HINT_NONE;
+	String default_hint_string;
+	Variant default_value;
 
 	LineEdit *name_edit;
 	Button *drop_btn;
@@ -76,7 +77,7 @@ public:
 	virtual void _update_property() override;
 #endif
 
-	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type = Variant::FLOAT, PropertyHint p_hint = PROPERTY_HINT_NONE, String p_hint_string = "");
+	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type = Variant::FLOAT, PropertyHint p_hint = PROPERTY_HINT_NONE, String p_hint_string = "", Variant p_default_value = Variant());
 	EditorPropertyVariableName();
 };
 
@@ -84,7 +85,7 @@ class EditorInspectorPluginVariableName : public EditorInspectorPlugin {
 	GDCLASS(EditorInspectorPluginVariableName, EditorInspectorPlugin);
 
 private:
-	Callable plan_getter;
+	Callable editor_plan_provider;
 
 protected:
 	static void _bind_methods() {}
@@ -98,7 +99,7 @@ public:
 	virtual bool _parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide = false) override;
 #endif
 
-	void set_plan_getter(const Callable &p_getter) { plan_getter = p_getter; }
+	void set_editor_plan_provider(const Callable &p_getter) { editor_plan_provider = p_getter; }
 
 	EditorInspectorPluginVariableName() = default;
 };

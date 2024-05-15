@@ -55,6 +55,9 @@ void BlackboardPlanEditor::_add_var() {
 	}
 
 	BBVariable var(default_type, default_hint, default_hint_string);
+	if (default_value.get_type() == default_type) {
+		var.set_value(default_value);
+	}
 	plan->add_var(var_name, var);
 	reset_defaults();
 	_refresh();
@@ -128,11 +131,12 @@ void BlackboardPlanEditor::edit_plan(const Ref<BlackboardPlan> &p_plan) {
 	_refresh();
 }
 
-void BlackboardPlanEditor::set_defaults(const StringName &p_var_name, Variant::Type p_type, PropertyHint p_hint, String p_hint_string) {
+void BlackboardPlanEditor::set_defaults(const StringName &p_var_name, Variant::Type p_type, PropertyHint p_hint, String p_hint_string, Variant p_value) {
 	default_var_name = p_var_name;
 	default_type = p_type;
 	default_hint = p_hint;
 	default_hint_string = p_hint_string;
+	default_value = p_value;
 }
 
 void BlackboardPlanEditor::reset_defaults() {

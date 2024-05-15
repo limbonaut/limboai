@@ -105,7 +105,8 @@ void EditorPropertyVariableName::_update_status() {
 void EditorPropertyVariableName::_status_pressed() {
 	ERR_FAIL_NULL(plan);
 	if (!plan->has_var(name_edit->get_text())) {
-		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(), expected_type, expected_hint, expected_hint_string);
+		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(),
+				expected_type, default_hint, default_hint_string, default_value);
 	}
 	BlackboardPlanEditor::get_singleton()->edit_plan(plan);
 	BlackboardPlanEditor::get_singleton()->popup_centered();
@@ -138,12 +139,13 @@ void EditorPropertyVariableName::_update_property() {
 	_update_status();
 }
 
-void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type, PropertyHint p_hint, String p_hint_string) {
+void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type, PropertyHint p_hint, String p_hint_string, Variant p_default_value) {
 	plan = p_plan;
 	allow_empty = p_allow_empty;
 	expected_type = p_type;
-	expected_hint = p_hint;
-	expected_hint_string = p_hint_string;
+	default_hint = p_hint;
+	default_hint_string = p_hint_string;
+	default_value = p_default_value;
 	_update_status();
 }
 
@@ -238,8 +240,9 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 
 	Ref<BlackboardPlan> plan;
 	Variant::Type expected_type = Variant::NIL;
-	PropertyHint expected_hint = PROPERTY_HINT_NONE;
-	String expected_hint_string;
+	PropertyHint default_hint = PROPERTY_HINT_NONE;
+	String default_hint_string;
+	Variant default_value;
 	if (is_mapping) {
 		plan.reference_ptr(Object::cast_to<BlackboardPlan>(p_object));
 		ERR_FAIL_NULL_V(plan, false);
@@ -247,8 +250,9 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 		if (plan->has_var(var_name)) {
 			BBVariable variable = plan->get_var(var_name);
 			expected_type = variable.get_type();
-			expected_hint = variable.get_hint();
-			expected_hint_string = variable.get_hint_string();
+			default_hint = variable.get_hint();
+			default_hint_string = variable.get_hint_string();
+			default_value = variable.get_value();
 		}
 		if (plan->get_parent_scope_plan_provider().is_valid()) {
 			Ref<BlackboardPlan> parent_plan = plan->get_parent_scope_plan_provider().call();
@@ -258,11 +262,11 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 		}
 		ERR_FAIL_NULL_V(plan, false);
 	} else {
-		plan = plan_getter.call();
+		plan = editor_plan_provider.call();
 	}
 
 	EditorPropertyVariableName *ed = memnew(EditorPropertyVariableName);
-	ed->setup(plan, is_mapping, expected_type, expected_hint, expected_hint_string);
+	ed->setup(plan, is_mapping, expected_type, default_hint, default_hint_string, default_value);
 	add_property_editor(p_path, ed, expected_type);
 
 	return true;
