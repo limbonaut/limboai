@@ -273,6 +273,11 @@ void BlackboardPlan::rename_var(const StringName &p_name, const StringName &p_ne
 	var_map.erase(p_name);
 	var_map.insert(p_new_name, var);
 
+	if (parent_scope_mapping.has(p_name)) {
+		parent_scope_mapping[p_new_name] = parent_scope_mapping[p_name];
+		parent_scope_mapping.erase(p_name);
+	}
+
 	notify_property_list_changed();
 	emit_changed();
 }
