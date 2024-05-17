@@ -11,7 +11,7 @@
 		<method name="create_blackboard">
 			<return type="Blackboard" />
 			<param index="0" name="node" type="Node" />
-			<param index="1" name="parent_scope" type="Blackboard" />
+			<param index="1" name="parent_scope" type="Blackboard" default="null" />
 			<description>
 				Constructs a new instance of a [Blackboard] using this plan. If [NodePath] prefetching is enabled, [param node] will be used to retrieve node instances for [NodePath] variables and substitute their values.
 			</description>

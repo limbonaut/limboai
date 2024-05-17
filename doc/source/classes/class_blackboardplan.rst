@@ -35,7 +35,7 @@ Methods
    :widths: auto
 
    +---------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`Blackboard<class_Blackboard>`         | :ref:`create_blackboard<class_BlackboardPlan_method_create_blackboard>` **(** Node node, :ref:`Blackboard<class_Blackboard>` parent_scope **)**                   |
+   | :ref:`Blackboard<class_Blackboard>`         | :ref:`create_blackboard<class_BlackboardPlan_method_create_blackboard>` **(** Node node, :ref:`Blackboard<class_Blackboard>` parent_scope=null **)**              |
    +---------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`BlackboardPlan<class_BlackboardPlan>` | :ref:`get_base_plan<class_BlackboardPlan_method_get_base_plan>` **(** **)** |const|                                                                               |
    +---------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -87,7 +87,7 @@ Method Descriptions
 
 .. rst-class:: classref-method
 
-:ref:`Blackboard<class_Blackboard>` **create_blackboard** **(** Node node, :ref:`Blackboard<class_Blackboard>` parent_scope **)**
+:ref:`Blackboard<class_Blackboard>` **create_blackboard** **(** Node node, :ref:`Blackboard<class_Blackboard>` parent_scope=null **)**
 
 Constructs a new instance of a :ref:`Blackboard<class_Blackboard>` using this plan. If ``NodePath`` prefetching is enabled, ``node`` will be used to retrieve node instances for ``NodePath`` variables and substitute their values.
 
