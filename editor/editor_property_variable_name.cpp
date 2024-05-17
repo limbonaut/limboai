@@ -106,7 +106,8 @@ void EditorPropertyVariableName::_status_pressed() {
 	ERR_FAIL_NULL(plan);
 	if (!plan->has_var(name_edit->get_text())) {
 		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(),
-				expected_type, default_hint, default_hint_string, default_value);
+				expected_type == Variant::NIL ? Variant::FLOAT : expected_type,
+				default_hint, default_hint_string, default_value);
 	}
 	BlackboardPlanEditor::get_singleton()->edit_plan(plan);
 	BlackboardPlanEditor::get_singleton()->popup_centered();

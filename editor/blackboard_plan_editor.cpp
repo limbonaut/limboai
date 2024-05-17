@@ -48,7 +48,7 @@ void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
 
 	int suffix = 1;
-	StringName var_name = default_var_name;
+	StringName var_name = default_var_name == StringName() ? "var" : default_var_name;
 	while (plan->has_var(var_name)) {
 		suffix += 1;
 		var_name = String(default_var_name) + itos(suffix);
