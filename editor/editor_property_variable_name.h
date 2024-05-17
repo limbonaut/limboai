@@ -77,7 +77,7 @@ public:
 	virtual void _update_property() override;
 #endif
 
-	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type = Variant::FLOAT, PropertyHint p_hint = PROPERTY_HINT_NONE, String p_hint_string = "", Variant p_default_value = Variant());
+	void setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type = Variant::NIL, PropertyHint p_hint = PROPERTY_HINT_NONE, String p_hint_string = "", Variant p_default_value = Variant());
 	EditorPropertyVariableName();
 };
 
