@@ -31,6 +31,8 @@
 #include <godot_cpp/classes/h_box_container.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
+int EditorPropertyVariableName::last_caret_column = 0;
+
 //***** EditorPropertyVariableName
 
 void EditorPropertyVariableName::_show_variables_popup() {
@@ -54,13 +56,18 @@ void EditorPropertyVariableName::_show_variables_popup() {
 	variables_popup->popup(rect);
 }
 
-void EditorPropertyVariableName::_name_changed(const String &p_new_name, bool p_changing) {
-	emit_changed(get_edited_property(), p_new_name, StringName(), p_changing);
+void EditorPropertyVariableName::_name_changed(const String &p_new_name) {
+	if (updating) {
+		return;
+	}
+
+	emit_changed(get_edited_property(), p_new_name);
+	last_caret_column = name_edit->get_caret_column();
 	_update_status();
 }
 
 void EditorPropertyVariableName::_name_submitted() {
-	_name_changed(name_edit->get_text(), false);
+	_name_changed(name_edit->get_text());
 	if (name_edit->has_focus()) {
 		name_edit->release_focus();
 	}
@@ -131,13 +138,18 @@ void EditorPropertyVariableName::update_property() {
 void EditorPropertyVariableName::_update_property() {
 #endif // LIMBOAI_GDEXTENSION
 	String s = get_edited_object()->get(get_edited_property());
+	updating = true;
 	if (name_edit->get_text() != s) {
 		int caret = name_edit->get_caret_column();
+		if (caret == 0) {
+			caret = last_caret_column;
+		}
 		name_edit->set_text(s);
 		name_edit->set_caret_column(caret);
 	}
 	name_edit->set_editable(!is_read_only());
 	_update_status();
+	updating = false;
 }
 
 void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p_allow_empty, Variant::Type p_type, PropertyHint p_hint, String p_hint_string, Variant p_default_value) {
@@ -153,7 +165,7 @@ void EditorPropertyVariableName::setup(const Ref<BlackboardPlan> &p_plan, bool p
 void EditorPropertyVariableName::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
-			name_edit->connect(LW_NAME(text_changed), callable_mp(this, &EditorPropertyVariableName::_name_changed).bind(true));
+			name_edit->connect(LW_NAME(text_changed), callable_mp(this, &EditorPropertyVariableName::_name_changed));
 			name_edit->connect(LW_NAME(text_submitted), callable_mp(this, &EditorPropertyVariableName::_name_submitted).unbind(1));
 			name_edit->connect(LW_NAME(focus_exited), callable_mp(this, &EditorPropertyVariableName::_name_submitted));
 			variables_popup->connect(LW_NAME(id_pressed), callable_mp(this, &EditorPropertyVariableName::_variable_selected));

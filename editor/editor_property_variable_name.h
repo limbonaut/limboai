@@ -32,6 +32,9 @@ class EditorPropertyVariableName : public EditorProperty {
 	GDCLASS(EditorPropertyVariableName, EditorProperty);
 
 private:
+	static int last_caret_column;
+
+private:
 	struct ThemeCache {
 		Ref<Texture2D> var_add_icon;
 		Ref<Texture2D> var_empty_icon;
@@ -50,13 +53,15 @@ private:
 	String default_hint_string;
 	Variant default_value;
 
+	bool updating = false;
+
 	LineEdit *name_edit;
 	Button *drop_btn;
 	Button *status_btn;
 	PopupMenu *variables_popup;
 
 	void _show_variables_popup();
-	void _name_changed(const String &p_new_name, bool p_changing);
+	void _name_changed(const String &p_new_name);
 	void _name_submitted();
 	void _variable_selected(int p_id);
 	void _update_status();

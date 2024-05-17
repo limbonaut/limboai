@@ -31,12 +31,21 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		StringName value = p_value;
+		bool properties_changed = false;
 		if (value == StringName()) {
-			parent_scope_mapping.erase(mapped_var_name);
+			if (parent_scope_mapping.has(mapped_var_name)) {
+				properties_changed = true;
+				parent_scope_mapping.erase(mapped_var_name);
+			}
 		} else {
+			if (!parent_scope_mapping.has(mapped_var_name)) {
+				properties_changed = true;
+			}
 			parent_scope_mapping[mapped_var_name] = value;
 		}
-		notify_property_list_changed();
+		if (properties_changed) {
+			notify_property_list_changed();
+		}
 		return true;
 	}
 
