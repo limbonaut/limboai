@@ -36,6 +36,13 @@ private:
 	// and only the values can be different in those variables.
 	Ref<BlackboardPlan> base;
 
+	// Mapping between variables in this plan and their parent scope names.
+	// Used for linking variables to their parent scope counterparts upon Blackboard creation/population.
+	HashMap<StringName, StringName> parent_scope_mapping;
+	// Fetcher function for the parent scope plan. Funtion should return a Ref<BlackboardPlan>.
+	// Used in the inspector. When set, mapping feature becomes available.
+	Callable parent_scope_plan_provider;
+
 	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
 	bool prefetch_nodepath_vars = true;
 
@@ -51,6 +58,12 @@ protected:
 public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
+
+	void set_parent_scope_plan_provider(const Callable &p_parent_scope_plan_provider);
+	Callable get_parent_scope_plan_provider() const { return parent_scope_plan_provider; }
+
+	bool is_mapping_enabled() const { return parent_scope_plan_provider.is_valid() && (parent_scope_plan_provider.call() != Ref<BlackboardPlan>()); }
+	bool has_mapping(const StringName &p_name) const;
 
 	void set_prefetch_nodepath_vars(bool p_enable);
 	bool is_prefetching_nodepath_vars() const;
@@ -72,7 +85,7 @@ public:
 	void sync_with_base_plan();
 	_FORCE_INLINE_ bool is_derived() const { return base.is_valid(); }
 
-	Ref<Blackboard> create_blackboard(Node *p_agent);
+	Ref<Blackboard> create_blackboard(Node *p_agent, const Ref<Blackboard> &p_parent_scope = Ref<Blackboard>());
 	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node);
 
 	BlackboardPlan();

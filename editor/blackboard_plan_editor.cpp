@@ -48,14 +48,18 @@ void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_NULL(plan);
 
 	int suffix = 1;
-	StringName var_name = default_var_name;
+	StringName var_name = default_var_name == StringName() ? "var" : default_var_name;
 	while (plan->has_var(var_name)) {
 		suffix += 1;
 		var_name = String(default_var_name) + itos(suffix);
 	}
 
-	BBVariable var(Variant::Type::FLOAT);
+	BBVariable var(default_type, default_hint, default_hint_string);
+	if (default_value.get_type() == default_type) {
+		var.set_value(default_value);
+	}
 	plan->add_var(var_name, var);
+	reset_defaults();
 	_refresh();
 }
 
@@ -127,10 +131,19 @@ void BlackboardPlanEditor::edit_plan(const Ref<BlackboardPlan> &p_plan) {
 	_refresh();
 }
 
-void BlackboardPlanEditor::set_next_var_name(const StringName &p_name) {
-	if (String(p_name).is_valid_identifier()) {
-		default_var_name = p_name;
-	}
+void BlackboardPlanEditor::set_defaults(const StringName &p_var_name, Variant::Type p_type, PropertyHint p_hint, String p_hint_string, Variant p_value) {
+	default_var_name = p_var_name;
+	default_type = p_type;
+	default_hint = p_hint;
+	default_hint_string = p_hint_string;
+	default_value = p_value;
+}
+
+void BlackboardPlanEditor::reset_defaults() {
+	default_var_name = "var";
+	default_type = Variant::FLOAT;
+	default_hint = PROPERTY_HINT_NONE;
+	default_hint_string = "";
 }
 
 void BlackboardPlanEditor::_show_button_popup(Button *p_button, PopupMenu *p_popup, int p_index) {
@@ -233,7 +246,7 @@ void BlackboardPlanEditor::_drag_button_gui_input(const Ref<InputEvent> &p_event
 void BlackboardPlanEditor::_visibility_changed() {
 	if (!is_visible() && plan.is_valid()) {
 		plan->notify_property_list_changed();
-		default_var_name = "var";
+		reset_defaults();
 	}
 }
 
@@ -367,7 +380,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 }
 
 BlackboardPlanEditor::BlackboardPlanEditor() {
-	default_var_name = "var";
+	reset_defaults();
 
 	set_title(TTR("Manage Blackboard Plan"));
 

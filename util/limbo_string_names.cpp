@@ -85,6 +85,7 @@ LimboStringNames::LimboStringNames() {
 	exited = SN("exited");
 	favorite_tasks_changed = SN("favorite_tasks_changed");
 	Favorites = SN("Favorites");
+	focus_exited = SN("focus_exited");
 	font = SN("font");
 	font_color = SN("font_color");
 	font_size = SN("font_size");
@@ -105,6 +106,8 @@ LimboStringNames::LimboStringNames() {
 	LimboPercent = SN("LimboPercent");
 	LimboSelectAll = SN("LimboSelectAll");
 	LimboVarAdd = SN("LimboVarAdd");
+	LimboVarEmpty = SN("LimboVarEmpty");
+	LimboVarError = SN("LimboVarError");
 	LimboVarExists = SN("LimboVarExists");
 	LimboVarNotFound = SN("LimboVarNotFound");
 	LimboVarPrivate = SN("LimboVarPrivate");

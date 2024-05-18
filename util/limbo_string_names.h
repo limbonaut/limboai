@@ -101,6 +101,7 @@ public:
 	StringName exited;
 	StringName favorite_tasks_changed;
 	StringName Favorites;
+	StringName focus_exited;
 	StringName font_color;
 	StringName font_size;
 	StringName font;
@@ -122,6 +123,8 @@ public:
 	StringName LimboPercent;
 	StringName LimboSelectAll;
 	StringName LimboVarAdd;
+	StringName LimboVarEmpty;
+	StringName LimboVarError;
 	StringName LimboVarExists;
 	StringName LimboVarNotFound;
 	StringName LimboVarPrivate;

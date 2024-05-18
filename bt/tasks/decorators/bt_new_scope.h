@@ -23,6 +23,10 @@ class BTNewScope : public BTDecorator {
 private:
 	Ref<BlackboardPlan> blackboard_plan;
 
+#ifdef TOOLS_ENABLED
+	void _set_parent_scope_plan_from_bt();
+#endif // TOOLS_ENABLED
+
 protected:
 	static void _bind_methods();
 

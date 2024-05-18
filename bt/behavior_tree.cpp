@@ -52,7 +52,13 @@ void BehaviorTree::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 }
 
 void BehaviorTree::set_root_task(const Ref<BTTask> &p_value) {
+#ifdef TOOLS_ENABLED
+	_unset_editor_behavior_tree_hint();
+#endif // TOOLS_ENABLED
 	root_task = p_value;
+#ifdef TOOLS_ENABLED
+	_set_editor_behavior_tree_hint();
+#endif // TOOLS_ENABLED
 	emit_changed();
 }
 
@@ -84,6 +90,22 @@ void BehaviorTree::_plan_changed() {
 	emit_signal(LW_NAME(plan_changed));
 	emit_changed();
 }
+
+#ifdef TOOLS_ENABLED
+
+void BehaviorTree::_set_editor_behavior_tree_hint() {
+	if (root_task.is_valid()) {
+		root_task->data.behavior_tree_id = this->get_instance_id();
+	}
+}
+
+void BehaviorTree::_unset_editor_behavior_tree_hint() {
+	if (root_task.is_valid()) {
+		root_task->data.behavior_tree_id = ObjectID();
+	}
+}
+
+#endif // TOOLS_ENABLED
 
 void BehaviorTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_description", "description"), &BehaviorTree::set_description);

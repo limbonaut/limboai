@@ -1486,7 +1486,7 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 			add_debugger_plugin(memnew(LimboDebuggerPlugin));
 			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
 			EditorInspectorPluginVariableName *var_plugin = memnew(EditorInspectorPluginVariableName);
-			var_plugin->set_plan_getter(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
+			var_plugin->set_editor_plan_provider(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
 			add_inspector_plugin(var_plugin);
 #ifdef LIMBOAI_MODULE
 			// ! Only used in the module version.

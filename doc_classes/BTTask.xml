@@ -79,6 +79,12 @@
 				Duplicates the task and its children, copying the exported members. Sub-resources are shared for efficiency, except for [BBParam] subtypes, which are always copied. Used by the editor to instantiate [BehaviorTree] and copy-paste tasks.
 			</description>
 		</method>
+		<method name="editor_get_behavior_tree">
+			<return type="BehaviorTree" />
+			<description>
+				Returns the behavior tree that owns this task. This is only available in the editor.
+			</description>
+		</method>
 		<method name="execute">
 			<return type="int" enum="BT.Status" />
 			<param index="0" name="delta" type="float" />
