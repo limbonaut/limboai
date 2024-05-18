@@ -96,7 +96,7 @@ void EditorPropertyVariableName::_update_status() {
 		} else {
 			BUTTON_SET_ICON(status_btn, theme_cache.var_error_icon);
 			status_btn->set_tooltip_text(TTR(vformat(
-					"The %s variable in the blackboard plan is not of the same type as this variable (expected %s).\nClick to open the blackboard plan and fix the variable type.",
+					"The %s variable in the blackboard plan should be of type %s.\nClick to open the blackboard plan.",
 					LimboUtility::get_singleton()->decorate_var(var_name),
 					Variant::get_type_name(expected_type))));
 		}
