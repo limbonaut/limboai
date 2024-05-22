@@ -36,6 +36,7 @@ env:
   SCONSFLAGS: dev_build=no debug_symbols=no
   EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
+  GODOT_VERSION: 4.2-stable
 
 jobs:
   gdextension:
@@ -251,8 +252,8 @@ jobs:
           name: ${{ env.NAME }}
           path: out/*
 
-  merge-artifacts:
-    name: Merge artifacts
+  package-extension:
+    name: 📦 Package extension
     runs-on: ubuntu-latest
     needs: gdextension
 
@@ -263,3 +264,43 @@ jobs:
           name: ${{needs.gdextension.outputs.name-prefix}}
           pattern: tmp-gdextension.*
           delete-merged: true
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{needs.gdextension.outputs.name-prefix}}
+          path: out/
+
+      - name: Setup Godot
+        shell: bash
+        run: |
+          echo "Downloading Godot ${GODOT_VERSION}"
+          mkdir bin
+          cd bin
+          wget "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" -O godot.zip
+          unzip godot.zip
+          rm godot.zip
+          mv Godot_* godot
+          chmod u+x godot
+          ls -l
+          ./bin/godot --version
+
+      - name: Generate icon .import files
+        shell: bash
+        run: |
+          timeout 20s ./bin/godot --headless --editor --path ./out/ || /bin/true
+
+      - name: Change editor scale import settings
+        shell: bash
+        run: |
+          echo "--- Listing import files:"
+          ls out/addons/limboai/icons/*.import
+          echo "--- (end of listing)"
+          sed -i 's|editor/scale_with_editor_scale=false|editor/scale_with_editor_scale=true|' out/addons/limboai/icons/*.import
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{needs.gdextension.outputs.name-prefix}}
+          path: out/*
+          overwrite: true
