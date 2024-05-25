@@ -1,0 +1,42 @@
+name: Setup Linux toolchain
+
+inputs:
+  arch:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set TOOLCHAIN_URL (x86_64)
+      if: inputs.arch == 'x86_64'
+      shell: bash
+      run: |
+        echo "TOOLCHAIN_URL=https://downloads.tuxfamily.org/godotengine/toolchains/linux/2021-02-11/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2" >> "$GITHUB_ENV"
+
+    - name: Set TOOLCHAIN_URL (x86_32)
+      if: inputs.arch == 'x86_32'
+      shell: bash
+      run: |
+        echo "TOOLCHAIN_URL=https://downloads.tuxfamily.org/godotengine/toolchains/linux/2021-02-11/i686-godot-linux-gnu_sdk-buildroot.tar.bz2" >> "$GITHUB_ENV"
+
+    - name: Cache buildroot
+      id: cache-buildroot
+      uses: actions/cache@v4
+      with:
+        path: buildroot
+        key: ${{env.TOOLCHAIN_SHA}}
+
+    - name: Set up buildroot
+      if: steps.cache-buildroot.outputs.cache-hit != 'true'
+      shell: bash
+      run: |
+        mkdir buildroot
+        wget ${TOOLCHAIN_URL} -O buildroot/buildroot.tar.bz2
+        cd buildroot
+        echo "${TOOLCHAIN_SHA}  buildroot.tar.bz2"
+        echo "${TOOLCHAIN_SHA}  buildroot.tar.bz2" | shasum --check
+        tar -xjf buildroot.tar.bz2 --strip-components=1
+        ls -l
+        rm buildroot.tar.bz2
+        ./relocate-sdk.sh
+        cd ..
