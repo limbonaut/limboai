@@ -72,6 +72,10 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 - **Demo + Tutorial:** Check out our extensive demo project, which includes an introduction to behavior trees using examples.
 
+## First steps
+
+Follow the [First steps](https://limboai.readthedocs.io/en/latest/index.html#first-steps) guide to learn how to get started with LimboAI and the demo project.
+
 ## Getting LimboAI
 
 LimboAI can be used as either a C++ module or as a GDExtension shared library. GDExtension version is more convenient to use but somewhat limited in features. Whichever you choose to use, your project will stay compatible with both and you can switch from one to the other any time. See [Using GDExtension](https://limboai.readthedocs.io/en/latest/getting-started/gdextension.html).
@@ -89,10 +93,6 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
-
-## First steps
-
-Follow the [First steps](https://limboai.readthedocs.io/en/latest/index.html#first-steps) guide to learn how to get started with LimboAI and the demo project.
 
 ## Using the plugin
 
