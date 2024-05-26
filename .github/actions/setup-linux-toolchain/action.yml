@@ -11,9 +11,9 @@ runs:
       shell: bash
       run: |
         # ! Settings:
-        TOOLCHAIN_64_URL=https://downloads.tuxfamily.org/godotengine/toolchains/linux/2021-02-11/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
+        TOOLCHAIN_64_URL=https://github.com/godotengine/buildroot/releases/download/godot-2020.11.x-2/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
         TOOLCHAIN_64_SHA=16c8302fcb676c1f0fb9df73d6cff250ba1f4286
-        TOOLCHAIN_32_URL=https://downloads.tuxfamily.org/godotengine/toolchains/linux/2021-02-11/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
+        TOOLCHAIN_32_URL=https://github.com/godotengine/buildroot/releases/download/godot-2020.11.x-2/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
         TOOLCHAIN_32_SHA=6171652abc54ef219e5187bc53660ee4e2f796f4
         # ! Export variables:
         if [[ "${{ inputs.arch }}" == "x86_64" ]]; then
