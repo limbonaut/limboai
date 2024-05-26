@@ -90,9 +90,14 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
 
+## First steps
+
+Follow the [First steps](https://limboai.readthedocs.io/en/latest/index.html#first-steps) guide to learn how to get started with LimboAI and the demo project.
+
 ## Using the plugin
 
 - [Online Documentation](https://limboai.readthedocs.io/en/latest/index.html)
+- [First steps](https://limboai.readthedocs.io/en/latest/index.html#first-steps)
 - [Introduction to Behavior Trees](https://limboai.readthedocs.io/en/latest/getting-started/introduction.html)
 - [Creating custom tasks in GDScript](https://limboai.readthedocs.io/en/latest/getting-started/custom-tasks.html)
 - [Sharing data using Blackboard](https://limboai.readthedocs.io/en/latest/getting-started/using-blackboard.html)
