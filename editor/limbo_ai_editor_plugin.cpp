@@ -971,6 +971,8 @@ void LimboAIEditor::_update_tabs() {
 		String tab_name;
 		if (history[i]->get_path().is_empty()) {
 			tab_name = "[new]";
+		} else if (history[i]->get_path().contains("::")) {
+			tab_name = history[i]->get_path().get_file();
 		} else {
 			tab_name = history[i]->get_path().get_file().get_basename();
 		}
