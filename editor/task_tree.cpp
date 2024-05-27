@@ -213,7 +213,7 @@ void TaskTree::unload() {
 		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
 
-	bt->unreference();
+	bt.unref();
 	tree->clear();
 }
 

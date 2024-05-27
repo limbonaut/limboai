@@ -953,6 +953,7 @@ void LimboAIEditor::_tab_clicked(int p_tab) {
 }
 
 void LimboAIEditor::_tab_closed(int p_tab) {
+	ERR_FAIL_INDEX(p_tab, history.size());
 	history.remove_at(p_tab);
 	idx_history = MIN(idx_history, history.size() - 1);
 	if (idx_history < 0) {
@@ -979,6 +980,7 @@ void LimboAIEditor::_update_tabs() {
 		tab_bar->add_tab(tab_name, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
 	}
 	if (idx_history >= 0) {
+		ERR_FAIL_INDEX(idx_history, history.size());
 		tab_bar->set_current_tab(idx_history);
 	}
 	updating_tabs = false;
