@@ -208,6 +208,7 @@ void LimboAIEditor::_save_bt(String p_path) {
 #endif
 	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
 	_update_header();
+	_update_tabs();
 	_mark_as_dirty(false);
 }
 
@@ -218,12 +219,17 @@ void LimboAIEditor::_load_bt(String p_path) {
 	if (bt->get_blackboard_plan().is_null()) {
 		bt->set_blackboard_plan(memnew(BlackboardPlan));
 	}
-	if (history.find(bt) != -1) {
-		history.erase(bt);
-		history.push_back(bt);
-	}
+	// if (history.find(bt) != -1) {
+	// 	history.erase(bt);
+	// 	history.push_back(bt);
+	// }
 
 	EDIT_RESOURCE(bt);
+}
+
+void LimboAIEditor::_disable_editing() {
+	task_tree->unload();
+	task_palette->hide();
 }
 
 void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh) {
@@ -263,6 +269,7 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 
 	_update_history_buttons();
 	_update_header();
+	_update_tabs();
 }
 
 Ref<BlackboardPlan> LimboAIEditor::get_edited_blackboard_plan() {
@@ -937,6 +944,57 @@ void LimboAIEditor::_replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &
 	}
 }
 
+void LimboAIEditor::_tab_clicked(int p_tab) {
+	if (updating_tabs) {
+		return;
+	}
+	ERR_FAIL_INDEX(p_tab, history.size());
+	EDIT_RESOURCE(history[p_tab]);
+}
+
+void LimboAIEditor::_tab_closed(int p_tab) {
+	history.remove_at(p_tab);
+	idx_history = MIN(idx_history, history.size() - 1);
+	if (idx_history < 0) {
+		_disable_editing();
+	} else {
+		EDIT_RESOURCE(history[idx_history]);
+	}
+	_update_history_buttons();
+	_update_tabs();
+}
+
+void LimboAIEditor::_update_tabs() {
+	updating_tabs = true;
+	tab_bar->clear_tabs();
+	for (int i = 0; i < history.size(); i++) {
+		String tab_name;
+		if (history[i]->get_path().is_empty()) {
+			tab_name = "[new]";
+		} else {
+			tab_name = history[i]->get_path().get_file().get_basename();
+		}
+		tab_bar->add_tab(tab_name, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
+	}
+	if (idx_history >= 0) {
+		tab_bar->set_current_tab(idx_history);
+	}
+	updating_tabs = false;
+}
+
+void LimboAIEditor::_move_active_tab(int p_to_index) {
+	ERR_FAIL_INDEX(p_to_index, history.size());
+	if (idx_history == p_to_index) {
+		return;
+	}
+	Ref<BehaviorTree> bt = history[idx_history];
+	history.remove_at(idx_history);
+	history.insert(p_to_index, bt);
+	idx_history = p_to_index;
+	_update_history_buttons();
+	_update_tabs();
+}
+
 void LimboAIEditor::_reload_modified() {
 	for (const String &res_path : disk_changed_files) {
 		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
@@ -1161,6 +1219,9 @@ void LimboAIEditor::_notification(int p_what) {
 			disk_changed->connect("custom_action", callable_mp(this, &LimboAIEditor::_resave_modified));
 			rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task_confirmed));
 			new_script_btn->connect(LW_NAME(pressed), callable_mp(SCRIPT_EDITOR(), &ScriptEditor::open_script_create_dialog).bind("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task")));
+			tab_bar->connect("tab_clicked", callable_mp(this, &LimboAIEditor::_tab_clicked));
+			tab_bar->connect("active_tab_rearranged", callable_mp(this, &LimboAIEditor::_move_active_tab));
+			tab_bar->connect("tab_close_pressed", callable_mp(this, &LimboAIEditor::_tab_closed));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 
@@ -1170,6 +1231,8 @@ void LimboAIEditor::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
+
+			tab_bar_panel->add_theme_style_override("panel", get_theme_stylebox(SNAME("tabbar_background"), SNAME("TabContainer")));
 
 			BUTTON_SET_ICON(new_btn, get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(load_btn, get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
@@ -1315,10 +1378,26 @@ LimboAIEditor::LimboAIEditor() {
 	history_forward->set_focus_mode(FOCUS_NONE);
 	nav->add_child(history_forward);
 
+	tab_bar_panel = memnew(PanelContainer);
+	vbox->add_child(tab_bar_panel);
+	tab_bar_container = memnew(HBoxContainer);
+	tab_bar_panel->add_child(tab_bar_container);
+
+	tab_bar = memnew(TabBar);
+	tab_bar->set_select_with_rmb(true);
+	tab_bar->set_drag_to_rearrange_enabled(true);
+	tab_bar->set_max_tab_width(int(EDITOR_GET("interface/scene_tabs/maximum_width")) * EDSCALE);
+	tab_bar->set_auto_translate(false);
+	tab_bar->set_tab_close_display_policy(TabBar::CLOSE_BUTTON_SHOW_ACTIVE_ONLY);
+	tab_bar->set_h_size_flags(Control::SIZE_EXPAND_FILL);
+	tab_bar->set_focus_mode(FocusMode::FOCUS_NONE);
+	tab_bar_container->add_child(tab_bar);
+
 	header = memnew(Button);
 	header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
 	header->add_theme_constant_override("hseparation", 8);
 	vbox->add_child(header);
+	header->hide();
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);

@@ -121,10 +121,14 @@ private:
 	EditorPlugin *plugin;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
+	bool updating_tabs = false;
 	HashSet<Ref<BehaviorTree>> dirty;
 	Ref<BTTask> clipboard_task;
 
 	VBoxContainer *vbox;
+	PanelContainer *tab_bar_panel;
+	HBoxContainer *tab_bar_container;
+	TabBar *tab_bar;
 	Button *header;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
@@ -176,11 +180,17 @@ private:
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
+	void _disable_editing();
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
 	void _remove_task_from_favorite(const String &p_task);
 	void _extract_subtree(const String &p_path);
 	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
+
+	void _tab_clicked(int p_tab);
+	void _tab_closed(int p_tab);
+	void _update_tabs();
+	void _move_active_tab(int p_to_index);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
