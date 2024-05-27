@@ -37,6 +37,7 @@
 #include "editor/editor_scale.h"
 #include "editor/editor_settings.h"
 #include "editor/editor_undo_redo_manager.h"
+#include "editor/filesystem_dock.h"
 #include "editor/inspector_dock.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/project_settings_editor.h"
@@ -56,8 +57,10 @@
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/classes/file_access.hpp>
+#include <godot_cpp/classes/file_system_dock.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
@@ -999,6 +1002,73 @@ void LimboAIEditor::_move_active_tab(int p_to_index) {
 	_update_tabs();
 }
 
+void LimboAIEditor::_tab_input(const Ref<InputEvent> &p_input) {
+	Ref<InputEventMouseButton> mb = p_input;
+	if (mb.is_null()) {
+		return;
+	}
+	int tab_idx = tab_bar->get_tab_idx_at_point(tab_bar->get_local_mouse_position());
+	if (tab_idx < 0) {
+		return;
+	}
+	if (mb->is_pressed() && mb->get_button_index() == LW_MBTN(MIDDLE)) {
+		_tab_closed(tab_idx);
+	} else if (mb->is_pressed() && mb->get_button_index() == LW_MBTN(RIGHT)) {
+		_show_tab_context_menu();
+	}
+}
+
+void LimboAIEditor::_show_tab_context_menu() {
+	tab_menu->clear();
+	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
+	tab_menu->add_separator();
+	tab_menu->add_item(TTR("Close Tab"), TabMenu::TAB_CLOSE);
+	tab_menu->add_item(TTR("Close Other Tabs"), TabMenu::TAB_CLOSE_OTHER);
+	tab_menu->add_item(TTR("Close Tabs to the Right"), TabMenu::TAB_CLOSE_RIGHT);
+	tab_menu->add_item(TTR("Close All Tabs"), TabMenu::TAB_CLOSE_ALL);
+	tab_menu->set_position(get_screen_position() + get_local_mouse_position());
+	tab_menu->reset_size();
+	tab_menu->popup();
+}
+
+void LimboAIEditor::_tab_menu_option_selected(int p_id) {
+	ERR_FAIL_INDEX(idx_history, history.size());
+	switch (p_id) {
+		case TAB_SHOW_IN_FILESYSTEM: {
+			Ref<BehaviorTree> bt = history[idx_history];
+			String path = bt->get_path();
+			if (!path.is_empty()) {
+				FS_DOCK_SELECT_FILE(path.get_slice("::", 0));
+			}
+		} break;
+		case TAB_CLOSE: {
+			_tab_closed(idx_history);
+		} break;
+		case TAB_CLOSE_OTHER: {
+			Ref<BehaviorTree> bt = history[idx_history];
+			history.clear();
+			history.append(bt);
+			idx_history = 0;
+			_update_history_buttons();
+			_update_tabs();
+		} break;
+		case TAB_CLOSE_RIGHT: {
+			for (int i = history.size() - 1; i > idx_history; i--) {
+				history.remove_at(i);
+			}
+			_update_history_buttons();
+			_update_tabs();
+		} break;
+		case TAB_CLOSE_ALL: {
+			history.clear();
+			idx_history = -1;
+			_disable_editing();
+			_update_history_buttons();
+			_update_tabs();
+		} break;
+	}
+}
+
 void LimboAIEditor::_reload_modified() {
 	for (const String &res_path : disk_changed_files) {
 		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
@@ -1226,6 +1296,8 @@ void LimboAIEditor::_notification(int p_what) {
 			tab_bar->connect("tab_clicked", callable_mp(this, &LimboAIEditor::_tab_clicked));
 			tab_bar->connect("active_tab_rearranged", callable_mp(this, &LimboAIEditor::_move_active_tab));
 			tab_bar->connect("tab_close_pressed", callable_mp(this, &LimboAIEditor::_tab_closed));
+			tab_bar->connect(LW_NAME(gui_input), callable_mp(this, &LimboAIEditor::_tab_input));
+			tab_menu->connect(LW_NAME(id_pressed), callable_mp(this, &LimboAIEditor::_tab_menu_option_selected));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 
@@ -1396,6 +1468,9 @@ LimboAIEditor::LimboAIEditor() {
 	tab_bar->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	tab_bar->set_focus_mode(FocusMode::FOCUS_NONE);
 	tab_bar_container->add_child(tab_bar);
+
+	tab_menu = memnew(PopupMenu);
+	add_child(tab_menu);
 
 	header = memnew(Button);
 	header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);

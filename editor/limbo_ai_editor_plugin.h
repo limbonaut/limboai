@@ -99,6 +99,14 @@ private:
 		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
 
+	enum TabMenu {
+		TAB_SHOW_IN_FILESYSTEM,
+		TAB_CLOSE,
+		TAB_CLOSE_OTHER,
+		TAB_CLOSE_RIGHT,
+		TAB_CLOSE_ALL,
+	};
+
 	struct ThemeCache {
 		Ref<Texture2D> duplicate_task_icon;
 		Ref<Texture2D> edit_script_icon;
@@ -130,6 +138,7 @@ private:
 	PanelContainer *tab_bar_panel;
 	HBoxContainer *tab_bar_container;
 	TabBar *tab_bar;
+	PopupMenu *tab_menu;
 	Button *header;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
@@ -192,6 +201,9 @@ private:
 	void _tab_closed(int p_tab);
 	void _update_tabs();
 	void _move_active_tab(int p_to_index);
+	void _tab_input(const Ref<InputEvent> &p_input);
+	void _show_tab_context_menu();
+	void _tab_menu_option_selected(int p_id);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
