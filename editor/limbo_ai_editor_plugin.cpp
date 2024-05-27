@@ -1232,7 +1232,7 @@ void LimboAIEditor::_notification(int p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
 
-			tab_bar_panel->add_theme_style_override("panel", get_theme_stylebox(SNAME("tabbar_background"), SNAME("TabContainer")));
+			ADD_STYLEBOX_OVERRIDE(tab_bar_panel, "panel", get_theme_stylebox("tabbar_background", "TabContainer"));
 
 			BUTTON_SET_ICON(new_btn, get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(load_btn, get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
