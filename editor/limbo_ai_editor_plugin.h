@@ -204,6 +204,7 @@ private:
 	void _tab_input(const Ref<InputEvent> &p_input);
 	void _show_tab_context_menu();
 	void _tab_menu_option_selected(int p_id);
+	void _tab_plan_edited(int p_tab);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");

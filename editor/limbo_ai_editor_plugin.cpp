@@ -1000,6 +1000,9 @@ void LimboAIEditor::_update_tabs() {
 			tab_name = history[i]->get_path().trim_prefix("res://");
 		}
 		tab_bar->add_tab(tab_name, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
+		if (i == idx_history) {
+			tab_bar->set_tab_button_icon(tab_bar->get_tab_count() - 1, LimboUtility::get_singleton()->get_task_icon("LimboEditBlackboard"));
+		}
 	}
 
 	if (idx_history >= 0) {
@@ -1087,6 +1090,13 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 			_update_history_buttons();
 			_update_tabs();
 		} break;
+	}
+}
+
+void LimboAIEditor::_tab_plan_edited(int p_tab) {
+	ERR_FAIL_INDEX(p_tab, history.size());
+	if (history[p_tab]->get_blackboard_plan().is_valid()) {
+		EDIT_RESOURCE(history[p_tab]->get_blackboard_plan());
 	}
 }
 
@@ -1319,6 +1329,7 @@ void LimboAIEditor::_notification(int p_what) {
 			tab_bar->connect("tab_close_pressed", callable_mp(this, &LimboAIEditor::_tab_closed));
 			tab_bar->connect(LW_NAME(gui_input), callable_mp(this, &LimboAIEditor::_tab_input));
 			tab_menu->connect(LW_NAME(id_pressed), callable_mp(this, &LimboAIEditor::_tab_menu_option_selected));
+			tab_bar->connect("tab_button_pressed", callable_mp(this, &LimboAIEditor::_tab_plan_edited));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 
