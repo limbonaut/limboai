@@ -139,7 +139,6 @@ private:
 	HBoxContainer *tab_bar_container;
 	TabBar *tab_bar;
 	PopupMenu *tab_menu;
-	Button *header;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
 	VBoxContainer *banners;
@@ -159,8 +158,6 @@ private:
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
 	FileDialog *extract_dialog;
-	Button *history_back;
-	Button *history_forward;
 
 	Button *new_btn;
 	Button *load_btn;
@@ -182,8 +179,6 @@ private:
 	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
 	void _add_task_by_class_or_path(const String &p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
-	void _update_header() const;
-	void _update_history_buttons();
 	void _update_favorite_tasks();
 	void _update_misc_menu();
 	void _update_banners();

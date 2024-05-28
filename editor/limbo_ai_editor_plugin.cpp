@@ -171,29 +171,6 @@ void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
 	undo_redo->commit_action();
 }
 
-void LimboAIEditor::_update_header() const {
-	if (task_tree->get_bt().is_null()) {
-		header->set_text("");
-		BUTTON_SET_ICON(header, nullptr);
-		return;
-	}
-
-	String text = task_tree->get_bt()->get_path();
-	if (text.is_empty()) {
-		text = TTR("New Behavior Tree");
-	} else if (dirty.has(task_tree->get_bt())) {
-		text += "(*)";
-	}
-
-	header->set_text(text);
-	BUTTON_SET_ICON(header, theme_cache.behavior_tree_icon);
-}
-
-void LimboAIEditor::_update_history_buttons() {
-	history_back->set_disabled(idx_history == 0);
-	history_forward->set_disabled(idx_history >= (history.size() - 1));
-}
-
 void LimboAIEditor::_new_bt() {
 	Ref<BehaviorTree> bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
@@ -210,7 +187,6 @@ void LimboAIEditor::_save_bt(String p_path) {
 	task_tree->get_bt()->take_over_path(p_path);
 #endif
 	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
-	_update_header();
 	_update_tabs();
 	_mark_as_dirty(false);
 }
@@ -270,8 +246,6 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	task_tree->show();
 	task_palette->show();
 
-	_update_history_buttons();
-	_update_header();
 	_update_tabs();
 }
 
@@ -289,10 +263,8 @@ void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 	Ref<BehaviorTree> bt = task_tree->get_bt();
 	if (p_dirty && !dirty.has(bt)) {
 		dirty.insert(bt);
-		_update_header();
 	} else if (p_dirty == false && dirty.has(bt)) {
 		dirty.erase(bt);
-		_update_header();
 	}
 }
 
@@ -778,7 +750,6 @@ void LimboAIEditor::_on_visibility_changed() {
 }
 
 void LimboAIEditor::_on_header_pressed() {
-	_update_header();
 	task_tree->deselect();
 #ifdef LIMBOAI_MODULE
 	if (task_tree->get_bt().is_valid()) {
@@ -964,7 +935,6 @@ void LimboAIEditor::_tab_closed(int p_tab) {
 	} else {
 		EDIT_RESOURCE(history[idx_history]);
 	}
-	_update_history_buttons();
 	_update_tabs();
 }
 
@@ -1022,7 +992,6 @@ void LimboAIEditor::_move_active_tab(int p_to_index) {
 	history.remove_at(idx_history);
 	history.insert(p_to_index, bt);
 	idx_history = p_to_index;
-	_update_history_buttons();
 	_update_tabs();
 }
 
@@ -1073,21 +1042,18 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 			history.clear();
 			history.append(bt);
 			idx_history = 0;
-			_update_history_buttons();
 			_update_tabs();
 		} break;
 		case TAB_CLOSE_RIGHT: {
 			for (int i = history.size() - 1; i > idx_history; i--) {
 				history.remove_at(i);
 			}
-			_update_history_buttons();
 			_update_tabs();
 		} break;
 		case TAB_CLOSE_ALL: {
 			history.clear();
 			idx_history = -1;
 			_disable_editing();
-			_update_history_buttons();
 			_update_tabs();
 		} break;
 	}
@@ -1154,7 +1120,6 @@ void LimboAIEditor::apply_changes() {
 			RESOURCE_SAVE(bt, path, 0);
 		}
 		dirty.clear();
-		_update_header();
 	}
 }
 
@@ -1309,9 +1274,6 @@ void LimboAIEditor::_notification(int p_what) {
 			save_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_save_pressed));
 			misc_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_update_misc_menu));
 			misc_btn->get_popup()->connect("id_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
-			history_back->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_history_back));
-			history_forward->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_history_forward));
-			header->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_header_pressed));
 			task_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path));
 			task_palette->connect("favorite_tasks_changed", callable_mp(this, &LimboAIEditor::_update_favorite_tasks));
 			change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
@@ -1333,9 +1295,6 @@ void LimboAIEditor::_notification(int p_what) {
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 
-			_update_history_buttons();
-			_update_header();
-
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
@@ -1346,12 +1305,9 @@ void LimboAIEditor::_notification(int p_what) {
 			BUTTON_SET_ICON(load_btn, get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(save_btn, get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(new_script_btn, get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(history_back, get_theme_icon(LW_NAME(Back), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(history_forward, get_theme_icon(LW_NAME(Forward), LW_NAME(EditorIcons)));
 			BUTTON_SET_ICON(misc_btn, get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
 
 			_update_favorite_tasks();
-			_update_header();
 		}
 	}
 }
@@ -1476,16 +1432,6 @@ LimboAIEditor::LimboAIEditor() {
 	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
 	toolbar->add_child(nav);
 
-	history_back = memnew(Button);
-	history_back->set_flat(true);
-	history_back->set_focus_mode(FOCUS_NONE);
-	nav->add_child(history_back);
-
-	history_forward = memnew(Button);
-	history_forward->set_flat(true);
-	history_forward->set_focus_mode(FOCUS_NONE);
-	nav->add_child(history_forward);
-
 	tab_bar_panel = memnew(PanelContainer);
 	vbox->add_child(tab_bar_panel);
 	tab_bar_container = memnew(HBoxContainer);
@@ -1503,12 +1449,6 @@ LimboAIEditor::LimboAIEditor() {
 
 	tab_menu = memnew(PopupMenu);
 	add_child(tab_menu);
-
-	header = memnew(Button);
-	header->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
-	header->add_theme_constant_override("hseparation", 8);
-	vbox->add_child(header);
-	header->hide();
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
