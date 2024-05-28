@@ -57,6 +57,7 @@
 #include <godot_cpp/classes/menu_button.hpp>
 #include <godot_cpp/classes/panel.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/tab_bar.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/variant.hpp>
@@ -98,6 +99,14 @@ private:
 		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
 
+	enum TabMenu {
+		TAB_SHOW_IN_FILESYSTEM,
+		TAB_CLOSE,
+		TAB_CLOSE_OTHER,
+		TAB_CLOSE_RIGHT,
+		TAB_CLOSE_ALL,
+	};
+
 	struct ThemeCache {
 		Ref<Texture2D> duplicate_task_icon;
 		Ref<Texture2D> edit_script_icon;
@@ -121,11 +130,15 @@ private:
 	EditorPlugin *plugin;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
+	bool updating_tabs = false;
 	HashSet<Ref<BehaviorTree>> dirty;
 	Ref<BTTask> clipboard_task;
 
 	VBoxContainer *vbox;
-	Button *header;
+	PanelContainer *tab_bar_panel;
+	HBoxContainer *tab_bar_container;
+	TabBar *tab_bar;
+	PopupMenu *tab_menu;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
 	VBoxContainer *banners;
@@ -145,8 +158,6 @@ private:
 	FileDialog *save_dialog;
 	FileDialog *load_dialog;
 	FileDialog *extract_dialog;
-	Button *history_back;
-	Button *history_forward;
 
 	Button *new_btn;
 	Button *load_btn;
@@ -168,19 +179,27 @@ private:
 	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
 	void _add_task_by_class_or_path(const String &p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
-	void _update_header() const;
-	void _update_history_buttons();
 	void _update_favorite_tasks();
 	void _update_misc_menu();
 	void _update_banners();
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
+	void _disable_editing();
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
 	void _remove_task_from_favorite(const String &p_task);
 	void _extract_subtree(const String &p_path);
 	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
+
+	void _tab_clicked(int p_tab);
+	void _tab_closed(int p_tab);
+	void _update_tabs();
+	void _move_active_tab(int p_to_index);
+	void _tab_input(const Ref<InputEvent> &p_input);
+	void _show_tab_context_menu();
+	void _tab_menu_option_selected(int p_id);
+	void _tab_plan_edited(int p_tab);
 
 	void _reload_modified();
 	void _resave_modified(String _str = "");
