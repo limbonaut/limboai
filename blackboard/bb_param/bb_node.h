@@ -17,6 +17,9 @@
 class BBNode : public BBParam {
 	GDCLASS(BBNode, BBParam);
 
+protected:
+	static void _bind_methods() {}
+
 public:
 	virtual Variant::Type get_type() const override { return Variant::NODE_PATH; }
 	virtual Variant get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboard, const Variant &p_default = Variant()) override;
