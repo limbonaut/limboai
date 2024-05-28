@@ -971,21 +971,42 @@ void LimboAIEditor::_tab_closed(int p_tab) {
 void LimboAIEditor::_update_tabs() {
 	updating_tabs = true;
 	tab_bar->clear_tabs();
+
+	Vector<String> short_names;
+	// Keep track of how many times each short name is used.
+	HashMap<String, int> usage_counts;
+
 	for (int i = 0; i < history.size(); i++) {
 		String tab_name;
-		if (history[i]->get_path().is_empty()) {
-			tab_name = "[new]";
-		} else if (history[i]->get_path().contains("::")) {
+		if (history[i]->get_path().contains("::")) {
 			tab_name = history[i]->get_path().get_file();
 		} else {
 			tab_name = history[i]->get_path().get_file().get_basename();
 		}
+		short_names.append(tab_name);
+		if (usage_counts.has(tab_name)) {
+			usage_counts[tab_name] += 1;
+		} else {
+			usage_counts[tab_name] = 1;
+		}
+	}
+
+	for (int i = 0; i < short_names.size(); i++) {
+		String tab_name = short_names[i];
+		if (tab_name.is_empty()) {
+			tab_name = "[new]";
+		} else if (usage_counts[tab_name] > 1) {
+			// Use the full name if the short name is not unique.
+			tab_name = history[i]->get_path().trim_prefix("res://");
+		}
 		tab_bar->add_tab(tab_name, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
 	}
+
 	if (idx_history >= 0) {
 		ERR_FAIL_INDEX(idx_history, history.size());
 		tab_bar->set_current_tab(idx_history);
 	}
+
 	updating_tabs = false;
 }
 
