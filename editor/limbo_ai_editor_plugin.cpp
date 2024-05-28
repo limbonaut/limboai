@@ -1014,6 +1014,7 @@ void LimboAIEditor::_tab_input(const Ref<InputEvent> &p_input) {
 void LimboAIEditor::_show_tab_context_menu() {
 	tab_menu->clear();
 	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
+	tab_menu->add_item(TTR("Open Owner Scene"), TabMenu::TAB_OPEN_OWNER);
 	tab_menu->add_separator();
 	tab_menu->add_item(TTR("Close Tab"), TabMenu::TAB_CLOSE);
 	tab_menu->add_item(TTR("Close Other Tabs"), TabMenu::TAB_CLOSE_OTHER);
@@ -1032,6 +1033,14 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 			String path = bt->get_path();
 			if (!path.is_empty()) {
 				FS_DOCK_SELECT_FILE(path.get_slice("::", 0));
+			}
+		} break;
+		case TAB_OPEN_OWNER: {
+			Ref<BehaviorTree> bt = history[idx_history];
+			ERR_FAIL_NULL(bt);
+			String bt_path = bt->get_path();
+			if (!bt_path.is_empty()) {
+				owner_picker->show(bt_path);
 			}
 		} break;
 		case TAB_CLOSE: {
@@ -1449,6 +1458,9 @@ LimboAIEditor::LimboAIEditor() {
 
 	tab_menu = memnew(PopupMenu);
 	add_child(tab_menu);
+
+	owner_picker = memnew(OwnerPicker);
+	add_child(owner_picker);
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);
