@@ -36,9 +36,10 @@ protected:
 
 	void _notification(int p_what);
 
+	Vector<String> _find_owners(const String &p_path) const;
+
 public:
-	Vector<String> find_owners(const String &p_path) const;
-	void show(const String &p_path);
+	void pick_and_open_owner_of_resource(const String &p_path);
 
 	OwnerPicker();
 };

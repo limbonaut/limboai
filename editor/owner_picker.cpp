@@ -25,7 +25,7 @@
 #include <godot_cpp/classes/resource_loader.hpp>
 #endif
 
-Vector<String> OwnerPicker::find_owners(const String &p_path) const {
+Vector<String> OwnerPicker::_find_owners(const String &p_path) const {
 	Vector<String> owners;
 	List<EditorFileSystemDirectory *> dirs;
 
@@ -67,14 +67,14 @@ Vector<String> OwnerPicker::find_owners(const String &p_path) const {
 	return owners;
 }
 
-void OwnerPicker::show(const String &p_path) {
+void OwnerPicker::pick_and_open_owner_of_resource(const String &p_path) {
 	if (p_path.is_empty()) {
 		return;
 	}
 
 	owners_item_list->clear();
 
-	Vector<String> owners = find_owners(p_path);
+	Vector<String> owners = _find_owners(p_path);
 	for (int i = 0; i < owners.size(); i++) {
 		owners_item_list->add_item(owners[i]);
 	}
@@ -85,12 +85,12 @@ void OwnerPicker::show(const String &p_path) {
 	}
 
 	if (owners_item_list->get_item_count() == 1) {
-		// Open scene immediately if there is only one owner scene.
+		// Open owner immediately if there is only one owner.
 		_selection_confirmed();
 	} else if (owners_item_list->get_item_count() == 0) {
 		owners_item_list->hide();
 		set_title(TTR("Alert!"));
-		set_text(TTR("This behavior tree is not used by any scene."));
+		set_text(TTR("Couldn't find owner. Looks like it's not used by any other resource."));
 		reset_size();
 		popup_centered();
 	} else {
@@ -111,10 +111,10 @@ void OwnerPicker::_item_activated(int p_item) {
 void OwnerPicker::_selection_confirmed() {
 	for (int idx : owners_item_list->get_selected_items()) {
 		String owner_path = owners_item_list->get_item_text(idx);
-		if (RESOURCE_EXISTS(owner_path, "PackedScene")) {
+		if (RESOURCE_IS_SCENE_FILE(owner_path)) {
 			EditorInterface::get_singleton()->open_scene_from_path(owner_path);
 		} else {
-			RESOURCE_LOAD(owner_path, "");
+			EditorInterface::get_singleton()->edit_resource(RESOURCE_LOAD(owner_path, ""));
 		}
 	}
 }
@@ -133,7 +133,7 @@ void OwnerPicker::_bind_methods() {
 
 OwnerPicker::OwnerPicker() {
 	owners_item_list = memnew(ItemList);
-	// Note: In my tests, editor couldn't process open request for multiple scenes at once.
+	// Note: In my tests, editor couldn't process open request for multiple packed scenes at once.
 	owners_item_list->set_select_mode(ItemList::SELECT_SINGLE);
 	add_child(owners_item_list);
 }
