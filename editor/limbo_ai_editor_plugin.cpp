@@ -345,26 +345,31 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		return;
 	}
 
+	bool handled = false;
+
 	// * Global shortcuts.
 
 	if (LW_IS_SHORTCUT("limbo_ai/open_debugger", p_event)) {
 		_misc_option_selected(MISC_OPEN_DEBUGGER);
-		get_viewport()->set_input_as_handled();
+		handled = true;
 	}
 
 	// * When editor is on screen.
 
-	if (is_visible_in_tree()) {
+	if (!handled && is_visible_in_tree()) {
 		if (LW_IS_SHORTCUT("limbo_ai/jump_to_owner", p_event)) {
 			_tab_menu_option_selected(TAB_JUMP_TO_OWNER);
-			get_viewport()->set_input_as_handled();
-			return;
+			handled = true;
+		} else if (LW_IS_SHORTCUT("limbo_ai/close_tab", p_event)) {
+			_tab_menu_option_selected(TAB_CLOSE);
+			handled = true;
 		}
 	}
 
 	// * When editor is focused.
 
-	if (has_focus() || (get_viewport()->gui_get_focus_owner() && is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
+	if (!handled && (has_focus() || (get_viewport()->gui_get_focus_owner() && is_ancestor_of(get_viewport()->gui_get_focus_owner())))) {
+		handled = true;
 		if (LW_IS_SHORTCUT("limbo_ai/rename_task", p_event)) {
 			_action_selected(ACTION_RENAME);
 		} else if (LW_IS_SHORTCUT("limbo_ai/cut_task", p_event)) {
@@ -390,9 +395,11 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
 			_popup_file_dialog(load_dialog);
 		} else {
-			return;
+			handled = false;
 		}
+	}
 
+	if (handled) {
 		get_viewport()->set_input_as_handled();
 	}
 }
@@ -1021,10 +1028,10 @@ void LimboAIEditor::_tab_input(const Ref<InputEvent> &p_input) {
 
 void LimboAIEditor::_show_tab_context_menu() {
 	tab_menu->clear();
-	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
 	tab_menu->add_shortcut(LW_GET_SHORTCUT("limbo_ai/jump_to_owner"), TabMenu::TAB_JUMP_TO_OWNER);
+	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
 	tab_menu->add_separator();
-	tab_menu->add_item(TTR("Close Tab"), TabMenu::TAB_CLOSE);
+	tab_menu->add_shortcut(LW_GET_SHORTCUT("limbo_ai/close_tab"), TabMenu::TAB_CLOSE);
 	tab_menu->add_item(TTR("Close Other Tabs"), TabMenu::TAB_CLOSE_OTHER);
 	tab_menu->add_item(TTR("Close Tabs to the Right"), TabMenu::TAB_CLOSE_RIGHT);
 	tab_menu->add_item(TTR("Close All Tabs"), TabMenu::TAB_CLOSE_ALL);
@@ -1034,7 +1041,12 @@ void LimboAIEditor::_show_tab_context_menu() {
 }
 
 void LimboAIEditor::_tab_menu_option_selected(int p_id) {
+	if (history.size() == 0) {
+		// No tabs open, returning.
+		return;
+	}
 	ERR_FAIL_INDEX(idx_history, history.size());
+
 	switch (p_id) {
 		case TAB_SHOW_IN_FILESYSTEM: {
 			Ref<BehaviorTree> bt = history[idx_history];
@@ -1365,6 +1377,7 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
 	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
+	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
 
 	set_process_shortcut_input(true);
 
