@@ -345,48 +345,63 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		return;
 	}
 
+	bool handled = false;
+
 	// * Global shortcuts.
 
 	if (LW_IS_SHORTCUT("limbo_ai/open_debugger", p_event)) {
 		_misc_option_selected(MISC_OPEN_DEBUGGER);
+		handled = true;
+	}
+
+	// * When editor is on screen.
+
+	if (!handled && is_visible_in_tree()) {
+		if (LW_IS_SHORTCUT("limbo_ai/jump_to_owner", p_event)) {
+			_tab_menu_option_selected(TAB_JUMP_TO_OWNER);
+			handled = true;
+		} else if (LW_IS_SHORTCUT("limbo_ai/close_tab", p_event)) {
+			_tab_menu_option_selected(TAB_CLOSE);
+			handled = true;
+		}
+	}
+
+	// * When editor is focused.
+
+	if (!handled && (has_focus() || (get_viewport()->gui_get_focus_owner() && is_ancestor_of(get_viewport()->gui_get_focus_owner())))) {
+		handled = true;
+		if (LW_IS_SHORTCUT("limbo_ai/rename_task", p_event)) {
+			_action_selected(ACTION_RENAME);
+		} else if (LW_IS_SHORTCUT("limbo_ai/cut_task", p_event)) {
+			_action_selected(ACTION_CUT);
+		} else if (LW_IS_SHORTCUT("limbo_ai/copy_task", p_event)) {
+			_action_selected(ACTION_COPY);
+		} else if (LW_IS_SHORTCUT("limbo_ai/paste_task", p_event)) {
+			_action_selected(ACTION_PASTE);
+		} else if (LW_IS_SHORTCUT("limbo_ai/paste_task_after", p_event)) {
+			_action_selected(ACTION_PASTE_AFTER);
+		} else if (LW_IS_SHORTCUT("limbo_ai/move_task_up", p_event)) {
+			_action_selected(ACTION_MOVE_UP);
+		} else if (LW_IS_SHORTCUT("limbo_ai/move_task_down", p_event)) {
+			_action_selected(ACTION_MOVE_DOWN);
+		} else if (LW_IS_SHORTCUT("limbo_ai/duplicate_task", p_event)) {
+			_action_selected(ACTION_DUPLICATE);
+		} else if (LW_IS_SHORTCUT("limbo_ai/remove_task", p_event)) {
+			_action_selected(ACTION_REMOVE);
+		} else if (LW_IS_SHORTCUT("limbo_ai/new_behavior_tree", p_event)) {
+			_new_bt();
+		} else if (LW_IS_SHORTCUT("limbo_ai/save_behavior_tree", p_event)) {
+			_on_save_pressed();
+		} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
+			_popup_file_dialog(load_dialog);
+		} else {
+			handled = false;
+		}
+	}
+
+	if (handled) {
 		get_viewport()->set_input_as_handled();
 	}
-
-	// * Local shortcuts.
-
-	if (!(has_focus() || get_viewport()->gui_get_focus_owner() == nullptr || is_ancestor_of(get_viewport()->gui_get_focus_owner()))) {
-		return;
-	}
-
-	if (LW_IS_SHORTCUT("limbo_ai/rename_task", p_event)) {
-		_action_selected(ACTION_RENAME);
-	} else if (LW_IS_SHORTCUT("limbo_ai/cut_task", p_event)) {
-		_action_selected(ACTION_CUT);
-	} else if (LW_IS_SHORTCUT("limbo_ai/copy_task", p_event)) {
-		_action_selected(ACTION_COPY);
-	} else if (LW_IS_SHORTCUT("limbo_ai/paste_task", p_event)) {
-		_action_selected(ACTION_PASTE);
-	} else if (LW_IS_SHORTCUT("limbo_ai/paste_task_after", p_event)) {
-		_action_selected(ACTION_PASTE_AFTER);
-	} else if (LW_IS_SHORTCUT("limbo_ai/move_task_up", p_event)) {
-		_action_selected(ACTION_MOVE_UP);
-	} else if (LW_IS_SHORTCUT("limbo_ai/move_task_down", p_event)) {
-		_action_selected(ACTION_MOVE_DOWN);
-	} else if (LW_IS_SHORTCUT("limbo_ai/duplicate_task", p_event)) {
-		_action_selected(ACTION_DUPLICATE);
-	} else if (LW_IS_SHORTCUT("limbo_ai/remove_task", p_event)) {
-		_action_selected(ACTION_REMOVE);
-	} else if (LW_IS_SHORTCUT("limbo_ai/new_behavior_tree", p_event)) {
-		_new_bt();
-	} else if (LW_IS_SHORTCUT("limbo_ai/save_behavior_tree", p_event)) {
-		_on_save_pressed();
-	} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
-		_popup_file_dialog(load_dialog);
-	} else {
-		return;
-	}
-
-	get_viewport()->set_input_as_handled();
 }
 
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
@@ -1013,9 +1028,10 @@ void LimboAIEditor::_tab_input(const Ref<InputEvent> &p_input) {
 
 void LimboAIEditor::_show_tab_context_menu() {
 	tab_menu->clear();
+	tab_menu->add_shortcut(LW_GET_SHORTCUT("limbo_ai/jump_to_owner"), TabMenu::TAB_JUMP_TO_OWNER);
 	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
 	tab_menu->add_separator();
-	tab_menu->add_item(TTR("Close Tab"), TabMenu::TAB_CLOSE);
+	tab_menu->add_shortcut(LW_GET_SHORTCUT("limbo_ai/close_tab"), TabMenu::TAB_CLOSE);
 	tab_menu->add_item(TTR("Close Other Tabs"), TabMenu::TAB_CLOSE_OTHER);
 	tab_menu->add_item(TTR("Close Tabs to the Right"), TabMenu::TAB_CLOSE_RIGHT);
 	tab_menu->add_item(TTR("Close All Tabs"), TabMenu::TAB_CLOSE_ALL);
@@ -1025,13 +1041,26 @@ void LimboAIEditor::_show_tab_context_menu() {
 }
 
 void LimboAIEditor::_tab_menu_option_selected(int p_id) {
+	if (history.size() == 0) {
+		// No tabs open, returning.
+		return;
+	}
 	ERR_FAIL_INDEX(idx_history, history.size());
+
 	switch (p_id) {
 		case TAB_SHOW_IN_FILESYSTEM: {
 			Ref<BehaviorTree> bt = history[idx_history];
 			String path = bt->get_path();
 			if (!path.is_empty()) {
 				FS_DOCK_SELECT_FILE(path.get_slice("::", 0));
+			}
+		} break;
+		case TAB_JUMP_TO_OWNER: {
+			Ref<BehaviorTree> bt = history[idx_history];
+			ERR_FAIL_NULL(bt);
+			String bt_path = bt->get_path();
+			if (!bt_path.is_empty()) {
+				owner_picker->pick_and_open_owner_of_resource(bt_path);
 			}
 		} break;
 		case TAB_CLOSE: {
@@ -1347,6 +1376,8 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(S)));
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
+	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
+	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
 
 	set_process_shortcut_input(true);
 
@@ -1449,6 +1480,9 @@ LimboAIEditor::LimboAIEditor() {
 
 	tab_menu = memnew(PopupMenu);
 	add_child(tab_menu);
+
+	owner_picker = memnew(OwnerPicker);
+	add_child(owner_picker);
 
 	hsc = memnew(HSplitContainer);
 	hsc->set_h_size_flags(SIZE_EXPAND_FILL);

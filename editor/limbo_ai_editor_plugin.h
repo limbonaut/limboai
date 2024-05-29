@@ -17,6 +17,7 @@
 #include "../bt/behavior_tree.h"
 #include "../bt/tasks/bt_task.h"
 #include "editor_property_variable_name.h"
+#include "owner_picker.h"
 #include "task_palette.h"
 #include "task_tree.h"
 
@@ -101,6 +102,7 @@ private:
 
 	enum TabMenu {
 		TAB_SHOW_IN_FILESYSTEM,
+		TAB_JUMP_TO_OWNER,
 		TAB_CLOSE,
 		TAB_CLOSE_OTHER,
 		TAB_CLOSE_RIGHT,
@@ -139,6 +141,7 @@ private:
 	HBoxContainer *tab_bar_container;
 	TabBar *tab_bar;
 	PopupMenu *tab_menu;
+	OwnerPicker *owner_picker;
 	HSplitContainer *hsc;
 	TaskTree *task_tree;
 	VBoxContainer *banners;

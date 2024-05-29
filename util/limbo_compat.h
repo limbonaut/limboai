@@ -42,8 +42,8 @@
 #define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::load(m_path, m_hint, ResourceFormatLoader::CACHE_MODE_IGNORE)
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::save(m_res, m_path, m_flags)
 #define RESOURCE_IS_CACHED(m_path) (ResourceCache::has(m_path))
-#define RESOURCE_GET_TYPE(m_path) (ResourceLoader::get_resource_type(m_path))
 #define RESOURCE_EXISTS(m_path, m_type_hint) (ResourceLoader::exists(m_path, m_type_hint))
+#define RESOURCE_IS_SCENE_FILE(m_path) (ResourceLoader::get_resource_type(m_path) == "PackedScene")
 #define GET_PROJECT_SETTINGS_DIR() EditorPaths::get_singleton()->get_project_settings_dir()
 #define EDIT_RESOURCE(m_res) EditorNode::get_singleton()->edit_resource(m_res)
 #define INSPECTOR_GET_EDITED_OBJECT() (InspectorDock::get_inspector_singleton()->get_edited_object())
@@ -127,7 +127,7 @@ using namespace godot;
 #define RESOURCE_LOAD_NO_CACHE(m_path, m_hint) ResourceLoader::get_singleton()->load(m_path, m_hint, ResourceLoader::CACHE_MODE_IGNORE)
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::get_singleton()->save(m_res, m_path, m_flags)
 #define RESOURCE_IS_CACHED(m_path) (ResourceLoader::get_singleton()->has_cached(res_path))
-#define RESOURCE_GET_TYPE(m_path) (ResourceLoader::get_resource_type(m_path))
+#define RESOURCE_IS_SCENE_FILE(m_path) (ResourceLoader::get_singleton()->get_recognized_extensions_for_type("PackedScene").has(m_path.get_extension()))
 #define RESOURCE_EXISTS(m_path, m_type_hint) (ResourceLoader::get_singleton()->exists(m_path, m_type_hint))
 #define GET_PROJECT_SETTINGS_DIR() EditorInterface::get_singleton()->get_editor_paths()->get_project_settings_dir()
 #define EDIT_RESOURCE(m_res) EditorInterface::get_singleton()->edit_resource(m_res)
@@ -237,6 +237,7 @@ Variant VARIANT_DEFAULT(Variant::Type p_type);
 #define IS_RESOURCE_FILE(m_path) (m_path.begins_with("res://") && m_path.find("::") == -1)
 #define RESOURCE_TYPE_HINT(m_type) vformat("%s/%s:%s", Variant::OBJECT, PROPERTY_HINT_RESOURCE_TYPE, m_type)
 #define RESOURCE_IS_BUILT_IN(m_res) (m_res->get_path().is_empty() || m_res->get_path().contains("::"))
+#define RESOURCE_PATH_IS_BUILT_IN(m_path) (m_path.is_empty() || m_path.contains("::"))
 
 #ifdef TOOLS_ENABLED
 
