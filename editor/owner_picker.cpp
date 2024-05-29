@@ -27,10 +27,16 @@
 
 Vector<String> OwnerPicker::_find_owners(const String &p_path) const {
 	Vector<String> owners;
+
+	if (RESOURCE_PATH_IS_BUILT_IN(p_path)) {
+		// For built-in resources we use the path to the containing resource.
+		String owner_path = p_path.substr(0, p_path.rfind("::"));
+		owners.append(owner_path);
+		return owners;
+	}
+
 	List<EditorFileSystemDirectory *> dirs;
-
 	dirs.push_back(EDITOR_FILE_SYSTEM()->get_filesystem());
-
 	while (dirs.size() > 0) {
 		EditorFileSystemDirectory *efd = dirs.front()->get();
 		dirs.pop_front();
