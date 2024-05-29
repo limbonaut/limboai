@@ -382,6 +382,8 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		_on_save_pressed();
 	} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
 		_popup_file_dialog(load_dialog);
+	} else if (LW_IS_SHORTCUT("limbo_ai/jump_to_owner", p_event)) {
+		_tab_menu_option_selected(TAB_JUMP_TO_OWNER);
 	} else {
 		return;
 	}
@@ -1014,7 +1016,7 @@ void LimboAIEditor::_tab_input(const Ref<InputEvent> &p_input) {
 void LimboAIEditor::_show_tab_context_menu() {
 	tab_menu->clear();
 	tab_menu->add_item(TTR("Show in FileSystem"), TabMenu::TAB_SHOW_IN_FILESYSTEM);
-	tab_menu->add_item(TTR("Jump to Owner"), TabMenu::TAB_JUMP_TO_OWNER);
+	tab_menu->add_shortcut(LW_GET_SHORTCUT("limbo_ai/jump_to_owner"), TabMenu::TAB_JUMP_TO_OWNER);
 	tab_menu->add_separator();
 	tab_menu->add_item(TTR("Close Tab"), TabMenu::TAB_CLOSE);
 	tab_menu->add_item(TTR("Close Other Tabs"), TabMenu::TAB_CLOSE_OTHER);
@@ -1356,6 +1358,7 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(S)));
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
+	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
 
 	set_process_shortcut_input(true);
 
