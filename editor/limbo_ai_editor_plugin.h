@@ -34,6 +34,7 @@
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/link_button.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
@@ -55,6 +56,7 @@
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/h_split_container.hpp>
 #include <godot_cpp/classes/input_event.hpp>
+#include <godot_cpp/classes/link_button.hpp>
 #include <godot_cpp/classes/menu_button.hpp>
 #include <godot_cpp/classes/panel.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
@@ -139,6 +141,7 @@ private:
 	VBoxContainer *vbox;
 	PanelContainer *tab_bar_panel;
 	HBoxContainer *tab_bar_container;
+	LinkButton *version_btn;
 	TabBar *tab_bar;
 	PopupMenu *tab_menu;
 	OwnerPicker *owner_picker;
@@ -225,6 +228,7 @@ private:
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 	void _on_resources_reload(const PackedStringArray &p_resources);
 	void _task_type_selected(const String &p_class_or_path);
+	void _copy_version_info();
 
 	void _edit_project_settings();
 	void _process_shortcut_input(const Ref<InputEvent> &p_event);
