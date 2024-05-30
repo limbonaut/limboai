@@ -20,6 +20,7 @@
 #include "../bt/tasks/decorators/bt_subtree.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
+#include "../util/limboai_version.h"
 #include "action_banner.h"
 #include "blackboard_plan_editor.h"
 #include "debugger/limbo_debugger_plugin.h"
@@ -895,6 +896,10 @@ void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
 	_mark_as_dirty(true);
 }
 
+void LimboAIEditor::_copy_version_info() {
+	DisplayServer::get_singleton()->clipboard_set(version_btn->get_text());
+}
+
 void LimboAIEditor::_replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(p_by_task.is_null());
@@ -1321,6 +1326,7 @@ void LimboAIEditor::_notification(int p_what) {
 			tab_bar->connect(LW_NAME(gui_input), callable_mp(this, &LimboAIEditor::_tab_input));
 			tab_menu->connect(LW_NAME(id_pressed), callable_mp(this, &LimboAIEditor::_tab_menu_option_selected));
 			tab_bar->connect("tab_button_pressed", callable_mp(this, &LimboAIEditor::_tab_plan_edited));
+			version_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_copy_version_info));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 
@@ -1459,9 +1465,26 @@ LimboAIEditor::LimboAIEditor() {
 	misc_btn->set_flat(true);
 	toolbar->add_child(misc_btn);
 
-	HBoxContainer *nav = memnew(HBoxContainer);
-	nav->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
-	toolbar->add_child(nav);
+	HBoxContainer *toolbar_end_hbox = memnew(HBoxContainer);
+	toolbar_end_hbox->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
+	toolbar->add_child(toolbar_end_hbox);
+
+	TextureRect *logo = memnew(TextureRect);
+	logo->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
+	logo->set_texture(LimboUtility::get_singleton()->get_task_icon("LimboAI"));
+	toolbar_end_hbox->add_child(logo);
+
+	version_btn = memnew(LinkButton);
+	version_btn->set_text(TTR("v") + String(GET_LIMBOAI_FULL_VERSION()));
+	version_btn->set_tooltip_text(TTR("Click to copy."));
+	version_btn->set_self_modulate(Color(1, 1, 1, 0.65));
+	version_btn->set_underline_mode(LinkButton::UNDERLINE_MODE_ON_HOVER);
+	version_btn->set_v_size_flags(SIZE_SHRINK_CENTER);
+	toolbar_end_hbox->add_child(version_btn);
+
+	Control *version_spacer = memnew(Control);
+	version_spacer->set_custom_minimum_size(Size2(2, 0) * EDSCALE);
+	toolbar_end_hbox->add_child(version_spacer);
 
 	tab_bar_panel = memnew(PanelContainer);
 	vbox->add_child(tab_bar_panel);
