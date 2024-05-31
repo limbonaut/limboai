@@ -50,6 +50,11 @@ public:
 	void set_var(const StringName &p_name, const Variant &p_value);
 	bool has_var(const StringName &p_name) const;
 	void erase_var(const StringName &p_name);
+	void clear() { data.clear(); }
+	TypedArray<StringName> list_vars() const;
+
+	Dictionary get_vars_as_dict() const;
+	void populate_from_dict(const Dictionary &p_dictionary);
 
 	void bind_var_to_property(const StringName &p_name, Object *p_object, const StringName &p_property, bool p_create = false);
 	void unbind_var(const StringName &p_name);
@@ -57,8 +62,6 @@ public:
 	void assign_var(const StringName &p_name, const BBVariable &p_var);
 
 	void link_var(const StringName &p_name, const Ref<Blackboard> &p_target_blackboard, const StringName &p_target_var, bool p_create = false);
-
-	// TODO: Add serialization API.
 };
 
 #endif // BLACKBOARD_H
