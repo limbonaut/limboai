@@ -260,14 +260,14 @@ void BlackboardPlanEditor::_refresh() {
 
 	nodepath_prefetching->set_pressed(plan->is_prefetching_nodepath_vars());
 
-	PackedStringArray names = plan->list_vars();
-	int idx = 0;
-	for (const String &var_name : names) {
+	TypedArray<StringName> names = plan->list_vars();
+	for (int i = 0; i < names.size(); i++) {
+		const String &var_name = names[i];
 		BBVariable var = plan->get_var(var_name);
 
 		PanelContainer *row_panel = memnew(PanelContainer);
 		rows_vbox->add_child(row_panel);
-		ADD_STYLEBOX_OVERRIDE(row_panel, LW_NAME(panel), idx % 2 ? theme_cache.odd_style : theme_cache.even_style);
+		ADD_STYLEBOX_OVERRIDE(row_panel, LW_NAME(panel), i % 2 ? theme_cache.odd_style : theme_cache.even_style);
 		row_panel->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
 		HBoxContainer *props_hbox = memnew(HBoxContainer);
@@ -288,7 +288,7 @@ void BlackboardPlanEditor::_refresh() {
 		name_edit->set_placeholder(TTR("Variable name"));
 		name_edit->set_flat(true);
 		name_edit->set_custom_minimum_size(Size2(300.0, 0.0) * EDSCALE);
-		name_edit->connect(LW_NAME(text_changed), callable_mp(this, &BlackboardPlanEditor::_rename_var).bind(idx));
+		name_edit->connect(LW_NAME(text_changed), callable_mp(this, &BlackboardPlanEditor::_rename_var).bind(i));
 		name_edit->connect(LW_NAME(text_submitted), callable_mp(this, &BlackboardPlanEditor::_refresh).unbind(1));
 
 		Button *type_choice = memnew(Button);
@@ -300,7 +300,7 @@ void BlackboardPlanEditor::_refresh() {
 		type_choice->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
 		type_choice->set_flat(true);
 		type_choice->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
-		type_choice->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_show_button_popup).bind(type_choice, type_menu, idx));
+		type_choice->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_show_button_popup).bind(type_choice, type_menu, i));
 
 		Button *hint_choice = memnew(Button);
 		props_hbox->add_child(hint_choice);
@@ -310,7 +310,7 @@ void BlackboardPlanEditor::_refresh() {
 		hint_choice->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
 		hint_choice->set_flat(true);
 		hint_choice->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
-		hint_choice->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_show_button_popup).bind(hint_choice, hint_menu, idx));
+		hint_choice->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_show_button_popup).bind(hint_choice, hint_menu, i));
 
 		LineEdit *hint_string_edit = memnew(LineEdit);
 		props_hbox->add_child(hint_string_edit);
@@ -319,16 +319,14 @@ void BlackboardPlanEditor::_refresh() {
 		hint_string_edit->set_placeholder(TTR("Hint string"));
 		hint_string_edit->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 		hint_string_edit->set_flat(true);
-		hint_string_edit->connect(LW_NAME(text_changed), callable_mp(this, &BlackboardPlanEditor::_change_var_hint_string).bind(idx));
+		hint_string_edit->connect(LW_NAME(text_changed), callable_mp(this, &BlackboardPlanEditor::_change_var_hint_string).bind(i));
 		hint_string_edit->connect(LW_NAME(text_submitted), callable_mp(this, &BlackboardPlanEditor::_refresh).unbind(1));
 
 		Button *trash_button = memnew(Button);
 		props_hbox->add_child(trash_button);
 		trash_button->set_custom_minimum_size(Size2(24.0, 0.0) * EDSCALE);
 		BUTTON_SET_ICON(trash_button, theme_cache.trash_icon);
-		trash_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_trash_var).bind(idx));
-
-		idx += 1;
+		trash_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_trash_var).bind(i));
 	}
 }
 

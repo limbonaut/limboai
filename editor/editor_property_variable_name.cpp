@@ -40,10 +40,9 @@ void EditorPropertyVariableName::_show_variables_popup() {
 
 	variables_popup->clear();
 	variables_popup->reset_size();
-	int idx = 0;
-	for (String var_name : plan->list_vars()) {
-		variables_popup->add_item(var_name, idx);
-		idx += 1;
+	TypedArray<StringName> var_names = plan->list_vars();
+	for (int i = 0; i < var_names.size(); i++) {
+		variables_popup->add_item(var_names[i], i);
 	}
 
 	Transform2D xform = name_edit->get_screen_transform();
