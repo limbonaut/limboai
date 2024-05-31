@@ -8,8 +8,10 @@ doc_branch = "latest"
 
 # Code that generates version header
 
+
 def _git_hash(short: bool = False):
     import subprocess
+
     ret = "unknown"
     try:
         if short:
@@ -31,7 +33,7 @@ def _get_version_info():
         "status": status,
         "doc_branch": doc_branch,
         "git_short_hash": _git_hash(short=True),
-        "git_hash": _git_hash(short=False)
+        "git_hash": _git_hash(short=False),
     }
 
 
@@ -55,5 +57,8 @@ def generate_module_version_header():
 #define LIMBOAI_VERSION_DOC_URL "https://limboai.readthedocs.io/en/" LIMBOAI_VERSION_DOC_BRANCH "/"
 
 #endif // LIMBOAI_VERSION_GEN_H
-""".format(**version_info))
+""".format(
+            **version_info
+        )
+    )
     f.close()
