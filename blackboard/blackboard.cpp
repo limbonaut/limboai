@@ -106,7 +106,7 @@ void Blackboard::bind_var_to_property(const StringName &p_name, Object *p_object
 }
 
 void Blackboard::unbind_var(const StringName &p_name) {
-	ERR_FAIL_COND_MSG(data.has(p_name), "Blackboard: Can't unbind variable that doesn't exist (var: " + p_name + ").");
+	ERR_FAIL_COND_MSG(!data.has(p_name), "Blackboard: Can't unbind variable that doesn't exist (var: " + p_name + ").");
 	data[p_name].unbind();
 }
 
@@ -128,7 +128,7 @@ void Blackboard::link_var(const StringName &p_name, const Ref<Blackboard> &p_tar
 }
 
 void Blackboard::_bind_methods() {
-	ClassDB::bind_method(D_METHOD("get_var", "var_name", "default", "complain"), &Blackboard::get_var, Variant(), true);
+	ClassDB::bind_method(D_METHOD("get_var", "var_name", "default", "complain"), &Blackboard::get_var, DEFVAL(Variant()), DEFVAL(true));
 	ClassDB::bind_method(D_METHOD("set_var", "var_name", "value"), &Blackboard::set_var);
 	ClassDB::bind_method(D_METHOD("has_var", "var_name"), &Blackboard::has_var);
 	ClassDB::bind_method(D_METHOD("set_parent", "blackboard"), &Blackboard::set_parent);

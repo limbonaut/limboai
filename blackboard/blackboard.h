@@ -46,7 +46,7 @@ public:
 
 	Ref<Blackboard> top() const;
 
-	Variant get_var(const StringName &p_name, const Variant &p_default, bool p_complain = true) const;
+	Variant get_var(const StringName &p_name, const Variant &p_default = Variant(), bool p_complain = true) const;
 	void set_var(const StringName &p_name, const Variant &p_value);
 	bool has_var(const StringName &p_name) const;
 	void erase_var(const StringName &p_name);
