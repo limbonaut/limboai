@@ -15,6 +15,7 @@ env = SConscript("godot-cpp/SConstruct")
 # Generate version header.
 sys.path.append("./limboai")
 import limboai_version
+
 os.chdir("./limboai")
 limboai_version.generate_module_version_header()
 os.chdir("..")

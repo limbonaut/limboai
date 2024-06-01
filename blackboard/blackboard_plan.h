@@ -76,7 +76,7 @@ public:
 	_FORCE_INLINE_ bool is_empty() const { return var_map.is_empty(); }
 	int get_var_count() const { return var_map.size(); }
 
-	PackedStringArray list_vars() const;
+	TypedArray<StringName> list_vars() const;
 	StringName get_var_name(const BBVariable &p_var) const;
 	bool is_valid_var_name(const StringName &p_name) const;
 	void rename_var(const StringName &p_name, const StringName &p_new_name);

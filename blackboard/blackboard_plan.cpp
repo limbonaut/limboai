@@ -240,8 +240,8 @@ Pair<StringName, BBVariable> BlackboardPlan::get_var_by_index(int p_index) {
 	return var_list[p_index];
 }
 
-PackedStringArray BlackboardPlan::list_vars() const {
-	PackedStringArray ret;
+TypedArray<StringName> BlackboardPlan::list_vars() const {
+	TypedArray<StringName> ret;
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		ret.append(p.first);
 	}
