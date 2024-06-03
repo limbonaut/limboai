@@ -32,6 +32,7 @@ class LimboState : public Node {
 	GDCLASS(LimboState, Node);
 
 private:
+	bool active;
 	Ref<BlackboardPlan> blackboard_plan;
 	Node *agent;
 	Ref<Blackboard> blackboard;
@@ -42,8 +43,6 @@ private:
 
 protected:
 	friend LimboHSM;
-
-	bool active;
 
 	static void _bind_methods();
 
@@ -87,7 +86,7 @@ public:
 	_FORCE_INLINE_ StringName event_finished() const { return LW_NAME(EVENT_FINISHED); }
 	LimboState *get_root() const;
 	_FORCE_INLINE_ bool is_root() const { return !(get_parent() && IS_CLASS(get_parent(), LimboState)); }
-	bool is_active() const { return active; }
+	_FORCE_INLINE_ bool is_active() const { return active; }
 
 	void set_guard(const Callable &p_guard_callable);
 	void clear_guard();
