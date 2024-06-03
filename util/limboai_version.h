@@ -22,7 +22,7 @@
 
 inline String GET_LIMBOAI_VERSION() {
 	String version = itos(LIMBOAI_VERSION_MAJOR) + "." + itos(LIMBOAI_VERSION_MINOR);
-	if (LIMBOAI_VERSION_PATCH != 0) {
+	if (LIMBOAI_VERSION_PATCH != 0 || strlen(LIMBOAI_VERSION_STATUS) == 0) {
 		version += "." + itos(LIMBOAI_VERSION_PATCH);
 	}
 	if (strlen(LIMBOAI_VERSION_STATUS) > 0) {
