@@ -3,7 +3,7 @@
 major = 1
 minor = 1
 patch = 0
-status = "dev"
+status = "rc"
 doc_branch = "latest"
 
 # Code that generates version header
