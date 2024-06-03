@@ -118,31 +118,31 @@ bool BTTask::is_displayed_collapsed() const {
 }
 
 String BTTask::get_task_name() {
-	if (data.custom_name.is_empty()) {
-#ifdef LIMBOAI_MODULE
-		if (get_script_instance() && get_script_instance()->has_method(LW_NAME(_generate_name))) {
-			if (unlikely(!get_script_instance()->get_script()->is_tool())) {
-				ERR_PRINT(vformat("BTTask: Task script should be a \"tool\" script!"));
-			} else {
-				return get_script_instance()->call(LimboStringNames::get_singleton()->_generate_name);
-			}
-		}
-		return _generate_name();
-#elif LIMBOAI_GDEXTENSION
-		Ref<Script> task_script = get_script();
-		if (task_script.is_valid() && task_script->is_tool()) {
-			Variant call_result;
-			VCALL_OR_NATIVE_V(_generate_name, Variant, call_result);
-			ERR_FAIL_COND_V(call_result.get_type() == Variant::NIL, _generate_name());
-			String task_name = call_result;
-			ERR_FAIL_COND_V(task_name.is_empty(), _generate_name());
-			return task_name;
-		} else {
-			return _generate_name();
-		}
-#endif
+	if (!data.custom_name.is_empty()) {
+		return data.custom_name;
 	}
-	return data.custom_name;
+
+	Ref<Script> task_script = get_script();
+
+	if (task_script.is_valid()) {
+		bool has_generate_method = has_method(LW_NAME(_generate_name));
+		ERR_FAIL_COND_V_MSG(has_generate_method && !task_script->is_tool(), _generate_name(), vformat("BTTask: @tool annotation is required if _generate_name is defined: %s", task_script->get_path()));
+		if (task_script->is_tool() && has_generate_method) {
+			String call_result;
+			VCALL_V(_generate_name, call_result);
+			if (call_result.is_empty() || call_result == "<null>") {
+				// Force reset script instance.
+				set_script(Variant());
+				set_script(task_script);
+				// Retry.
+				VCALL_V(_generate_name, call_result);
+			}
+			ERR_FAIL_COND_V_MSG(call_result.is_empty() || call_result == "<null>", _generate_name(), vformat("BTTask: _generate_name() failed to return a proper name string (%s)", task_script->get_path()));
+			return call_result;
+		}
+	}
+
+	return _generate_name();
 }
 
 Ref<BTTask> BTTask::get_root() const {

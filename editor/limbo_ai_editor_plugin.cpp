@@ -124,25 +124,35 @@ void LimboAIEditor::_add_task_with_prototype(const Ref<BTTask> &p_prototype) {
 }
 
 Ref<BTTask> LimboAIEditor::_create_task_by_class_or_path(const String &p_class_or_path) const {
+	ERR_FAIL_COND_V(p_class_or_path.is_empty(), nullptr);
+
 	Ref<BTTask> ret;
 
 	if (p_class_or_path.begins_with("res:")) {
 		Ref<Script> s = RESOURCE_LOAD(p_class_or_path, "Script");
-		ERR_FAIL_COND_V_MSG(s.is_null(), nullptr, vformat("LimboAI: Failed to instantiate task. Bad script: %s", p_class_or_path));
-		Variant inst = ClassDB::instantiate(s->get_instance_base_type());
-		ERR_FAIL_COND_V_MSG(inst == Variant(), nullptr, vformat("LimboAI: Failed to instantiate base type \"%s\".", s->get_instance_base_type()));
+		ERR_FAIL_COND_V_MSG(s.is_null(), nullptr, vformat("LimboAI: Can't add task. Bad script: %s", p_class_or_path));
+		StringName base_type = s->get_instance_base_type();
+		if (base_type == StringName()) {
+			// Try reloading script.
+			s->reload(true);
+			base_type = s->get_instance_base_type();
+		}
+		ERR_FAIL_COND_V_MSG(base_type == StringName(), nullptr, vformat("LimboAI: Can't add task. Bad script: %s", p_class_or_path));
 
-		if (unlikely(!((Object *)inst)->is_class("BTTask"))) {
+		Variant inst = ClassDB::instantiate(base_type);
+		Object *obj = inst;
+		ERR_FAIL_NULL_V_MSG(obj, nullptr, vformat("LimboAI: Can't add task. Failed to create base type \"%s\".", base_type));
+
+		if (unlikely(!IS_CLASS(obj, BTTask))) {
+			ERR_PRINT_ED(vformat("LimboAI: Can't add task. Script is not a BTTask: %s", p_class_or_path));
 			VARIANT_DELETE_IF_OBJECT(inst);
-			ERR_PRINT(vformat("LimboAI: Failed to instantiate task. Script is not a BTTask: %s", p_class_or_path));
 			return nullptr;
 		}
 
-		if (inst && s.is_valid()) {
-			((Object *)inst)->set_script(s);
-			ret = inst;
-		}
+		ret.reference_ptr(Object::cast_to<BTTask>(obj));
+		ret->set_script(s);
 	} else {
+		ERR_FAIL_COND_V(!ClassDB::is_parent_class(p_class_or_path, "BTTask"), nullptr);
 		ret = ClassDB::instantiate(p_class_or_path);
 	}
 	return ret;
