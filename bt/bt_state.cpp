@@ -74,7 +74,7 @@ void BTState::_exit() {
 
 void BTState::_update(double p_delta) {
 	VCALL_ARGS(_update, p_delta);
-	if (!active) {
+	if (!is_active()) {
 		// Bail out if a transition happened in the meantime.
 		return;
 	}
