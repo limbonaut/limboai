@@ -153,21 +153,31 @@ void BTPlayer::restart() {
 void BTPlayer::_set_monitor_performance(bool p_monitor_performance) {
 	monitor_performance = p_monitor_performance;
 
-	if (!get_owner()) {
+	if (!get_owner() && monitor_performance) {
+		// Don't add custom monitor if not in scene.
 		return;
 	}
 
-	Performance *perf = Performance::get_singleton();
 	if (monitor_performance) {
-		if (monitor_id == StringName()) {
-			monitor_id = vformat("limboai/update_ms|%s_%s_%s", get_owner()->get_name(), get_name(),
-					String(itos(get_instance_id())).md5_text().substr(0, 4));
-		}
-		if (!perf->has_custom_monitor(monitor_id)) {
-			PERFORMANCE_ADD_CUSTOM_MONITOR(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec));
-		}
-	} else if (monitor_id != StringName() && perf->has_custom_monitor(monitor_id)) {
-		perf->remove_custom_monitor(monitor_id);
+		_add_custom_monitor();
+	} else {
+		_remove_custom_monitor();
+	}
+}
+
+void BTPlayer::_add_custom_monitor() {
+	if (monitor_id == StringName()) {
+		monitor_id = vformat("LimboAI/update_ms|%s_%s_%s", get_owner()->get_name(), get_name(),
+				String(itos(get_instance_id())).md5_text().substr(0, 4));
+	}
+	if (!Performance::get_singleton()->has_custom_monitor(monitor_id)) {
+		PERFORMANCE_ADD_CUSTOM_MONITOR(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec));
+	}
+}
+
+void BTPlayer::_remove_custom_monitor() {
+	if (monitor_id != StringName() && Performance::get_singleton()->has_custom_monitor(monitor_id)) {
+		Performance::get_singleton()->remove_custom_monitor(monitor_id);
 	}
 }
 
@@ -205,9 +215,6 @@ void BTPlayer::_notification(int p_notification) {
 					_load_tree();
 				}
 				set_active(active);
-#ifdef DEBUG_ENABLED
-				_set_monitor_performance(monitor_performance);
-#endif
 			} else {
 				_update_blackboard_plan();
 			}
@@ -217,12 +224,18 @@ void BTPlayer::_notification(int p_notification) {
 			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
 			}
+			if (monitor_performance) {
+				_add_custom_monitor();
+			}
 #endif // DEBUG_ENABLED
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 #ifdef DEBUG_ENABLED
 			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
 				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+			}
+			if (monitor_performance) {
+				_remove_custom_monitor();
 			}
 #endif // DEBUG_ENABLED
 
@@ -231,7 +244,6 @@ void BTPlayer::_notification(int p_notification) {
 					behavior_tree->disconnect(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
 				}
 			}
-
 		} break;
 	}
 }

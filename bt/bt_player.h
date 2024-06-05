@@ -92,6 +92,10 @@ private:
 
 	void _set_monitor_performance(bool p_monitor_performance);
 	bool _get_monitor_performance() const { return monitor_performance; }
+
+	void _add_custom_monitor();
+	void _remove_custom_monitor();
+
 	double _get_mean_update_time_msec();
 
 #endif // DEBUG_ENABLED
