@@ -384,7 +384,8 @@ void TaskTree::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_READY: {
 			tree->connect("item_mouse_selected", callable_mp(this, &TaskTree::_on_item_mouse_selected));
-			tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected));
+			// Note: CONNECT_DEFERRED is needed to avoid double updates with set_allow_reselect(true), which breaks folding/unfolding.
+			tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected), CONNECT_DEFERRED);
 			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 			tree->connect("item_collapsed", callable_mp(this, &TaskTree::_on_item_collapsed));
 		} break;
