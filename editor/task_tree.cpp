@@ -428,7 +428,6 @@ TaskTree::TaskTree() {
 	tree->set_columns(2);
 	tree->set_column_expand(0, true);
 	tree->set_column_expand(1, false);
-	tree->set_column_custom_minimum_width(1, 64);
 	tree->set_anchor(SIDE_RIGHT, ANCHOR_END);
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	tree->set_allow_rmb_select(true);
