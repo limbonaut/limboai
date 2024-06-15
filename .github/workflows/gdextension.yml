@@ -280,13 +280,14 @@ jobs:
           rm out/project.godot
           rm -rf out/.godot/
 
-      - name: Change editor scale import settings
+      - name: Change editor icon import settings
         shell: bash
         run: |
           echo "--- Listing icons dir:"
           ls out/addons/limboai/icons/
           echo "--- (end of listing)"
           sed -i 's|editor/scale_with_editor_scale=false|editor/scale_with_editor_scale=true|' out/addons/limboai/icons/*.import
+          sed -i 's|editor/convert_colors_with_editor_theme=false|editor/convert_colors_with_editor_theme=true|' out/addons/limboai/icons/*.import
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
