@@ -95,42 +95,42 @@ jobs:
             platform: web
             target: template_release
             arch: wasm32
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🌐 Web (wasm32, debug)
             runner: ubuntu-20.04
             platform: web
             target: template_debug
             arch: wasm32
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, release)
             runner: ubuntu-20.04
             platform: android
             target: template_release
             arch: arm64
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, debug)
             runner: ubuntu-20.04
             platform: android
             target: template_debug
             arch: arm64
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, release)
             runner: ubuntu-20.04
             platform: android
             target: template_release
             arch: x86_64
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, debug)
             runner: ubuntu-20.04
             platform: android
             target: template_debug
             arch: x86_64
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
         exclude:
           - { opts: { should-build: false } }
