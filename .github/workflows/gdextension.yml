@@ -95,14 +95,70 @@ jobs:
             platform: web
             target: template_release
             arch: wasm32
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🌐 Web (wasm32, debug)
             runner: ubuntu-20.04
             platform: web
             target: template_debug
             arch: wasm32
-            should-build: true
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (arm64, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (arm64, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (arm32, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: arm32
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (arm32, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: arm32
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_64, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: x86_64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_64, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: x86_64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_32, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: x86_32
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_32, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: x86_32
+            should-build: ${{ !inputs.test-build }}
 
         exclude:
           - { opts: { should-build: false } }
@@ -166,12 +222,26 @@ jobs:
           emcc -v
 
       - name: Set up scons
-        if: matrix.opts.platform == 'windows' || matrix.opts.platform == 'macos' || matrix.opts.platform == 'web'
+        if: matrix.opts.platform != 'linux'
         run: |
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
           python --version
           scons --version
+
+      - name: Set up Java 17
+        if: matrix.opts.platform == 'android'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: nttld/setup-ndk@v1
+        if: matrix.opts.platform == 'android'
+        id: setup-ndk
+        with:
+          ndk-version: r23c
+          link-to-sdk: true
 
       - name: Set up MSVC problem matcher on Windows
         if: matrix.opts.platform == 'windows'
@@ -218,7 +288,7 @@ jobs:
           ls -R out/
 
       - name: Strip lib
-        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web'
+        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web' && (matrix.opts.platform != 'android' || startsWith(matrix.opts.arch, 'x86'))
         run: |
           ls -l -R out/addons/limboai/bin/
           echo "---"
