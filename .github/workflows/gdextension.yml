@@ -288,7 +288,7 @@ jobs:
           ls -R out/
 
       - name: Strip lib
-        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web' && (matrix.opts.platform != 'android' || matrix.opts.arch != 'arm64')
+        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web' && (matrix.opts.platform != 'android' || startsWith(matrix.opts.arch, 'x86'))
         run: |
           ls -l -R out/addons/limboai/bin/
           echo "---"
