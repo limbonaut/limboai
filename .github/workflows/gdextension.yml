@@ -118,6 +118,20 @@ jobs:
             arch: arm64
             should-build: ${{ !inputs.test-build }}
 
+          - name: 🤖 Android (arm32, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: arm32
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (arm32, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: arm32
+            should-build: ${{ !inputs.test-build }}
+
           - name: 🤖 Android (x86_64, release)
             runner: ubuntu-20.04
             platform: android
@@ -130,6 +144,20 @@ jobs:
             platform: android
             target: template_debug
             arch: x86_64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_32, release)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_release
+            arch: x86_32
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🤖 Android (x86_32, debug)
+            runner: ubuntu-20.04
+            platform: android
+            target: template_debug
+            arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
         exclude:
