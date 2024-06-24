@@ -29,13 +29,14 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 ![Charger from Demo](doc/images/demo_charger.gif)
 
-### Videos
-
-[![Demonstration](https://img.youtube.com/vi/NWaMArUg7mY/0.jpg)](https://www.youtube.com/watch?v=NWaMArUg7mY)
-
 >**🛈 Demo project** lives in the `demo` folder and is available separately in [**Releases**](https://github.com/limbonaut/limboai/releases).
 > Run `demo/scenes/showcase.tscn` to get started.
-> It also contains a tutorial that introduces behavior trees using examples.
+> It also includes a tutorial that introduces behavior trees through illustrative examples.
+
+### Videos
+
+<a href="https://www.youtube.com/watch?v=NWaMArUg7mY"><img src="https://img.youtube.com/vi/NWaMArUg7mY/0.jpg" width=410></a>
+<a href="https://www.youtube.com/watch?v=aP0Aacdxmno"><img src="https://img.youtube.com/vi/aP0Aacdxmno/0.jpg" width=410></a>
 
 ## Features
 
@@ -118,18 +119,6 @@ If you have an idea for a behavior tree task or a feature that could be useful i
 Need help? We have a Discord server: https://discord.gg/N5MGC95GpP
 
 I write about LimboAI development on Mastodon: https://mastodon.gamedev.place/@limbo.
-
-## Roadmap
-
-Features and improvements that may be implemented in the future:
-- ~~Providing precompiled builds for download.~~ 🗸
-- ~~Tests and CI.~~ 🗸
-- ~~GDExtension support.~~ 🗸
-- ~~Extensive demo project.~~ 🗸
-- Expanding the library of commonly useful tasks.
-- Exploring the execution history of behavior trees in the visual debugger.
-- Per-project ignore list for tasks that users may want to hide in the task palette.
-- GUI editor for state machines.
 
 ## License
 
