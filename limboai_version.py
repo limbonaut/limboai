@@ -1,10 +1,10 @@
 # Edit the following variables to change version info
 
 major = 1
-minor = 1
+minor = 2
 patch = 0
-status = ""
-doc_branch = "v1.1.0"
+status = "dev"
+doc_branch = "latest"
 
 # Code that generates version header
 
