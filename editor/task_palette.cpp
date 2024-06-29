@@ -24,7 +24,7 @@
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
-#include "editor/editor_scale.h"
+#include "editor/themes/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "scene/gui/check_box.h"
 #endif // LIMBO_MODULE
@@ -60,7 +60,7 @@ void TaskButton::_bind_methods() {
 Control *TaskButton::_do_make_tooltip(const String &p_text) const {
 #ifdef LIMBOAI_MODULE
 	EditorHelpBit *help_bit = memnew(EditorHelpBit);
-	help_bit->get_rich_text()->set_custom_minimum_size(Size2(360 * EDSCALE, 1));
+	help_bit->set_content_height_limits(1, 360 * EDSCALE);
 
 	String help_text;
 	if (!p_text.is_empty()) {
@@ -69,7 +69,7 @@ Control *TaskButton::_do_make_tooltip(const String &p_text) const {
 		help_text = "[i]" + TTR("No description.") + "[/i]";
 	}
 
-	help_bit->set_text(help_text);
+	help_bit->set_custom_text(String(), String(), help_text);
 
 	return help_bit;
 #endif // LIMBOAI_MODULE

@@ -237,7 +237,7 @@ BBVariable BlackboardPlan::get_var(const StringName &p_name) {
 Pair<StringName, BBVariable> BlackboardPlan::get_var_by_index(int p_index) {
 	Pair<StringName, BBVariable> ret;
 	ERR_FAIL_INDEX_V(p_index, (int)var_map.size(), ret);
-	return var_list[p_index];
+	return var_list.get(p_index);
 }
 
 TypedArray<StringName> BlackboardPlan::list_vars() const {
