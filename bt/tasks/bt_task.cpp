@@ -129,13 +129,13 @@ String BTTask::get_task_name() {
 		ERR_FAIL_COND_V_MSG(has_generate_method && !task_script->is_tool(), _generate_name(), vformat("BTTask: @tool annotation is required if _generate_name is defined: %s", task_script->get_path()));
 		if (task_script->is_tool() && has_generate_method) {
 			String call_result;
-			VCALL_V(_generate_name, call_result);
+			GDVIRTUAL_CALL(_generate_name, call_result);
 			if (call_result.is_empty() || call_result == "<null>") {
 				// Force reset script instance.
 				set_script(Variant());
 				set_script(task_script);
 				// Retry.
-				VCALL_V(_generate_name, call_result);
+				GDVIRTUAL_CALL(_generate_name, call_result);
 			}
 			ERR_FAIL_COND_V_MSG(call_result.is_empty() || call_result == "<null>", _generate_name(), vformat("BTTask: _generate_name() failed to return a proper name string (%s)", task_script->get_path()));
 			return call_result;
@@ -171,7 +171,9 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node
 		get_child(i)->initialize(p_agent, p_blackboard, p_scene_root);
 	}
 
-	VCALL_OR_NATIVE(_setup);
+	if (!GDVIRTUAL_CALL(_setup)) {
+		_setup();
+	}
 }
 
 Ref<BTTask> BTTask::clone() const {
@@ -245,16 +247,21 @@ BT::Status BTTask::execute(double p_delta) {
 				data.children.get(i)->abort();
 			}
 		}
-
-		VCALL_OR_NATIVE(_enter);
+		if (!GDVIRTUAL_CALL(_enter)) {
+			_enter();
+		}
 	} else {
 		data.elapsed += p_delta;
 	}
 
-	VCALL_OR_NATIVE_ARGS_V(_tick, Status, data.status, p_delta);
+	if (!GDVIRTUAL_CALL(_tick, p_delta, data.status)) {
+		data.status = _tick(p_delta);
+	}
 
 	if (data.status != RUNNING) {
-		VCALL_OR_NATIVE(_exit);
+		if (!GDVIRTUAL_CALL(_exit)) {
+			_exit();
+		}
 		data.elapsed = 0.0;
 	}
 	return data.status;
@@ -265,7 +272,9 @@ void BTTask::abort() {
 		get_child(i)->abort();
 	}
 	if (data.status == RUNNING) {
-		VCALL_OR_NATIVE(_exit);
+		if (!GDVIRTUAL_CALL(_exit)) {
+			_exit();
+		}
 	}
 	data.status = FRESH;
 	data.elapsed = 0.0;
@@ -356,7 +365,7 @@ PackedStringArray BTTask::get_configuration_warnings() {
 	PackedStringArray warnings;
 	Ref<Script> task_script = get_script();
 	if (task_script.is_valid() && task_script->is_tool()) {
-		VCALL_V(_get_configuration_warnings, warnings); // Get script warnings.
+		GDVIRTUAL_CALL(_get_configuration_warnings, warnings); // Get script warnings.
 	}
 	ret.append_array(warnings);
 	ret.append_array(_get_configuration_warnings());
@@ -439,16 +448,12 @@ void BTTask::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_status");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_elapsed_time");
 
-#ifdef LIMBOAI_MODULE
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_tick, "delta");
 	GDVIRTUAL_BIND(_generate_name);
 	GDVIRTUAL_BIND(_get_configuration_warnings);
-#elif LIMBOAI_GDEXTENSION
-	// TODO: Registering virtual functions is not available in godot-cpp...
-#endif
 }
 
 BTTask::BTTask() {

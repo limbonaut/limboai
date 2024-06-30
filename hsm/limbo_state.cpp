@@ -62,7 +62,7 @@ LimboState *LimboState::named(const String &p_name) {
 
 void LimboState::_enter() {
 	active = true;
-	VCALL(_enter);
+	GDVIRTUAL_CALL(_enter);
 	emit_signal(LimboStringNames::get_singleton()->entered);
 }
 
@@ -70,18 +70,18 @@ void LimboState::_exit() {
 	if (!active) {
 		return;
 	}
-	VCALL(_exit);
+	GDVIRTUAL_CALL(_exit);
 	emit_signal(LimboStringNames::get_singleton()->exited);
 	active = false;
 }
 
 void LimboState::_update(double p_delta) {
-	VCALL_ARGS(_update, p_delta);
+	GDVIRTUAL_CALL(_update, p_delta);
 	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
 }
 
 void LimboState::_setup() {
-	VCALL(_setup);
+	GDVIRTUAL_CALL(_setup);
 	emit_signal(LimboStringNames::get_singleton()->setup);
 }
 
@@ -213,14 +213,10 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "plan"), &LimboState::set_blackboard_plan);
 	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &LimboState::get_blackboard_plan);
 
-#ifdef LIMBOAI_MODULE
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
 	GDVIRTUAL_BIND(_exit);
 	GDVIRTUAL_BIND(_update, "delta");
-#elif LIMBOAI_GDEXTENSION
-	// TODO: Registering virtual functions is not available in godot-cpp...
-#endif
 
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "EVENT_FINISHED", PROPERTY_HINT_NONE, "", 0), "", "event_finished");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "agent", PROPERTY_HINT_RESOURCE_TYPE, "Node", 0), "set_agent", "get_agent");
