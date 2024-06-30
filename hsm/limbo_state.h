@@ -23,6 +23,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/core/gdvirtual.gen.inc>
 #include <godot_cpp/templates/hash_map.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
@@ -59,12 +60,10 @@ protected:
 	virtual void _exit();
 	virtual void _update(double p_delta);
 
-#ifdef LIMBOAI_MODULE
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1(_update, double);
-#endif // LIMBOAI_MODULE
 
 public:
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);

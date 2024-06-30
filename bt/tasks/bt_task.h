@@ -37,6 +37,7 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/core/gdvirtual.gen.inc>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/vector.hpp>
 using namespace godot;
@@ -103,14 +104,12 @@ protected:
 	virtual void _exit() {}
 	virtual Status _tick(double p_delta) { return FAILURE; }
 
-#ifdef LIMBOAI_MODULE
 	GDVIRTUAL0RC(String, _generate_name);
 	GDVIRTUAL0(_setup);
 	GDVIRTUAL0(_enter);
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1R(Status, _tick, double);
 	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warnings);
-#endif // LIMBOAI_MODULE
 
 public:
 	// TODO: GDExtension doesn't have this method hmm...
