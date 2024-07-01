@@ -144,6 +144,10 @@ jobs:
         with:
           arch: ${{matrix.opts.arch}}
 
+      - name: Set up Wayland deps
+        run: |
+          sudo apt-get install libwayland-dev
+
       - name: Set up scons cache
         uses: actions/cache@v4
         with:
