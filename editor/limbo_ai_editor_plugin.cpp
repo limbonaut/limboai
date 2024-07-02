@@ -1544,9 +1544,15 @@ LimboAIEditor::LimboAIEditor() {
 	usage_hint->add_child(usage_label);
 
 	task_palette = memnew(TaskPalette());
-	hsc->set_split_offset(-300);
 	task_palette->hide();
 	hsc->add_child(task_palette);
+	TaskPalettePlacement palette_placement = (TaskPalettePlacement)(int)EDITOR_GET("limbo_ai/editor/task_palette_placement");
+	if (palette_placement == TaskPalettePlacement::LEFT_SIDE) {
+		hsc->move_child(task_palette, 0);
+		hsc->set_split_offset(300);
+	} else {
+		hsc->set_split_offset(-300);
+	}
 
 	change_type_popup = memnew(PopupPanel);
 	add_child(change_type_popup);
@@ -1653,6 +1659,9 @@ LimboAIEditor::LimboAIEditor() {
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_1", PROPERTY_HINT_DIR), "res://ai/tasks");
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR), "");
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR), "");
+
+	EDITOR_DEF("limbo_ai/editor/task_palette_placement", 0);
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/task_palette_placement", PROPERTY_HINT_ENUM, "Right Side:0,Left Side:1"));
 
 	String bt_default_dir = GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir");
 	save_dialog->set_current_dir(bt_default_dir);

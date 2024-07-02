@@ -26,8 +26,8 @@
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
-#include "editor/plugins/editor_plugin.h"
 #include "editor/gui/editor_spin_slider.h"
+#include "editor/plugins/editor_plugin.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
 #include "scene/gui/dialogs.h"
@@ -109,6 +109,11 @@ private:
 		TAB_CLOSE_OTHER,
 		TAB_CLOSE_RIGHT,
 		TAB_CLOSE_ALL,
+	};
+
+	enum TaskPalettePlacement {
+		RIGHT_SIDE,
+		LEFT_SIDE,
 	};
 
 	struct ThemeCache {
