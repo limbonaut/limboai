@@ -1506,7 +1506,7 @@ LimboAIEditor::LimboAIEditor() {
 	tab_bar->set_select_with_rmb(true);
 	tab_bar->set_drag_to_rearrange_enabled(true);
 	tab_bar->set_max_tab_width(int(EDITOR_GET("interface/scene_tabs/maximum_width")) * EDSCALE);
-	tab_bar->set_auto_translate(false);
+	tab_bar->set_auto_translate_mode(AUTO_TRANSLATE_MODE_DISABLED);
 	tab_bar->set_tab_close_display_policy(TabBar::CLOSE_BUTTON_SHOW_ACTIVE_ONLY);
 	tab_bar->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 	tab_bar->set_focus_mode(FocusMode::FOCUS_NONE);
