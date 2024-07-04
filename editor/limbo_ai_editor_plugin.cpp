@@ -1548,7 +1548,12 @@ LimboAIEditor::LimboAIEditor() {
 	hsc->add_child(task_palette);
 	TaskPalettePlacement palette_placement = (TaskPalettePlacement)(int)EDITOR_GET("limbo_ai/editor/task_palette_placement");
 	if (palette_placement == TaskPalettePlacement::LEFT_SIDE) {
-		hsc->move_child(task_palette, 0);
+		VBoxContainer *editor_vbox = memnew(VBoxContainer);
+		hsc->add_child(editor_vbox);
+		toolbar->reparent(editor_vbox);
+		tab_bar_panel->reparent(editor_vbox);
+		task_tree->reparent(editor_vbox);
+		usage_hint->reparent(editor_vbox);
 		hsc->set_split_offset(300);
 	} else {
 		hsc->set_split_offset(-300);
