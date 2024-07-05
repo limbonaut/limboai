@@ -1294,7 +1294,12 @@ void LimboAIEditor::_notification(int p_what) {
 			cf.instantiate();
 			String conf_path = PROJECT_CONFIG_FILE();
 			cf->load(conf_path);
-			cf->set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
+			int split_offset = hsc->get_split_offset();
+			if (editor_layout != (int)EDITOR_GET("limbo_ai/editor/layout")) {
+				// Editor layout settings changed - flip split offset.
+				split_offset *= -1;
+			}
+			cf->set_value("bt_editor", "bteditor_hsplit", split_offset);
 			cf->save(conf_path);
 
 			if (task_tree->get_bt().is_valid() &&
@@ -1380,6 +1385,7 @@ LimboAIEditor::LimboAIEditor() {
 #ifdef LIMBOAI_MODULE
 	EDITOR_DEF("limbo_ai/editor/layout", 0);
 	EDITOR_SETTINGS()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
+	EDITOR_SETTINGS()->set_restart_if_changed("limbo_ai/editor/layout", true);
 #elif LIMBOAI_GDEXTENSION
 	EDITOR_SETTINGS()->set_initial_value("limbo_ai/editor/layout", 0, false);
 	Dictionary pinfo;
