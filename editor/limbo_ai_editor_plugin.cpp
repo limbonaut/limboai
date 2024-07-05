@@ -1377,6 +1377,9 @@ LimboAIEditor::LimboAIEditor() {
 	plugin = nullptr;
 	idx_history = 0;
 
+	EDITOR_DEF("limbo_ai/editor/layout", 0);
+	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
+
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
 	// Todo: Add override support for shortcuts.
 	// LW_SHORTCUT_OVERRIDE("limbo_ai/rename_task", "macos", Key::ENTER);
@@ -1546,8 +1549,8 @@ LimboAIEditor::LimboAIEditor() {
 	task_palette = memnew(TaskPalette());
 	task_palette->hide();
 	hsc->add_child(task_palette);
-	TaskPalettePlacement palette_placement = (TaskPalettePlacement)(int)EDITOR_GET("limbo_ai/editor/task_palette_placement");
-	if (palette_placement == TaskPalettePlacement::LEFT_SIDE) {
+	editor_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
+	if (editor_layout == EditorLayout::WIDESCREEN_OPTIMIZED) {
 		VBoxContainer *editor_vbox = memnew(VBoxContainer);
 		hsc->add_child(editor_vbox);
 		toolbar->reparent(editor_vbox);
@@ -1664,9 +1667,6 @@ LimboAIEditor::LimboAIEditor() {
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_1", PROPERTY_HINT_DIR), "res://ai/tasks");
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_2", PROPERTY_HINT_DIR), "");
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/user_task_dir_3", PROPERTY_HINT_DIR), "");
-
-	EDITOR_DEF("limbo_ai/editor/task_palette_placement", 0);
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/task_palette_placement", PROPERTY_HINT_ENUM, "Right Side:0,Left Side:1"));
 
 	String bt_default_dir = GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir");
 	save_dialog->set_current_dir(bt_default_dir);

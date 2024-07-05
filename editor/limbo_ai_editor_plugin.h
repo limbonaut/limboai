@@ -111,9 +111,9 @@ private:
 		TAB_CLOSE_ALL,
 	};
 
-	enum TaskPalettePlacement {
-		RIGHT_SIDE,
-		LEFT_SIDE,
+	enum EditorLayout {
+		CLASSIC,
+		WIDESCREEN_OPTIMIZED,
 	};
 
 	struct ThemeCache {
@@ -137,6 +137,7 @@ private:
 	} theme_cache;
 
 	EditorPlugin *plugin;
+	EditorLayout editor_layout;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	bool updating_tabs = false;
