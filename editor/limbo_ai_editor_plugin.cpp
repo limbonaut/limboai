@@ -1498,14 +1498,14 @@ LimboAIEditor::LimboAIEditor() {
 	misc_btn->set_flat(true);
 	toolbar->add_child(misc_btn);
 
-	HBoxContainer *toolbar_end_hbox = memnew(HBoxContainer);
-	toolbar_end_hbox->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
-	toolbar->add_child(toolbar_end_hbox);
+	HBoxContainer *version_hbox = memnew(HBoxContainer);
+	version_hbox->set_h_size_flags(SIZE_EXPAND | SIZE_SHRINK_END);
+	toolbar->add_child(version_hbox);
 
 	TextureRect *logo = memnew(TextureRect);
 	logo->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
 	logo->set_texture(LimboUtility::get_singleton()->get_task_icon("LimboAI"));
-	toolbar_end_hbox->add_child(logo);
+	version_hbox->add_child(logo);
 
 	version_btn = memnew(LinkButton);
 	version_btn->set_text(TTR("v") + String(GET_LIMBOAI_FULL_VERSION()));
@@ -1513,11 +1513,11 @@ LimboAIEditor::LimboAIEditor() {
 	version_btn->set_self_modulate(Color(1, 1, 1, 0.65));
 	version_btn->set_underline_mode(LinkButton::UNDERLINE_MODE_ON_HOVER);
 	version_btn->set_v_size_flags(SIZE_SHRINK_CENTER);
-	toolbar_end_hbox->add_child(version_btn);
+	version_hbox->add_child(version_btn);
 
 	Control *version_spacer = memnew(Control);
 	version_spacer->set_custom_minimum_size(Size2(2, 0) * EDSCALE);
-	toolbar_end_hbox->add_child(version_spacer);
+	version_hbox->add_child(version_spacer);
 
 	tab_bar_panel = memnew(PanelContainer);
 	vbox->add_child(tab_bar_panel);
@@ -1568,18 +1568,39 @@ LimboAIEditor::LimboAIEditor() {
 	task_palette = memnew(TaskPalette());
 	task_palette->hide();
 	hsc->add_child(task_palette);
+
 	editor_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
 	if (editor_layout == EditorLayout::WIDESCREEN_OPTIMIZED) {
+		// * Alternative layout optimized for wide screen.
+		VBoxContainer *sidebar_vbox = memnew(VBoxContainer);
+		hsc->add_child(sidebar_vbox);
+		sidebar_vbox->set_v_size_flags(SIZE_EXPAND_FILL);
+
+		HBoxContainer *header_bar = memnew(HBoxContainer);
+		sidebar_vbox->add_child(header_bar);
+		Control *header_spacer = memnew(Control);
+		header_bar->add_child(header_spacer);
+		header_spacer->set_custom_minimum_size(Size2(6, 0) * EDSCALE);
+		TextureRect *header_logo = Object::cast_to<TextureRect>(logo->duplicate());
+		header_bar->add_child(header_logo);
+		Label *header_title = memnew(Label);
+		header_bar->add_child(header_title);
+		header_title->set_text(TTR("Behavior Tree Editor"));
+		header_title->set_v_size_flags(SIZE_SHRINK_CENTER);
+		header_title->set_theme_type_variation("HeaderMedium");
+
+		task_palette->reparent(sidebar_vbox);
+		task_palette->set_v_size_flags(SIZE_EXPAND_FILL);
+
 		VBoxContainer *editor_vbox = memnew(VBoxContainer);
 		hsc->add_child(editor_vbox);
 		toolbar->reparent(editor_vbox);
 		tab_bar_panel->reparent(editor_vbox);
 		task_tree->reparent(editor_vbox);
 		usage_hint->reparent(editor_vbox);
-		hsc->set_split_offset(300);
-	} else {
-		hsc->set_split_offset(-300);
 	}
+
+	hsc->set_split_offset((editor_layout == EditorLayout::CLASSIC ? -320 : 320) * EDSCALE);
 
 	change_type_popup = memnew(PopupPanel);
 	add_child(change_type_popup);
