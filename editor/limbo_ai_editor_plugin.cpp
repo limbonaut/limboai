@@ -1377,8 +1377,18 @@ LimboAIEditor::LimboAIEditor() {
 	plugin = nullptr;
 	idx_history = 0;
 
+#ifdef LIMBOAI_MODULE
 	EDITOR_DEF("limbo_ai/editor/layout", 0);
-	EditorSettings::get_singleton()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
+	EDITOR_SETTINGS()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
+#elif LIMBOAI_GDEXTENSION
+	EDITOR_SETTINGS()->set_initial_value("limbo_ai/editor/layout", 0, false);
+	Dictionary pinfo;
+	pinfo["name"] = "limbo_ai/editor/layout";
+	pinfo["type"] = Variant::INT;
+	pinfo["hint"] = PROPERTY_HINT_ENUM;
+	pinfo["hint_string"] = "Classic:0,Widescreen Optimized:1";
+	EDITOR_SETTINGS()->add_property_info(pinfo);
+#endif
 
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
 	// Todo: Add override support for shortcuts.
