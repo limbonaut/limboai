@@ -221,6 +221,8 @@ void LimboAIEditor::_load_bt(String p_path) {
 void LimboAIEditor::_disable_editing() {
 	task_tree->unload();
 	task_palette->hide();
+	task_tree->hide();
+	usage_hint->show();
 }
 
 void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh) {
@@ -235,14 +237,9 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
 
-	if (task_tree->get_bt().is_valid() &&
-			task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
-		task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
-	}
-
 	task_tree->load_bt(p_behavior_tree);
 
-	if (task_tree->get_bt().is_valid()) {
+	if (task_tree->get_bt().is_valid() && !task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
 		task_tree->get_bt()->connect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
 	}
 
@@ -959,6 +956,10 @@ void LimboAIEditor::_tab_clicked(int p_tab) {
 
 void LimboAIEditor::_tab_closed(int p_tab) {
 	ERR_FAIL_INDEX(p_tab, history.size());
+	Ref<BehaviorTree> history_bt = history[p_tab];
+	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
+		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+	}
 	history.remove_at(p_tab);
 	idx_history = MIN(idx_history, history.size() - 1);
 	if (idx_history < 0) {
@@ -1302,9 +1303,11 @@ void LimboAIEditor::_notification(int p_what) {
 			cf->set_value("bt_editor", "bteditor_hsplit", split_offset);
 			cf->save(conf_path);
 
-			if (task_tree->get_bt().is_valid() &&
-					task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
-				task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+			task_tree->unload();
+			for (int i = 0; i < history.size(); i++) {
+				if (history[i]->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
+					history[i]->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+				}
 			}
 		} break;
 		case NOTIFICATION_READY: {
