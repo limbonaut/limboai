@@ -1291,7 +1291,7 @@ void LimboAIEditor::_update_banners() {
 	EditorLayout saved_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
 	if (saved_layout != editor_layout) {
 		ActionBanner *banner = memnew(ActionBanner);
-		banner->set_text(TTR("Restart required to apply changes to editor layout."));
+		banner->set_text(TTR("Restart required to apply changes to editor layout"));
 		banner->add_action(TTR("Save & Restart"), callable_mp(this, &LimboAIEditor::_save_and_restart), true);
 		banner->set_meta(LW_NAME(managed), Variant(true));
 		banners->call_deferred(LW_NAME(add_child), banner);
@@ -1608,6 +1608,9 @@ LimboAIEditor::LimboAIEditor() {
 	task_palette->hide();
 	hsc->add_child(task_palette);
 
+	banners = memnew(VBoxContainer);
+	vbox->add_child(banners);
+
 	editor_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
 	if (editor_layout == LAYOUT_WIDESCREEN_OPTIMIZED) {
 		// * Alternative layout optimized for wide screen.
@@ -1637,6 +1640,7 @@ LimboAIEditor::LimboAIEditor() {
 		tab_bar_panel->reparent(editor_vbox);
 		task_tree->reparent(editor_vbox);
 		usage_hint->reparent(editor_vbox);
+		banners->reparent(editor_vbox);
 	}
 
 	hsc->set_split_offset((editor_layout == LAYOUT_CLASSIC ? -320 : 320) * EDSCALE);
@@ -1658,9 +1662,6 @@ LimboAIEditor::LimboAIEditor() {
 		change_type_palette->use_dialog_mode();
 		change_type_palette->set_v_size_flags(SIZE_EXPAND_FILL);
 	}
-
-	banners = memnew(VBoxContainer);
-	vbox->add_child(banners);
 
 	menu = memnew(PopupMenu);
 	add_child(menu);
