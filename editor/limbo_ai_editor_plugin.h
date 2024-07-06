@@ -26,8 +26,8 @@
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
-#include "editor/plugins/editor_plugin.h"
 #include "editor/gui/editor_spin_slider.h"
+#include "editor/plugins/editor_plugin.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/control.h"
 #include "scene/gui/dialogs.h"
@@ -98,6 +98,8 @@ private:
 		MISC_DOC_INTRODUCTION,
 		MISC_DOC_CUSTOM_TASKS,
 		MISC_OPEN_DEBUGGER,
+		MISC_LAYOUT_CLASSIC,
+		MISC_LAYOUT_WIDESCREEN_OPTIMIZED,
 		MISC_PROJECT_SETTINGS,
 		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
@@ -109,6 +111,11 @@ private:
 		TAB_CLOSE_OTHER,
 		TAB_CLOSE_RIGHT,
 		TAB_CLOSE_ALL,
+	};
+
+	enum EditorLayout {
+		LAYOUT_CLASSIC,
+		LAYOUT_WIDESCREEN_OPTIMIZED,
 	};
 
 	struct ThemeCache {
@@ -132,6 +139,7 @@ private:
 	} theme_cache;
 
 	EditorPlugin *plugin;
+	EditorLayout editor_layout;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	bool updating_tabs = false;
@@ -195,6 +203,7 @@ private:
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
 	void _remove_task_from_favorite(const String &p_task);
+	void _save_and_restart();
 	void _extract_subtree(const String &p_path);
 	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
 
