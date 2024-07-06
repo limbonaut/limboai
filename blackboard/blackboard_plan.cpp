@@ -391,7 +391,7 @@ void BlackboardPlan::sync_with_base_plan() {
 inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, const StringName &p_name, const BBVariable &p_var, bool p_prefetch, Node *p_node) {
 	if (unlikely(p_prefetch && p_var.get_type() == Variant::NODE_PATH)) {
 		Node *n = p_node->get_node_or_null(p_var.get_value());
-		BBVariable var = p_var.duplicate();
+		BBVariable var = p_var.duplicate(true);
 		if (n != nullptr) {
 			var.set_value(n);
 		} else {
@@ -404,7 +404,7 @@ inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, co
 		}
 		p_blackboard->assign_var(p_name, var);
 	} else {
-		p_blackboard->assign_var(p_name, p_var.duplicate());
+		p_blackboard->assign_var(p_name, p_var.duplicate(true));
 	}
 }
 
