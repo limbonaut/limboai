@@ -1401,7 +1401,12 @@ void LimboAIEditor::_notification(int p_what) {
 			BUTTON_SET_ICON(misc_btn, get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
 
 			_update_favorite_tasks();
-		}
+		} break;
+		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
+			if (is_visible_in_tree()) {
+				_update_banners();
+			}
+		} break;
 	}
 }
 
