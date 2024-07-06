@@ -34,6 +34,7 @@
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
 #include "editor/editor_help.h"
+#include "editor/editor_interface.h"
 #include "editor/editor_paths.h"
 #include "editor/editor_settings.h"
 #include "editor/editor_undo_redo_manager.h"
@@ -318,8 +319,8 @@ void LimboAIEditor::_remove_task_from_favorite(const String &p_task) {
 
 void LimboAIEditor::_save_and_restart() {
 	ProjectSettings::get_singleton()->save();
-	EditorNode::get_singleton()->save_all_scenes();
-	EditorNode::get_singleton()->restart_editor();
+	EditorInterface::get_singleton()->save_all_scenes();
+	EditorInterface::get_singleton()->restart_editor(true);
 }
 
 void LimboAIEditor::_extract_subtree(const String &p_path) {
@@ -707,12 +708,12 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 		} break;
 		case MISC_LAYOUT_CLASSIC: {
 			EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", LAYOUT_CLASSIC);
-			EDITOR_SETTINGS()->save();
+			EDITOR_SETTINGS()->mark_setting_changed("limbo_ai/editor/layout");
 			_update_banners();
 		} break;
 		case MISC_LAYOUT_WIDESCREEN_OPTIMIZED: {
 			EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", LAYOUT_WIDESCREEN_OPTIMIZED);
-			EDITOR_SETTINGS()->save();
+			EDITOR_SETTINGS()->mark_setting_changed("limbo_ai/editor/layout");
 			_update_banners();
 		} break;
 		case MISC_CREATE_SCRIPT_TEMPLATE: {
