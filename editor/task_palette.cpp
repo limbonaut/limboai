@@ -24,8 +24,8 @@
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
-#include "editor/themes/editor_scale.h"
 #include "editor/plugins/script_editor_plugin.h"
+#include "editor/themes/editor_scale.h"
 #include "scene/gui/check_box.h"
 #endif // LIMBO_MODULE
 
@@ -70,8 +70,8 @@ Control *TaskButton::_do_make_tooltip(const String &p_text) const {
 	}
 
 	help_bit->set_custom_text(String(), String(), help_text);
-
-	return help_bit;
+	EditorHelpBitTooltip::show_tooltip(help_bit, const_cast<TaskButton *>(this));
+	return memnew(Control); // Make the standard tooltip invisible.
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
