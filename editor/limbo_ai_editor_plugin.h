@@ -98,6 +98,8 @@ private:
 		MISC_DOC_INTRODUCTION,
 		MISC_DOC_CUSTOM_TASKS,
 		MISC_OPEN_DEBUGGER,
+		MISC_LAYOUT_CLASSIC,
+		MISC_LAYOUT_WIDESCREEN_OPTIMIZED,
 		MISC_PROJECT_SETTINGS,
 		MISC_CREATE_SCRIPT_TEMPLATE,
 	};
@@ -112,8 +114,8 @@ private:
 	};
 
 	enum EditorLayout {
-		CLASSIC,
-		WIDESCREEN_OPTIMIZED,
+		LAYOUT_CLASSIC,
+		LAYOUT_WIDESCREEN_OPTIMIZED,
 	};
 
 	struct ThemeCache {
@@ -201,6 +203,7 @@ private:
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
 	void _remove_task_from_favorite(const String &p_task);
+	void _save_and_restart();
 	void _extract_subtree(const String &p_path);
 	void _replace_task(const Ref<BTTask> &p_task, const Ref<BTTask> &p_by_task);
 
