@@ -60,7 +60,9 @@ void TaskButton::_bind_methods() {
 Control *TaskButton::_do_make_tooltip() const {
 #ifdef LIMBOAI_MODULE
 	String help_symbol;
-	if (task_meta.begins_with("res://")) {
+	bool is_resource = task_meta.begins_with("res://");
+
+	if (is_resource) {
 		help_symbol = "class|\"" + task_meta.lstrip("res://") + "\"|";
 	} else {
 		help_symbol = "class|" + task_meta + "|";
@@ -70,6 +72,18 @@ Control *TaskButton::_do_make_tooltip() const {
 	help_bit->set_content_height_limits(1, 360 * EDSCALE);
 
 	String desc = _module_get_help_description(task_meta);
+	if (desc.is_empty() && is_resource) {
+		// ! HACK: Force documentation parsing.
+		Ref<Script> s = ResourceLoader::load(task_meta);
+		if (s.is_valid()) {
+			Vector<DocData::ClassDoc> docs = s->get_documentation();
+			for (int i = 0; i < docs.size(); i++) {
+				const DocData::ClassDoc &doc = docs.get(i);
+				EditorHelp::get_doc_data()->add_doc(doc);
+			}
+			desc = _module_get_help_description(task_meta);
+		}
+	}
 	if (desc.is_empty() && help_bit->get_description().is_empty()) {
 		desc = "[i]" + TTR("No description.") + "[/i]";
 	}
@@ -78,14 +92,13 @@ Control *TaskButton::_do_make_tooltip() const {
 	}
 
 	EditorHelpBitTooltip::show_tooltip(help_bit, const_cast<TaskButton *>(this));
-	return memnew(Control); // Make the standard tooltip invisible.
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 	// TODO: When we figure out how to retrieve documentation in GDEXTENSION, should add a tooltip control here.
 #endif // LIMBOAI_GDEXTENSION
 
-	return nullptr;
+	return memnew(Control); // Make the standard tooltip invisible.
 }
 
 #ifdef LIMBOAI_MODULE
@@ -95,16 +108,18 @@ String TaskButton::_module_get_help_description(const String &p_class_or_script_
 
 	DocTools *dd = EditorHelp::get_doc_data();
 	HashMap<String, DocData::ClassDoc>::Iterator E;
-	// Try to find core class.
-	E = dd->class_list.find(p_class_or_script_path);
-	if (!E) {
+
+	if (p_class_or_script_path.begins_with("res://")) {
 		// Try to find by script path.
 		E = dd->class_list.find(vformat("\"%s\"", p_class_or_script_path.trim_prefix("res://")));
-	}
-	if (!E) {
-		// Try to guess global script class from filename.
-		String maybe_class_name = p_class_or_script_path.get_file().get_basename().to_pascal_case();
-		E = dd->class_list.find(maybe_class_name);
+		if (!E) {
+			// Try to guess global script class from filename.
+			String maybe_class_name = p_class_or_script_path.get_file().get_basename().to_pascal_case();
+			E = dd->class_list.find(maybe_class_name);
+		}
+	} else {
+		// Try to find core class or global class.
+		E = dd->class_list.find(p_class_or_script_path);
 	}
 
 	if (E) {
