@@ -885,6 +885,10 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 #endif
 }
 
+void LimboAIEditor::_on_new_script_pressed() {
+	SCRIPT_EDITOR()->open_script_create_dialog("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task"));
+}
+
 void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
 	change_type_popup->hide();
 
@@ -1332,7 +1336,7 @@ void LimboAIEditor::_notification(int p_what) {
 			disk_changed->connect("confirmed", callable_mp(this, &LimboAIEditor::_reload_modified));
 			disk_changed->connect("custom_action", callable_mp(this, &LimboAIEditor::_resave_modified));
 			rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task_confirmed));
-			new_script_btn->connect(LW_NAME(pressed), callable_mp(SCRIPT_EDITOR(), &ScriptEditor::open_script_create_dialog).bind("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task")));
+			new_script_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_new_script_pressed));
 			tab_bar->connect("tab_clicked", callable_mp(this, &LimboAIEditor::_tab_clicked));
 			tab_bar->connect("active_tab_rearranged", callable_mp(this, &LimboAIEditor::_move_active_tab));
 			tab_bar->connect("tab_close_pressed", callable_mp(this, &LimboAIEditor::_tab_closed));
