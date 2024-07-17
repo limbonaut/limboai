@@ -214,10 +214,10 @@ void BTPlayer::_notification(int p_notification) {
 				if (behavior_tree.is_valid()) {
 					_load_tree();
 				}
-				set_active(active);
 			} else {
 				_update_blackboard_plan();
 			}
+			set_active(active);
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 #ifdef DEBUG_ENABLED
