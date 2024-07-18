@@ -168,14 +168,28 @@ jobs:
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
-          - name: 🍏 iOS (universal, release)
+          - name: 🍏 iOS (arm64, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (arm64, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (simulator, release)
             runner: macos-latest
             platform: ios
             target: template_release
             arch: universal
             should-build: ${{ !inputs.test-build }}
 
-          - name: 🍏 iOS (universal, debug)
+          - name: 🍏 iOS (simulator, debug)
             runner: macos-latest
             platform: ios
             target: template_debug
