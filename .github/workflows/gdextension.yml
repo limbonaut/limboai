@@ -310,7 +310,7 @@ jobs:
             # MacOS libs
             strip -u out/addons/limboai/bin/liblimboai*/liblimboai* || true
             # iOS libs
-            strip -u out/addons/limboai/bin/liblimboai* || true
+            # strip -u out/addons/limboai/bin/liblimboai* || true
           else
             strip out/addons/limboai/bin/liblimboai*
           fi
