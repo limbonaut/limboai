@@ -44,6 +44,14 @@
 				Initiates the state and calls [method LimboState._setup] for both itself and all substates.
 			</description>
 		</method>
+		<method name="remove_transition">
+			<return type="void" />
+			<param index="0" name="from_state" type="LimboState" />
+			<param index="1" name="event" type="StringName" />
+			<description>
+				Removes a transition from a state associated with specific [param event].
+			</description>
+		</method>
 		<method name="set_active">
 			<return type="void" />
 			<param index="0" name="active" type="bool" />
