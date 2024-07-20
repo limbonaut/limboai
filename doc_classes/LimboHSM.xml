@@ -18,6 +18,14 @@
 				Establishes a transition from one state to another when [param event] is dispatched. Both [param from_state] and [param to_state] must be immediate children of this state.
 			</description>
 		</method>
+		<method name="change_active_state">
+			<return type="void" />
+			<param index="0" name="state" type="LimboState" />
+			<description>
+				Changes the currently active substate to [param state]. If [param state] is already active, it will be exited and reentered.
+				[param state] must be a child of this [LimboHSM].
+			</description>
+		</method>
 		<method name="get_active_state" qualifiers="const">
 			<return type="LimboState" />
 			<description>

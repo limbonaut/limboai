@@ -54,16 +54,17 @@ protected:
 	virtual void _exit() override;
 	virtual void _update(double p_delta) override;
 
-	void _change_state(LimboState *p_state);
-
 public:
 	void set_update_mode(UpdateMode p_mode) { update_mode = p_mode; }
 	UpdateMode get_update_mode() const { return update_mode; }
 
+	void set_active(bool p_active);
+
+	void change_active_state(LimboState *p_state);
+
 	LimboState *get_active_state() const { return active_state; }
 	LimboState *get_previous_active_state() const { return previous_active; }
 	LimboState *get_leaf_state() const;
-	void set_active(bool p_active);
 
 	void set_initial_state(LimboState *p_state);
 	LimboState *get_initial_state() const { return initial_state; }

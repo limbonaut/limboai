@@ -48,6 +48,8 @@ Methods
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                              | :ref:`add_transition<class_LimboHSM_method_add_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`change_active_state<class_LimboHSM_method_change_active_state>`\ (\ state\: :ref:`LimboState<class_LimboState>`\ )                                                                    |
+   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`LimboState<class_LimboState>` | :ref:`get_active_state<class_LimboHSM_method_get_active_state>`\ (\ ) |const|                                                                                                               |
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>`\ (\ ) |const|                                                                                                                   |
@@ -190,6 +192,20 @@ Method Descriptions
 |void| **add_transition**\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) :ref:`🔗<class_LimboHSM_method_add_transition>`
 
 Establishes a transition from one state to another when ``event`` is dispatched. Both ``from_state`` and ``to_state`` must be immediate children of this state.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_LimboHSM_method_change_active_state:
+
+.. rst-class:: classref-method
+
+|void| **change_active_state**\ (\ state\: :ref:`LimboState<class_LimboState>`\ ) :ref:`🔗<class_LimboHSM_method_change_active_state>`
+
+Changes the currently active substate to ``state``. If ``state`` is already active, it will be exited and reentered.
+
+\ ``state`` must be a child of this **LimboHSM**.
 
 .. rst-class:: classref-item-separator
 
