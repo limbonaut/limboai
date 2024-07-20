@@ -107,6 +107,15 @@ void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, 
 	transitions[key] = Object::cast_to<LimboState>(p_to_state);
 }
 
+void LimboHSM::remove_transition(LimboState *p_from_state, const StringName &p_event) {
+	ERR_FAIL_COND_MSG(p_from_state != nullptr && p_from_state->get_parent() != this, "LimboHSM: Unable to remove a transition from a state that is not an immediate child of mine.");
+	ERR_FAIL_COND_MSG(p_event == StringName(), "LimboHSM: Unable to remove a transition due to empty event string.");
+
+	uint64_t key = _get_transition_key(p_from_state, p_event);
+	ERR_FAIL_COND_MSG(!transitions.has(key), "LimboHSM: Unable to remove a transition that does not exist.");
+	transitions.erase(key);
+}
+
 LimboState *LimboHSM::get_leaf_state() const {
 	LimboHSM *hsm = const_cast<LimboHSM *>(this);
 	while (hsm->active_state != nullptr && hsm->active_state->is_class("LimboHSM")) {
@@ -253,6 +262,7 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_active", "active"), &LimboHSM::set_active);
 	ClassDB::bind_method(D_METHOD("update", "delta"), &LimboHSM::update);
 	ClassDB::bind_method(D_METHOD("add_transition", "from_state", "to_state", "event"), &LimboHSM::add_transition);
+	ClassDB::bind_method(D_METHOD("remove_transition", "from_state", "event"), &LimboHSM::remove_transition);
 	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);
 
 	ClassDB::bind_method(D_METHOD("initialize", "agent", "parent_scope"), &LimboHSM::initialize, Variant());

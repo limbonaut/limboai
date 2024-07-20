@@ -71,7 +71,10 @@ public:
 	virtual void initialize(Node *p_agent, const Ref<Blackboard> &p_parent_scope = nullptr);
 
 	void update(double p_delta);
+
 	void add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event);
+	void remove_transition(LimboState *p_from_state, const StringName &p_event);
+
 	LimboState *anystate() const { return nullptr; }
 
 	LimboHSM();
