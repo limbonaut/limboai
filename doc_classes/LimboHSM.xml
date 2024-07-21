@@ -44,6 +44,14 @@
 				Returns the previously active substate.
 			</description>
 		</method>
+		<method name="has_transition" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="from_state" type="LimboState" />
+			<param index="1" name="event" type="StringName" />
+			<description>
+				Returns [code]true[/code] if there is a transition from [param from_state] for a given [param event].
+			</description>
+		</method>
 		<method name="initialize">
 			<return type="void" />
 			<param index="0" name="agent" type="Node" />

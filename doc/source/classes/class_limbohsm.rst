@@ -56,6 +56,8 @@ Methods
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`LimboState<class_LimboState>` | :ref:`get_previous_active_state<class_LimboHSM_method_get_previous_active_state>`\ (\ ) |const|                                                                                             |
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | ``bool``                            | :ref:`has_transition<class_LimboHSM_method_has_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |const|                                         |
+   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                              | :ref:`initialize<class_LimboHSM_method_initialize>`\ (\ agent\: ``Node``, parent_scope\: :ref:`Blackboard<class_Blackboard>` = null\ )                                                      |
    +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                              | :ref:`remove_transition<class_LimboHSM_method_remove_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ )                                           |
@@ -242,6 +244,18 @@ Returns the currently active leaf state within the state machine.
 :ref:`LimboState<class_LimboState>` **get_previous_active_state**\ (\ ) |const| :ref:`🔗<class_LimboHSM_method_get_previous_active_state>`
 
 Returns the previously active substate.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_LimboHSM_method_has_transition:
+
+.. rst-class:: classref-method
+
+``bool`` **has_transition**\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |const| :ref:`🔗<class_LimboHSM_method_has_transition>`
+
+Returns ``true`` if there is a transition from ``from_state`` for a given ``event``.
 
 .. rst-class:: classref-item-separator
 

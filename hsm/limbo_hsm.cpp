@@ -278,6 +278,7 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update", "delta"), &LimboHSM::update);
 	ClassDB::bind_method(D_METHOD("add_transition", "from_state", "to_state", "event"), &LimboHSM::add_transition);
 	ClassDB::bind_method(D_METHOD("remove_transition", "from_state", "event"), &LimboHSM::remove_transition);
+	ClassDB::bind_method(D_METHOD("has_transition", "from_state", "event"), &LimboHSM::has_transition);
 	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);
 	ClassDB::bind_method(D_METHOD("initialize", "agent", "parent_scope"), &LimboHSM::initialize, Variant());
 	ClassDB::bind_method(D_METHOD("change_active_state", "state"), &LimboHSM::change_active_state);
