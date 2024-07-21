@@ -86,6 +86,21 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 	hsm->initialize(agent, parent_scope);
 	hsm->set_active(true);
 
+	SUBCASE("Test has_transition() and remove_transition()") {
+		CHECK(hsm->has_transition(state_alpha, "event_one"));
+		CHECK(hsm->has_transition(state_beta, "event_two"));
+		CHECK(hsm->has_transition(hsm->anystate(), "goto_nested"));
+		CHECK_FALSE(hsm->has_transition(state_alpha, "event_two"));
+		CHECK_FALSE(hsm->has_transition(state_beta, "event_one"));
+		CHECK_FALSE(hsm->has_transition(hsm->anystate(), "event_one"));
+
+		hsm->remove_transition(state_alpha, "event_one");
+		CHECK_FALSE(hsm->has_transition(state_alpha, "event_one"));
+		hsm->remove_transition(state_beta, "event_two");
+		CHECK_FALSE(hsm->has_transition(state_beta, "event_two"));
+		hsm->remove_transition(hsm->anystate(), "goto_nested");
+		CHECK_FALSE(hsm->has_transition(hsm->anystate(), "goto_nested"));
+	}
 	SUBCASE("Test get_root()") {
 		CHECK(state_alpha->get_root() == hsm);
 		CHECK(state_beta->get_root() == hsm);
