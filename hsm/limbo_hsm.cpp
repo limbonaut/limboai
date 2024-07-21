@@ -119,7 +119,7 @@ void LimboHSM::remove_transition(LimboState *p_from_state, const StringName &p_e
 	transitions.erase(key);
 }
 
-void LimboHSM::get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const {
+void LimboHSM::_get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const {
 	ERR_FAIL_COND_MSG(p_from_state != nullptr && p_from_state->get_parent() != this, "LimboHSM: Unable to get a transition from a state that is not an immediate child of this HSM.");
 	ERR_FAIL_COND_MSG(p_event == StringName(), "LimboHSM: Unable to get a transition with an empty event string.");
 
@@ -163,13 +163,13 @@ bool LimboHSM::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 		LimboState *to_state = nullptr;
 
 		Transition transition;
-		get_transition(active_state, p_event, transition);
+		_get_transition(active_state, p_event, transition);
 		if (transition.is_valid()) {
 			to_state = Object::cast_to<LimboState>(ObjectDB::get_instance(transition.to_state));
 		}
 		if (to_state == nullptr) {
 			// Get ANYSTATE transition.
-			get_transition(nullptr, p_event, transition);
+			_get_transition(nullptr, p_event, transition);
 			if (transition.is_valid()) {
 				to_state = Object::cast_to<LimboState>(ObjectDB::get_instance(transition.to_state));
 				if (to_state == active_state) {

@@ -16,14 +16,6 @@
 
 #define TransitionKey Pair<uint64_t, StringName>
 
-struct TransitionKeyHasher {
-	static uint32_t hash(const TransitionKey &P) {
-		uint64_t h1 = HashMapHasherDefault::hash(P.first);
-		uint64_t h2 = HashMapHasherDefault::hash(P.second);
-		return hash_one_uint64((h1 << 32) | h2);
-	}
-};
-
 class LimboHSM : public LimboState {
 	GDCLASS(LimboHSM, LimboState);
 
@@ -35,6 +27,14 @@ public:
 	};
 
 private:
+	struct TransitionKeyHasher {
+		static uint32_t hash(const TransitionKey &P) {
+			uint64_t h1 = HashMapHasherDefault::hash(P.first);
+			uint64_t h2 = HashMapHasherDefault::hash(P.second);
+			return hash_one_uint64((h1 << 32) | h2);
+		}
+	};
+
 	struct Transition {
 		ObjectID from_state;
 		ObjectID to_state;
@@ -57,6 +57,8 @@ private:
 	bool updating = false;
 
 	HashMap<TransitionKey, Transition, TransitionKeyHasher> transitions;
+
+	void _get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const;
 
 protected:
 	static void _bind_methods();
@@ -92,7 +94,6 @@ public:
 	void add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event);
 	void remove_transition(LimboState *p_from_state, const StringName &p_event);
 	bool has_transition(LimboState *p_from_state, const StringName &p_event) const { return transitions.has(Transition::make_key(p_from_state, p_event)); }
-	void get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const;
 
 	LimboState *anystate() const { return nullptr; }
 
