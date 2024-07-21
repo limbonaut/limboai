@@ -5,7 +5,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: 4.2
+        default: master
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -20,7 +20,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: 4.2
+        default: master
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -160,6 +160,36 @@ jobs:
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
+          - name: 🍏 iOS (arm64, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (arm64, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (simulator, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: universal
+            scons-flags: ios_simulator=yes
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (simulator, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: universal
+            scons-flags: ios_simulator=yes
+            should-build: ${{ !inputs.test-build }}
+
         exclude:
           - { opts: { should-build: false } }
 
@@ -272,7 +302,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{matrix.opts.scons-flags}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
@@ -292,8 +322,10 @@ jobs:
         run: |
           ls -l -R out/addons/limboai/bin/
           echo "---"
-          if [ "$RUNNER_OS" == "macOS" ]; then
+          if [ "${{matrix.opts.platform}}" == "macos" ]; then
             strip -u out/addons/limboai/bin/liblimboai*/liblimboai*
+          elif [ "${{matrix.opts.platform}}" == "ios" ]; then
+            strip -u out/addons/limboai/bin/liblimboai*
           else
             strip out/addons/limboai/bin/liblimboai*
           fi
