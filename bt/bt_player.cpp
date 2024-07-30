@@ -144,6 +144,7 @@ void BTPlayer::update(double p_delta) {
 }
 
 void BTPlayer::restart() {
+	ERR_FAIL_COND_MSG(tree_instance.is_null(), "BTPlayer: Restart failed - no valid tree instance. Make sure the BTPlayer has a valid behavior tree with a valid root task.");
 	tree_instance->abort();
 	set_active(true);
 }
