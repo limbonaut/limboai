@@ -45,6 +45,8 @@ jobs:
       fail-fast: false
       matrix:
         opts:
+          # * Standard x86_64
+
           - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
@@ -62,6 +64,8 @@ jobs:
             arch: x86_64
             dotnet: false
             should-build: ${{ !inputs.test-build }}
+
+          # * Standard x86_32
 
           # - name: Editor (x86_32, release)
           #   target: editor
@@ -81,6 +85,28 @@ jobs:
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
+          # * Standard arm64
+
+          - name: Editor (arm64, release)
+            target: editor
+            arch: arm64
+            dotnet: false
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template (arm64, release)
+            target: template_release
+            arch: arm64
+            dotnet: false
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template (arm64, debug)
+            target: template_debug
+            arch: arm64
+            dotnet: false
+            should-build: ${{ !inputs.test-build }}
+
+          # * .NET x86_64
+
           - name: Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
@@ -99,6 +125,8 @@ jobs:
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
+          # * .NET x86_32
+
           # - name: Editor .NET (x86_32, release)
           #   target: editor
           #   arch: x86_32
@@ -114,6 +142,26 @@ jobs:
           - name: Template .NET (x86_32, debug)
             target: template_debug
             arch: x86_32
+            dotnet: true
+            should-build: ${{ !inputs.test-build }}
+
+          # * .NET arm64
+
+          - name: Editor .NET (arm64, release)
+            target: editor
+            arch: arm64
+            dotnet: true
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template .NET (arm64, release)
+            target: template_release
+            arch: arm64
+            dotnet: true
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template .NET (arm64, debug)
+            target: template_debug
+            arch: arm64
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
