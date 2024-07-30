@@ -231,7 +231,11 @@ jobs:
         env:
           OUTDIR: ${{ startsWith(matrix.opts.target, 'template') && 'out/templates' || 'out/' }}
         run: |
-          strip ./bin/godot.*
+          if [ "${{matrix.opts.arch}}" == "arm64" ]; then
+            ${GITHUB_WORKSPACE}/buildroot/bin/aarch64-godot-linux-gnu-strip ./bin/godot.*
+          else
+            strip ./bin/godot.*
+          fi
           chmod +x ./bin/godot.*
           mkdir -p ${{env.OUTDIR}}
           mv bin/* ${{env.OUTDIR}}
