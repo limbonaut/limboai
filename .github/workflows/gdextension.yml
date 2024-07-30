@@ -95,6 +95,7 @@ jobs:
             platform: web
             target: template_release
             arch: wasm32
+            threads: yes
             should-build: ${{ !inputs.test-build }}
 
           - name: 🌐 Web (wasm32, debug)
@@ -102,6 +103,24 @@ jobs:
             platform: web
             target: template_debug
             arch: wasm32
+            threads: yes
+            should-build: ${{ !inputs.test-build }}
+
+
+          - name: 🌐 Web (wasm32, release, nothreads)
+            runner: ubuntu-20.04
+            platform: web
+            target: template_release
+            arch: wasm32
+            threads: no
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🌐 Web (wasm32, debug, nothreads)
+            runner: ubuntu-20.04
+            platform: web
+            target: template_debug
+            arch: wasm32
+            threads: no
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, release)
@@ -272,7 +291,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} thread=${{matrix.opts.threads}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
@@ -303,7 +322,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         env:
-          NAME: tmp-gdextension.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}
+          NAME: tmp-gdextension.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}.threads_${{matrix.opts.threads}}
         with:
           name: ${{ env.NAME }}
           path: out/*
