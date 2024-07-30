@@ -100,7 +100,7 @@ void LimboHSM::update(double p_delta) {
 	}
 }
 
-void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event) {
+void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event, const Callable &p_guard) {
 	ERR_FAIL_COND_MSG(p_from_state != nullptr && p_from_state->get_parent() != this, "LimboHSM: Unable to add a transition from a state that is not an immediate child of mine.");
 	ERR_FAIL_COND_MSG(p_to_state == nullptr, "LimboHSM: Unable to add a transition to a null state.");
 	ERR_FAIL_COND_MSG(p_to_state->get_parent() != this, "LimboHSM: Unable to add a transition to a state that is not an immediate child of mine.");
@@ -108,8 +108,13 @@ void LimboHSM::add_transition(LimboState *p_from_state, LimboState *p_to_state, 
 
 	TransitionKey key = Transition::make_key(p_from_state, p_event);
 	ERR_FAIL_COND_MSG(transitions.has(key), "LimboHSM: Unable to add another transition with the same event and origin.");
-	// Note: Explicit casting needed for GDExtension.
-	transitions[key] = { p_from_state != nullptr ? ObjectID(p_from_state->get_instance_id()) : ObjectID(), ObjectID(p_to_state->get_instance_id()), p_event };
+	// Note: Explicit ObjectID casting needed for GDExtension.
+	transitions[key] = {
+		p_from_state != nullptr ? ObjectID(p_from_state->get_instance_id()) : ObjectID(),
+		ObjectID(p_to_state->get_instance_id()),
+		p_event,
+		p_guard
+	};
 }
 
 void LimboHSM::remove_transition(LimboState *p_from_state, const StringName &p_event) {
@@ -166,13 +171,13 @@ bool LimboHSM::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 
 		Transition transition;
 		_get_transition(active_state, p_event, transition);
-		if (transition.is_valid()) {
+		if (transition.is_valid() && transition.is_allowed()) {
 			to_state = Object::cast_to<LimboState>(ObjectDB::get_instance(transition.to_state));
 		}
 		if (to_state == nullptr) {
 			// Get ANYSTATE transition.
 			_get_transition(nullptr, p_event, transition);
-			if (transition.is_valid()) {
+			if (transition.is_valid() && transition.is_allowed()) {
 				to_state = Object::cast_to<LimboState>(ObjectDB::get_instance(transition.to_state));
 				if (to_state == active_state) {
 					// Transitions to self are not allowed with ANYSTATE.
@@ -300,7 +305,7 @@ void LimboHSM::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_leaf_state"), &LimboHSM::get_leaf_state);
 	ClassDB::bind_method(D_METHOD("set_active", "active"), &LimboHSM::set_active);
 	ClassDB::bind_method(D_METHOD("update", "delta"), &LimboHSM::update);
-	ClassDB::bind_method(D_METHOD("add_transition", "from_state", "to_state", "event"), &LimboHSM::add_transition);
+	ClassDB::bind_method(D_METHOD("add_transition", "from_state", "to_state", "event", "guard"), &LimboHSM::add_transition, DEFVAL(Callable()));
 	ClassDB::bind_method(D_METHOD("remove_transition", "from_state", "event"), &LimboHSM::remove_transition);
 	ClassDB::bind_method(D_METHOD("has_transition", "from_state", "event"), &LimboHSM::has_transition);
 	ClassDB::bind_method(D_METHOD("anystate"), &LimboHSM::anystate);

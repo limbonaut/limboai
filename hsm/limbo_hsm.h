@@ -39,8 +39,11 @@ private:
 		ObjectID from_state;
 		ObjectID to_state;
 		StringName event;
+		Callable guard;
 
 		inline bool is_valid() const { return to_state != ObjectID(); }
+
+		inline bool is_allowed() const { return guard.is_null() || guard.call(); }
 
 		static _FORCE_INLINE_ TransitionKey make_key(LimboState *p_from_state, const StringName &p_event) {
 			return TransitionKey(
@@ -93,7 +96,7 @@ public:
 
 	void update(double p_delta);
 
-	void add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event);
+	void add_transition(LimboState *p_from_state, LimboState *p_to_state, const StringName &p_event, const Callable &p_guard = Callable());
 	void remove_transition(LimboState *p_from_state, const StringName &p_event);
 	bool has_transition(LimboState *p_from_state, const StringName &p_event) const { return transitions.has(Transition::make_key(p_from_state, p_event)); }
 
