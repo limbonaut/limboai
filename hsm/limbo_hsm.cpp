@@ -51,11 +51,13 @@ void LimboHSM::_change_state(LimboState *p_state) {
 
 	if (active_state) {
 		active_state->_exit();
+		active_state->set_process_input(false);
 		previous_active = active_state;
 	}
 
 	active_state = p_state;
 	active_state->_enter();
+	active_state->set_process_input(true);
 
 	emit_signal(LimboStringNames::get_singleton()->active_state_changed, active_state, previous_active);
 }
