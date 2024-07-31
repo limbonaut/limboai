@@ -109,6 +109,7 @@ def get_doc_classes():
         "BTTimeLimit",
         "BTWait",
         "BTWaitTicks",
+        "LimboDebugger",
         "LimboHSM",
         "LimboState",
         "LimboUtility",

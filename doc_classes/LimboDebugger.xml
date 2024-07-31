@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="LimboDebugger" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
+	<brief_description>
+		Sends runtime data to LimboAI debugger session.
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="register_bt_instance">
+			<return type="void" />
+			<param index="0" name="root_task" type="BTTask" />
+			<param index="1" name="player_path" type="NodePath" />
+			<description>
+				Registers a [BehaviorTree] instance, so it can be inspected in the debugger. Can be used in custom BT player implementations.
+			</description>
+		</method>
+		<method name="unregister_bt_instance">
+			<return type="void" />
+			<param index="0" name="root_task" type="BTTask" />
+			<param index="1" name="player_path" type="NodePath" />
+			<description>
+				Unregisters a [BehaviorTree] instance with the debugger.
+			</description>
+		</method>
+	</methods>
+</class>

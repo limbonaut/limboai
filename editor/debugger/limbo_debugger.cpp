@@ -64,12 +64,8 @@ void LimboDebugger::deinitialize() {
 
 void LimboDebugger::_bind_methods() {
 #ifdef DEBUG_ENABLED
-
-#ifdef LIMBOAI_GDEXTENSION
-	ClassDB::bind_method(D_METHOD("parse_message_gdext"), &LimboDebugger::parse_message_gdext);
-#endif
-	ClassDB::bind_method(D_METHOD("_on_bt_updated", "status", "path"), &LimboDebugger::_on_bt_updated);
-	ClassDB::bind_method(D_METHOD("_on_state_updated", "delta", "path"), &LimboDebugger::_on_state_updated);
+	ClassDB::bind_method(D_METHOD("register_bt_instance", "root_task", "player_path"), &LimboDebugger::register_bt_instance);
+	ClassDB::bind_method(D_METHOD("unregister_bt_instance", "root_task", "player_path"), &LimboDebugger::unregister_bt_instance);
 #endif // ! DEBUG_ENABLED
 }
 

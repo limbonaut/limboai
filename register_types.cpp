@@ -133,9 +133,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(BehaviorTreeView);
 #endif // TOOLS_ENABLED
 		GDREGISTER_CLASS(BehaviorTreeData);
-#ifdef LIMBOAI_GDEXTENSION
 		GDREGISTER_CLASS(LimboDebugger);
-#endif
 		LimboDebugger::initialize();
 
 		GDREGISTER_CLASS(LimboUtility);
@@ -238,8 +236,10 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 
 #ifdef LIMBOAI_MODULE
 		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboUtility", LimboUtility::get_singleton()));
+		Engine::get_singleton()->add_singleton(Engine::Singleton("LimboDebugger", LimboDebugger::get_singleton()));
 #elif LIMBOAI_GDEXTENSION
 		Engine::get_singleton()->register_singleton("LimboUtility", LimboUtility::get_singleton());
+		Engine::get_singleton()->register_singleton("LimboDebugger", LimboDebugger::get_singleton());
 #endif
 
 		LimboStringNames::create();
