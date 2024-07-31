@@ -64,6 +64,7 @@ protected:
 	static void _bind_methods();
 
 	void _notification(int p_what);
+	void _validate_property(PropertyInfo &p_property) const;
 
 	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) override;
 	virtual bool _dispatch(const StringName &p_event, const Variant &p_cargo = Variant()) override;
