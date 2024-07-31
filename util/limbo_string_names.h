@@ -173,6 +173,7 @@ public:
 	StringName Tools;
 	StringName Tree;
 	StringName TripleBar;
+	StringName update_mode;
 	StringName update_task;
 	StringName update_tree;
 	StringName updated;

@@ -253,6 +253,13 @@ void LimboHSM::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
 	}
 }
 
+void LimboHSM::_validate_property(PropertyInfo &p_property) const {
+	if (p_property.name == LW_NAME(update_mode) && !is_root()) {
+		// Hide update_mode for non-root HSMs.
+		p_property.usage = PROPERTY_USAGE_NONE;
+	}
+}
+
 void LimboHSM::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
