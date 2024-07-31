@@ -147,11 +147,13 @@ jobs:
 
           # * .NET arm64
 
-          - name: Editor .NET (arm64, release)
-            target: editor
-            arch: arm64
-            dotnet: true
-            should-build: ${{ !inputs.test-build }}
+          # ! FIXME: Needs a separate job for .NET glue generation since we can't execute arm64 binaries on x86_64.
+          # !        Alternatively, solution generation can be done as post-process job, taking the glue from x86_64, after all builds complete.
+          # - name: Editor .NET (arm64, release)
+          #   target: editor
+          #   arch: arm64
+          #   dotnet: true
+          #   should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (arm64, release)
             target: template_release
