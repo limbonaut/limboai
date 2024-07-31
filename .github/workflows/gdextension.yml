@@ -287,19 +287,6 @@ jobs:
           echo "---"
           ls -R out/
 
-      - name: Strip lib
-        if: matrix.opts.platform != 'windows' && matrix.opts.platform != 'web' && (matrix.opts.platform != 'android' || startsWith(matrix.opts.arch, 'x86'))
-        run: |
-          ls -l -R out/addons/limboai/bin/
-          echo "---"
-          if [ "$RUNNER_OS" == "macOS" ]; then
-            strip -u out/addons/limboai/bin/liblimboai*/liblimboai*
-          else
-            strip out/addons/limboai/bin/liblimboai*
-          fi
-          echo "---"
-          ls -l -R out/addons/limboai/bin/
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         env:
