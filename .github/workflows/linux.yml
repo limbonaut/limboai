@@ -105,6 +105,20 @@ jobs:
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
+          # * Standard arm32
+
+          - name: Template (arm32, release)
+            target: template_release
+            arch: arm32
+            dotnet: false
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template (arm32, debug)
+            target: template_debug
+            arch: arm32
+            dotnet: false
+            should-build: ${{ !inputs.test-build }}
+
           # * .NET x86_64
 
           - name: Editor .NET (x86_64, release)
@@ -164,6 +178,20 @@ jobs:
           - name: Template .NET (arm64, debug)
             target: template_debug
             arch: arm64
+            dotnet: true
+            should-build: ${{ !inputs.test-build }}
+
+          # * .NET arm32
+
+          - name: Template .NET (arm32, release)
+            target: template_release
+            arch: arm32
+            dotnet: true
+            should-build: ${{ !inputs.test-build }}
+
+          - name: Template .NET (arm32, debug)
+            target: template_debug
+            arch: arm32
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
