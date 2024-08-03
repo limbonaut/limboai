@@ -54,7 +54,7 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="behavior_tree_finished">
+		<signal name="behavior_tree_finished" deprecated="Use [signal updated] signal instead.">
 			<param index="0" name="status" type="int" />
 			<description>
 				Emitted when the behavior tree has finished executing and returned [code]SUCCESS[/code] or [code]FAILURE[/code].

@@ -51,6 +51,7 @@ void BTPlayer::_load_tree() {
 	Node *scene_root = get_owner();
 	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer's owner property is set).");
 	bt_instance = behavior_tree->instantiate(agent, blackboard, this);
+	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTPlayer: Failed to instantiate behavior tree.");
 #ifdef DEBUG_ENABLED
 	bt_instance->set_monitor_performance(monitor_performance);
 	bt_instance->register_with_debugger();
@@ -118,7 +119,13 @@ void BTPlayer::update(double p_delta) {
 	}
 
 	if (active) {
-		bt_instance->update(p_delta);
+		BT::Status status = bt_instance->update(p_delta);
+		emit_signal(LW_NAME(updated), status);
+#ifndef DISABLE_DEPRECATED
+		if (status == BTTask::SUCCESS || status == BTTask::FAILURE) {
+			emit_signal(LW_NAME(behavior_tree_finished), status);
+		}
+#endif // DISABLE_DEPRECATED
 	}
 }
 
@@ -222,8 +229,11 @@ void BTPlayer::_bind_methods() {
 	BIND_ENUM_CONSTANT(PHYSICS);
 	BIND_ENUM_CONSTANT(MANUAL);
 
-	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "status")));
 	ADD_SIGNAL(MethodInfo("updated", PropertyInfo(Variant::INT, "status")));
+
+#ifndef DISABLE_DEPRECATED
+	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "status")));
+#endif
 
 #ifdef DEBUG_ENABLED
 	ClassDB::bind_method(D_METHOD("_set_monitor_performance", "enable"), &BTPlayer::_set_monitor_performance);

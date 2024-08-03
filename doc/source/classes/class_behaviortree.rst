@@ -121,7 +121,7 @@ Stores and manages variables that will be used in constructing new :ref:`Blackbo
 - |void| **set_description**\ (\ value\: ``String``\ )
 - ``String`` **get_description**\ (\ )
 
-User-provided description of the BehaviorTree.
+User-provided description of the **BehaviorTree**.
 
 .. rst-class:: classref-section-separator
 
@@ -174,11 +174,7 @@ Returns the root task of the BehaviorTree resource.
 
 :ref:`BTInstance<class_BTInstance>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, instance_owner\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
 
-Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`.
-
-\ ``instance_owner`` should be the scene node that will own the behavior tree instance.
-
-This is typically a :ref:`BTPlayer<class_BTPlayer>`, :ref:`BTState<class_BTState>`, or a custom player node that controls the behavior tree execution.
+Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`. ``instance_owner`` should be the scene node that will own the behavior tree instance. This is typically a :ref:`BTPlayer<class_BTPlayer>`, :ref:`BTState<class_BTState>`, or a custom player node that controls the behavior tree execution.
 
 .. rst-class:: classref-item-separator
 

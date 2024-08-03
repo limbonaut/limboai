@@ -12,9 +12,14 @@ BTInstance
 
 **Inherits:** 
 
-.. container:: contribute
+Represents a runtime instance of a :ref:`BehaviorTree<class_BehaviorTree>` resource.
 
-	There is currently no description for this class. Please help us by :ref:`contributing one <doc_updating_the_class_reference>`!
+.. rst-class:: classref-introduction-group
+
+Description
+-----------
+
+Can be created using the :ref:`BehaviorTree.instantiate<class_BehaviorTree_method_instantiate>` method.
 
 .. rst-class:: classref-reftable-group
 
@@ -178,11 +183,7 @@ Registers the behavior tree instance with the debugger.
 
 |void| **unregister_with_debugger**\ (\ ) :ref:`🔗<class_BTInstance_method_unregister_with_debugger>`
 
-Unregisters the behavior tree instance from the debugger. This is typically
-
-not necessary, as the debugger will automatically unregister the instance
-
-when it is freed.
+Unregisters the behavior tree instance from the debugger. This is typically not necessary, as the debugger will automatically unregister the instance when it is freed.
 
 .. rst-class:: classref-item-separator
 

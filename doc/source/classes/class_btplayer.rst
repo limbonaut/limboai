@@ -78,6 +78,8 @@ Signals
 
 **behavior_tree_finished**\ (\ status\: ``int``\ ) :ref:`🔗<class_BTPlayer_signal_behavior_tree_finished>`
 
+**Deprecated:** Use :ref:`updated<class_BTPlayer_signal_updated>` signal instead.
+
 Emitted when the behavior tree has finished executing and returned ``SUCCESS`` or ``FAILURE``.
 
 Argument ``status`` holds the status returned by the behavior tree. See :ref:`Status<enum_BT_Status>`.
