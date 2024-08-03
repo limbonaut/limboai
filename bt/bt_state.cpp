@@ -77,8 +77,7 @@ void BTState::_update(double p_delta) {
 		return;
 	}
 	ERR_FAIL_NULL(bt_instance);
-	bt_instance->update(p_delta);
-	BTTask::Status status = bt_instance->get_last_status();
+	BT::Status status = bt_instance->update(p_delta);
 	if (status == BTTask::SUCCESS) {
 		get_root()->dispatch(success_event, Variant());
 	} else if (status == BTTask::FAILURE) {

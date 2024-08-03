@@ -20,7 +20,7 @@ private:
 	Ref<BTTask> root_task;
 	uint64_t owner_node_id;
 	String source_bt_path;
-	BTTask::Status last_status = BTTask::FRESH;
+	BT::Status last_status = BT::FRESH;
 
 #ifdef DEBUG_ENABLED
 	bool monitor_performance = false;
@@ -40,11 +40,11 @@ protected:
 public:
 	_FORCE_INLINE_ Ref<BTTask> get_root_task() const { return root_task; }
 	_FORCE_INLINE_ Node *get_owner_node() const { return Object::cast_to<Node>(OBJECT_DB_GET_INSTANCE(owner_node_id)); }
-	_FORCE_INLINE_ BTTask::Status get_last_status() const { return last_status; }
+	_FORCE_INLINE_ BT::Status get_last_status() const { return last_status; }
 	_FORCE_INLINE_ bool is_instance_valid() const { return root_task.is_valid(); }
 	_FORCE_INLINE_ String get_source_bt_path() const { return source_bt_path; }
 
-	void update(double p_delta);
+	BT::Status update(double p_delta);
 
 	void set_monitor_performance(bool p_monitor);
 	bool get_monitor_performance() const;

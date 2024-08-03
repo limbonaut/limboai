@@ -35,8 +35,8 @@ Ref<BTInstance> BTInstance::create(Ref<BTTask> p_root_task, String p_source_bt_p
 	return inst;
 }
 
-void BTInstance::update(double p_delta) {
-	ERR_FAIL_COND(!root_task.is_valid());
+BT::Status BTInstance::update(double p_delta) {
+	ERR_FAIL_COND_V(!root_task.is_valid(), BT::FRESH);
 
 #ifdef DEBUG_ENABLED
 	double start = Time::get_singleton()->get_ticks_usec();
@@ -50,6 +50,7 @@ void BTInstance::update(double p_delta) {
 	update_time_acc += (end - start);
 	update_time_n += 1.0;
 #endif
+	return last_status;
 }
 
 void BTInstance::set_monitor_performance(bool p_monitor) {
