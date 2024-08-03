@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <class name="BTInstance" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../doc/class.xsd">
 	<brief_description>
+		Represents a runtime instance of a [BehaviorTree] resource.
 	</brief_description>
 	<description>
+		Can be created using the [method BehaviorTree.instantiate] method.
 	</description>
 	<tutorials>
 	</tutorials>
@@ -40,9 +42,7 @@
 		<method name="unregister_with_debugger">
 			<return type="void" />
 			<description>
-				Unregisters the behavior tree instance from the debugger. This is typically
-				not necessary, as the debugger will automatically unregister the instance
-				when it is freed.
+				Unregisters the behavior tree instance from the debugger. This is typically not necessary, as the debugger will automatically unregister the instance when it is freed.
 			</description>
 		</method>
 		<method name="update">
