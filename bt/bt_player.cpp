@@ -80,7 +80,7 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		_update_blackboard_plan();
 	} else {
 		behavior_tree = p_tree;
-		if (get_owner()) {
+		if (get_owner() && is_inside_tree()) {
 			_load_tree();
 		}
 	}
@@ -170,6 +170,7 @@ void BTPlayer::_notification(int p_notification) {
 #ifdef DEBUG_ENABLED
 			if (bt_instance.is_valid()) {
 				bt_instance->set_monitor_performance(monitor_performance);
+				bt_instance->register_with_debugger();
 			}
 #endif // DEBUG_ENABLED
 		} break;
@@ -177,6 +178,7 @@ void BTPlayer::_notification(int p_notification) {
 #ifdef DEBUG_ENABLED
 			if (bt_instance.is_valid()) {
 				bt_instance->set_monitor_performance(false);
+				bt_instance->unregister_with_debugger();
 			}
 #endif // DEBUG_ENABLED
 
