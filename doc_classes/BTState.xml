@@ -9,10 +9,10 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_tree_instance" qualifiers="const">
-			<return type="BTTask" />
+		<method name="get_bt_instance" qualifiers="const">
+			<return type="BTInstance" />
 			<description>
-				Returns the root task of the instantiated behavior tree.
+				Returns the behavior tree instance.
 			</description>
 		</method>
 	</methods>

@@ -62,7 +62,7 @@ Methods
    +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | :ref:`BTTask<class_BTTask>`             | :ref:`get_root_task<class_BehaviorTree_method_get_root_task>`\ (\ ) |const|                                                                                        |
    +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`BTTask<class_BTTask>`             | :ref:`instantiate<class_BehaviorTree_method_instantiate>`\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| |
+   | :ref:`BTInstance<class_BTInstance>`     | :ref:`instantiate<class_BehaviorTree_method_instantiate>`\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| |
    +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                                  | :ref:`set_root_task<class_BehaviorTree_method_set_root_task>`\ (\ task\: :ref:`BTTask<class_BTTask>`\ )                                                            |
    +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
@@ -172,9 +172,9 @@ Returns the root task of the BehaviorTree resource.
 
 .. rst-class:: classref-method
 
-:ref:`BTTask<class_BTTask>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
+:ref:`BTInstance<class_BTInstance>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
 
-Instantiates the behavior tree and returns the root :ref:`BTTask<class_BTTask>`. ``scene_root`` should be the root node of the scene that the Behavior Tree will be used in (e.g., the owner of the node that contains the behavior tree).
+Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`. ``scene_root`` should be the root node of the scene that the Behavior Tree will be used in (e.g., the owner of the node that contains the behavior tree instance).
 
 .. rst-class:: classref-item-separator
 
