@@ -38,9 +38,9 @@
 			<return type="BTInstance" />
 			<param index="0" name="agent" type="Node" />
 			<param index="1" name="blackboard" type="Blackboard" />
-			<param index="2" name="scene_root" type="Node" />
+			<param index="2" name="instance_owner" type="Node" />
 			<description>
-				Instantiates the behavior tree and returns [BTInstance]. [param scene_root] should be the root node of the scene that the Behavior Tree will be used in (e.g., the owner of the node that contains the behavior tree instance).
+				Instantiates the behavior tree and returns [BTInstance]. [param instance_owner] should be the scene node that will own the behavior tree instance. This is typically a [BTPlayer], [BTState], or a custom player node that controls the behavior tree execution.
 			</description>
 		</method>
 		<method name="set_root_task">
