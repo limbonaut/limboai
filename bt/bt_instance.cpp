@@ -73,7 +73,17 @@ bool BTInstance::get_monitor_performance() const {
 
 void BTInstance::register_with_debugger() {
 #ifdef DEBUG_ENABLED
-	LimboDebugger::get_singleton()->register_bt_instance(get_instance_id());
+	if (LimboDebugger::get_singleton()->is_active()) {
+		LimboDebugger::get_singleton()->register_bt_instance(get_instance_id());
+	}
+#endif
+}
+
+void BTInstance::unregister_with_debugger() {
+#ifdef DEBUG_ENABLED
+	if (LimboDebugger::get_singleton()->is_active()) {
+		LimboDebugger::get_singleton()->unregister_bt_instance(get_instance_id());
+	}
 #endif
 }
 
@@ -123,6 +133,7 @@ void BTInstance::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("update", "delta"), &BTInstance::update);
 
 	ClassDB::bind_method(D_METHOD("register_with_debugger"), &BTInstance::register_with_debugger);
+	ClassDB::bind_method(D_METHOD("unregister_with_debugger"), &BTInstance::unregister_with_debugger);
 
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "set_monitor_performance", "get_monitor_performance");
 

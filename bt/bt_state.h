@@ -22,7 +22,7 @@ class BTState : public LimboState {
 
 private:
 	Ref<BehaviorTree> behavior_tree;
-	Ref<BTTask> tree_instance;
+	Ref<BTInstance> bt_instance;
 	StringName success_event;
 	StringName failure_event;
 
@@ -42,7 +42,7 @@ public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_value);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; }
 
-	Ref<BTTask> get_tree_instance() const { return tree_instance; }
+	Ref<BTInstance> get_bt_instance() const { return bt_instance; }
 
 	void set_success_event(const StringName &p_success_event) { success_event = p_success_event; }
 	StringName get_success_event() const { return success_event; }

@@ -39,7 +39,7 @@ private:
 public:
 	static void initialize();
 	static void deinitialize();
-	static LimboDebugger *get_singleton();
+	_FORCE_INLINE_ static LimboDebugger *get_singleton() { return singleton; }
 
 	~LimboDebugger();
 
@@ -66,6 +66,7 @@ public:
 
 	void register_bt_instance(uint64_t p_instance_id);
 	void unregister_bt_instance(uint64_t p_instance_id);
+	bool is_active() const;
 
 #endif // ! DEBUG_ENABLED
 };

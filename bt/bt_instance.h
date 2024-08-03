@@ -50,6 +50,7 @@ public:
 	bool get_monitor_performance() const;
 
 	void register_with_debugger();
+	void unregister_with_debugger();
 
 	static Ref<BTInstance> create(Ref<BTTask> p_root_task, String p_source_bt_path, Node *p_owner_node);
 

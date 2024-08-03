@@ -33,9 +33,6 @@
 //**** LimboDebugger
 
 LimboDebugger *LimboDebugger::singleton = nullptr;
-LimboDebugger *LimboDebugger::get_singleton() {
-	return singleton;
-}
 
 LimboDebugger::LimboDebugger() {
 	singleton = this;
@@ -93,6 +90,10 @@ bool LimboDebugger::parse_message_gdext(const String &p_msg, const Array &p_args
 
 void LimboDebugger::register_bt_instance(uint64_t p_instance_id) {
 	ERR_FAIL_COND(p_instance_id == 0);
+	if (!IS_DEBUGGER_ACTIVE()) {
+		return;
+	}
+
 	BTInstance *inst = Object::cast_to<BTInstance>(OBJECT_DB_GET_INSTANCE(p_instance_id));
 	ERR_FAIL_NULL(inst);
 	ERR_FAIL_COND(!inst->is_instance_valid());
@@ -124,6 +125,10 @@ void LimboDebugger::unregister_bt_instance(uint64_t p_instance_id) {
 	if (session_active) {
 		_send_active_bt_players();
 	}
+}
+
+bool LimboDebugger::is_active() const {
+	return IS_DEBUGGER_ACTIVE();
 }
 
 void LimboDebugger::_track_tree(uint64_t p_instance_id) {

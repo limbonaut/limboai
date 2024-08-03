@@ -11,7 +11,6 @@
 
 #include "bt_state.h"
 
-#include "../editor/debugger/limbo_debugger.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
@@ -54,18 +53,17 @@ void BTState::_setup() {
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
 	Node *scene_root = get_owner();
 	ERR_FAIL_NULL_MSG(scene_root, "BTState: Initialization failed - can't get scene root (make sure the BTState's owner property is set).");
-	tree_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), scene_root);
+	bt_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), scene_root);
+	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTState: Initialization failed - can't instantiate behavior tree.");
 
 #ifdef DEBUG_ENABLED
-	if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
-	}
+	bt_instance->register_with_debugger();
 #endif
 }
 
 void BTState::_exit() {
-	if (tree_instance.is_valid()) {
-		tree_instance->abort();
+	if (bt_instance.is_valid()) {
+		bt_instance->get_root_task()->abort();
 	} else {
 		ERR_PRINT_ONCE("BTState: BehaviorTree is not assigned.");
 	}
@@ -78,8 +76,9 @@ void BTState::_update(double p_delta) {
 		// Bail out if a transition happened in the meantime.
 		return;
 	}
-	ERR_FAIL_NULL(tree_instance);
-	int status = tree_instance->execute(p_delta);
+	ERR_FAIL_NULL(bt_instance);
+	bt_instance->update(p_delta);
+	BTTask::Status status = bt_instance->get_last_status();
 	if (status == BTTask::SUCCESS) {
 		get_root()->dispatch(success_event, Variant());
 	} else if (status == BTTask::FAILURE) {
@@ -92,15 +91,15 @@ void BTState::_notification(int p_notification) {
 	switch (p_notification) {
 #ifdef DEBUG_ENABLED
 		case NOTIFICATION_ENTER_TREE: {
-			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
+			if (bt_instance.is_valid()) {
+				bt_instance->register_with_debugger();
 			}
 		} break;
 #endif // DEBUG_ENABLED
 		case NOTIFICATION_EXIT_TREE: {
 #ifdef DEBUG_ENABLED
-			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
+			if (bt_instance.is_valid()) {
+				bt_instance->unregister_with_debugger();
 			}
 #endif // DEBUG_ENABLED
 
@@ -117,7 +116,7 @@ void BTState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_behavior_tree", "behavior_tree"), &BTState::set_behavior_tree);
 	ClassDB::bind_method(D_METHOD("get_behavior_tree"), &BTState::get_behavior_tree);
 
-	ClassDB::bind_method(D_METHOD("get_tree_instance"), &BTState::get_tree_instance);
+	ClassDB::bind_method(D_METHOD("get_bt_instance"), &BTState::get_bt_instance);
 
 	ClassDB::bind_method(D_METHOD("set_success_event", "event"), &BTState::set_success_event);
 	ClassDB::bind_method(D_METHOD("get_success_event"), &BTState::get_success_event);
