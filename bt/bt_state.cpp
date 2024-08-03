@@ -53,7 +53,7 @@ void BTState::_setup() {
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
 	Node *scene_root = get_owner();
 	ERR_FAIL_NULL_MSG(scene_root, "BTState: Initialization failed - can't get scene root (make sure the BTState's owner property is set).");
-	bt_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), scene_root);
+	bt_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), this);
 	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTState: Initialization failed - can't instantiate behavior tree.");
 
 #ifdef DEBUG_ENABLED
