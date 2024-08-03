@@ -47,7 +47,7 @@ public:
 	};
 
 	List<TaskData> tasks;
-	uint64_t bt_instance_id;
+	uint64_t bt_instance_id = 0;
 	NodePath node_owner_path;
 	String source_bt_path;
 

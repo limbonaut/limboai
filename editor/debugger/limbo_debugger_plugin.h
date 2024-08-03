@@ -52,7 +52,7 @@ class LimboDebuggerTab : public PanelContainer {
 
 private:
 	struct BTInstanceInfo {
-		uint64_t instance_id;
+		uint64_t instance_id = 0;
 		String owner_node_path;
 	};
 

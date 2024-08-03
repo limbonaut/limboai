@@ -18,7 +18,7 @@ class BTInstance : public RefCounted {
 
 private:
 	Ref<BTTask> root_task;
-	uint64_t owner_node_id;
+	uint64_t owner_node_id = 0;
 	String source_bt_path;
 	BT::Status last_status = BT::FRESH;
 
@@ -39,7 +39,7 @@ protected:
 
 public:
 	_FORCE_INLINE_ Ref<BTTask> get_root_task() const { return root_task; }
-	_FORCE_INLINE_ Node *get_owner_node() const { return Object::cast_to<Node>(OBJECT_DB_GET_INSTANCE(owner_node_id)); }
+	_FORCE_INLINE_ Node *get_owner_node() const { return owner_node_id ? Object::cast_to<Node>(OBJECT_DB_GET_INSTANCE(owner_node_id)) : nullptr; }
 	_FORCE_INLINE_ BT::Status get_last_status() const { return last_status; }
 	_FORCE_INLINE_ bool is_instance_valid() const { return root_task.is_valid(); }
 	_FORCE_INLINE_ String get_source_bt_path() const { return source_bt_path; }

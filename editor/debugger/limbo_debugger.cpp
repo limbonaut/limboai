@@ -132,6 +132,7 @@ bool LimboDebugger::is_active() const {
 }
 
 void LimboDebugger::_track_tree(uint64_t p_instance_id) {
+	ERR_FAIL_COND(p_instance_id == 0);
 	ERR_FAIL_COND(!active_bt_instances.has(p_instance_id));
 
 	_untrack_tree();

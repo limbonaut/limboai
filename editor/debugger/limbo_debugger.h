@@ -49,7 +49,7 @@ protected:
 #ifdef DEBUG_ENABLED
 private:
 	HashSet<uint64_t> active_bt_instances;
-	uint64_t tracked_instance_id;
+	uint64_t tracked_instance_id = 0;
 	bool session_active = false;
 
 	void _track_tree(uint64_t p_instance_id);
