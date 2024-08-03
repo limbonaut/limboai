@@ -101,6 +101,7 @@ public:
 	StringName font_size;
 	StringName font;
 	StringName Forward;
+	StringName freed;
 	StringName gui_input;
 	StringName GuiOptionArrow;
 	StringName GuiTreeArrowDown;

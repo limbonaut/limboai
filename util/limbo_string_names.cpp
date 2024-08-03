@@ -85,6 +85,7 @@ LimboStringNames::LimboStringNames() {
 	font_color = SN("font_color");
 	font_size = SN("font_size");
 	Forward = SN("Forward");
+	freed = SN("freed");
 	gui_input = SN("gui_input");
 	GuiOptionArrow = SN("GuiOptionArrow");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");

@@ -11,7 +11,6 @@
 
 #include "bt_player.h"
 
-#include "../editor/debugger/limbo_debugger.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
@@ -44,24 +43,18 @@
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
 void BTPlayer::_load_tree() {
-#ifdef DEBUG_ENABLED
-	if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-		LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
-	}
-#endif
-	tree_instance.unref();
+	bt_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Initialization failed - needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
 	Node *agent = GET_NODE(this, agent_node);
 	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
 	Node *scene_root = get_owner();
 	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer's owner property is set).");
-	tree_instance = behavior_tree->instantiate(agent, blackboard, scene_root);
+	bt_instance = behavior_tree->instantiate(agent, blackboard, this);
 #ifdef DEBUG_ENABLED
-	if (IS_DEBUGGER_ACTIVE()) {
-		LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
-	}
-#endif
+	bt_instance->set_monitor_performance(monitor_performance);
+	bt_instance->register_with_debugger();
+#endif // DEBUG_ENABLED
 }
 
 void BTPlayer::_update_blackboard_plan() {
@@ -95,7 +88,7 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 
 void BTPlayer::set_agent_node(const NodePath &p_agent_node) {
 	agent_node = p_agent_node;
-	if (tree_instance.is_valid()) {
+	if (bt_instance.is_valid()) {
 		ERR_PRINT("BTPlayer: Agent node cannot be set after the behavior tree is instantiated. This change will not affect the behavior tree instance.");
 	}
 }
@@ -119,33 +112,19 @@ void BTPlayer::set_active(bool p_active) {
 }
 
 void BTPlayer::update(double p_delta) {
-	if (!tree_instance.is_valid()) {
+	if (!bt_instance.is_valid()) {
 		ERR_PRINT_ONCE(vformat("BTPlayer doesn't have a behavior tree with a valid root task to execute (owner: %s)", get_owner()));
 		return;
 	}
 
-#ifdef DEBUG_ENABLED
-	double start = GET_TICKS_USEC();
-#endif
-
 	if (active) {
-		last_status = tree_instance->execute(p_delta);
-		emit_signal(LimboStringNames::get_singleton()->updated, last_status);
-		if (last_status == BTTask::SUCCESS || last_status == BTTask::FAILURE) {
-			emit_signal(LimboStringNames::get_singleton()->behavior_tree_finished, last_status);
-		}
+		bt_instance->update(p_delta);
 	}
-
-#ifdef DEBUG_ENABLED
-	double end = GET_TICKS_USEC();
-	update_time_acc += (end - start);
-	update_time_n += 1.0;
-#endif
 }
 
 void BTPlayer::restart() {
-	ERR_FAIL_COND_MSG(tree_instance.is_null(), "BTPlayer: Restart failed - no valid tree instance. Make sure the BTPlayer has a valid behavior tree with a valid root task.");
-	tree_instance->abort();
+	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTPlayer: Restart failed - no valid tree instance. Make sure the BTPlayer has a valid behavior tree with a valid root task.");
+	bt_instance->get_root_task()->abort();
 	set_active(true);
 }
 
@@ -154,42 +133,9 @@ void BTPlayer::restart() {
 void BTPlayer::_set_monitor_performance(bool p_monitor_performance) {
 	monitor_performance = p_monitor_performance;
 
-	if (!get_owner() && monitor_performance) {
-		// Don't add custom monitor if not in scene.
-		return;
+	if (bt_instance.is_valid()) {
+		bt_instance->set_monitor_performance(monitor_performance);
 	}
-
-	if (monitor_performance) {
-		_add_custom_monitor();
-	} else {
-		_remove_custom_monitor();
-	}
-}
-
-void BTPlayer::_add_custom_monitor() {
-	if (monitor_id == StringName()) {
-		monitor_id = vformat("LimboAI/update_ms|%s_%s_%s", get_owner()->get_name(), get_name(),
-				String(itos(get_instance_id())).md5_text().substr(0, 4));
-	}
-	if (!Performance::get_singleton()->has_custom_monitor(monitor_id)) {
-		PERFORMANCE_ADD_CUSTOM_MONITOR(monitor_id, callable_mp(this, &BTPlayer::_get_mean_update_time_msec));
-	}
-}
-
-void BTPlayer::_remove_custom_monitor() {
-	if (monitor_id != StringName() && Performance::get_singleton()->has_custom_monitor(monitor_id)) {
-		Performance::get_singleton()->remove_custom_monitor(monitor_id);
-	}
-}
-
-double BTPlayer::_get_mean_update_time_msec() {
-	if (update_time_n) {
-		double mean_time_msec = (update_time_acc * 0.001) / update_time_n;
-		update_time_acc = 0.0;
-		update_time_n = 0.0;
-		return mean_time_msec;
-	}
-	return 0.0;
 }
 
 #endif // ! DEBUG_ENABLED
@@ -222,21 +168,15 @@ void BTPlayer::_notification(int p_notification) {
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 #ifdef DEBUG_ENABLED
-			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-				LimboDebugger::get_singleton()->register_bt_instance(tree_instance, get_path());
-			}
-			if (monitor_performance) {
-				_add_custom_monitor();
+			if (bt_instance.is_valid()) {
+				bt_instance->set_monitor_performance(monitor_performance);
 			}
 #endif // DEBUG_ENABLED
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 #ifdef DEBUG_ENABLED
-			if (tree_instance.is_valid() && IS_DEBUGGER_ACTIVE()) {
-				LimboDebugger::get_singleton()->unregister_bt_instance(tree_instance, get_path());
-			}
-			if (monitor_performance) {
-				_remove_custom_monitor();
+			if (bt_instance.is_valid()) {
+				bt_instance->set_monitor_performance(false);
 			}
 #endif // DEBUG_ENABLED
 
@@ -266,9 +206,8 @@ void BTPlayer::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("update", "delta"), &BTPlayer::update);
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
-	ClassDB::bind_method(D_METHOD("get_last_status"), &BTPlayer::get_last_status);
 
-	ClassDB::bind_method(D_METHOD("get_tree_instance"), &BTPlayer::get_tree_instance);
+	ClassDB::bind_method(D_METHOD("get_bt_instance"), &BTPlayer::get_bt_instance);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");
