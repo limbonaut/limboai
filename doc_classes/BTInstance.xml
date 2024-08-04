@@ -9,6 +9,18 @@
 	<tutorials>
 	</tutorials>
 	<methods>
+		<method name="get_agent" qualifiers="const">
+			<return type="Node" />
+			<description>
+				Returns the agent of the behavior tree instance.
+			</description>
+		</method>
+		<method name="get_blackboard" qualifiers="const">
+			<return type="Blackboard" />
+			<description>
+				Returns the blackboard of the behavior tree instance.
+			</description>
+		</method>
 		<method name="get_last_status" qualifiers="const">
 			<return type="int" enum="BT.Status" />
 			<description>
@@ -31,6 +43,12 @@
 			<return type="String" />
 			<description>
 				Returns the file path to the behavior tree resource that was used to create this instance.
+			</description>
+		</method>
+		<method name="is_instance_valid" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if the behavior tree instance is properly initialized and can be used.
 			</description>
 		</method>
 		<method name="register_with_debugger">

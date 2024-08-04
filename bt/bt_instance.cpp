@@ -127,6 +127,10 @@ void BTInstance::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_owner_node"), &BTInstance::get_owner_node);
 	ClassDB::bind_method(D_METHOD("get_last_status"), &BTInstance::get_last_status);
 	ClassDB::bind_method(D_METHOD("get_source_bt_path"), &BTInstance::get_source_bt_path);
+	ClassDB::bind_method(D_METHOD("get_agent"), &BTInstance::get_agent);
+	ClassDB::bind_method(D_METHOD("get_blackboard"), &BTInstance::get_blackboard);
+
+	ClassDB::bind_method(D_METHOD("is_instance_valid"), &BTInstance::is_instance_valid);
 
 	ClassDB::bind_method(D_METHOD("set_monitor_performance", "monitor"), &BTInstance::set_monitor_performance);
 	ClassDB::bind_method(D_METHOD("get_monitor_performance"), &BTInstance::get_monitor_performance);
