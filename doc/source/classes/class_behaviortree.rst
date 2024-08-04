@@ -174,7 +174,7 @@ Returns the root task of the BehaviorTree resource.
 
 :ref:`BTInstance<class_BTInstance>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, instance_owner\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
 
-Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`. ``instance_owner`` should be the scene node that will own the behavior tree instance. This is typically a :ref:`BTPlayer<class_BTPlayer>`, :ref:`BTState<class_BTState>`, or a custom player node that controls the behavior tree execution.
+Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`. ``instance_owner`` should be the scene node that will own the behavior tree instance. This is typically a :ref:`BTPlayer<class_BTPlayer>`, :ref:`BTState<class_BTState>`, or a custom player node that controls the behavior tree execution. Make sure to pass a :ref:`Blackboard<class_Blackboard>` with values populated from :ref:`blackboard_plan<class_BehaviorTree_property_blackboard_plan>`. See also ``BlackboardPlan.populate_blackboard`` & ``BlackboardPlan.create_blackboard``.
 
 .. rst-class:: classref-item-separator
 

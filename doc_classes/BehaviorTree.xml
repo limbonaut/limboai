@@ -40,7 +40,7 @@
 			<param index="1" name="blackboard" type="Blackboard" />
 			<param index="2" name="instance_owner" type="Node" />
 			<description>
-				Instantiates the behavior tree and returns [BTInstance]. [param instance_owner] should be the scene node that will own the behavior tree instance. This is typically a [BTPlayer], [BTState], or a custom player node that controls the behavior tree execution.
+				Instantiates the behavior tree and returns [BTInstance]. [param instance_owner] should be the scene node that will own the behavior tree instance. This is typically a [BTPlayer], [BTState], or a custom player node that controls the behavior tree execution. Make sure to pass a [Blackboard] with values populated from [member blackboard_plan]. See also [BlackboardPlan.populate_blackboard] &amp; [BlackboardPlan.create_blackboard].
 			</description>
 		</method>
 		<method name="set_root_task">

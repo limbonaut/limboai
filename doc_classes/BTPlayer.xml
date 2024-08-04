@@ -22,6 +22,13 @@
 				Resets the behavior tree's execution. Each running task will be aborted and the next tree execution will start anew. This method does not reset [Blackboard].
 			</description>
 		</method>
+		<method name="set_bt_instance">
+			<return type="void" />
+			<param index="0" name="bt_instance" type="BTInstance" />
+			<description>
+				Sets the [BTInstance] to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also [member BehaviorTree.instantiate].
+			</description>
+		</method>
 		<method name="update">
 			<return type="void" />
 			<param index="0" name="delta" type="float" />

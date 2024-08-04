@@ -69,6 +69,18 @@ void BTPlayer::_update_blackboard_plan() {
 	blackboard_plan->set_base_plan(behavior_tree.is_valid() ? behavior_tree->get_blackboard_plan() : nullptr);
 }
 
+void BTPlayer::set_bt_instance(const Ref<BTInstance> &p_bt_instance) {
+	ERR_FAIL_COND_MSG(p_bt_instance.is_null(), "BTPlayer: Failed to set behavior tree instance - instance is null.");
+	ERR_FAIL_COND_MSG(!p_bt_instance->is_instance_valid(), "BTPlayer: Failed to set behavior tree instance - instance is not valid.");
+
+	bt_instance = p_bt_instance;
+	blackboard = p_bt_instance->get_blackboard();
+	agent_node = p_bt_instance->get_agent()->get_path();
+
+	blackboard_plan.unref();
+	behavior_tree.unref();
+}
+
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	if (Engine::get_singleton()->is_editor_hint()) {
 		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
@@ -217,6 +229,7 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
 
 	ClassDB::bind_method(D_METHOD("get_bt_instance"), &BTPlayer::get_bt_instance);
+	ClassDB::bind_method(D_METHOD("set_bt_instance", "bt_instance"), &BTPlayer::set_bt_instance);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");

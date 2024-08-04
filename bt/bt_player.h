@@ -77,6 +77,7 @@ public:
 	void restart();
 
 	Ref<BTInstance> get_bt_instance() { return bt_instance; }
+	void set_bt_instance(const Ref<BTInstance> &p_bt_instance);
 
 	BTPlayer();
 	~BTPlayer();

@@ -41,21 +41,27 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | :ref:`Status<enum_BT_Status>` | :ref:`get_last_status<class_BTInstance_method_get_last_status>`\ (\ ) |const|           |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | ``Node``                      | :ref:`get_owner_node<class_BTInstance_method_get_owner_node>`\ (\ ) |const|             |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | :ref:`BTTask<class_BTTask>`   | :ref:`get_root_task<class_BTInstance_method_get_root_task>`\ (\ ) |const|               |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | ``String``                    | :ref:`get_source_bt_path<class_BTInstance_method_get_source_bt_path>`\ (\ ) |const|     |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | |void|                        | :ref:`register_with_debugger<class_BTInstance_method_register_with_debugger>`\ (\ )     |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | |void|                        | :ref:`unregister_with_debugger<class_BTInstance_method_unregister_with_debugger>`\ (\ ) |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
-   | :ref:`Status<enum_BT_Status>` | :ref:`update<class_BTInstance_method_update>`\ (\ delta\: ``float``\ )                  |
-   +-------------------------------+-----------------------------------------------------------------------------------------+
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | ``Node``                            | :ref:`get_agent<class_BTInstance_method_get_agent>`\ (\ ) |const|                       |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | :ref:`Blackboard<class_Blackboard>` | :ref:`get_blackboard<class_BTInstance_method_get_blackboard>`\ (\ ) |const|             |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | :ref:`Status<enum_BT_Status>`       | :ref:`get_last_status<class_BTInstance_method_get_last_status>`\ (\ ) |const|           |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | ``Node``                            | :ref:`get_owner_node<class_BTInstance_method_get_owner_node>`\ (\ ) |const|             |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | :ref:`BTTask<class_BTTask>`         | :ref:`get_root_task<class_BTInstance_method_get_root_task>`\ (\ ) |const|               |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | ``String``                          | :ref:`get_source_bt_path<class_BTInstance_method_get_source_bt_path>`\ (\ ) |const|     |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | ``bool``                            | :ref:`is_instance_valid<class_BTInstance_method_is_instance_valid>`\ (\ ) |const|       |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`register_with_debugger<class_BTInstance_method_register_with_debugger>`\ (\ )     |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`unregister_with_debugger<class_BTInstance_method_unregister_with_debugger>`\ (\ ) |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
+   | :ref:`Status<enum_BT_Status>`       | :ref:`update<class_BTInstance_method_update>`\ (\ delta\: ``float``\ )                  |
+   +-------------------------------------+-----------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -117,6 +123,30 @@ If ``true``, adds a performance monitor for this instance to "Debugger->Monitors
 Method Descriptions
 -------------------
 
+.. _class_BTInstance_method_get_agent:
+
+.. rst-class:: classref-method
+
+``Node`` **get_agent**\ (\ ) |const| :ref:`🔗<class_BTInstance_method_get_agent>`
+
+Returns the agent of the behavior tree instance.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTInstance_method_get_blackboard:
+
+.. rst-class:: classref-method
+
+:ref:`Blackboard<class_Blackboard>` **get_blackboard**\ (\ ) |const| :ref:`🔗<class_BTInstance_method_get_blackboard>`
+
+Returns the blackboard of the behavior tree instance.
+
+.. rst-class:: classref-item-separator
+
+----
+
 .. _class_BTInstance_method_get_last_status:
 
 .. rst-class:: classref-method
@@ -160,6 +190,18 @@ Returns the root task of the behavior tree instance.
 ``String`` **get_source_bt_path**\ (\ ) |const| :ref:`🔗<class_BTInstance_method_get_source_bt_path>`
 
 Returns the file path to the behavior tree resource that was used to create this instance.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTInstance_method_is_instance_valid:
+
+.. rst-class:: classref-method
+
+``bool`` **is_instance_valid**\ (\ ) |const| :ref:`🔗<class_BTInstance_method_is_instance_valid>`
+
+Returns ``true`` if the behavior tree instance is properly initialized and can be used.
 
 .. rst-class:: classref-item-separator
 

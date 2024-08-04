@@ -55,13 +55,15 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+----------------------------------------------------------------------+
-   | :ref:`BTInstance<class_BTInstance>` | :ref:`get_bt_instance<class_BTPlayer_method_get_bt_instance>`\ (\ )  |
-   +-------------------------------------+----------------------------------------------------------------------+
-   | |void|                              | :ref:`restart<class_BTPlayer_method_restart>`\ (\ )                  |
-   +-------------------------------------+----------------------------------------------------------------------+
-   | |void|                              | :ref:`update<class_BTPlayer_method_update>`\ (\ delta\: ``float``\ ) |
-   +-------------------------------------+----------------------------------------------------------------------+
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`BTInstance<class_BTInstance>` | :ref:`get_bt_instance<class_BTPlayer_method_get_bt_instance>`\ (\ )                                                    |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`restart<class_BTPlayer_method_restart>`\ (\ )                                                                    |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`set_bt_instance<class_BTPlayer_method_set_bt_instance>`\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`update<class_BTPlayer_method_update>`\ (\ delta\: ``float``\ )                                                   |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -284,6 +286,18 @@ Returns the behavior tree instance.
 |void| **restart**\ (\ ) :ref:`🔗<class_BTPlayer_method_restart>`
 
 Resets the behavior tree's execution. Each running task will be aborted and the next tree execution will start anew. This method does not reset :ref:`Blackboard<class_Blackboard>`.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTPlayer_method_set_bt_instance:
+
+.. rst-class:: classref-method
+
+|void| **set_bt_instance**\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) :ref:`🔗<class_BTPlayer_method_set_bt_instance>`
+
+Sets the :ref:`BTInstance<class_BTInstance>` to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also :ref:`BehaviorTree.instantiate<class_BehaviorTree_property_instantiate>`.
 
 .. rst-class:: classref-item-separator
 
