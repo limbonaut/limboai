@@ -37,6 +37,16 @@ void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	_update_blackboard_plan();
 }
 
+#ifdef DEBUG_ENABLED
+void BTState::_set_monitor_performance(bool p_monitor) {
+	monitor_performance = p_monitor;
+
+	if (bt_instance.is_valid()) {
+		bt_instance->set_monitor_performance(monitor_performance);
+	}
+}
+#endif // DEBUG_ENABLED
+
 void BTState::_update_blackboard_plan() {
 	if (get_blackboard_plan().is_null()) {
 		set_blackboard_plan(memnew(BlackboardPlan));
@@ -58,6 +68,7 @@ void BTState::_setup() {
 
 #ifdef DEBUG_ENABLED
 	bt_instance->register_with_debugger();
+	bt_instance->set_monitor_performance(monitor_performance);
 #endif
 }
 
@@ -92,6 +103,7 @@ void BTState::_notification(int p_notification) {
 		case NOTIFICATION_ENTER_TREE: {
 			if (bt_instance.is_valid()) {
 				bt_instance->register_with_debugger();
+				bt_instance->set_monitor_performance(monitor_performance);
 			}
 		} break;
 #endif // DEBUG_ENABLED
@@ -99,7 +111,9 @@ void BTState::_notification(int p_notification) {
 #ifdef DEBUG_ENABLED
 			if (bt_instance.is_valid()) {
 				bt_instance->unregister_with_debugger();
+				bt_instance->set_monitor_performance(false);
 			}
+
 #endif // DEBUG_ENABLED
 
 			if (Engine::get_singleton()->is_editor_hint()) {
@@ -126,6 +140,12 @@ void BTState::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "success_event"), "set_success_event", "get_success_event");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "failure_event"), "set_failure_event", "get_failure_event");
+
+#ifdef DEBUG_ENABLED
+	ClassDB::bind_method(D_METHOD("_set_monitor_performance", "enable"), &BTState::_set_monitor_performance);
+	ClassDB::bind_method(D_METHOD("_get_monitor_performance"), &BTState::_get_monitor_performance);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "_set_monitor_performance", "_get_monitor_performance");
+#endif // DEBUG_ENABLED
 }
 
 BTState::BTState() {

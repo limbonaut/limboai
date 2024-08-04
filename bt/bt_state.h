@@ -51,6 +51,14 @@ public:
 	StringName get_failure_event() const { return failure_event; }
 
 	BTState();
+
+#ifdef DEBUG_ENABLED
+private:
+	bool monitor_performance = false;
+
+	void _set_monitor_performance(bool p_monitor);
+	bool _get_monitor_performance() const { return monitor_performance; }
+#endif
 };
 
 #endif // BT_STATE_H

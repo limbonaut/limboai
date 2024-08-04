@@ -29,13 +29,15 @@ Properties
 .. table::
    :widths: auto
 
-   +-----------------------------------------+------------------------------------------------------------+----------------+
-   | :ref:`BehaviorTree<class_BehaviorTree>` | :ref:`behavior_tree<class_BTState_property_behavior_tree>` |                |
-   +-----------------------------------------+------------------------------------------------------------+----------------+
-   | ``StringName``                          | :ref:`failure_event<class_BTState_property_failure_event>` | ``&"failure"`` |
-   +-----------------------------------------+------------------------------------------------------------+----------------+
-   | ``StringName``                          | :ref:`success_event<class_BTState_property_success_event>` | ``&"success"`` |
-   +-----------------------------------------+------------------------------------------------------------+----------------+
+   +-----------------------------------------+------------------------------------------------------------------------+----------------+
+   | :ref:`BehaviorTree<class_BehaviorTree>` | :ref:`behavior_tree<class_BTState_property_behavior_tree>`             |                |
+   +-----------------------------------------+------------------------------------------------------------------------+----------------+
+   | ``StringName``                          | :ref:`failure_event<class_BTState_property_failure_event>`             | ``&"failure"`` |
+   +-----------------------------------------+------------------------------------------------------------------------+----------------+
+   | ``bool``                                | :ref:`monitor_performance<class_BTState_property_monitor_performance>` | ``false``      |
+   +-----------------------------------------+------------------------------------------------------------------------+----------------+
+   | ``StringName``                          | :ref:`success_event<class_BTState_property_success_event>`             | ``&"success"`` |
+   +-----------------------------------------+------------------------------------------------------------------------+----------------+
 
 .. rst-class:: classref-reftable-group
 
@@ -87,6 +89,18 @@ A :ref:`BehaviorTree<class_BehaviorTree>` resource that defines state behavior.
 - ``StringName`` **get_failure_event**\ (\ )
 
 HSM event that will be dispatched when the behavior tree results in ``FAILURE``. See :ref:`LimboState.dispatch<class_LimboState_method_dispatch>`.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTState_property_monitor_performance:
+
+.. rst-class:: classref-property
+
+``bool`` **monitor_performance** = ``false`` :ref:`🔗<class_BTState_property_monitor_performance>`
+
+If ``true``, adds a performance monitor to "Debugger->Monitors" for each instance of this **BTState** node.
 
 .. rst-class:: classref-item-separator
 
