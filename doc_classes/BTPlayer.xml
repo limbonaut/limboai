@@ -10,16 +10,10 @@
 	<tutorials>
 	</tutorials>
 	<methods>
-		<method name="get_last_status" qualifiers="const">
-			<return type="int" />
+		<method name="get_bt_instance">
+			<return type="BTInstance" />
 			<description>
-				Returns the behavior tree's last execution status. See [enum BT.Status].
-			</description>
-		</method>
-		<method name="get_tree_instance">
-			<return type="BTTask" />
-			<description>
-				Returns the root task of the instantiated behavior tree.
+				Returns the behavior tree instance.
 			</description>
 		</method>
 		<method name="restart">
@@ -60,7 +54,7 @@
 		</member>
 	</members>
 	<signals>
-		<signal name="behavior_tree_finished">
+		<signal name="behavior_tree_finished" deprecated="Use [signal updated] signal instead.">
 			<param index="0" name="status" type="int" />
 			<description>
 				Emitted when the behavior tree has finished executing and returned [code]SUCCESS[/code] or [code]FAILURE[/code].

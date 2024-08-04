@@ -45,9 +45,9 @@ Methods
 .. table::
    :widths: auto
 
-   +-----------------------------+--------------------------------------------------------------------------------+
-   | :ref:`BTTask<class_BTTask>` | :ref:`get_tree_instance<class_BTState_method_get_tree_instance>`\ (\ ) |const| |
-   +-----------------------------+--------------------------------------------------------------------------------+
+   +-------------------------------------+----------------------------------------------------------------------------+
+   | :ref:`BTInstance<class_BTInstance>` | :ref:`get_bt_instance<class_BTState_method_get_bt_instance>`\ (\ ) |const| |
+   +-------------------------------------+----------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -114,13 +114,13 @@ HSM event that will be dispatched when the behavior tree results in ``SUCCESS``.
 Method Descriptions
 -------------------
 
-.. _class_BTState_method_get_tree_instance:
+.. _class_BTState_method_get_bt_instance:
 
 .. rst-class:: classref-method
 
-:ref:`BTTask<class_BTTask>` **get_tree_instance**\ (\ ) |const| :ref:`🔗<class_BTState_method_get_tree_instance>`
+:ref:`BTInstance<class_BTInstance>` **get_bt_instance**\ (\ ) |const| :ref:`🔗<class_BTState_method_get_bt_instance>`
 
-Returns the root task of the instantiated behavior tree.
+Returns the behavior tree instance.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`

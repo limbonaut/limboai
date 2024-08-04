@@ -25,7 +25,7 @@ void BBVariable::set_value(const Variant &p_value) {
 	data->value_changed = true;
 
 	if (is_bound()) {
-		Object *obj = ObjectDB::get_instance(ObjectID(data->bound_object));
+		Object *obj = OBJECT_DB_GET_INSTANCE(data->bound_object);
 		ERR_FAIL_COND_MSG(!obj, "Blackboard: Failed to get bound object.");
 #ifdef LIMBOAI_MODULE
 		bool r_valid;
@@ -39,7 +39,7 @@ void BBVariable::set_value(const Variant &p_value) {
 
 Variant BBVariable::get_value() const {
 	if (is_bound()) {
-		Object *obj = ObjectDB::get_instance(ObjectID(data->bound_object));
+		Object *obj = OBJECT_DB_GET_INSTANCE(data->bound_object);
 		ERR_FAIL_COND_V_MSG(!obj, data->value, "Blackboard: Failed to get bound object.");
 #ifdef LIMBOAI_MODULE
 		bool r_valid;

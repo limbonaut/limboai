@@ -55,17 +55,17 @@ Methods
 .. table::
    :widths: auto
 
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`BehaviorTree<class_BehaviorTree>` | :ref:`clone<class_BehaviorTree_method_clone>`\ (\ ) |const|                                                                                                        |
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                                  | :ref:`copy_other<class_BehaviorTree_method_copy_other>`\ (\ other\: :ref:`BehaviorTree<class_BehaviorTree>`\ )                                                     |
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`BTTask<class_BTTask>`             | :ref:`get_root_task<class_BehaviorTree_method_get_root_task>`\ (\ ) |const|                                                                                        |
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`BTTask<class_BTTask>`             | :ref:`instantiate<class_BehaviorTree_method_instantiate>`\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| |
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                                  | :ref:`set_root_task<class_BehaviorTree_method_set_root_task>`\ (\ task\: :ref:`BTTask<class_BTTask>`\ )                                                            |
-   +-----------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`BehaviorTree<class_BehaviorTree>` | :ref:`clone<class_BehaviorTree_method_clone>`\ (\ ) |const|                                                                                                            |
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                                  | :ref:`copy_other<class_BehaviorTree_method_copy_other>`\ (\ other\: :ref:`BehaviorTree<class_BehaviorTree>`\ )                                                         |
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`BTTask<class_BTTask>`             | :ref:`get_root_task<class_BehaviorTree_method_get_root_task>`\ (\ ) |const|                                                                                            |
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`BTInstance<class_BTInstance>`     | :ref:`instantiate<class_BehaviorTree_method_instantiate>`\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, instance_owner\: ``Node``\ ) |const| |
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                                  | :ref:`set_root_task<class_BehaviorTree_method_set_root_task>`\ (\ task\: :ref:`BTTask<class_BTTask>`\ )                                                                |
+   +-----------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -121,7 +121,7 @@ Stores and manages variables that will be used in constructing new :ref:`Blackbo
 - |void| **set_description**\ (\ value\: ``String``\ )
 - ``String`` **get_description**\ (\ )
 
-User-provided description of the BehaviorTree.
+User-provided description of the **BehaviorTree**.
 
 .. rst-class:: classref-section-separator
 
@@ -172,9 +172,9 @@ Returns the root task of the BehaviorTree resource.
 
 .. rst-class:: classref-method
 
-:ref:`BTTask<class_BTTask>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, scene_root\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
+:ref:`BTInstance<class_BTInstance>` **instantiate**\ (\ agent\: ``Node``, blackboard\: :ref:`Blackboard<class_Blackboard>`, instance_owner\: ``Node``\ ) |const| :ref:`🔗<class_BehaviorTree_method_instantiate>`
 
-Instantiates the behavior tree and returns the root :ref:`BTTask<class_BTTask>`. ``scene_root`` should be the root node of the scene that the Behavior Tree will be used in (e.g., the owner of the node that contains the behavior tree).
+Instantiates the behavior tree and returns :ref:`BTInstance<class_BTInstance>`. ``instance_owner`` should be the scene node that will own the behavior tree instance. This is typically a :ref:`BTPlayer<class_BTPlayer>`, :ref:`BTState<class_BTState>`, or a custom player node that controls the behavior tree execution.
 
 .. rst-class:: classref-item-separator
 

@@ -31,9 +31,9 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`BehaviorTreeData<class_BehaviorTreeData>` | :ref:`create_from_tree_instance<class_BehaviorTreeData_method_create_from_tree_instance>`\ (\ tree_instance\: :ref:`BTTask<class_BTTask>`\ ) |static| |
-   +-------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +-------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`BehaviorTreeData<class_BehaviorTreeData>` | :ref:`create_from_bt_instance<class_BehaviorTreeData_method_create_from_bt_instance>`\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) |static| |
+   +-------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -44,15 +44,15 @@ Methods
 Method Descriptions
 -------------------
 
-.. _class_BehaviorTreeData_method_create_from_tree_instance:
+.. _class_BehaviorTreeData_method_create_from_bt_instance:
 
 .. rst-class:: classref-method
 
-:ref:`BehaviorTreeData<class_BehaviorTreeData>` **create_from_tree_instance**\ (\ tree_instance\: :ref:`BTTask<class_BTTask>`\ ) |static| :ref:`🔗<class_BehaviorTreeData_method_create_from_tree_instance>`
+:ref:`BehaviorTreeData<class_BehaviorTreeData>` **create_from_bt_instance**\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) |static| :ref:`🔗<class_BehaviorTreeData_method_create_from_bt_instance>`
 
-Returns current state of the ``tree_instance`` encoded as a **BehaviorTreeData**, suitable for use with :ref:`BehaviorTreeView<class_BehaviorTreeView>`.
+Returns current state of the ``bt_instance`` encoded as a **BehaviorTreeData**, suitable for use with :ref:`BehaviorTreeView<class_BehaviorTreeView>`.
 
-Behavior tree instance can be acquired with :ref:`BTPlayer.get_tree_instance<class_BTPlayer_method_get_tree_instance>`.
+Behavior tree instance can be acquired with :ref:`BTPlayer.get_bt_instance<class_BTPlayer_method_get_bt_instance>`.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`

@@ -15,6 +15,7 @@
 #include "../blackboard/blackboard.h"
 #include "../blackboard/blackboard_plan.h"
 #include "behavior_tree.h"
+#include "bt_instance.h"
 #include "tasks/bt_task.h"
 
 #ifdef LIMBOAI_MODULE
@@ -42,9 +43,8 @@ private:
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
 	Ref<Blackboard> blackboard;
-	int last_status = -1;
 
-	Ref<BTTask> tree_instance;
+	Ref<BTInstance> bt_instance;
 
 	void _load_tree();
 	void _update_blackboard_plan();
@@ -75,9 +75,8 @@ public:
 
 	void update(double p_delta);
 	void restart();
-	int get_last_status() const { return last_status; }
 
-	Ref<BTTask> get_tree_instance() { return tree_instance; }
+	Ref<BTInstance> get_bt_instance() { return bt_instance; }
 
 	BTPlayer();
 	~BTPlayer();
@@ -86,19 +85,11 @@ public:
 
 private:
 	bool monitor_performance = false;
-	StringName monitor_id;
-	double update_time_acc = 0.0;
-	double update_time_n = 0.0;
 
 	void _set_monitor_performance(bool p_monitor_performance);
 	bool _get_monitor_performance() const { return monitor_performance; }
 
-	void _add_custom_monitor();
-	void _remove_custom_monitor();
-
-	double _get_mean_update_time_msec();
-
-#endif // DEBUG_ENABLED
+#endif // * DEBUG_ENABLED
 };
 
 #endif // BT_PLAYER_H
