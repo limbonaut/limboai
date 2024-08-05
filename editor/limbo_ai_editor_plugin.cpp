@@ -1434,12 +1434,13 @@ LimboAIEditor::LimboAIEditor() {
 	plugin = nullptr;
 	idx_history = 0;
 
-#ifdef LIMBOAI_MODULE
+	EDITOR_DEF("limbo_ai/editor/prefer_online_documentation", false);
+
 	EDITOR_DEF("limbo_ai/editor/layout", 0);
+#ifdef LIMBOAI_MODULE
 	EDITOR_SETTINGS()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
 	EDITOR_SETTINGS()->set_restart_if_changed("limbo_ai/editor/layout", true);
 #elif LIMBOAI_GDEXTENSION
-	EDITOR_SETTINGS()->set_initial_value("limbo_ai/editor/layout", 0, false);
 	Dictionary pinfo;
 	pinfo["name"] = "limbo_ai/editor/layout";
 	pinfo["type"] = Variant::INT;

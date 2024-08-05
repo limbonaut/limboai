@@ -114,6 +114,7 @@ using namespace godot;
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_stylebox_override(m_name, m_stylebox))
 #define GET_NODE(m_parent, m_path) m_parent->get_node_internal(m_path)
 #define OBJECT_DB_GET_INSTANCE(m_id) ObjectDB::get_instance(m_id)
+#define EDITOR_DEF(m_setting, m_value) EditorInterface::get_singleton()->get_editor_settings()->set_initial_value(m_setting, m_value, false)
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
 	return Variant(p_obj).has_key(p_prop);
@@ -172,7 +173,7 @@ Variant VARIANT_DEFAULT(Variant::Type p_type);
 
 #ifdef TOOLS_ENABLED
 
-void SHOW_DOC(const String &p_topic);
+void SHOW_BUILTIN_DOC(const String &p_topic);
 void EDIT_SCRIPT(const String &p_path);
 
 #endif // TOOLS_ENABLED
