@@ -273,7 +273,8 @@ Called during the update. Implement your state's behavior with this method.
 Registers a ``handler`` to be called when ``event`` is dispatched. The handler function should have the following signature:
 
 ::
-func my_event_handler(cargo=null) -> void:
+
+    func my_event_handler(cargo=null) -> void:
 
 Cargo is an optional parameter that can be passed to the handler. See also :ref:`dispatch<class_LimboState_method_dispatch>`.
 
