@@ -270,7 +270,12 @@ Called during the update. Implement your state's behavior with this method.
 
 |void| **add_event_handler**\ (\ event\: ``StringName``, handler\: ``Callable``\ ) :ref:`🔗<class_LimboState_method_add_event_handler>`
 
-Registers a ``handler`` to be called when ``event`` is dispatched.
+Registers a ``handler`` to be called when ``event`` is dispatched. The handler function should have the following signature:
+
+::
+func my_event_handler(cargo=null) -> void:
+
+Cargo is an optional parameter that can be passed to the handler. See also :ref:`dispatch<class_LimboState_method_dispatch>`.
 
 .. rst-class:: classref-item-separator
 
