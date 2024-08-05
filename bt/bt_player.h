@@ -43,7 +43,7 @@ private:
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
 	Ref<Blackboard> blackboard;
-	Node *scene_root_hint;
+	Node *scene_root_hint = nullptr;
 
 	Ref<BTInstance> bt_instance;
 

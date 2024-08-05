@@ -37,6 +37,13 @@ void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	_update_blackboard_plan();
 }
 
+void BTState::set_scene_root_hint(Node *p_scene_root) {
+	ERR_FAIL_NULL_MSG(p_scene_root, "BTState: Failed to set scene root hint - scene root is null.");
+	ERR_FAIL_COND_MSG(bt_instance.is_valid(), "BTState: Scene root hint shouldn't be set after initialization. This change will not affect the current behavior tree instance.");
+
+	scene_root_hint = p_scene_root;
+}
+
 #ifdef DEBUG_ENABLED
 void BTState::_set_monitor_performance(bool p_monitor) {
 	monitor_performance = p_monitor;
@@ -61,10 +68,10 @@ void BTState::_update_blackboard_plan() {
 void BTState::_setup() {
 	LimboState::_setup();
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
-	Node *scene_root = get_owner();
-	ERR_FAIL_NULL_MSG(scene_root, "BTState: Initialization failed - can't get scene root (make sure the BTState's owner property is set).");
+	Node *scene_root = scene_root_hint ? scene_root_hint : get_owner();
+	ERR_FAIL_NULL_MSG(scene_root, "BTState: Initialization failed - unable to establish scene root. This is likely due to BTState not being owned by a scene node. Check BTState.set_scene_root_hint().");
 	bt_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), this);
-	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTState: Initialization failed - can't instantiate behavior tree.");
+	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTState: Initialization failed - failed to instantiate behavior tree.");
 
 #ifdef DEBUG_ENABLED
 	bt_instance->register_with_debugger();
@@ -136,6 +143,8 @@ void BTState::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_failure_event", "event"), &BTState::set_failure_event);
 	ClassDB::bind_method(D_METHOD("get_failure_event"), &BTState::get_failure_event);
+
+	ClassDB::bind_method(D_METHOD("set_scene_root_hint", "scene_root"), &BTState::set_scene_root_hint);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "success_event"), "set_success_event", "get_success_event");
