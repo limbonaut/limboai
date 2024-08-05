@@ -776,6 +776,17 @@ void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) {
 	EDIT_RESOURCE(p_task);
 }
 
+void LimboAIEditor::_on_tree_task_activated() {
+	Ref<BTTask> selected = task_tree->get_selected();
+	ERR_FAIL_COND(selected.is_null());
+	Ref<Script> scr = selected->get_script();
+	if (scr.is_valid()) {
+		EDIT_SCRIPT(scr->get_path());
+	} else {
+		LimboUtility::get_singleton()->open_doc_class(selected->get_class());
+	}
+}
+
 void LimboAIEditor::_on_visibility_changed() {
 	if (task_tree->is_visible_in_tree()) {
 		Ref<BTTask> sel = task_tree->get_selected();
@@ -1364,7 +1375,7 @@ void LimboAIEditor::_notification(int p_what) {
 			task_tree->connect("rmb_pressed", callable_mp(this, &LimboAIEditor::_on_tree_rmb));
 			task_tree->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_tree_task_selected));
 			task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
-			task_tree->connect("task_activated", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_RENAME));
+			task_tree->connect("task_activated", callable_mp(this, &LimboAIEditor::_on_tree_task_activated));
 			task_tree->connect("probability_clicked", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_EDIT_PROBABILITY));
 			task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
 			task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_banners));
