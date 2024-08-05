@@ -62,6 +62,8 @@ Methods
    +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
    | |void|                              | :ref:`set_bt_instance<class_BTPlayer_method_set_bt_instance>`\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) |
    +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`set_scene_root_hint<class_BTPlayer_method_set_scene_root_hint>`\ (\ scene_root\: ``Node``\ )                     |
+   +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
    | |void|                              | :ref:`update<class_BTPlayer_method_update>`\ (\ delta\: ``float``\ )                                                   |
    +-------------------------------------+------------------------------------------------------------------------------------------------------------------------+
 
@@ -297,7 +299,19 @@ Resets the behavior tree's execution. Each running task will be aborted and the 
 
 |void| **set_bt_instance**\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) :ref:`🔗<class_BTPlayer_method_set_bt_instance>`
 
-Sets the :ref:`BTInstance<class_BTInstance>` to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also :ref:`BehaviorTree.instantiate<class_BehaviorTree_property_instantiate>`.
+Sets the :ref:`BTInstance<class_BTInstance>` to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also :ref:`BehaviorTree.instantiate<class_BehaviorTree_method_instantiate>`.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTPlayer_method_set_scene_root_hint:
+
+.. rst-class:: classref-method
+
+|void| **set_scene_root_hint**\ (\ scene_root\: ``Node``\ ) :ref:`🔗<class_BTPlayer_method_set_scene_root_hint>`
+
+Sets the ``Node`` that will be used as the scene root for the newly instantiated behavior tree. Should be called before the **BTPlayer** is added to the scene tree (before ``NOTIFICATION_READY``). This is typically useful when creating **BTPlayer** nodes dynamically from code.
 
 .. rst-class:: classref-item-separator
 

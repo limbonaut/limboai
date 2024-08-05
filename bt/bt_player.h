@@ -43,6 +43,7 @@ private:
 	UpdateMode update_mode = UpdateMode::PHYSICS;
 	bool active = true;
 	Ref<Blackboard> blackboard;
+	Node *scene_root_hint = nullptr;
 
 	Ref<BTInstance> bt_instance;
 
@@ -78,6 +79,8 @@ public:
 
 	Ref<BTInstance> get_bt_instance() { return bt_instance; }
 	void set_bt_instance(const Ref<BTInstance> &p_bt_instance);
+
+	void set_scene_root_hint(Node *p_scene_root);
 
 	BTPlayer();
 	~BTPlayer();

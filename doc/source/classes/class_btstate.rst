@@ -47,9 +47,11 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+----------------------------------------------------------------------------+
-   | :ref:`BTInstance<class_BTInstance>` | :ref:`get_bt_instance<class_BTState_method_get_bt_instance>`\ (\ ) |const| |
-   +-------------------------------------+----------------------------------------------------------------------------+
+   +-------------------------------------+---------------------------------------------------------------------------------------------------+
+   | :ref:`BTInstance<class_BTInstance>` | :ref:`get_bt_instance<class_BTState_method_get_bt_instance>`\ (\ ) |const|                        |
+   +-------------------------------------+---------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`set_scene_root_hint<class_BTState_method_set_scene_root_hint>`\ (\ scene_root\: ``Node``\ ) |
+   +-------------------------------------+---------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -135,6 +137,18 @@ Method Descriptions
 :ref:`BTInstance<class_BTInstance>` **get_bt_instance**\ (\ ) |const| :ref:`🔗<class_BTState_method_get_bt_instance>`
 
 Returns the behavior tree instance.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_BTState_method_set_scene_root_hint:
+
+.. rst-class:: classref-method
+
+|void| **set_scene_root_hint**\ (\ scene_root\: ``Node``\ ) :ref:`🔗<class_BTState_method_set_scene_root_hint>`
+
+Sets the ``Node`` that will be used as the scene root for the newly instantiated behavior tree. Should be called before the state machine is initialized. This is typically useful when creating **BTState** nodes dynamically from code.
 
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`

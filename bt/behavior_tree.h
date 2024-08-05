@@ -59,7 +59,7 @@ public:
 
 	Ref<BehaviorTree> clone() const;
 	void copy_other(const Ref<BehaviorTree> &p_other);
-	Ref<BTInstance> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_instance_owner) const;
+	Ref<BTInstance> instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_instance_owner, Node *p_custom_scene_root = nullptr) const;
 
 	BehaviorTree();
 	~BehaviorTree();

@@ -48,8 +48,9 @@ void BTPlayer::_load_tree() {
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
 	Node *agent = GET_NODE(this, agent_node);
 	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
-	Node *scene_root = get_owner();
-	ERR_FAIL_NULL_MSG(scene_root, "BTPlayer: Initialization failed - can't get scene root (make sure the BTPlayer's owner property is set).");
+	Node *scene_root = scene_root_hint ? scene_root_hint : get_owner();
+	ERR_FAIL_COND_MSG(scene_root == nullptr,
+			"BTPlayer: Initialization failed - unable to establish scene root. This is likely due to BTPlayer not being owned by a scene node. Check BTPlayer.set_scene_root_hint().");
 	bt_instance = behavior_tree->instantiate(agent, blackboard, this);
 	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTPlayer: Failed to instantiate behavior tree.");
 #ifdef DEBUG_ENABLED
@@ -79,6 +80,15 @@ void BTPlayer::set_bt_instance(const Ref<BTInstance> &p_bt_instance) {
 
 	blackboard_plan.unref();
 	behavior_tree.unref();
+}
+
+void BTPlayer::set_scene_root_hint(Node *p_scene_root) {
+	ERR_FAIL_NULL_MSG(p_scene_root, "BTPlayer: Failed to set scene root hint - scene root is null.");
+	if (bt_instance.is_valid()) {
+		ERR_PRINT("BTPlayer: Scene root hint shouldn't be set after the behavior tree is instantiated. This change will not affect the current behavior tree instance.");
+	}
+
+	scene_root_hint = p_scene_root;
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
@@ -230,6 +240,8 @@ void BTPlayer::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("get_bt_instance"), &BTPlayer::get_bt_instance);
 	ClassDB::bind_method(D_METHOD("set_bt_instance", "bt_instance"), &BTPlayer::set_bt_instance);
+
+	ClassDB::bind_method(D_METHOD("set_scene_root_hint", "scene_root"), &BTPlayer::set_scene_root_hint);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");

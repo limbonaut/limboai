@@ -25,6 +25,7 @@ private:
 	Ref<BTInstance> bt_instance;
 	StringName success_event;
 	StringName failure_event;
+	Node *scene_root_hint = nullptr;
 
 protected:
 	static void _bind_methods();
@@ -49,6 +50,8 @@ public:
 
 	void set_failure_event(const StringName &p_failure_event) { failure_event = p_failure_event; }
 	StringName get_failure_event() const { return failure_event; }
+
+	void set_scene_root_hint(Node *p_node);
 
 	BTState();
 
