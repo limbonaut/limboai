@@ -26,7 +26,7 @@
 			<return type="void" />
 			<param index="0" name="bt_instance" type="BTInstance" />
 			<description>
-				Sets the [BTInstance] to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also [member BehaviorTree.instantiate].
+				Sets the [BTInstance] to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also [method BehaviorTree.instantiate].
 			</description>
 		</method>
 		<method name="set_scene_root_hint">

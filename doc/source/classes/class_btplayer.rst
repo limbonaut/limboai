@@ -299,7 +299,7 @@ Resets the behavior tree's execution. Each running task will be aborted and the 
 
 |void| **set_bt_instance**\ (\ bt_instance\: :ref:`BTInstance<class_BTInstance>`\ ) :ref:`🔗<class_BTPlayer_method_set_bt_instance>`
 
-Sets the :ref:`BTInstance<class_BTInstance>` to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also :ref:`BehaviorTree.instantiate<class_BehaviorTree_property_instantiate>`.
+Sets the :ref:`BTInstance<class_BTInstance>` to play. This method is useful when you want to switch to a different behavior tree instance at runtime. See also :ref:`BehaviorTree.instantiate<class_BehaviorTree_method_instantiate>`.
 
 .. rst-class:: classref-item-separator
 
