@@ -220,6 +220,8 @@ void LimboAIEditor::_load_bt(String p_path) {
 void LimboAIEditor::_disable_editing() {
 	task_tree->unload();
 	task_palette->hide();
+	task_tree->hide();
+	usage_hint->show();
 }
 
 void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh) {
@@ -234,14 +236,9 @@ void LimboAIEditor::edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refr
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
 
-	if (task_tree->get_bt().is_valid() &&
-			task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
-		task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
-	}
-
 	task_tree->load_bt(p_behavior_tree);
 
-	if (task_tree->get_bt().is_valid()) {
+	if (task_tree->get_bt().is_valid() && !task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
 		task_tree->get_bt()->connect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
 	}
 
@@ -888,6 +885,10 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 #endif
 }
 
+void LimboAIEditor::_on_new_script_pressed() {
+	SCRIPT_EDITOR()->open_script_create_dialog("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task"));
+}
+
 void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
 	change_type_popup->hide();
 
@@ -958,6 +959,10 @@ void LimboAIEditor::_tab_clicked(int p_tab) {
 
 void LimboAIEditor::_tab_closed(int p_tab) {
 	ERR_FAIL_INDEX(p_tab, history.size());
+	Ref<BehaviorTree> history_bt = history[p_tab];
+	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
+		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+	}
 	history.remove_at(p_tab);
 	idx_history = MIN(idx_history, history.size() - 1);
 	if (idx_history < 0) {
@@ -1296,9 +1301,11 @@ void LimboAIEditor::_notification(int p_what) {
 			cf->set_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset());
 			cf->save(conf_path);
 
-			if (task_tree->get_bt().is_valid() &&
-					task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true))) {
-				task_tree->get_bt()->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+			task_tree->unload();
+			for (int i = 0; i < history.size(); i++) {
+				if (history[i]->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
+					history[i]->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+				}
 			}
 		} break;
 		case NOTIFICATION_READY: {
@@ -1329,7 +1336,7 @@ void LimboAIEditor::_notification(int p_what) {
 			disk_changed->connect("confirmed", callable_mp(this, &LimboAIEditor::_reload_modified));
 			disk_changed->connect("custom_action", callable_mp(this, &LimboAIEditor::_resave_modified));
 			rename_dialog->connect("confirmed", callable_mp(this, &LimboAIEditor::_rename_task_confirmed));
-			new_script_btn->connect(LW_NAME(pressed), callable_mp(SCRIPT_EDITOR(), &ScriptEditor::open_script_create_dialog).bind("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task")));
+			new_script_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_new_script_pressed));
 			tab_bar->connect("tab_clicked", callable_mp(this, &LimboAIEditor::_tab_clicked));
 			tab_bar->connect("active_tab_rearranged", callable_mp(this, &LimboAIEditor::_move_active_tab));
 			tab_bar->connect("tab_close_pressed", callable_mp(this, &LimboAIEditor::_tab_closed));
