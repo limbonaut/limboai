@@ -120,8 +120,9 @@ void LimboDebuggerTab::_update_bt_instance_list(const Vector<BTInstanceInfo> &p_
 	bt_instance_list->clear();
 	int select_idx = -1;
 	bool selection_filtered_out = false;
+	String filter = p_filter.to_lower();
 	for (const BTInstanceInfo &info : p_instances) {
-		if (p_filter.is_empty() || info.owner_node_path.contains(p_filter)) {
+		if (filter.is_empty() || info.owner_node_path.to_lower().contains(filter)) {
 			int idx = bt_instance_list->add_item(info.owner_node_path);
 			bt_instance_list->set_item_metadata(idx, info.instance_id);
 			// Make item text shortened from the left, e.g ".../Agent/BTPlayer".
