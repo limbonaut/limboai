@@ -167,6 +167,12 @@ jobs:
       BIN: liblimboai.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}
 
     steps:
+      - name: Clone LimboAI module
+        uses: actions/checkout@v4
+        with:
+          fetch-tags: true
+          ref: ${{ inputs.limboai-ref }}
+
       - name: Clone godot-cpp
         uses: actions/checkout@v4
         with:
@@ -175,15 +181,8 @@ jobs:
           path: godot-cpp
           ref: ${{ inputs.godot-cpp-ref }}
 
-      - name: Clone LimboAI module
-        uses: actions/checkout@v4
-        with:
-          path: limboai
-          fetch-tags: true
-          ref: ${{ inputs.limboai-ref }}
-
       # Inits GDEXTENSION_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
-      - uses: ./limboai/.github/actions/init-version-gdext
+      - uses: ./.github/actions/init-version-gdext
 
       - name: Output NAME_PREFIX
         id: output-name-prefix
@@ -191,7 +190,7 @@ jobs:
 
       - name: Setup Linux toolchain
         if: matrix.opts.platform == 'linux'
-        uses: ./limboai/.github/actions/setup-linux-toolchain
+        uses: ./.github/actions/setup-linux-toolchain
         with:
           arch: ${{matrix.opts.arch}}
 
@@ -260,7 +259,7 @@ jobs:
       - name: Setup project structure for GDExtension
         shell: bash
         run: |
-          bash ./limboai/gdextension/setup_gdextension.sh --copy-all
+          bash ./gdextension/setup_gdextension.sh --copy-all
           echo "---"
           ls -l
           echo "---"
@@ -279,9 +278,9 @@ jobs:
         run: |
           mkdir out
           mv demo/addons/ out/
-          cp limboai/{README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
-          cp -R limboai/demo/demo/ out/demo/
-          cp limboai/demo/LICENSE_ASSETS.md out/demo/
+          cp {README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
+          cp -R demo/demo/ out/demo/
+          cp demo/LICENSE_ASSETS.md out/demo/
           rm -f out/addons/limboai/bin/*.{exp,lib,pdb}
           echo "${LIMBOAI_VERSION}" > out/addons/limboai/version.txt
           echo "---"
