@@ -2,6 +2,28 @@
 import os
 import sys
 
+# This is SConstruct file for building GDExtension variant using SCONS build system.
+# For module variant, see SCsub file.
+
+# For custom projects, you can customize output path for artifacts: scons --project=PATH_TO_YOUR_PROJECT
+# - artifacts are placed into "addons/limboai/bin" subdirectory inside the project directory.
+# - for example: scons --project="../my_project"
+#   - artifacts will be placed into "../my_project/addons/limboai/bin" relative to "limboai/" source dir.
+# - if not specified, the artifacts will be places in the demo/ project.
+# - For plugin to be loaded, create "addons/limboai/bin" directory in your project and copy limboai.gdextension file to it.
+
+AddOption(
+    "--project",
+    dest="project",
+    type="string",
+    nargs=1,
+    action="store",
+    metavar="DIR",
+    default="demo",
+    help="Specify project directory.",
+)
+project_dir = GetOption("project")
+
 env = SConscript("godot-cpp/SConstruct")
 
 # For reference:
@@ -13,48 +35,44 @@ env = SConscript("godot-cpp/SConstruct")
 # - LINKFLAGS are for linking flags
 
 # Generate version header.
-sys.path.append("./limboai")
 import limboai_version
 
-os.chdir("./limboai")
 limboai_version.generate_module_version_header()
-os.chdir("..")
-sys.path.remove("./limboai")
 
 # Tweak this if you want to use different folders, or more folders, to store your source code in.
-env.Append(CPPPATH=["limboai/"])
 env.Append(CPPDEFINES=["LIMBOAI_GDEXTENSION"])
-sources = Glob("limboai/*.cpp")
-sources += Glob("limboai/blackboard/*.cpp")
-sources += Glob("limboai/blackboard/bb_param/*.cpp")
-sources += Glob("limboai/bt/*.cpp")
-sources += Glob("limboai/bt/tasks/*.cpp")
-sources += Glob("limboai/bt/tasks/blackboard/*.cpp")
-sources += Glob("limboai/bt/tasks/composites/*.cpp")
-sources += Glob("limboai/bt/tasks/decorators/*.cpp")
-sources += Glob("limboai/bt/tasks/scene/*.cpp")
-sources += Glob("limboai/bt/tasks/utility/*.cpp")
-sources += Glob("limboai/gdextension/*.cpp")
-sources += Glob("limboai/editor/debugger/*.cpp")
-sources += Glob("limboai/editor/*.cpp")
-sources += Glob("limboai/hsm/*.cpp")
-sources += Glob("limboai/util/*.cpp")
+sources = Glob("*.cpp")
+sources += Glob("blackboard/*.cpp")
+sources += Glob("blackboard/bb_param/*.cpp")
+sources += Glob("bt/*.cpp")
+sources += Glob("bt/tasks/*.cpp")
+sources += Glob("bt/tasks/blackboard/*.cpp")
+sources += Glob("bt/tasks/composites/*.cpp")
+sources += Glob("bt/tasks/decorators/*.cpp")
+sources += Glob("bt/tasks/scene/*.cpp")
+sources += Glob("bt/tasks/utility/*.cpp")
+sources += Glob("gdextension/*.cpp")
+sources += Glob("editor/debugger/*.cpp")
+sources += Glob("editor/*.cpp")
+sources += Glob("hsm/*.cpp")
+sources += Glob("util/*.cpp")
 
 # Generate documentation header.
 if env["target"] in ["editor", "template_debug"]:
-    doc_data = env.GodotCPPDocData("limboai/gen/doc_data.gen.cpp", source=Glob("limboai/doc_classes/*.xml"))
+    doc_data = env.GodotCPPDocData("gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
     sources.append(doc_data)
 
 if env["platform"] == "macos":
     library = env.SharedLibrary(
-        "demo/addons/limboai/bin/liblimboai.{}.{}.framework/liblimboai.{}.{}".format(
+        project_dir
+        + "/addons/limboai/bin/liblimboai.{}.{}.framework/liblimboai.{}.{}".format(
             env["platform"], env["target"], env["platform"], env["target"]
         ),
         source=sources,
     )
 else:
     library = env.SharedLibrary(
-        "demo/addons/limboai/bin/liblimboai{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
+        project_dir + "/addons/limboai/bin/liblimboai{}{}".format(env["suffix"], env["SHLIBSUFFIX"]),
         source=sources,
     )
 
