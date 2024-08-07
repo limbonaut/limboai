@@ -72,7 +72,7 @@ done
 
 highlight Setup started.
 
-${PYTHON} gdextension/update_icons.py --silent
+${PYTHON} gdextension/update_icon_entries.py --silent
 highlight -- Icon declarations updated.
 
 transfer="ln -s"

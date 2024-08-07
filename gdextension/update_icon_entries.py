@@ -1,7 +1,7 @@
 #!/usr/bin/python
 """
-Usage: update_icons.py [--silent]
-Update icon declarations in limboai.gdextension file.
+Usage: update_icon_entries.py [--silent]
+Update icon entries in limboai.gdextension file.
 
 Options:
   -s, --silent      Don't print anything.
@@ -79,7 +79,7 @@ def main():
 
     if not silent:
         print(content)
-        print("======= Icon declarations updated =======")
+        print("======= Icon entries updated =======")
 
 
 if __name__ == "__main__":
