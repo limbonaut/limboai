@@ -35,9 +35,19 @@ env = SConscript("godot-cpp/SConstruct")
 # - LINKFLAGS are for linking flags
 
 # Generate version header.
-import limboai_version
+from limboai_version import generate_module_version_header
 
-limboai_version.generate_module_version_header()
+print("Generating LimboAI version header...")
+generate_module_version_header()
+
+# Update icon entries in limboai.gdextension file.
+# Note: This will remove everything after [icons] section, and rebuild it with generated icon entries.
+sys.path.append("gdextension")
+from update_icon_entries import update_icon_entries
+
+print("Updating LimboAI icon entries...")
+update_icon_entries(silent=True)
+sys.path.remove("gdextension")
 
 # Tweak this if you want to use different folders, or more folders, to store your source code in.
 env.Append(CPPDEFINES=["LIMBOAI_GDEXTENSION"])

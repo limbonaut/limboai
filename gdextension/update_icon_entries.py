@@ -28,28 +28,7 @@ def get_script_dir():
     return os.path.dirname(os.path.realpath(__file__))
 
 
-def main():
-    silent = False
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "s", ["silent"])
-    except getopt.GetoptError as e:
-        print(
-            "%s: %s!\n"
-            % (
-                os.path.basename(__file__),
-                e.msg,
-            )
-        )
-        usage()
-        sys.exit(2)
-
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            usage()
-            sys.exit(0)
-        elif opt in ("-s", "--silent"):
-            silent = True
-
+def update_icon_entries(silent=False):
     config_dir = get_script_dir()
     config_path = os.path.join(config_dir, "limboai.gdextension")
     content = ""
@@ -83,4 +62,25 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    silent = False
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "s", ["silent"])
+    except getopt.GetoptError as e:
+        print(
+            "%s: %s!\n"
+            % (
+                os.path.basename(__file__),
+                e.msg,
+            )
+        )
+        usage()
+        sys.exit(2)
+
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        elif opt in ("-s", "--silent"):
+            silent = True
+
+    update_icon_entries(silent)
