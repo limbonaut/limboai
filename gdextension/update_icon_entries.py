@@ -32,15 +32,16 @@ def update_icon_entries(silent=False):
     config_dir = get_script_dir()
     config_path = os.path.join(config_dir, "limboai.gdextension")
     content = ""
+    new_content = ""
 
     f = open(config_path, "r")
     for line in f:
-        if line.startswith("[icons]"):
-            break
         content += line
     f.close()
 
-    content += "[icons]\n\n"
+    index = content.find("[icons]")
+    new_content = content[0:index]
+    new_content += "[icons]\n\n"
 
     icon_files = []
     icons_dir = os.path.join(config_dir, "../icons/")
@@ -50,15 +51,18 @@ def update_icon_entries(silent=False):
 
     icon_files.sort()
     for icon_file in icon_files:
-        content += os.path.splitext(icon_file)[0] + ' = "res://addons/limboai/icons/' + icon_file + '"\n'
+        new_content += os.path.splitext(icon_file)[0] + ' = "res://addons/limboai/icons/' + icon_file + '"\n'
 
-    f = open(config_path, "w")
-    f.write(content)
-    f.close()
-
-    if not silent:
-        print(content)
-        print("======= Icon entries updated =======")
+    if new_content != content:
+        f = open(config_path, "w")
+        f.write(new_content)
+        f.close()
+        if not silent:
+            print(new_content)
+            print("=== Icon entries updated ===")
+    else:
+        if not silent:
+            print("=== No update needed for icon entries ===")
 
 
 if __name__ == "__main__":
