@@ -5,12 +5,12 @@ import sys
 # This is SConstruct file for building GDExtension variant using SCONS build system.
 # For module variant, see SCsub file.
 
-# For custom projects, you can customize output path for artifacts: scons --project=PATH_TO_YOUR_PROJECT
-# - artifacts are placed into "addons/limboai/bin" subdirectory inside the project directory.
-# - for example: scons --project="../my_project"
-#   - artifacts will be placed into "../my_project/addons/limboai/bin" relative to "limboai/" source dir.
-# - if not specified, the artifacts will be places in the demo/ project.
-# - For plugin to be loaded, create "addons/limboai/bin" directory in your project and copy limboai.gdextension file to it.
+# Use --project=DIR to customize output path for built targets.
+# - Built targets are placed into "DIR/addons/limboai/bin".
+# - For example: scons --project="../my_project"
+#   - built targets will be placed into "../my_project/addons/limboai/bin".
+# - If not specified, built targets are put into the demo/ project.
+# - For plugin to be loaded, copy limboai.gdextension into "addons/limboai/bin" dir.
 
 AddOption(
     "--project",
@@ -20,9 +20,20 @@ AddOption(
     action="store",
     metavar="DIR",
     default="demo",
-    help="Specify project directory.",
+    help="Specify project directory",
 )
+
+help_text = """
+Options:
+  --project=DIR     Specify project directory (default: "demo");
+                    built targets will be placed in DIR/addons/limboai/bin
+"""
+Help(help_text)
+
 project_dir = GetOption("project")
+if not os.path.isdir(project_dir):
+    print("Project directory not found: " + project_dir)
+    Exit(1)
 
 env = SConscript("godot-cpp/SConstruct")
 
