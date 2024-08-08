@@ -256,15 +256,6 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}
             ${{env.BIN}}-${{inputs.godot-cpp-ref}}
 
-      - name: Setup project structure for GDExtension
-        shell: bash
-        run: |
-          bash ./gdextension/setup_gdextension.sh --copy-all
-          echo "---"
-          ls -l
-          echo "---"
-          ls -l -R ./demo/
-
       - name: Compilation
         shell: bash
         env:
