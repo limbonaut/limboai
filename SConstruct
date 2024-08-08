@@ -2,7 +2,7 @@
 import os
 import sys
 
-# This is SConstruct file for building GDExtension variant using SCONS build system.
+# This is SConstruct file for building GDExtension variant using SCons build system.
 # For module variant, see SCsub file.
 
 # Use --project=DIR to customize output path for built targets.
@@ -34,7 +34,23 @@ if not os.path.isdir(project_dir):
     print("Project directory not found: " + project_dir)
     Exit(1)
 
-env = SConscript("godot-cpp/SConstruct")
+# Parse LimboAI-specific variables.
+vars = Variables()
+vars.AddVariables(
+    BoolVariable("deploy_manifest", help="Deploy limboai.gdextension into PROJECT/addons/limboai/bin", default=True),
+    BoolVariable("deploy_icons", help="Deploy icons into PROJECT/addons/limboai/icons", default=True),
+)
+env = Environment(tools=["default"], PLATFORM="", variables=vars)
+Help(vars.GenerateHelpText(env))
+
+# Read LimboAI-specific variables.
+deploy_manifest = env["deploy_manifest"]
+deploy_icons = env["deploy_icons"]
+
+# Remove processed variables from ARGUMENTS to avoid godot-cpp warnings.
+for o in vars.options:
+    if o.key in ARGUMENTS:
+        del ARGUMENTS[o.key]
 
 # For reference:
 # - CCFLAGS are compilation flags shared between C and C++
@@ -43,6 +59,8 @@ env = SConscript("godot-cpp/SConstruct")
 # - CPPFLAGS are for pre-processor flags
 # - CPPDEFINES are for pre-processor defines
 # - LINKFLAGS are for linking flags
+
+env = SConscript("godot-cpp/SConstruct")
 
 # Generate version header.
 from limboai_version import generate_module_version_header
@@ -97,11 +115,22 @@ else:
         source=sources,
     )
 
-# Deploy limboai.gdextension into PROJECT/addons/limboai/bin.
-deploy_manifest = env.Command(
-    project_dir + "/addons/limboai/bin/limboai.gdextension",
-    "gdextension/limboai.gdextension",
-    Copy("$TARGET", "$SOURCE"),
-)
+Default(library)
 
-Default(library, deploy_manifest)
+# Deploy icons into PROJECT/addons/limboai/icons.
+if deploy_icons:
+    cmd_deploy_icons = env.Command(
+        project_dir + "/addons/limboai/icons/",
+        "icons/",
+        Copy("$TARGET", "$SOURCE"),
+    )
+    Default(cmd_deploy_icons)
+
+# Deploy limboai.gdextension into PROJECT/addons/limboai/bin.
+if deploy_manifest:
+    cmd_deploy_manifest = env.Command(
+        project_dir + "/addons/limboai/bin/limboai.gdextension",
+        "gdextension/limboai.gdextension",
+        Copy("$TARGET", "$SOURCE"),
+    )
+    Default(cmd_deploy_manifest)
