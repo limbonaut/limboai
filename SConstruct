@@ -10,7 +10,6 @@ import sys
 # - For example: scons --project="../my_project"
 #   - built targets will be placed into "../my_project/addons/limboai/bin".
 # - If not specified, built targets are put into the demo/ project.
-# - For plugin to be loaded, copy limboai.gdextension into "addons/limboai/bin" dir.
 
 AddOption(
     "--project",
@@ -83,6 +82,7 @@ if env["target"] in ["editor", "template_debug"]:
     doc_data = env.GodotCPPDocData("gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
     sources.append(doc_data)
 
+# Build library.
 if env["platform"] == "macos":
     library = env.SharedLibrary(
         project_dir
@@ -97,4 +97,11 @@ else:
         source=sources,
     )
 
-Default(library)
+# Deploy limboai.gdextension into PROJECT/addons/limboai/bin.
+deploy_manifest = env.Command(
+    project_dir + "/addons/limboai/bin/limboai.gdextension",
+    "gdextension/limboai.gdextension",
+    Copy("$TARGET", "$SOURCE"),
+)
+
+Default(library, deploy_manifest)
