@@ -1,15 +1,32 @@
 #!/usr/bin/env python
+"""
+This is SConstruct file for building GDExtension variant using SCons build system.
+For module variant, see SCsub file.
+
+Use --project=DIR to customize output path for built targets.
+ - Built targets are placed into "DIR/addons/limboai/bin".
+ - For example: scons --project="../my_project"
+   - built targets will be placed into "../my_project/addons/limboai/bin".
+ - If not specified, built targets are put into the demo/ project.
+"""
+
 import os
 import sys
+import subprocess
+from limboai_version import generate_module_version_header, godot_cpp_ref
 
-# This is SConstruct file for building GDExtension variant using SCons build system.
-# For module variant, see SCsub file.
-
-# Use --project=DIR to customize output path for built targets.
-# - Built targets are placed into "DIR/addons/limboai/bin".
-# - For example: scons --project="../my_project"
-#   - built targets will be placed into "../my_project/addons/limboai/bin".
-# - If not specified, built targets are put into the demo/ project.
+# Check if godot-cpp/ exists
+if not os.path.exists("godot-cpp"):
+    print("Directory godot-cpp/ not found. Cloning repository...")
+    result = subprocess.run(
+        ["git", "clone", "-b", godot_cpp_ref, "https://github.com/godotengine/godot-cpp.git"],
+        check=True,
+        # capture_output=True
+    )
+    if result.returncode != 0:
+        print("Error: Cloning godot-cpp repository failed.")
+        Exit(1)
+    print("Finished cloning godot-cpp repository.")
 
 AddOption(
     "--project",
@@ -32,7 +49,7 @@ Help(help_text)
 project_dir = GetOption("project")
 if not os.path.isdir(project_dir):
     print("Project directory not found: " + project_dir)
-    Exit(1)
+    Exit(2)
 
 # Parse LimboAI-specific variables.
 vars = Variables()
@@ -63,8 +80,6 @@ for o in vars.options:
 env = SConscript("godot-cpp/SConstruct")
 
 # Generate version header.
-from limboai_version import generate_module_version_header
-
 print("Generating LimboAI version header...")
 generate_module_version_header()
 

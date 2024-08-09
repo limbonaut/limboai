@@ -101,17 +101,10 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 #### For GDExtension
 
 - You'll need SCons build tool and a C++ compiler. See also [Compiling](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
-- Clone godot-cpp repository into `limboai/godot-cpp/` directory, and switch to a supported release tag or branch.
 - Run `scons target=editor` to build the plugin library for your current platform.
+  - SCons will automatically clone the godot-cpp/ repository if it doesn't already exist in the `limboai/godot-cpp` directory.
   - By default, built targets are placed in the demo project: `demo/addons/limboai/bin/`
 - Check `scons -h` for other options and targets.
-
-```bash
-git clone https://github.com/limbonaut/limboai
-cd limboai/
-git clone -b master https://github.com/godotengine/godot-cpp.git
-scons target=editor
-```
 
 ## Using the plugin
 
