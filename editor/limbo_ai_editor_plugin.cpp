@@ -914,6 +914,13 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 #endif
 }
 
+void LimboAIEditor::_on_filesystem_changed() {
+	if (history.size() == 0) {
+		return;
+	}
+	_update_tabs();
+}
+
 void LimboAIEditor::_on_new_script_pressed() {
 	SCRIPT_EDITOR()->open_script_create_dialog("BTAction", String(GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir_1")).path_join("new_task"));
 }
@@ -1403,6 +1410,7 @@ void LimboAIEditor::_notification(int p_what) {
 			version_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_copy_version_info));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
+			EDITOR_FILE_SYSTEM()->connect("filesystem_changed", callable_mp(this, &LimboAIEditor::_on_filesystem_changed));
 
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
