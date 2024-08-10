@@ -15,6 +15,10 @@ import sys
 import subprocess
 from limboai_version import generate_module_version_header, godot_cpp_ref
 
+sys.path.append("gdextension")
+from update_icon_entries import update_icon_entries
+from fix_icon_imports import fix_icon_imports
+
 # Check if godot-cpp/ exists
 if not os.path.exists("godot-cpp"):
     print("Directory godot-cpp/ not found. Cloning repository...")
@@ -85,12 +89,17 @@ generate_module_version_header()
 
 # Update icon entries in limboai.gdextension file.
 # Note: This will remove everything after [icons] section, and rebuild it with generated icon entries.
-sys.path.append("gdextension")
-from update_icon_entries import update_icon_entries
-
 print("Updating LimboAI icon entries...")
 update_icon_entries(silent=True)
-sys.path.remove("gdextension")
+
+# Fix icon imports in the PROJECT/addons/limboai/icons/.
+# Enables scaling and color conversion in the editor for imported SVG icons.
+try:
+    fix_icon_imports(project_dir)
+except FileNotFoundError as e:
+    print(e)
+except Exception as e:
+    print("Unknown error: " + str(e))
 
 # Tweak this if you want to use different folders, or more folders, to store your source code in.
 env.Append(CPPDEFINES=["LIMBOAI_GDEXTENSION"])
