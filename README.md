@@ -93,12 +93,18 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 
 ### Compiling from source
 
->**🛈 For GDExtension:** Refer to comments in [setup_gdextension.sh](./gdextension/setup_gdextension.sh) file.
-
 - Download the Godot Engine source code and put this module source into the `modules/limboai` directory.
 - Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
+
+#### For GDExtension
+
+- You'll need SCons build tool and a C++ compiler. See also [Compiling](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
+- Run `scons target=editor` to build the plugin library for your current platform.
+  - SCons will automatically clone the godot-cpp/ repository if it doesn't already exist in the `limboai/godot-cpp` directory.
+  - By default, built targets are placed in the demo project: `demo/addons/limboai/bin/`
+- Check `scons -h` for other options and targets.
 
 ## Using the plugin
 

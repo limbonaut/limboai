@@ -5,6 +5,7 @@ minor = 2
 patch = 0
 status = "dev"
 doc_branch = "latest"
+godot_cpp_ref = "master"
 
 # Code that generates version header
 
