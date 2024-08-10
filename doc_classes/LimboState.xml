@@ -45,7 +45,7 @@
 				[codeblock]
 				func my_event_handler(cargo=null) -> bool:
 				[/codeblock]
-				Cargo is an optional parameter that can be passed to the handler. See also [method dispatch].
+				If the handler returns [code]true[/code], the event will be consumed. Cargo is an optional parameter that can be passed to the handler. See also [method dispatch].
 			</description>
 		</method>
 		<method name="call_on_enter">
