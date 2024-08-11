@@ -157,17 +157,15 @@ void BTPlayer::restart() {
 	set_active(true);
 }
 
-#ifdef DEBUG_ENABLED
-
-void BTPlayer::_set_monitor_performance(bool p_monitor_performance) {
+void BTPlayer::set_monitor_performance(bool p_monitor_performance) {
 	monitor_performance = p_monitor_performance;
 
+#ifdef DEBUG_ENABLED
 	if (bt_instance.is_valid()) {
 		bt_instance->set_monitor_performance(monitor_performance);
 	}
+#endif
 }
-
-#endif // ! DEBUG_ENABLED
 
 void BTPlayer::_notification(int p_notification) {
 	switch (p_notification) {
@@ -235,6 +233,9 @@ void BTPlayer::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "plan"), &BTPlayer::set_blackboard_plan);
 	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &BTPlayer::get_blackboard_plan);
 
+	ClassDB::bind_method(D_METHOD("set_monitor_performance", "enable"), &BTPlayer::set_monitor_performance);
+	ClassDB::bind_method(D_METHOD("get_monitor_performance"), &BTPlayer::get_monitor_performance);
+
 	ClassDB::bind_method(D_METHOD("update", "delta"), &BTPlayer::update);
 	ClassDB::bind_method(D_METHOD("restart"), &BTPlayer::restart);
 
@@ -249,6 +250,7 @@ void BTPlayer::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "active"), "set_active", "get_active");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard", PROPERTY_HINT_NONE, "Blackboard", 0), "set_blackboard", "get_blackboard");
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "blackboard_plan", PROPERTY_HINT_RESOURCE_TYPE, "BlackboardPlan", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT | PROPERTY_USAGE_ALWAYS_DUPLICATE), "set_blackboard_plan", "get_blackboard_plan");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "set_monitor_performance", "get_monitor_performance");
 
 	BIND_ENUM_CONSTANT(IDLE);
 	BIND_ENUM_CONSTANT(PHYSICS);
@@ -259,12 +261,6 @@ void BTPlayer::_bind_methods() {
 #ifndef DISABLE_DEPRECATED
 	ADD_SIGNAL(MethodInfo("behavior_tree_finished", PropertyInfo(Variant::INT, "status")));
 #endif
-
-#ifdef DEBUG_ENABLED
-	ClassDB::bind_method(D_METHOD("_set_monitor_performance", "enable"), &BTPlayer::_set_monitor_performance);
-	ClassDB::bind_method(D_METHOD("_get_monitor_performance"), &BTPlayer::_get_monitor_performance);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "_set_monitor_performance", "_get_monitor_performance");
-#endif // DEBUG_ENABLED
 }
 
 BTPlayer::BTPlayer() {
