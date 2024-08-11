@@ -125,7 +125,7 @@ jobs:
             target: editor
             arch: x86_64
             dotnet: true
-            should-build: ${{ !inputs.test-build }}
+            should-build: true
 
           - name: Template .NET (x86_64, release)
             target: template_release
