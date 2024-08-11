@@ -143,6 +143,7 @@ private:
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	bool updating_tabs = false;
+	bool request_update_tabs = false;
 	HashSet<Ref<BehaviorTree>> dirty;
 	Ref<BTTask> clipboard_task;
 
@@ -237,6 +238,7 @@ private:
 	void _on_history_forward();
 	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
 	void _on_resources_reload(const PackedStringArray &p_resources);
+	void _on_filesystem_changed();
 	void _on_new_script_pressed();
 	void _task_type_selected(const String &p_class_or_path);
 	void _copy_version_info();

@@ -799,6 +799,11 @@ void LimboAIEditor::_on_visibility_changed() {
 		task_palette->refresh();
 	}
 	_update_favorite_tasks();
+
+	if (request_update_tabs && history.size() > 0) {
+		_update_tabs();
+		request_update_tabs = false;
+	}
 }
 
 void LimboAIEditor::_on_header_pressed() {
@@ -912,6 +917,18 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 #elif LIMBOAI_GDEXTENSION
 	task_tree->update_tree();
 #endif
+}
+
+void LimboAIEditor::_on_filesystem_changed() {
+	if (history.size() == 0) {
+		return;
+	}
+
+	if (is_visible_in_tree()) {
+		_update_tabs();
+	} else {
+		request_update_tabs = true;
+	}
 }
 
 void LimboAIEditor::_on_new_script_pressed() {
@@ -1403,6 +1420,7 @@ void LimboAIEditor::_notification(int p_what) {
 			version_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_copy_version_info));
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
+			EDITOR_FILE_SYSTEM()->connect("filesystem_changed", callable_mp(this, &LimboAIEditor::_on_filesystem_changed));
 
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
