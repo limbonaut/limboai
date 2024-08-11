@@ -44,6 +44,7 @@ private:
 	bool active = true;
 	Ref<Blackboard> blackboard;
 	Node *scene_root_hint = nullptr;
+	bool monitor_performance = false;
 
 	Ref<BTInstance> bt_instance;
 
@@ -74,6 +75,9 @@ public:
 	Ref<Blackboard> get_blackboard() const { return blackboard; }
 	void set_blackboard(const Ref<Blackboard> &p_blackboard) { blackboard = p_blackboard; }
 
+	void set_monitor_performance(bool p_monitor_performance);
+	bool get_monitor_performance() const { return monitor_performance; }
+
 	void update(double p_delta);
 	void restart();
 
@@ -84,16 +88,6 @@ public:
 
 	BTPlayer();
 	~BTPlayer();
-
-#ifdef DEBUG_ENABLED // Performance monitoring
-
-private:
-	bool monitor_performance = false;
-
-	void _set_monitor_performance(bool p_monitor_performance);
-	bool _get_monitor_performance() const { return monitor_performance; }
-
-#endif // * DEBUG_ENABLED
 };
 
 #endif // BT_PLAYER_H

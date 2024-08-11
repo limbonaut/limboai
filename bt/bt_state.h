@@ -26,6 +26,7 @@ private:
 	StringName success_event;
 	StringName failure_event;
 	Node *scene_root_hint = nullptr;
+	bool monitor_performance = false;
 
 protected:
 	static void _bind_methods();
@@ -51,17 +52,12 @@ public:
 	void set_failure_event(const StringName &p_failure_event) { failure_event = p_failure_event; }
 	StringName get_failure_event() const { return failure_event; }
 
+	void set_monitor_performance(bool p_monitor);
+	bool get_monitor_performance() const { return monitor_performance; }
+
 	void set_scene_root_hint(Node *p_node);
 
 	BTState();
-
-#ifdef DEBUG_ENABLED
-private:
-	bool monitor_performance = false;
-
-	void _set_monitor_performance(bool p_monitor);
-	bool _get_monitor_performance() const { return monitor_performance; }
-#endif
 };
 
 #endif // BT_STATE_H

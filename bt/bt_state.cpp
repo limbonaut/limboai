@@ -44,15 +44,15 @@ void BTState::set_scene_root_hint(Node *p_scene_root) {
 	scene_root_hint = p_scene_root;
 }
 
-#ifdef DEBUG_ENABLED
-void BTState::_set_monitor_performance(bool p_monitor) {
+void BTState::set_monitor_performance(bool p_monitor) {
 	monitor_performance = p_monitor;
 
+#ifdef DEBUG_ENABLED
 	if (bt_instance.is_valid()) {
 		bt_instance->set_monitor_performance(monitor_performance);
 	}
+#endif
 }
-#endif // DEBUG_ENABLED
 
 void BTState::_update_blackboard_plan() {
 	if (get_blackboard_plan().is_null()) {
@@ -144,17 +144,15 @@ void BTState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_failure_event", "event"), &BTState::set_failure_event);
 	ClassDB::bind_method(D_METHOD("get_failure_event"), &BTState::get_failure_event);
 
+	ClassDB::bind_method(D_METHOD("set_monitor_performance", "enable"), &BTState::set_monitor_performance);
+	ClassDB::bind_method(D_METHOD("get_monitor_performance"), &BTState::get_monitor_performance);
+
 	ClassDB::bind_method(D_METHOD("set_scene_root_hint", "scene_root"), &BTState::set_scene_root_hint);
 
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "success_event"), "set_success_event", "get_success_event");
 	ADD_PROPERTY(PropertyInfo(Variant::STRING_NAME, "failure_event"), "set_failure_event", "get_failure_event");
-
-#ifdef DEBUG_ENABLED
-	ClassDB::bind_method(D_METHOD("_set_monitor_performance", "enable"), &BTState::_set_monitor_performance);
-	ClassDB::bind_method(D_METHOD("_get_monitor_performance"), &BTState::_get_monitor_performance);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "_set_monitor_performance", "_get_monitor_performance");
-#endif // DEBUG_ENABLED
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "monitor_performance"), "set_monitor_performance", "get_monitor_performance");
 }
 
 BTState::BTState() {
