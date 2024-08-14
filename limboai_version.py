@@ -2,8 +2,8 @@
 
 major = 1
 minor = 1
-patch = 1
-status = ""
+patch = 2
+status = "dev"
 doc_branch = "v1.1.0"
 
 # Code that generates version header
