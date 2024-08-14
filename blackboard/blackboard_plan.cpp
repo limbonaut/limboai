@@ -395,10 +395,6 @@ inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, co
 		if (n != nullptr) {
 			var.set_value(n);
 		} else {
-			if (p_blackboard->has_var(p_name)) {
-				// Not adding: Assuming variable was initialized by the user or in the parent scope.
-				return;
-			}
 			ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
 			var.set_value(Variant());
 		}
@@ -418,12 +414,15 @@ Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_node, const Ref<Blackb
 
 void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node) {
 	ERR_FAIL_COND(p_node == nullptr && prefetch_nodepath_vars);
+	ERR_FAIL_COND(p_blackboard.is_null());
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		if (p_blackboard->has_var(p.first) && !overwrite) {
 			continue;
 		}
-		bb_add_var_dup_with_prefetch(p_blackboard, p.first, p.second, prefetch_nodepath_vars, p_node);
-		if (parent_scope_mapping.has(p.first)) {
+		bool has_mapping = parent_scope_mapping.has(p.first);
+		bool do_prefetch = !has_mapping && prefetch_nodepath_vars;
+		bb_add_var_dup_with_prefetch(p_blackboard, p.first, p.second, do_prefetch, p_node);
+		if (has_mapping) {
 			StringName target_var = parent_scope_mapping[p.first];
 			if (target_var != StringName()) {
 				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable $%s to parent scope because the parent scope is not set.", p.first));
