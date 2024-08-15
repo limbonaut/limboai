@@ -417,6 +417,12 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 	ERR_FAIL_COND(p_blackboard.is_null());
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		if (p_blackboard->has_local_var(p.first) && !overwrite) {
+			Variant::Type existing_type = p_blackboard->get_var(p.first).get_type();
+			Variant::Type planned_type = p.second.get_type();
+			if (existing_type != planned_type && existing_type != Variant::NIL && planned_type != Variant::NIL) {
+				WARN_PRINT(vformat("BlackboardPlan: Not overwriting %s as it already exists in the blackboard, but it has a different type than planned (%s vs %s). File: %s",
+						LimboUtility::get_singleton()->decorate_var(p.first), Variant::get_type_name(existing_type), Variant::get_type_name(planned_type), get_path()));
+			}
 			continue;
 		}
 		bool has_mapping = parent_scope_mapping.has(p.first);
@@ -425,7 +431,7 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 		if (has_mapping) {
 			StringName target_var = parent_scope_mapping[p.first];
 			if (target_var != StringName()) {
-				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable $%s to parent scope because the parent scope is not set.", p.first));
+				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable %s to parent scope because the parent scope is not set.", LimboUtility::get_singleton()->decorate_var(p.first)));
 				p_blackboard->link_var(p.first, p_blackboard->get_parent(), target_var);
 			}
 		}
