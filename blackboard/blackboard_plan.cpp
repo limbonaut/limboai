@@ -416,7 +416,7 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 	ERR_FAIL_COND(p_node == nullptr && prefetch_nodepath_vars);
 	ERR_FAIL_COND(p_blackboard.is_null());
 	for (const Pair<StringName, BBVariable> &p : var_list) {
-		if (p_blackboard->has_var(p.first) && !overwrite) {
+		if (p_blackboard->has_local_var(p.first) && !overwrite) {
 			continue;
 		}
 		bool has_mapping = parent_scope_mapping.has(p.first);
