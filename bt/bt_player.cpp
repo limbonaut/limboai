@@ -183,6 +183,7 @@ void BTPlayer::_notification(int p_notification) {
 					blackboard = Ref<Blackboard>(memnew(Blackboard));
 				}
 				if (blackboard_plan.is_valid()) {
+					// Don't overwrite existing blackboard values as they may be initialized from code.
 					blackboard_plan->populate_blackboard(blackboard, false, this);
 				}
 				if (behavior_tree.is_valid()) {
