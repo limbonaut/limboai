@@ -40,34 +40,42 @@ jobs:
           - name: Template (arm64, debug)
             arch: arm64
             target: template_debug
+            dotnet: false
 
           - name: Template (arm64, release)
             arch: arm64
             target: template_release
+            dotnet: false
 
           - name: Template (arm32, debug)
             arch: arm32
             target: template_debug
+            dotnet: false
 
           - name: Template (arm32, release)
             arch: arm32
             target: template_release
+            dotnet: false
 
           - name: Template (x86_64, debug)
             arch: x86_64
             target: template_debug
+            dotnet: false
 
           - name: Template (x86_64, release)
             arch: x86_64
             target: template_release
+            dotnet: false
 
           - name: Template (x86_32, debug)
             arch: x86_32
             target: template_debug
+            dotnet: false
 
           - name: Template (x86_32, release)
             arch: x86_32
             target: template_release
+            dotnet: false
 
     env:
       BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}} #${{  matrix.build-mono == true && '.mono' || ''  }}
@@ -180,7 +188,7 @@ jobs:
 
           mkdir -p out/templates/
           mv bin/android_* out/templates/
-          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}${{matrix.dotnet == true && '.mono' || ''}}" > out/templates/version.txt
           ls -l out/*
 
       - name: Delete Android template builds

@@ -285,7 +285,7 @@ jobs:
           BUILD_TYPE: ${{ endsWith(matrix.opts.target, 'release') && 'release' || 'debug' }}
         run: |
           mv out/templates/${BIN} out/templates/linux_${BUILD_TYPE}.${{matrix.opts.arch}}
-          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}${{matrix.opts.dotnet == true && '.mono' || ''}}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact

@@ -254,7 +254,7 @@ jobs:
         run: |
           mv out/templates/${BIN}.exe out/templates/windows_${BUILD_TYPE}_${{matrix.opts.arch}}.exe
           mv out/templates/${BIN}.console.exe out/templates/windows_${BUILD_TYPE}_${{matrix.opts.arch}}_console.exe
-          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}${{matrix.opts.dotnet == true && '.mono' || ''}}" > out/templates/version.txt
           ls -R out/
 
       - name: Upload artifact

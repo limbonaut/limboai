@@ -42,21 +42,25 @@ jobs:
             target: template_release
             arch: arm64
             ios_simulator: false
+            dotnet: false
 
           - name: Template (arm64, debug)
             target: template_debug
             arch: arm64
             ios_simulator: false
+            dotnet: false
 
           - name: Simulator Lib (x86_64, release)
             target: template_release
             arch: x86_64
             ios_simulator: true
+            dotnet: false
 
           - name: Simulator Lib (x86_64, debug)
             target: template_debug
             arch: x86_64
             ios_simulator: true
+            dotnet: false
 
           # ! Disabled for now as it doesn't work with cctools-port and current LLVM.
           # * See https://github.com/godotengine/build-containers/pull/85.
@@ -185,7 +189,7 @@ jobs:
           cd ios_xcode
           zip -q -9 -r ${{github.workspace}}/out/templates/ios.zip *
 
-          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > ${{github.workspace}}/out/templates/version.txt
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}${{matrix.dotnet == true && '.mono' || ''}}" > ${{github.workspace}}/out/templates/version.txt
 
           ls -l ${{github.workspace}}/out/*
 
