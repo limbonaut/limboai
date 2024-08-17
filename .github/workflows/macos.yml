@@ -185,16 +185,16 @@ jobs:
 
       - name: Generate C# glue
         if: matrix.opts.dotnet && matrix.opts.target == 'editor' && matrix.opts.arch == 'x86_64'
-        env:
-          GODOT_VERSION_STATUS: limboai
         run: |
+          GODOT_VERSION_STATUS=$(echo "${GODOT_VERSION_STATUS}" | sed "s|+|-|")
+          echo "GODOT_VERSION_STATUS: ${GODOT_VERSION_STATUS}"
           ./bin/$BIN --headless --generate-mono-glue ./modules/mono/glue || true
 
       - name: Build .NET solutions
         if: matrix.opts.dotnet && matrix.opts.target == 'editor' && matrix.opts.arch == 'x86_64'
-        env:
-          GODOT_VERSION_STATUS: limboai
         run: |
+          GODOT_VERSION_STATUS=$(echo "${GODOT_VERSION_STATUS}" | sed "s|+|-|")
+          echo "GODOT_VERSION_STATUS: ${GODOT_VERSION_STATUS}"
           ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=macos
 
       - name: Prepare artifact
@@ -299,7 +299,7 @@ jobs:
           zip -q -9 -r macos.zip macos_template.app
           mkdir -p out/templates/
           mv macos.zip out/templates/macos.zip
-          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
+          echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}${{matrix.opts.dotnet == true && '.mono' || ''}}" > out/templates/version.txt
           rm -rf bin/*
           ls out/templates/
 
