@@ -39,7 +39,7 @@ using namespace godot;
 
 Variant _EDITOR_GET(const String &p_setting) {
 	Ref<EditorSettings> es = EditorInterface::get_singleton()->get_editor_settings();
-	ERR_FAIL_COND_V(es.is_null() || !es->has_setting(p_setting), Variant());
+	ERR_FAIL_COND_V_MSG(es.is_null() || !es->has_setting(p_setting), Variant(), "Couldn't get editor setting: " + p_setting);
 	return es->get(p_setting);
 }
 
