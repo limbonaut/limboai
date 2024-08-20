@@ -50,13 +50,13 @@ jobs:
             ios_simulator: false
             dotnet: false
 
-          - name: Simulator Lib (x86_64, release)
+          - name: Simulator (x86_64, release)
             target: template_release
             arch: x86_64
             ios_simulator: true
             dotnet: false
 
-          - name: Simulator Lib (x86_64, debug)
+          - name: Simulator (x86_64, debug)
             target: template_debug
             arch: x86_64
             ios_simulator: true
@@ -74,8 +74,32 @@ jobs:
           #   arch: arm64
           #   ios_simulator: true
 
+          - name: Template .NET (arm64, release)
+            target: template_release
+            arch: arm64
+            ios_simulator: false
+            dotnet: true
+
+          - name: Template .NET (arm64, debug)
+            target: template_debug
+            arch: arm64
+            ios_simulator: false
+            dotnet: true
+
+          - name: Simulator .NET (x86_64, release)
+            target: template_release
+            arch: x86_64
+            ios_simulator: true
+            dotnet: true
+
+          - name: Simulator .NET (x86_64, debug)
+            target: template_debug
+            arch: x86_64
+            ios_simulator: true
+            dotnet: true
+
     env:
-      BIN: godot.ios.${{matrix.target}}.${{matrix.arch}}
+      BIN: godot.ios.${{matrix.target}}.${{matrix.arch}}${{  matrix.dotnet == true && '.mono' || ''  }}
 
     steps:
       - name: Clone Godot
@@ -128,18 +152,27 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=ios target=${{matrix.target}} arch=${{matrix.arch}} ios_simulator=${{matrix.ios_simulator}} ${{env.SCONSFLAGS}}
+          scons platform=ios target=${{matrix.target}} arch=${{matrix.arch}} ios_simulator=${{matrix.ios_simulator}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tmp-ios-templates-${{strategy.job-index}}
+          name: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-${{strategy.job-index}}
           path: bin/*
 
   package-ios-templates:
     runs-on: "macos-latest"
-    name: Package iOS templates
+    name: ${{ matrix.name }}
     needs: ios-builds
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Package iOS templates
+            dotnet: false
+          - name: Package iOS .NET templates
+            dotnet: true
 
     steps:
       - name: Clone Godot
@@ -164,7 +197,7 @@ jobs:
       - name: Download templates artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: tmp-ios-templates-*
+          pattern: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           merge-multiple: true
           path: bin/
 
@@ -196,12 +229,12 @@ jobs:
       - name: Upload template bundle
         uses: actions/upload-artifact@v4
         with:
-          name: ${{env.NAME_PREFIX}}.export-templates.ios
+          name: ${{env.NAME_PREFIX}}${{matrix.dotnet == true && '.dotnet' || ''}}.export-templates.ios
           path: out/*
 
       - name: Delete templates artifact
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: tmp-ios-templates-*
+          name: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           useGlob: true
           failOnError: false

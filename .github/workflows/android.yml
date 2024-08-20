@@ -37,6 +37,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # * Standard arm64
+
           - name: Template (arm64, debug)
             arch: arm64
             target: template_debug
@@ -46,6 +48,8 @@ jobs:
             arch: arm64
             target: template_release
             dotnet: false
+
+          # * Standard arm32
 
           - name: Template (arm32, debug)
             arch: arm32
@@ -57,6 +61,8 @@ jobs:
             target: template_release
             dotnet: false
 
+          # * Standard x86_64
+
           - name: Template (x86_64, debug)
             arch: x86_64
             target: template_debug
@@ -66,6 +72,8 @@ jobs:
             arch: x86_64
             target: template_release
             dotnet: false
+
+          # * Standard x86_32
 
           - name: Template (x86_32, debug)
             arch: x86_32
@@ -77,8 +85,56 @@ jobs:
             target: template_release
             dotnet: false
 
+          # * .NET arm64
+
+          - name: Template .NET (arm64, debug)
+            arch: arm64
+            target: template_debug
+            dotnet: true
+
+          - name: Template .NET (arm64, release)
+            arch: arm64
+            target: template_release
+            dotnet: true
+
+          # * .NET arm32
+
+          - name: Template .NET (arm32, debug)
+            arch: arm32
+            target: template_debug
+            dotnet: true
+
+          - name: Template .NET (arm32, release)
+            arch: arm32
+            target: template_release
+            dotnet: true
+
+          # * .NET x86_64
+
+          - name: Template .NET (x86_64, debug)
+            arch: x86_64
+            target: template_debug
+            dotnet: true
+
+          - name: Template .NET (x86_64, release)
+            arch: x86_64
+            target: template_release
+            dotnet: true
+
+          # * .NET x86_32
+
+          - name: Template .NET (x86_32, debug)
+            arch: x86_32
+            target: template_debug
+            dotnet: true
+
+          - name: Template .NET (x86_32, release)
+            arch: x86_32
+            target: template_release
+            dotnet: true
+
     env:
-      BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}} #${{  matrix.build-mono == true && '.mono' || ''  }}
+      BIN: godot.linuxbsd.${{matrix.target}}.${{matrix.arch}}${{  matrix.dotnet == true && '.mono' || ''  }}
 
     steps:
       - name: Clone Godot
@@ -123,19 +179,28 @@ jobs:
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} ${{env.SCONSFLAGS}}
+          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}}
           ls platform/android/java/lib/libs/*
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: tmp-android-templates-${{strategy.job-index}}
+          name: tmp-android${{matrix.dotnet == true && '-dotnet' || ''}}-templates-${{strategy.job-index}}
           path: platform/android/java/lib/libs/*
 
   make-android-package:
     runs-on: "ubuntu-20.04"
-    name: Make Android package
     needs: android-builds
+    name: ${{ matrix.name }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Package Android templates
+            dotnet: false
+          - name: Package Android .NET templates
+            dotnet: true
 
     steps:
       - name: Clone Godot
@@ -156,7 +221,7 @@ jobs:
       - name: Download Android template builds
         uses: actions/download-artifact@v4
         with:
-          pattern: tmp-android-templates-*
+          pattern: tmp-android${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           merge-multiple: true
           path: platform/android/java/lib/libs/
 
@@ -194,18 +259,18 @@ jobs:
       - name: Delete Android template builds
         uses: geekyeggo/delete-artifact@v5
         with:
-          name: tmp-android-templates-*
+          name: tmp-android${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           useGlob: true
           failOnError: false
 
       - name: Upload Android libs
         uses: actions/upload-artifact@v4
         with:
-          name: ${{env.NAME_PREFIX}}.android-lib
+          name: ${{env.NAME_PREFIX}}${{matrix.dotnet == true && '.dotnet' || ''}}.android-lib
           path: bin/godot-lib.*
 
       - name: Upload Android templates
         uses: actions/upload-artifact@v4
         with:
-          name: ${{env.NAME_PREFIX}}.export-templates.android
+          name: ${{env.NAME_PREFIX}}${{matrix.dotnet == true && '.dotnet' || ''}}.export-templates.android
           path: out/*
