@@ -43,7 +43,7 @@ BT::Status BTInstance::update(double p_delta) {
 #endif
 
 	last_status = root_task->execute(p_delta);
-	emit_signal(LimboStringNames::get_singleton()->updated, last_status);
+	emit_signal(LW_NAME(updated), last_status);
 
 #ifdef DEBUG_ENABLED
 	double end = Time::get_singleton()->get_ticks_usec();

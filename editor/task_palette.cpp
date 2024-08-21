@@ -420,7 +420,7 @@ void TaskPalette::_category_item_toggled(bool p_pressed, const String &p_categor
 }
 
 void TaskPalette::_filter_data_changed() {
-	call_deferred(LW_NAME(refresh));
+	callable_mp(this, &TaskPalette::refresh).call_deferred();
 	_update_filter_button();
 }
 
