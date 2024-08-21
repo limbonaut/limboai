@@ -63,7 +63,7 @@ LimboState *LimboState::named(const String &p_name) {
 void LimboState::_enter() {
 	active = true;
 	GDVIRTUAL_CALL(_enter);
-	emit_signal(LimboStringNames::get_singleton()->entered);
+	emit_signal(LW_NAME(entered));
 }
 
 void LimboState::_exit() {
@@ -71,18 +71,18 @@ void LimboState::_exit() {
 		return;
 	}
 	GDVIRTUAL_CALL(_exit);
-	emit_signal(LimboStringNames::get_singleton()->exited);
+	emit_signal(LW_NAME(exited));
 	active = false;
 }
 
 void LimboState::_update(double p_delta) {
 	GDVIRTUAL_CALL(_update, p_delta);
-	emit_signal(LimboStringNames::get_singleton()->updated, p_delta);
+	emit_signal(LW_NAME(updated), p_delta);
 }
 
 void LimboState::_setup() {
 	GDVIRTUAL_CALL(_setup);
-	emit_signal(LimboStringNames::get_singleton()->setup);
+	emit_signal(LW_NAME(setup));
 }
 
 void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard) {
@@ -154,19 +154,19 @@ bool LimboState::dispatch(const StringName &p_event, const Variant &p_cargo) {
 
 LimboState *LimboState::call_on_enter(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
-	connect(LimboStringNames::get_singleton()->entered, p_callable);
+	connect(LW_NAME(entered), p_callable);
 	return this;
 }
 
 LimboState *LimboState::call_on_exit(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
-	connect(LimboStringNames::get_singleton()->exited, p_callable);
+	connect(LW_NAME(exited), p_callable);
 	return this;
 }
 
 LimboState *LimboState::call_on_update(const Callable &p_callable) {
 	ERR_FAIL_COND_V(!p_callable.is_valid(), this);
-	connect(LimboStringNames::get_singleton()->updated, p_callable);
+	connect(LW_NAME(updated), p_callable);
 	return this;
 }
 

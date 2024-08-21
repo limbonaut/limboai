@@ -1219,7 +1219,7 @@ void LimboAIEditor::_update_favorite_tasks() {
 		String task_meta = favorite_tasks[i];
 
 		if (task_meta.is_empty() || (!FILE_EXISTS(task_meta) && !ClassDB::class_exists(task_meta))) {
-			call_deferred(LW_NAME(_update_banners));
+			callable_mp(this, &LimboAIEditor::_update_banners).call_deferred();
 			continue;
 		}
 

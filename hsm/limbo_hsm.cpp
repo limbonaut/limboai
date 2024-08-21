@@ -60,7 +60,7 @@ void LimboHSM::change_active_state(LimboState *p_state) {
 	active_state->_enter();
 	active_state->set_process_input(true);
 
-	emit_signal(LimboStringNames::get_singleton()->active_state_changed, active_state, previous_active);
+	emit_signal(LW_NAME(active_state_changed), active_state, previous_active);
 }
 
 void LimboHSM::_enter() {

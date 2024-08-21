@@ -27,14 +27,8 @@
 LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
-	_enter = SN("_enter");
-	_exit = SN("_exit");
 	_generate_name = SN("_generate_name");
-	_get_configuration_warnings = SN("_get_configuration_warnings");
 	_replace_task = SN("_replace_task");
-	_setup = SN("_setup");
-	_tick = SN("_tick");
-	_update_banners = SN("_update_banners");
 	_update_task_tree = SN("_update_task_tree");
 	_weight_ = SN("_weight_");
 	accent_color = SN("accent_color");
@@ -46,19 +40,12 @@ LimboStringNames::LimboStringNames() {
 	add_child = SN("add_child");
 	add_child_at_index = SN("add_child_at_index");
 	AnimationFilter = SN("AnimationFilter");
-	Back = SN("Back");
-	behavior_tree = SN("behavior_tree");
 	behavior_tree_finished = SN("behavior_tree_finished");
-	BehaviorTree = SN("BehaviorTree");
 	bold = SN("bold");
-	BTAlwaysFail = SN("BTAlwaysFail");
-	BTAlwaysSucceed = SN("BTAlwaysSucceed");
 	button_down = SN("button_down");
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
 	changed = SN("changed");
-	connect = SN("connect");
-	dark_color_1 = SN("dark_color_1");
 	dark_color_2 = SN("dark_color_2");
 	Debug = SN("Debug");
 	disabled_font_color = SN("disabled_font_color");
@@ -71,7 +58,6 @@ LimboStringNames::LimboStringNames() {
 	EditorFonts = SN("EditorFonts");
 	EditorIcons = SN("EditorIcons");
 	EditorStyles = SN("EditorStyles");
-	emit_changed = SN("emit_changed");
 	entered = SN("entered");
 	error_value = SN("error_value");
 	EVENT_FAILURE = SN("failure");
@@ -84,7 +70,6 @@ LimboStringNames::LimboStringNames() {
 	font = SN("font");
 	font_color = SN("font_color");
 	font_size = SN("font_size");
-	Forward = SN("Forward");
 	freed = SN("freed");
 	gui_input = SN("gui_input");
 	GuiOptionArrow = SN("GuiOptionArrow");
@@ -97,10 +82,6 @@ LimboStringNames::LimboStringNames() {
 	Info = SN("Info");
 	item_collapsed = SN("item_collapsed");
 	item_selected = SN("item_selected");
-	LimboDeselectAll = SN("LimboDeselectAll");
-	LimboExtraClock = SN("LimboExtraClock");
-	LimboPercent = SN("LimboPercent");
-	LimboSelectAll = SN("LimboSelectAll");
 	LimboVarAdd = SN("LimboVarAdd");
 	LimboVarEmpty = SN("LimboVarEmpty");
 	LimboVarError = SN("LimboVarError");
@@ -125,7 +106,6 @@ LimboStringNames::LimboStringNames() {
 	popup_hide = SN("popup_hide");
 	pressed = SN("pressed");
 	probability_clicked = SN("probability_clicked");
-	refresh = SN("refresh");
 	Reload = SN("Reload");
 	Remove = SN("Remove");
 	remove_child = SN("remove_child");

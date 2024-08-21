@@ -43,14 +43,8 @@ class LimboStringNames {
 public:
 	_FORCE_INLINE_ static LimboStringNames *get_singleton() { return singleton; }
 
-	StringName _enter;
-	StringName _exit;
 	StringName _generate_name;
-	StringName _get_configuration_warnings;
 	StringName _replace_task;
-	StringName _setup;
-	StringName _tick;
-	StringName _update_banners;
 	StringName _update_task_tree;
 	StringName _weight_;
 	StringName accent_color;
@@ -62,19 +56,12 @@ public:
 	StringName add_child;
 	StringName Add;
 	StringName AnimationFilter;
-	StringName Back;
 	StringName behavior_tree_finished;
-	StringName behavior_tree;
-	StringName BehaviorTree;
 	StringName bold;
-	StringName BTAlwaysFail;
-	StringName BTAlwaysSucceed;
 	StringName button_down;
 	StringName button_up;
 	StringName call_deferred;
 	StringName changed;
-	StringName connect;
-	StringName dark_color_1;
 	StringName dark_color_2;
 	StringName Debug;
 	StringName disabled_font_color;
@@ -87,7 +74,6 @@ public:
 	StringName EditorFonts;
 	StringName EditorIcons;
 	StringName EditorStyles;
-	StringName emit_changed;
 	StringName entered;
 	StringName error_value;
 	StringName EVENT_FAILURE;
@@ -100,7 +86,6 @@ public:
 	StringName font_color;
 	StringName font_size;
 	StringName font;
-	StringName Forward;
 	StringName freed;
 	StringName gui_input;
 	StringName GuiOptionArrow;
@@ -113,11 +98,6 @@ public:
 	StringName Info;
 	StringName item_collapsed;
 	StringName item_selected;
-	StringName LimboDeselectAll;
-	StringName LimboExtraClock;
-	StringName LimboExtractSubtree;
-	StringName LimboPercent;
-	StringName LimboSelectAll;
 	StringName LimboVarAdd;
 	StringName LimboVarEmpty;
 	StringName LimboVarError;
@@ -142,7 +122,6 @@ public:
 	StringName popup_hide;
 	StringName pressed;
 	StringName probability_clicked;
-	StringName refresh;
 	StringName Reload;
 	StringName remove_child;
 	StringName Remove;

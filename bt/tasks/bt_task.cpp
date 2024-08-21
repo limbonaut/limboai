@@ -125,6 +125,7 @@ String BTTask::get_task_name() {
 	Ref<Script> task_script = get_script();
 
 	if (task_script.is_valid()) {
+		// ! CURSED: Currently, has_method() doesn't return true for ClassDB-registered native virtual methods. This may break in the future.
 		bool has_generate_method = has_method(LW_NAME(_generate_name));
 		ERR_FAIL_COND_V_MSG(has_generate_method && !task_script->is_tool(), _generate_name(), vformat("BTTask: @tool annotation is required if _generate_name is defined: %s", task_script->get_path()));
 		if (task_script->is_tool() && has_generate_method) {
