@@ -26,6 +26,7 @@
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
+#include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
 #include "editor/plugins/editor_plugin.h"
 #include "scene/gui/box_container.h"
@@ -42,9 +43,6 @@
 #include "scene/gui/split_container.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/texture.h"
-
-#define GET_UNDO_REDO() EditorUndoRedoManager::get_singleton()
-
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -52,6 +50,7 @@
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_spin_slider.hpp>
+#include <godot_cpp/classes/editor_undo_redo_manager.hpp>
 #include <godot_cpp/classes/file_dialog.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/h_split_container.hpp>
@@ -66,8 +65,6 @@
 #include <godot_cpp/variant/variant.hpp>
 
 using namespace godot;
-
-#define GET_UNDO_REDO() plugin->get_undo_redo()
 
 #endif // LIMBOAI_GDEXTENSION
 
@@ -189,6 +186,10 @@ private:
 
 	AcceptDialog *info_dialog;
 
+	// ! HACK: Force global history to be used for resources without a set path.
+	Object *dummy_history_context = nullptr;
+	EditorUndoRedoManager *_new_undo_redo_action(const String &p_name = "", UndoRedo::MergeMode p_mode = UndoRedo::MERGE_DISABLE);
+
 	void _add_task(const Ref<BTTask> &p_task, bool p_as_sibling);
 	void _add_task_with_prototype(const Ref<BTTask> &p_prototype);
 	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
@@ -258,7 +259,7 @@ protected:
 
 public:
 	void set_plugin(EditorPlugin *p_plugin) { plugin = p_plugin; };
-	void edit_bt(Ref<BehaviorTree> p_behavior_tree, bool p_force_refresh = false);
+	void edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_force_refresh = false);
 	Ref<BlackboardPlan> get_edited_blackboard_plan();
 
 	void apply_changes();
