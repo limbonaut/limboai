@@ -51,7 +51,7 @@ public:
 	StringName _setup;
 	StringName _tick;
 	StringName _update_banners;
-	StringName _update;
+	StringName _update_task_tree;
 	StringName _weight_;
 	StringName accent_color;
 	StringName ActionCopy;
@@ -175,8 +175,6 @@ public:
 	StringName Tree;
 	StringName TripleBar;
 	StringName update_mode;
-	StringName update_task;
-	StringName update_tree;
 	StringName updated;
 	StringName visibility_changed;
 	StringName window_visibility_changed;

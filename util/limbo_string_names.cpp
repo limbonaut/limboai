@@ -34,8 +34,8 @@ LimboStringNames::LimboStringNames() {
 	_replace_task = SN("_replace_task");
 	_setup = SN("_setup");
 	_tick = SN("_tick");
-	_update = SN("_update");
 	_update_banners = SN("_update_banners");
+	_update_task_tree = SN("_update_task_tree");
 	_weight_ = SN("_weight_");
 	accent_color = SN("accent_color");
 	ActionCopy = SN("ActionCopy");
@@ -158,8 +158,6 @@ LimboStringNames::LimboStringNames() {
 	Tree = SN("Tree");
 	TripleBar = SN("TripleBar");
 	update_mode = SN("update_mode");
-	update_task = SN("update_task");
-	update_tree = SN("update_tree");
 	updated = SN("updated");
 	visibility_changed = SN("visibility_changed");
 	window_visibility_changed = SN("window_visibility_changed");

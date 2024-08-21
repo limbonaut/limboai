@@ -189,6 +189,7 @@ private:
 	// ! HACK: Force global history to be used for resources without a set path.
 	Object *dummy_history_context = nullptr;
 	EditorUndoRedoManager *_new_undo_redo_action(const String &p_name = "", UndoRedo::MergeMode p_mode = UndoRedo::MERGE_DISABLE);
+	void _commit_action_with_update(EditorUndoRedoManager *p_undo_redo);
 
 	void _add_task(const Ref<BTTask> &p_task, bool p_as_sibling);
 	void _add_task_with_prototype(const Ref<BTTask> &p_prototype);
@@ -201,6 +202,7 @@ private:
 	void _new_bt();
 	void _save_bt(String p_path);
 	void _load_bt(String p_path);
+	void _update_task_tree(const Ref<BehaviorTree> &p_bt, const Ref<BTTask> &p_specific_task = nullptr);
 	void _disable_editing();
 	void _mark_as_dirty(bool p_dirty);
 	void _create_user_task_dir();
