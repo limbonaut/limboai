@@ -1,0 +1,30 @@
+name: Build .NET assemblies
+
+inputs:
+  platform:
+    required: true
+    type: choice
+    options:
+      - linuxbsd
+      - windows
+      - macos
+
+runs:
+  using: "composite"
+  steps:
+    - name: Override GODOT_VERSION_STATUS for NuGet packages
+      shell: bash
+      run: |
+        GODOT_VERSION_STATUS=$(echo "${GODOT_VERSION_STATUS}" | sed "s|+|-|").gha
+        echo "GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS}" >> "$GITHUB_ENV"
+        echo "GODOT_VERSION_STATUS: ${GODOT_VERSION_STATUS}"
+
+    - name: Generate C# glue
+      shell: bash
+      run: |
+        ./bin/${BIN} --headless --generate-mono-glue ./modules/mono/glue || true
+
+    - name: Build .NET assemblies
+      shell: bash
+      run: |
+        ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=${{ inputs.platform }}

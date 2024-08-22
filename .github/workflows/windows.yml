@@ -220,21 +220,11 @@ jobs:
         run: |
           scons -j2 platform=windows target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}}
 
-      - name: Generate C# glue
+      - name: Build .NET assemblies
         if: matrix.opts.dotnet && matrix.opts.target == 'editor'
-        shell: bash
-        run: |
-          GODOT_VERSION_STATUS=$(echo "${GODOT_VERSION_STATUS}" | sed "s|+|-|")
-          echo "GODOT_VERSION_STATUS: ${GODOT_VERSION_STATUS}"
-          ./bin/${{ env.BIN }} --headless --generate-mono-glue ./modules/mono/glue || true
-
-      - name: Build .NET solutions
-        if: matrix.opts.dotnet && matrix.opts.target == 'editor'
-        shell: bash
-        run: |
-          GODOT_VERSION_STATUS=$(echo "${GODOT_VERSION_STATUS}" | sed "s|+|-|")
-          echo "GODOT_VERSION_STATUS: ${GODOT_VERSION_STATUS}"
-          python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=windows
+        uses: ./modules/limboai/.github/actions/build-dotnet-assemblies
+        with:
+          platform: windows
 
       - name: Prepare artifact
         shell: bash
