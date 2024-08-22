@@ -27,4 +27,4 @@ runs:
     - name: Build .NET assemblies
       shell: bash
       run: |
-        ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=${{ inputs.platform }}
+        python ./modules/mono/build_scripts/build_assemblies.py --godot-output-dir=./bin --godot-platform=${{ inputs.platform }}
