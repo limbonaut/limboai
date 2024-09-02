@@ -1464,12 +1464,17 @@ LimboAIEditor::LimboAIEditor() {
 	EDITOR_SETTINGS()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
 	EDITOR_SETTINGS()->set_restart_if_changed("limbo_ai/editor/layout", true);
 #elif LIMBOAI_GDEXTENSION
-	Dictionary pinfo;
-	pinfo["name"] = "limbo_ai/editor/layout";
-	pinfo["type"] = Variant::INT;
-	pinfo["hint"] = PROPERTY_HINT_ENUM;
-	pinfo["hint_string"] = "Classic:0,Widescreen Optimized:1";
+	PropertyInfo pinfo;
+	pinfo.name = "limbo_ai/editor/layout";
+	pinfo.type = Variant::INT;
+	pinfo.hint = PROPERTY_HINT_ENUM;
+	pinfo.hint_string = "Classic:0,Widescreen Optimized:1";
 	EDITOR_SETTINGS()->add_property_info(pinfo);
+
+	// Hotfix: Ensure the property is set (EditorInterface->get_singleton()->set_initial_value(m_setting, m_value, false) appears insufficient.)
+    if (!EDITOR_SETTINGS()->has_setting("limbo_ai/editor/layout")) {
+        EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", 0);
+    }
 #endif
 
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
