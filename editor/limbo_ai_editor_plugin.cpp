@@ -1470,11 +1470,6 @@ LimboAIEditor::LimboAIEditor() {
 	pinfo.hint = PROPERTY_HINT_ENUM;
 	pinfo.hint_string = "Classic:0,Widescreen Optimized:1";
 	EDITOR_SETTINGS()->add_property_info(pinfo);
-
-	// Hotfix: Ensure the property is set (EditorInterface->get_singleton()->set_initial_value(m_setting, m_value, false) appears insufficient.)
-    if (!EDITOR_SETTINGS()->has_setting("limbo_ai/editor/layout")) {
-        EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", 0);
-    }
 #endif
 
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
