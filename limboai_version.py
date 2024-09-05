@@ -2,7 +2,7 @@
 
 major = 1
 minor = 2
-patch = 0
+patch = 1
 status = ""
 doc_branch = "v1.2.0"
 godot_cpp_ref = "godot-4.3-stable"
