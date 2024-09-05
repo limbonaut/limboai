@@ -187,3 +187,6 @@ godot.creator.*
 
 # compile commands (https://clang.llvm.org/docs/JSONCompilationDatabase.html)
 compile_commands.json
+
+# clang cache
+.cache
