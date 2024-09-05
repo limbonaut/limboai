@@ -43,6 +43,10 @@ private:
 protected:
 	static void _bind_methods();
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return "<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 #ifdef LIMBOAI_MODULE
 	virtual bool editor_can_reload_from_file() override { return false; }

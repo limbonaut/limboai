@@ -37,6 +37,10 @@ private:
 protected:
 	static void _bind_methods();
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return "<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	_FORCE_INLINE_ Ref<BTTask> get_root_task() const { return root_task; }
 	_FORCE_INLINE_ Node *get_owner_node() const { return owner_node_id ? Object::cast_to<Node>(OBJECT_DB_GET_INSTANCE(owner_node_id)) : nullptr; }

@@ -65,6 +65,10 @@ protected:
 	GDVIRTUAL0(_exit);
 	GDVIRTUAL1(_update, double);
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return String(get_name()) + ":<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
 	_FORCE_INLINE_ Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }

@@ -111,6 +111,10 @@ protected:
 	GDVIRTUAL1R(Status, _tick, double);
 	GDVIRTUAL0RC(PackedStringArray, _get_configuration_warnings);
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return "<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	// TODO: GDExtension doesn't have this method hmm...
 

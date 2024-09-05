@@ -55,6 +55,10 @@ protected:
 	bool _property_can_revert(const StringName &p_name) const;
 	bool _property_get_revert(const StringName &p_name, Variant &r_property) const;
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return "<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	void set_base_plan(const Ref<BlackboardPlan> &p_base);
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
