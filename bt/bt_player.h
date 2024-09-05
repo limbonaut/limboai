@@ -56,6 +56,10 @@ protected:
 
 	void _notification(int p_notification);
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return String(get_name()) + ":<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	void set_behavior_tree(const Ref<BehaviorTree> &p_tree);
 	Ref<BehaviorTree> get_behavior_tree() const { return behavior_tree; };

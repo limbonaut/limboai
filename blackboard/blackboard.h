@@ -40,6 +40,10 @@ private:
 protected:
 	static void _bind_methods();
 
+#ifdef LIMBOAI_GDEXTENSION
+	String _to_string() const { return "<" + get_class() + "#" + itos(get_instance_id()) + ">"; }
+#endif
+
 public:
 	void set_parent(const Ref<Blackboard> &p_blackboard) { parent = p_blackboard; }
 	Ref<Blackboard> get_parent() const { return parent; }
