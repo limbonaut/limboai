@@ -39,6 +39,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _die() -> void:
+	if _is_dead:
+		return
 	_is_dead = true
 	root.hide()
 	collision_shape_2d.set_deferred(&"disabled", true)
