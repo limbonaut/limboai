@@ -11,7 +11,11 @@ on:
         type: string
         default: master
       test-build:
-        description: Should we perform only a limited number of test builds?
+        description: Limit the number of test builds
+        type: boolean
+        default: false
+      debug-symbols:
+        description: Build with debug symbols
         type: boolean
         default: false
 
@@ -26,14 +30,18 @@ on:
         type: string
         default: master
       test-build:
-        description: Should we perform only a limited number of test builds?
+        description: Limit the number of test builds
+        type: boolean
+        default: false
+      debug-symbols:
+        description: Build with debug symbols
         type: boolean
         default: false
 
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: dev_build=no debug_symbols=no
+  SCONSFLAGS: use_mingw=yes dev_build=no
   EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
   GODOT_VERSION: 4.3-stable
@@ -250,23 +258,25 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+          key: ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
           restore-keys: |
-            ${{env.BIN}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.BIN}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}
-            ${{env.BIN}}-${{inputs.godot-cpp-ref}}
+            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}
+            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}
 
       - name: Compilation
         shell: bash
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+          DEBUG_FLAGS: ${{ inputs.debug-symbols && 'debug_symbols=yes symbols_visibility=visible' || 'debug_symbols=no' }}
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
         run: |
+          ls -R demo/addons/limboai/
           mkdir out
           mv demo/addons/ out/
           cp {README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
