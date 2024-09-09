@@ -842,35 +842,80 @@ void LimboAIEditor::_on_history_forward() {
 	EDIT_RESOURCE(history[idx_history]);
 }
 
-void LimboAIEditor::_on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type) {
-	ERR_FAIL_COND(p_type < -1 || p_type > 1);
-	ERR_FAIL_COND(p_type != 0 && p_to_task->get_parent().is_null());
+void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTTask> p_to_task, int p_to_pos) {
+	ERR_FAIL_COND(p_to_task.is_null());
+	if (p_tasks.is_empty()) {
+		return;
+	}
 
-	if (p_task == p_to_task) {
+	// Filter tasks
+	Vector<Ref<BTTask>> tasks_list;
+	int no_effect = 0;
+	for (int i = 0; i < p_tasks.size(); i++) {
+		Ref<BTTask> task = p_tasks[i];
+		// Count tasks that don't change position
+		if (task == p_to_task) {
+			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
+				++no_effect;
+			}
+		}
+		
+		// Remove descendants of selected
+		bool remove = false;
+		for (int s_idx = 0; s_idx < p_tasks.size(); s_idx++) {
+			Ref<BTTask> selected = p_tasks[s_idx];
+			if (task->is_descendant_of(selected)) {
+				remove = true;
+				break;
+			}
+		}
+		if (!remove) {
+			tasks_list.push_back(task);
+		}
+	}
+	if (tasks_list.is_empty() || p_tasks.size() == no_effect) {
 		return;
 	}
 
 	EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Drag BT Task"));
-	undo_redo->add_do_method(p_task->get_parent().ptr(), LW_NAME(remove_child), p_task);
 
-	if (p_type == 0) {
-		undo_redo->add_do_method(p_to_task.ptr(), LW_NAME(add_child), p_task);
-		undo_redo->add_undo_method(p_to_task.ptr(), LW_NAME(remove_child), p_task);
-	} else {
-		int drop_idx = p_to_task->get_index();
-		if (p_to_task->get_parent() == p_task->get_parent() && drop_idx > p_task->get_index()) {
+	// Apply changes in the task hierarchy.
+	int drop_idx = p_to_pos;
+	for (const Ref<BTTask> &task : tasks_list) {
+		if (task->get_parent() == p_to_task && drop_idx > task->get_index()) {
 			drop_idx -= 1;
 		}
-		if (p_type == -1) {
-			undo_redo->add_do_method(p_to_task->get_parent().ptr(), LW_NAME(add_child_at_index), p_task, drop_idx);
-			undo_redo->add_undo_method(p_to_task->get_parent().ptr(), LW_NAME(remove_child), p_task);
-		} else if (p_type == 1) {
-			undo_redo->add_do_method(p_to_task->get_parent().ptr(), LW_NAME(add_child_at_index), p_task, drop_idx + 1);
-			undo_redo->add_undo_method(p_to_task->get_parent().ptr(), LW_NAME(remove_child), p_task);
+		if (task == p_to_task) {
+			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
+				++drop_idx;
+				continue;
+			}
 		}
+		
+		undo_redo->add_do_method(task->get_parent().ptr(), LW_NAME(remove_child), task);
+
+		undo_redo->add_do_method(p_to_task.ptr(), LW_NAME(add_child_at_index), task, drop_idx);
+		undo_redo->add_undo_method(p_to_task.ptr(), LW_NAME(remove_child), task);
+
+		++drop_idx;
 	}
 
-	undo_redo->add_undo_method(p_task->get_parent().ptr(), "add_child_at_index", p_task, p_task->get_index());
+	// Re-add tasks in later undo action so indexes match the old order.
+	drop_idx = p_to_pos;
+	for (const Ref<BTTask> &task : tasks_list) {
+		if (task->get_parent() == p_to_task && drop_idx > task->get_index()) {
+			drop_idx -= 1;
+		}
+		if (task == p_to_task) {
+			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
+				++drop_idx;
+				continue;
+			}
+		}
+
+		undo_redo->add_undo_method(task->get_parent().ptr(), "add_child_at_index", task, task->get_index());
+		++drop_idx;
+	}
 
 	_commit_action_with_update(undo_redo);
 }
@@ -1383,7 +1428,7 @@ void LimboAIEditor::_notification(int p_what) {
 			load_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_popup_file_dialog).bind(load_dialog));
 			task_tree->connect("rmb_pressed", callable_mp(this, &LimboAIEditor::_on_tree_rmb));
 			task_tree->connect("task_selected", callable_mp(this, &LimboAIEditor::_on_tree_task_selected));
-			task_tree->connect("task_dragged", callable_mp(this, &LimboAIEditor::_on_task_dragged));
+			task_tree->connect("tasks_dragged", callable_mp(this, &LimboAIEditor::_on_tasks_dragged));
 			task_tree->connect("task_activated", callable_mp(this, &LimboAIEditor::_on_tree_task_activated));
 			task_tree->connect("probability_clicked", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_EDIT_PROBABILITY));
 			task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));

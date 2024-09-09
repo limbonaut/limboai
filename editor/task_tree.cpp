@@ -280,9 +280,25 @@ bool TaskTree::selected_has_probability() const {
 
 Variant TaskTree::_get_drag_data_fw(const Point2 &p_point) {
 	if (editable && tree->get_item_at_position(p_point)) {
+		TypedArray<BTTask> selected_tasks;
+		Vector<Ref<Texture2D>> icons;
+		TreeItem *next = tree->get_next_selected(nullptr);
+		while (next) {
+			Ref<BTTask> task = next->get_metadata(0);
+			if (task.is_valid()) {
+				selected_tasks.push_back(task);
+				icons.push_back(next->get_icon(0));
+			}
+			next = tree->get_next_selected(next);
+		}
+
+		if (selected_tasks.is_empty()) {
+			return Variant();
+		}
+
 		Dictionary drag_data;
 		drag_data["type"] = "task";
-		drag_data["task"] = tree->get_item_at_position(p_point)->get_metadata(0);
+		drag_data["tasks"] = selected_tasks;
 		tree->set_drop_mode_flags(Tree::DROP_MODE_INBETWEEN | Tree::DROP_MODE_ON_ITEM);
 		return drag_data;
 	}
@@ -295,7 +311,7 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 	}
 
 	Dictionary d = p_data;
-	if (!d.has("type") || !d.has("task")) {
+	if (!d.has("type") || !d.has("tasks")) {
 		return false;
 	}
 
@@ -305,27 +321,78 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 		return false;
 	}
 
-	if (!item->get_parent() && section != 0) { // before/after root item
+	if (!item->get_parent() && section != 0) { // Before/after root item.
 		return false;
 	}
 
 	if (String(d["type"]) == "task") {
-		Ref<BTTask> task = d["task"];
-		const Ref<BTTask> to_task = item->get_metadata(0);
-		if (task != to_task && !to_task->is_descendant_of(task)) {
-			return true;
+		TypedArray<BTTask> tasks = d["tasks"];
+		if (tasks.is_empty()) {
+			return false; // No tasks.
+		}
+		for (const Ref<BTTask> &task : tasks) {
+			const Ref<BTTask> to_task = item->get_metadata(0);
+			if (to_task->is_descendant_of(task) || task == to_task ||
+					(task == to_task && task->get_index() + section >= to_task->get_index() && !item->is_collapsed() && item->get_child_count() > 0)) {
+				return false; // Don't drop as child of itself.
+			}
 		}
 	}
 
-	return false;
+	return true;
 }
 
 void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	Dictionary d = p_data;
 	TreeItem *item = tree->get_item_at_position(p_point);
-	if (item && d.has("task")) {
-		Ref<BTTask> task = d["task"];
-		emit_signal(LW_NAME(task_dragged), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+	int type = tree->get_drop_section_at_position(p_point);
+	ERR_FAIL_NULL(item);
+	ERR_FAIL_COND(type < -1 || type > 1);
+
+	if (item && d.has("tasks")) {
+		TypedArray<BTTask> tasks = d["tasks"];
+		int to_pos = -1;
+		Ref<BTTask> to_task = item->get_metadata(0);
+		ERR_FAIL_COND(to_task.is_null());
+
+		// The drop behavior depends on the TreeItem's state.
+		// Normalize and emit the parent task and position instead of exposing TreeItem.
+		switch (type) {
+			case 0: // Drop as last child of target.
+				to_pos = to_task->get_child_count();
+				break;
+			case -1: // Drop above target.
+				ERR_FAIL_COND_MSG(to_task->get_parent().is_null(), "Cannot perform drop above the root task!");
+				to_pos = MAX(0, to_task->get_index());
+				to_task = to_task->get_parent();
+				break;
+			case 1: // Drop below target.
+				if (item->get_child_count() == 0) {
+					to_pos = to_task->get_index() + 1;
+					to_task = to_task->get_parent();
+					break;
+				}
+
+				if (to_task->get_parent().is_null() || !item->is_collapsed()) { // Insert as first child of target.
+					to_pos = 0;
+				} else { // Insert as sibling of target.
+					TreeItem *lower_sibling = nullptr;
+					for (int i = to_task->get_index() + 1; i < to_task->get_parent()->get_child_count(); i++) {
+						TreeItem *c = item->get_parent()->get_child(i);
+						if (c->is_visible_in_tree()) {
+							lower_sibling = c;
+							break;
+						}
+					}
+					if (lower_sibling) {
+						to_pos = lower_sibling->get_index();
+					}
+
+					to_task = to_task->get_parent();
+				}
+				break;
+		}
+		emit_signal(LW_NAME(tasks_dragged), tasks, to_task, to_pos);
 	}
 }
 
@@ -385,7 +452,7 @@ void TaskTree::_notification(int p_what) {
 		case NOTIFICATION_READY: {
 			tree->connect("item_mouse_selected", callable_mp(this, &TaskTree::_on_item_mouse_selected));
 			// Note: CONNECT_DEFERRED is needed to avoid double updates with set_allow_reselect(true), which breaks folding/unfolding.
-			tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected), CONNECT_DEFERRED);
+			tree->connect("multi_selected", callable_mp(this, &TaskTree::_on_item_selected).unbind(3), CONNECT_DEFERRED);
 			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 			tree->connect("item_collapsed", callable_mp(this, &TaskTree::_on_item_collapsed));
 		} break;
@@ -413,8 +480,7 @@ void TaskTree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_selected"));
 	ADD_SIGNAL(MethodInfo("task_activated"));
 	ADD_SIGNAL(MethodInfo("probability_clicked"));
-	ADD_SIGNAL(MethodInfo("task_dragged",
-			PropertyInfo(Variant::OBJECT, "task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
+	ADD_SIGNAL(MethodInfo("tasks_dragged", PropertyInfo(Variant::ARRAY, "tasks", PROPERTY_HINT_ARRAY_TYPE, MAKE_RESOURCE_TYPE_HINT("BTTask")),
 			PropertyInfo(Variant::OBJECT, "to_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
 			PropertyInfo(Variant::INT, "type")));
 }
@@ -432,6 +498,7 @@ TaskTree::TaskTree() {
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	tree->set_allow_rmb_select(true);
 	tree->set_allow_reselect(true);
+	tree->set_select_mode(Tree::SelectMode::SELECT_MULTI);
 
 	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
 }
