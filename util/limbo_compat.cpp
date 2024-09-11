@@ -16,6 +16,7 @@
 #ifdef TOOLS_ENABLED
 #include "core/io/resource.h"
 #include "core/variant/variant.h"
+#include "editor/editor_main_screen.h"
 #include "editor/editor_node.h"
 #include "editor/plugins/script_editor_plugin.h"
 #endif // TOOLS_ENABLED
@@ -213,7 +214,7 @@ Variant VARIANT_DEFAULT(Variant::Type p_type) {
 void SHOW_BUILTIN_DOC(const String &p_topic) {
 #ifdef LIMBOAI_MODULE
 	ScriptEditor::get_singleton()->goto_help(p_topic);
-	EditorNode::get_singleton()->set_visible_editor(EditorNode::EDITOR_SCRIPT);
+	EditorNode::get_singleton()->get_editor_main_screen()->select(EditorMainScreen::EDITOR_SCRIPT);
 #elif LIMBOAI_GDEXTENSION
 	TypedArray<ScriptEditorBase> open_editors = EditorInterface::get_singleton()->get_script_editor()->get_open_script_editors();
 	ERR_FAIL_COND_MSG(open_editors.size() == 0, "Can't open help page. Need at least one script open in the script editor.");
