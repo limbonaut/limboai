@@ -90,8 +90,11 @@ public:
 	Ref<BehaviorTree> get_bt() const { return bt; }
 	void update_tree() { _update_tree(); }
 	void update_task(const Ref<BTTask> &p_task);
+	void add_selection(const Ref<BTTask> &p_task);
+	void remove_selection(const Ref<BTTask> &p_task);
 	Ref<BTTask> get_selected() const;
-	void deselect();
+	Vector<Ref<BTTask>> get_selected_tasks() const;
+	void clear_selection();
 
 	Rect2 get_selected_probability_rect() const;
 	double get_selected_probability_weight() const;

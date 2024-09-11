@@ -108,10 +108,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 }
 
 void TaskTree::_update_tree() {
-	Ref<BTTask> sel;
-	if (tree->get_selected()) {
-		sel = tree->get_selected()->get_metadata(0);
-	}
+	Vector<Ref<BTTask>> selection = get_selected_tasks();
 
 	tree->clear();
 	if (bt.is_null()) {
@@ -124,9 +121,8 @@ void TaskTree::_update_tree() {
 		updating_tree = false;
 	}
 
-	TreeItem *item = _find_item(sel);
-	if (item) {
-		item->select(0);
+	for (const Ref<BTTask> &task : selection) {
+		add_selection(task);
 	}
 }
 
@@ -232,6 +228,22 @@ void TaskTree::update_task(const Ref<BTTask> &p_task) {
 	}
 }
 
+void TaskTree::add_selection(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	TreeItem *item = _find_item(p_task);
+	if (item) {
+		item->select(0);
+	}
+}
+
+void TaskTree::remove_selection(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	TreeItem *item = _find_item(p_task);
+	if (item) {
+		item->deselect(0);
+	}
+}
+
 Ref<BTTask> TaskTree::get_selected() const {
 	if (tree->get_selected()) {
 		return tree->get_selected()->get_metadata(0);
@@ -239,10 +251,29 @@ Ref<BTTask> TaskTree::get_selected() const {
 	return nullptr;
 }
 
-void TaskTree::deselect() {
-	TreeItem *sel = tree->get_selected();
-	if (sel) {
-		sel->deselect(0);
+Vector<Ref<BTTask>> TaskTree::get_selected_tasks() const {
+	Vector<Ref<BTTask>> selected_tasks;
+	TreeItem *next = tree->get_next_selected(nullptr);
+	while (next) {
+		Ref<BTTask> task = next->get_metadata(0);
+		if (task.is_valid()) {
+			selected_tasks.push_back(task);
+		}
+		next = tree->get_next_selected(next);
+	}
+
+	return selected_tasks;
+}
+
+void TaskTree::clear_selection() {
+	Vector<TreeItem*> selected_tasks;
+	TreeItem *next = tree->get_next_selected(nullptr);
+	while (next) {
+		Ref<BTTask> task = next->get_metadata(0);
+		if (task.is_valid()) {
+			remove_selection(task);
+		}
+		next = tree->get_next_selected(next);
 	}
 }
 
@@ -327,7 +358,7 @@ Variant TaskTree::_get_drag_data_fw(const Point2 &p_point) {
 			}
 		}
 		set_drag_preview(vb);
-		
+
 		Dictionary drag_data;
 		drag_data["type"] = "task";
 		drag_data["tasks"] = selected_tasks;
@@ -501,8 +532,10 @@ void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
 	ClassDB::bind_method(D_METHOD("update_tree"), &TaskTree::update_tree);
 	ClassDB::bind_method(D_METHOD("update_task", "task"), &TaskTree::update_task);
+	ClassDB::bind_method(D_METHOD("add_selection", "task"), &TaskTree::add_selection);
+	ClassDB::bind_method(D_METHOD("remove_selection", "task"), &TaskTree::remove_selection);
 	ClassDB::bind_method(D_METHOD("get_selected"), &TaskTree::get_selected);
-	ClassDB::bind_method(D_METHOD("deselect"), &TaskTree::deselect);
+	ClassDB::bind_method(D_METHOD("clear_selection"), &TaskTree::clear_selection);
 
 	ClassDB::bind_method(D_METHOD("_get_drag_data_fw"), &TaskTree::_get_drag_data_fw);
 	ClassDB::bind_method(D_METHOD("_can_drop_data_fw"), &TaskTree::_can_drop_data_fw);

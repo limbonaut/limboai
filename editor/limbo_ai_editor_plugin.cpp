@@ -809,7 +809,7 @@ void LimboAIEditor::_on_visibility_changed() {
 }
 
 void LimboAIEditor::_on_header_pressed() {
-	task_tree->deselect();
+	task_tree->clear_selection();
 #ifdef LIMBOAI_MODULE
 	if (task_tree->get_bt().is_valid()) {
 		task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
@@ -913,7 +913,7 @@ void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTT
 			}
 		}
 
-		undo_redo->add_undo_method(task->get_parent().ptr(), "add_child_at_index", task, task->get_index());
+		undo_redo->add_undo_method(task->get_parent().ptr(), LW_NAME(add_child_at_index), task, task->get_index());
 		++drop_idx;
 	}
 
