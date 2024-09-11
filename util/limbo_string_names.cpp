@@ -78,6 +78,7 @@ LimboStringNames::LimboStringNames() {
 	HeaderSmall = SN("HeaderSmall");
 	Help = SN("Help");
 	icon_max_width = SN("icon_max_width");
+	class_icon_size = SN("class_icon_size");
 	id_pressed = SN("id_pressed");
 	Info = SN("Info");
 	item_collapsed = SN("item_collapsed");

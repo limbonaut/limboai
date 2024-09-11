@@ -94,6 +94,7 @@ public:
 	StringName HeaderSmall;
 	StringName Help;
 	StringName icon_max_width;
+	StringName class_icon_size;
 	StringName id_pressed;
 	StringName Info;
 	StringName item_collapsed;

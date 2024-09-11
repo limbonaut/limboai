@@ -21,11 +21,18 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/texture_rect.h"
+#include "scene/gui/label.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/v_box_container.hpp>
+#include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/classes/label.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -296,6 +303,31 @@ Variant TaskTree::_get_drag_data_fw(const Point2 &p_point) {
 			return Variant();
 		}
 
+		VBoxContainer *vb = memnew(VBoxContainer);
+		int list_max = 10;
+		float opacity_step = 1.0f / list_max;
+		float opacity_item = 1.0f;
+		for (int i = 0; i < selected_tasks.size(); i++) {
+			Ref<BTTask> task = Object::cast_to<BTTask>(selected_tasks[i]);
+			if (i < list_max) {
+				HBoxContainer *hb = memnew(HBoxContainer);
+				TextureRect *tf = memnew(TextureRect);
+				int icon_size = get_theme_constant(LW_NAME(class_icon_size), LW_NAME(Editor));
+				tf->set_custom_minimum_size(Size2(icon_size, icon_size));
+				tf->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
+				tf->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
+				tf->set_texture(icons[i]);
+				hb->add_child(tf);
+				Label *label = memnew(Label);
+				label->set_text(task->get_task_name());
+				hb->add_child(label);
+				vb->add_child(hb);
+				hb->set_modulate(Color(1, 1, 1, opacity_item));
+				opacity_item -= opacity_step;
+			}
+		}
+		set_drag_preview(vb);
+		
 		Dictionary drag_data;
 		drag_data["type"] = "task";
 		drag_data["tasks"] = selected_tasks;
@@ -330,7 +362,8 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 		if (tasks.is_empty()) {
 			return false; // No tasks.
 		}
-		for (const Ref<BTTask> &task : tasks) {
+		for (int i = 0; i < tasks.size(); i++) {
+			Ref<BTTask> task = tasks[i];
 			const Ref<BTTask> to_task = item->get_metadata(0);
 			if (to_task->is_descendant_of(task) || task == to_task ||
 					(task == to_task && task->get_index() + section >= to_task->get_index() && !item->is_collapsed() && item->get_child_count() > 0)) {
@@ -480,7 +513,7 @@ void TaskTree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_selected"));
 	ADD_SIGNAL(MethodInfo("task_activated"));
 	ADD_SIGNAL(MethodInfo("probability_clicked"));
-	ADD_SIGNAL(MethodInfo("tasks_dragged", PropertyInfo(Variant::ARRAY, "tasks", PROPERTY_HINT_ARRAY_TYPE, MAKE_RESOURCE_TYPE_HINT("BTTask")),
+	ADD_SIGNAL(MethodInfo("tasks_dragged", PropertyInfo(Variant::ARRAY, "tasks", PROPERTY_HINT_ARRAY_TYPE, RESOURCE_TYPE_HINT("BTTask")),
 			PropertyInfo(Variant::OBJECT, "to_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
 			PropertyInfo(Variant::INT, "type")));
 }
