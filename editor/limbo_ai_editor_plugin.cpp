@@ -848,19 +848,10 @@ void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTT
 		return;
 	}
 
-	// Filter tasks
+	// Remove descendants of selected.
 	Vector<Ref<BTTask>> tasks_list;
-	int no_effect = 0;
 	for (int i = 0; i < p_tasks.size(); i++) {
 		Ref<BTTask> task = p_tasks[i];
-		// Count tasks that don't change position
-		if (task == p_to_task) {
-			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
-				++no_effect;
-			}
-		}
-		
-		// Remove descendants of selected
 		bool remove = false;
 		for (int s_idx = 0; s_idx < p_tasks.size(); s_idx++) {
 			Ref<BTTask> selected = p_tasks[s_idx];
@@ -873,48 +864,27 @@ void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTT
 			tasks_list.push_back(task);
 		}
 	}
-	if (tasks_list.is_empty() || p_tasks.size() == no_effect) {
-		return;
-	}
 
 	EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Drag BT Task"));
 
-	// Apply changes in the task hierarchy.
-	int drop_idx = p_to_pos;
-	for (const Ref<BTTask> &task : tasks_list) {
-		if (task->get_parent() == p_to_task && drop_idx > task->get_index()) {
-			drop_idx -= 1;
+	// Remove all tasks first so adding ordering is stable.
+	int before_pos = 0;
+	for (const Ref<BTTask> task : tasks_list) {
+		if (task->get_parent() == p_to_task && p_to_pos > task->get_index()) {
+			before_pos += 1;
 		}
-		if (task == p_to_task) {
-			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
-				++drop_idx;
-				continue;
-			}
-		}
-		
 		undo_redo->add_do_method(task->get_parent().ptr(), LW_NAME(remove_child), task);
+	}
 
-		undo_redo->add_do_method(p_to_task.ptr(), LW_NAME(add_child_at_index), task, drop_idx);
+	for (int i = 0; i < tasks_list.size(); i++) {
+		Ref<BTTask> task = tasks_list[i];
+		undo_redo->add_do_method(p_to_task.ptr(), LW_NAME(add_child_at_index), task, p_to_pos + i - before_pos);
 		undo_redo->add_undo_method(p_to_task.ptr(), LW_NAME(remove_child), task);
-
-		++drop_idx;
 	}
 
 	// Re-add tasks in later undo action so indexes match the old order.
-	drop_idx = p_to_pos;
-	for (const Ref<BTTask> &task : tasks_list) {
-		if (task->get_parent() == p_to_task && drop_idx > task->get_index()) {
-			drop_idx -= 1;
-		}
-		if (task == p_to_task) {
-			if (Math::abs(task->get_index() - p_to_pos) <= 1) {
-				++drop_idx;
-				continue;
-			}
-		}
-
+	for (const Ref<BTTask> task : tasks_list) {
 		undo_redo->add_undo_method(task->get_parent().ptr(), LW_NAME(add_child_at_index), task, task->get_index());
-		++drop_idx;
 	}
 
 	_commit_action_with_update(undo_redo);

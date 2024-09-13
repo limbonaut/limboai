@@ -75,6 +75,7 @@ private:
 	Variant _get_drag_data_fw(const Point2 &p_point);
 	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;
 	void _drop_data_fw(const Point2 &p_point, const Variant &p_data);
+	void _normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask> &to_task) const;
 
 	void _draw_probability(Object *item_obj, Rect2 rect);
 

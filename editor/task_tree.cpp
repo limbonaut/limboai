@@ -266,15 +266,7 @@ Vector<Ref<BTTask>> TaskTree::get_selected_tasks() const {
 }
 
 void TaskTree::clear_selection() {
-	Vector<TreeItem*> selected_tasks;
-	TreeItem *next = tree->get_next_selected(nullptr);
-	while (next) {
-		Ref<BTTask> task = next->get_metadata(0);
-		if (task.is_valid()) {
-			remove_selection(task);
-		}
-		next = tree->get_next_selected(next);
-	}
+	tree->deselect_all();
 }
 
 Rect2 TaskTree::get_selected_probability_rect() const {
@@ -384,7 +376,7 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 		return false;
 	}
 
-	if (!item->get_parent() && section != 0) { // Before/after root item.
+	if (!item->get_parent() && section < 0) { // Before root item.
 		return false;
 	}
 
@@ -393,12 +385,18 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 		if (tasks.is_empty()) {
 			return false; // No tasks.
 		}
+
+		Ref<BTTask> to_task = item->get_metadata(0);
+		int to_pos = -1;
+		int type = tree->get_drop_section_at_position(p_point);
+		_normalize_drop(item, type, to_pos, to_task);
+		if (to_task.is_null()) {
+			return false; // Outside root.
+		}
 		for (int i = 0; i < tasks.size(); i++) {
 			Ref<BTTask> task = tasks[i];
-			const Ref<BTTask> to_task = item->get_metadata(0);
-			if (to_task->is_descendant_of(task) || task == to_task ||
-					(task == to_task && task->get_index() + section >= to_task->get_index() && !item->is_collapsed() && item->get_child_count() > 0)) {
-				return false; // Don't drop as child of itself.
+			if (to_task->is_descendant_of(task) || task == to_task) {
+				return false; // Don't drop as child of selected tasks.
 			}
 		}
 	}
@@ -408,55 +406,68 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 
 void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	Dictionary d = p_data;
+	if (!d.has("tasks")) {
+		return;
+	}
+
 	TreeItem *item = tree->get_item_at_position(p_point);
 	int type = tree->get_drop_section_at_position(p_point);
 	ERR_FAIL_NULL(item);
 	ERR_FAIL_COND(type < -1 || type > 1);
 
-	if (item && d.has("tasks")) {
-		TypedArray<BTTask> tasks = d["tasks"];
-		int to_pos = -1;
-		Ref<BTTask> to_task = item->get_metadata(0);
-		ERR_FAIL_COND(to_task.is_null());
+	// The drop behavior depends on the TreeItem's state.
+	// Normalize and emit the parent task and position instead of exposing TreeItem.
+	int to_pos = -1;
+	Ref<BTTask> to_task = item->get_metadata(0);
+	ERR_FAIL_COND(to_task.is_null());
+	_normalize_drop(item, type, to_pos, to_task);
+	emit_signal(LW_NAME(tasks_dragged), d["tasks"], to_task, to_pos);
+}
 
-		// The drop behavior depends on the TreeItem's state.
-		// Normalize and emit the parent task and position instead of exposing TreeItem.
-		switch (type) {
-			case 0: // Drop as last child of target.
-				to_pos = to_task->get_child_count();
-				break;
-			case -1: // Drop above target.
-				ERR_FAIL_COND_MSG(to_task->get_parent().is_null(), "Cannot perform drop above the root task!");
-				to_pos = MAX(0, to_task->get_index());
+void TaskTree::_normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask> &to_task) const {
+	switch (type) {
+		case 0: // Drop as last child of target.
+			to_pos = to_task->get_child_count();
+			break;
+		case -1: // Drop above target.
+			ERR_FAIL_COND_MSG(to_task->get_parent().is_null(), "Cannot perform drop above the root task!");
+			to_pos = to_task->get_index();
+			{
+				Vector<Ref<BTTask>> selected = get_selected_tasks();
+				if (to_task == selected[selected.size()-1]) {
+					to_pos += 1;
+				}
+			}
+			to_task = to_task->get_parent();
+			break;
+		case 1: // Drop below target.
+			if (item->get_child_count() == 0) {
+				to_pos = to_task->get_index() + 1;
+				if (to_task == tree->get_next_selected(nullptr)->get_metadata(0)) {
+					to_pos -= 1;
+				}
 				to_task = to_task->get_parent();
 				break;
-			case 1: // Drop below target.
-				if (item->get_child_count() == 0) {
-					to_pos = to_task->get_index() + 1;
-					to_task = to_task->get_parent();
-					break;
+			}
+
+			if (to_task->get_parent().is_null() || !item->is_collapsed()) { // Insert as first child of target.
+				to_pos = 0;
+			} else { // Insert as sibling of target.
+				TreeItem *lower_sibling = nullptr;
+				for (int i = to_task->get_index() + 1; i < to_task->get_parent()->get_child_count(); i++) {
+					TreeItem *c = item->get_parent()->get_child(i);
+					if (c->is_visible_in_tree()) {
+						lower_sibling = c;
+						break;
+					}
+				}
+				if (lower_sibling) {
+					to_pos = lower_sibling->get_index();
 				}
 
-				if (to_task->get_parent().is_null() || !item->is_collapsed()) { // Insert as first child of target.
-					to_pos = 0;
-				} else { // Insert as sibling of target.
-					TreeItem *lower_sibling = nullptr;
-					for (int i = to_task->get_index() + 1; i < to_task->get_parent()->get_child_count(); i++) {
-						TreeItem *c = item->get_parent()->get_child(i);
-						if (c->is_visible_in_tree()) {
-							lower_sibling = c;
-							break;
-						}
-					}
-					if (lower_sibling) {
-						to_pos = lower_sibling->get_index();
-					}
-
-					to_task = to_task->get_parent();
-				}
-				break;
-		}
-		emit_signal(LW_NAME(tasks_dragged), tasks, to_task, to_pos);
+				to_task = to_task->get_parent();
+			}
+			break;
 	}
 }
 
