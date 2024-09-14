@@ -43,12 +43,15 @@ void BTForEach::_enter() {
 }
 
 BT::Status BTForEach::_tick(double p_delta) {
-	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "ForEach decorator has no child.");
-	ERR_FAIL_COND_V_MSG(save_var == StringName(), FAILURE, "ForEach save variable is not set.");
-	ERR_FAIL_COND_V_MSG(array_var == StringName(), FAILURE, "ForEach array variable is not set.");
+	ERR_FAIL_COND_V_MSG(get_child_count() == 0, FAILURE, "BTForEach: Decorator has no child.");
+	ERR_FAIL_COND_V_MSG(save_var == StringName(), FAILURE, "BTForEach: Save variable is not set.");
+	ERR_FAIL_COND_V_MSG(array_var == StringName(), FAILURE, "BTForEach: Array variable is not set.");
 
 	Array arr = get_blackboard()->get_var(array_var, Variant());
-	if (arr.size() == 0) {
+	if (current_idx >= arr.size()) {
+		if (current_idx != 0) {
+			WARN_PRINT("BTForEach: Array size changed during iteration.");
+		}
 		return SUCCESS;
 	}
 	Variant elem = arr[current_idx];

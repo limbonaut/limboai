@@ -96,6 +96,22 @@ TEST_CASE("[Modules][LimboAI] BTForEach") {
 		CHECK_ENTRIES_TICKS_EXITS(task, 3, 6, 3);
 		CHECK(blackboard->get_var("element", "wetgoop") == "mushroom");
 	}
+
+	SUBCASE("Shouldn't crash if elements are removed during iteration") {
+		CHECK(fe->execute(0.01666) == BTTask::RUNNING);
+		CHECK(task->get_status() == BTTask::SUCCESS);
+		CHECK_ENTRIES_TICKS_EXITS(task, 1, 1, 1);
+		CHECK(blackboard->get_var("element", "wetgoop") == "apple");
+
+		arr.clear();
+
+		ERR_PRINT_OFF;
+		CHECK(fe->execute(0.01666) == BTTask::SUCCESS); // Returns SUCCESS and prints a warning without executing child task.
+		ERR_PRINT_ON;
+		CHECK(task->get_status() == BTTask::SUCCESS); // Same status.
+		CHECK_ENTRIES_TICKS_EXITS(task, 1, 1, 1); // Task is not re-executed as there is not enough elements to continue iteration.
+		CHECK(blackboard->get_var("element", "wetgoop") == "apple"); // Not changed.
+	}
 }
 
 } //namespace TestForEach
