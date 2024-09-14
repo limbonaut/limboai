@@ -239,7 +239,7 @@ private:
 	void _on_save_pressed();
 	void _on_history_back();
 	void _on_history_forward();
-	void _on_task_dragged(Ref<BTTask> p_task, Ref<BTTask> p_to_task, int p_type);
+	void _on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTTask> p_to_task, int p_to_pos);
 	void _on_resources_reload(const PackedStringArray &p_resources);
 	void _on_filesystem_changed();
 	void _on_new_script_pressed();

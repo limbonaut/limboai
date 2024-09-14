@@ -75,6 +75,7 @@ private:
 	Variant _get_drag_data_fw(const Point2 &p_point);
 	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;
 	void _drop_data_fw(const Point2 &p_point, const Variant &p_data);
+	void _normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask> &to_task) const;
 
 	void _draw_probability(Object *item_obj, Rect2 rect);
 
@@ -90,8 +91,11 @@ public:
 	Ref<BehaviorTree> get_bt() const { return bt; }
 	void update_tree() { _update_tree(); }
 	void update_task(const Ref<BTTask> &p_task);
+	void add_selection(const Ref<BTTask> &p_task);
+	void remove_selection(const Ref<BTTask> &p_task);
 	Ref<BTTask> get_selected() const;
-	void deselect();
+	Vector<Ref<BTTask>> get_selected_tasks() const;
+	void clear_selection();
 
 	Rect2 get_selected_probability_rect() const;
 	double get_selected_probability_weight() const;

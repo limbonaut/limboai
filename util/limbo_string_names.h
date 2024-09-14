@@ -94,6 +94,7 @@ public:
 	StringName HeaderSmall;
 	StringName Help;
 	StringName icon_max_width;
+	StringName class_icon_size;
 	StringName id_pressed;
 	StringName Info;
 	StringName item_collapsed;
@@ -143,7 +144,7 @@ public:
 	StringName task_activated;
 	StringName task_button_pressed;
 	StringName task_button_rmb;
-	StringName task_dragged;
+	StringName tasks_dragged;
 	StringName task_meta;
 	StringName task_selected;
 	StringName text_changed;

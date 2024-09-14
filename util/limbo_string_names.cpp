@@ -78,6 +78,7 @@ LimboStringNames::LimboStringNames() {
 	HeaderSmall = SN("HeaderSmall");
 	Help = SN("Help");
 	icon_max_width = SN("icon_max_width");
+	class_icon_size = SN("class_icon_size");
 	id_pressed = SN("id_pressed");
 	Info = SN("Info");
 	item_collapsed = SN("item_collapsed");
@@ -127,7 +128,7 @@ LimboStringNames::LimboStringNames() {
 	task_activated = SN("task_activated");
 	task_button_pressed = SN("task_button_pressed");
 	task_button_rmb = SN("task_button_rmb");
-	task_dragged = SN("task_dragged");
+	tasks_dragged = SN("tasks_dragged");
 	task_meta = SN("task_meta");
 	task_selected = SN("task_selected");
 	text_changed = SN("text_changed");

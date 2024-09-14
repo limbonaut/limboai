@@ -21,11 +21,18 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
 #include "editor/themes/editor_scale.h"
+#include "scene/gui/box_container.h"
+#include "scene/gui/texture_rect.h"
+#include "scene/gui/label.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/v_box_container.hpp>
+#include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/classes/label.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -101,10 +108,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 }
 
 void TaskTree::_update_tree() {
-	Ref<BTTask> sel;
-	if (tree->get_selected()) {
-		sel = tree->get_selected()->get_metadata(0);
-	}
+	Vector<Ref<BTTask>> selection = get_selected_tasks();
 
 	tree->clear();
 	if (bt.is_null()) {
@@ -117,9 +121,8 @@ void TaskTree::_update_tree() {
 		updating_tree = false;
 	}
 
-	TreeItem *item = _find_item(sel);
-	if (item) {
-		item->select(0);
+	for (const Ref<BTTask> &task : selection) {
+		add_selection(task);
 	}
 }
 
@@ -225,6 +228,22 @@ void TaskTree::update_task(const Ref<BTTask> &p_task) {
 	}
 }
 
+void TaskTree::add_selection(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	TreeItem *item = _find_item(p_task);
+	if (item) {
+		item->select(0);
+	}
+}
+
+void TaskTree::remove_selection(const Ref<BTTask> &p_task) {
+	ERR_FAIL_COND(p_task.is_null());
+	TreeItem *item = _find_item(p_task);
+	if (item) {
+		item->deselect(0);
+	}
+}
+
 Ref<BTTask> TaskTree::get_selected() const {
 	if (tree->get_selected()) {
 		return tree->get_selected()->get_metadata(0);
@@ -232,11 +251,22 @@ Ref<BTTask> TaskTree::get_selected() const {
 	return nullptr;
 }
 
-void TaskTree::deselect() {
-	TreeItem *sel = tree->get_selected();
-	if (sel) {
-		sel->deselect(0);
+Vector<Ref<BTTask>> TaskTree::get_selected_tasks() const {
+	Vector<Ref<BTTask>> selected_tasks;
+	TreeItem *next = tree->get_next_selected(nullptr);
+	while (next) {
+		Ref<BTTask> task = next->get_metadata(0);
+		if (task.is_valid()) {
+			selected_tasks.push_back(task);
+		}
+		next = tree->get_next_selected(next);
 	}
+
+	return selected_tasks;
+}
+
+void TaskTree::clear_selection() {
+	tree->deselect_all();
 }
 
 Rect2 TaskTree::get_selected_probability_rect() const {
@@ -280,9 +310,50 @@ bool TaskTree::selected_has_probability() const {
 
 Variant TaskTree::_get_drag_data_fw(const Point2 &p_point) {
 	if (editable && tree->get_item_at_position(p_point)) {
+		TypedArray<BTTask> selected_tasks;
+		Vector<Ref<Texture2D>> icons;
+		TreeItem *next = tree->get_next_selected(nullptr);
+		while (next) {
+			Ref<BTTask> task = next->get_metadata(0);
+			if (task.is_valid()) {
+				selected_tasks.push_back(task);
+				icons.push_back(next->get_icon(0));
+			}
+			next = tree->get_next_selected(next);
+		}
+
+		if (selected_tasks.is_empty()) {
+			return Variant();
+		}
+
+		VBoxContainer *vb = memnew(VBoxContainer);
+		int list_max = 10;
+		float opacity_step = 1.0f / list_max;
+		float opacity_item = 1.0f;
+		for (int i = 0; i < selected_tasks.size(); i++) {
+			Ref<BTTask> task = Object::cast_to<BTTask>(selected_tasks[i]);
+			if (i < list_max) {
+				HBoxContainer *hb = memnew(HBoxContainer);
+				TextureRect *tf = memnew(TextureRect);
+				int icon_size = get_theme_constant(LW_NAME(class_icon_size), LW_NAME(Editor));
+				tf->set_custom_minimum_size(Size2(icon_size, icon_size));
+				tf->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);
+				tf->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);
+				tf->set_texture(icons[i]);
+				hb->add_child(tf);
+				Label *label = memnew(Label);
+				label->set_text(task->get_task_name());
+				hb->add_child(label);
+				vb->add_child(hb);
+				hb->set_modulate(Color(1, 1, 1, opacity_item));
+				opacity_item -= opacity_step;
+			}
+		}
+		set_drag_preview(vb);
+
 		Dictionary drag_data;
 		drag_data["type"] = "task";
-		drag_data["task"] = tree->get_item_at_position(p_point)->get_metadata(0);
+		drag_data["tasks"] = selected_tasks;
 		tree->set_drop_mode_flags(Tree::DROP_MODE_INBETWEEN | Tree::DROP_MODE_ON_ITEM);
 		return drag_data;
 	}
@@ -295,7 +366,7 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 	}
 
 	Dictionary d = p_data;
-	if (!d.has("type") || !d.has("task")) {
+	if (!d.has("type") || !d.has("tasks")) {
 		return false;
 	}
 
@@ -305,27 +376,98 @@ bool TaskTree::_can_drop_data_fw(const Point2 &p_point, const Variant &p_data) c
 		return false;
 	}
 
-	if (!item->get_parent() && section != 0) { // before/after root item
+	if (!item->get_parent() && section < 0) { // Before root item.
 		return false;
 	}
 
 	if (String(d["type"]) == "task") {
-		Ref<BTTask> task = d["task"];
-		const Ref<BTTask> to_task = item->get_metadata(0);
-		if (task != to_task && !to_task->is_descendant_of(task)) {
-			return true;
+		TypedArray<BTTask> tasks = d["tasks"];
+		if (tasks.is_empty()) {
+			return false; // No tasks.
+		}
+
+		Ref<BTTask> to_task = item->get_metadata(0);
+		int to_pos = -1;
+		int type = tree->get_drop_section_at_position(p_point);
+		_normalize_drop(item, type, to_pos, to_task);
+		if (to_task.is_null()) {
+			return false; // Outside root.
+		}
+		for (int i = 0; i < tasks.size(); i++) {
+			Ref<BTTask> task = tasks[i];
+			if (to_task->is_descendant_of(task) || task == to_task) {
+				return false; // Don't drop as child of selected tasks.
+			}
 		}
 	}
 
-	return false;
+	return true;
 }
 
 void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	Dictionary d = p_data;
+	if (!d.has("tasks")) {
+		return;
+	}
+
 	TreeItem *item = tree->get_item_at_position(p_point);
-	if (item && d.has("task")) {
-		Ref<BTTask> task = d["task"];
-		emit_signal(LW_NAME(task_dragged), task, item->get_metadata(0), tree->get_drop_section_at_position(p_point));
+	int type = tree->get_drop_section_at_position(p_point);
+	ERR_FAIL_NULL(item);
+	ERR_FAIL_COND(type < -1 || type > 1);
+
+	// The drop behavior depends on the TreeItem's state.
+	// Normalize and emit the parent task and position instead of exposing TreeItem.
+	int to_pos = -1;
+	Ref<BTTask> to_task = item->get_metadata(0);
+	ERR_FAIL_COND(to_task.is_null());
+	_normalize_drop(item, type, to_pos, to_task);
+	emit_signal(LW_NAME(tasks_dragged), d["tasks"], to_task, to_pos);
+}
+
+void TaskTree::_normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask> &to_task) const {
+	switch (type) {
+		case 0: // Drop as last child of target.
+			to_pos = to_task->get_child_count();
+			break;
+		case -1: // Drop above target.
+			ERR_FAIL_COND_MSG(to_task->get_parent().is_null(), "Cannot perform drop above the root task!");
+			to_pos = to_task->get_index();
+			{
+				Vector<Ref<BTTask>> selected = get_selected_tasks();
+				if (to_task == selected[selected.size()-1]) {
+					to_pos += 1;
+				}
+			}
+			to_task = to_task->get_parent();
+			break;
+		case 1: // Drop below target.
+			if (item->get_child_count() == 0) {
+				to_pos = to_task->get_index() + 1;
+				if (to_task == tree->get_next_selected(nullptr)->get_metadata(0)) {
+					to_pos -= 1;
+				}
+				to_task = to_task->get_parent();
+				break;
+			}
+
+			if (to_task->get_parent().is_null() || !item->is_collapsed()) { // Insert as first child of target.
+				to_pos = 0;
+			} else { // Insert as sibling of target.
+				TreeItem *lower_sibling = nullptr;
+				for (int i = to_task->get_index() + 1; i < to_task->get_parent()->get_child_count(); i++) {
+					TreeItem *c = item->get_parent()->get_child(i);
+					if (c->is_visible_in_tree()) {
+						lower_sibling = c;
+						break;
+					}
+				}
+				if (lower_sibling) {
+					to_pos = lower_sibling->get_index();
+				}
+
+				to_task = to_task->get_parent();
+			}
+			break;
 	}
 }
 
@@ -385,7 +527,7 @@ void TaskTree::_notification(int p_what) {
 		case NOTIFICATION_READY: {
 			tree->connect("item_mouse_selected", callable_mp(this, &TaskTree::_on_item_mouse_selected));
 			// Note: CONNECT_DEFERRED is needed to avoid double updates with set_allow_reselect(true), which breaks folding/unfolding.
-			tree->connect("item_selected", callable_mp(this, &TaskTree::_on_item_selected), CONNECT_DEFERRED);
+			tree->connect("multi_selected", callable_mp(this, &TaskTree::_on_item_selected).unbind(3), CONNECT_DEFERRED);
 			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 			tree->connect("item_collapsed", callable_mp(this, &TaskTree::_on_item_collapsed));
 		} break;
@@ -401,8 +543,10 @@ void TaskTree::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_bt"), &TaskTree::get_bt);
 	ClassDB::bind_method(D_METHOD("update_tree"), &TaskTree::update_tree);
 	ClassDB::bind_method(D_METHOD("update_task", "task"), &TaskTree::update_task);
+	ClassDB::bind_method(D_METHOD("add_selection", "task"), &TaskTree::add_selection);
+	ClassDB::bind_method(D_METHOD("remove_selection", "task"), &TaskTree::remove_selection);
 	ClassDB::bind_method(D_METHOD("get_selected"), &TaskTree::get_selected);
-	ClassDB::bind_method(D_METHOD("deselect"), &TaskTree::deselect);
+	ClassDB::bind_method(D_METHOD("clear_selection"), &TaskTree::clear_selection);
 
 	ClassDB::bind_method(D_METHOD("_get_drag_data_fw"), &TaskTree::_get_drag_data_fw);
 	ClassDB::bind_method(D_METHOD("_can_drop_data_fw"), &TaskTree::_can_drop_data_fw);
@@ -413,8 +557,7 @@ void TaskTree::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_selected"));
 	ADD_SIGNAL(MethodInfo("task_activated"));
 	ADD_SIGNAL(MethodInfo("probability_clicked"));
-	ADD_SIGNAL(MethodInfo("task_dragged",
-			PropertyInfo(Variant::OBJECT, "task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
+	ADD_SIGNAL(MethodInfo("tasks_dragged", PropertyInfo(Variant::ARRAY, "tasks", PROPERTY_HINT_ARRAY_TYPE, RESOURCE_TYPE_HINT("BTTask")),
 			PropertyInfo(Variant::OBJECT, "to_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask"),
 			PropertyInfo(Variant::INT, "type")));
 }
@@ -432,6 +575,7 @@ TaskTree::TaskTree() {
 	tree->set_anchor(SIDE_BOTTOM, ANCHOR_END);
 	tree->set_allow_rmb_select(true);
 	tree->set_allow_reselect(true);
+	tree->set_select_mode(Tree::SelectMode::SELECT_MULTI);
 
 	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
 }
