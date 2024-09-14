@@ -46,7 +46,9 @@ String BTSetAgentProperty::_generate_name() {
 		return "SetAgentProperty ???";
 	}
 
-	return vformat("Set agent.%s = %s", property,
+	return vformat("Set agent.%s %s= %s",
+			property,
+			LimboUtility::get_singleton()->get_operation_string(operation),
 			value.is_valid() ? Variant(value) : Variant("???"));
 }
 
