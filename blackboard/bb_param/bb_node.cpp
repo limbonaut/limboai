@@ -11,15 +11,6 @@
 
 #include "bb_node.h"
 
-#ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
-#include "scene/main/node.h"
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/node.hpp>
-#endif // LIMBOAI_GDEXTENSION
-
 Variant BBNode::get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
 	ERR_FAIL_NULL_V_MSG(p_scene_root, Variant(), "BBNode: get_value() failed - scene_root is null.");
 	ERR_FAIL_NULL_V_MSG(p_blackboard, Variant(), "BBNode: get_value() failed - blackboard is null.");
@@ -33,13 +24,10 @@ Variant BBNode::get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboar
 
 	if (val.get_type() == Variant::NODE_PATH) {
 		return p_scene_root->get_node_or_null(val);
+	} else if (val.get_type() == Variant::OBJECT || val.get_type() == Variant::NIL) {
+		return val;
 	} else {
-		Object *obj = val;
-		if (unlikely(obj == nullptr && val.get_type() != Variant::NIL)) {
-			WARN_PRINT("BBNode: Unexpected variant type of a blackboard variable.");
-			return p_default;
-		} else {
-			return obj;
-		}
+		WARN_PRINT("BBNode: Unexpected variant type: " + Variant::get_type_name(val.get_type()) + ". Returning default value.");
+		return p_default;
 	}
 }
