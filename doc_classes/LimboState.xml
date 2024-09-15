@@ -43,7 +43,7 @@
 			<description>
 				Registers a [param handler] to be called when [param event] is dispatched. The handler function should have the following signature:
 				[codeblock]
-				func my_event_handler(cargo=null) -> bool:
+				func my_event_handler(cargo=null) -&gt; bool:
 				[/codeblock]
 				If the handler returns [code]true[/code], the event will be consumed. Cargo is an optional parameter that can be passed to the handler. See also [method dispatch].
 			</description>

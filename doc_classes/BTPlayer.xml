@@ -60,7 +60,7 @@
 		<member name="blackboard_plan" type="BlackboardPlan" setter="set_blackboard_plan" getter="get_blackboard_plan">
 			Stores and manages variables that will be used in constructing new [Blackboard] instances.
 		</member>
-		<member name="monitor_performance" type="bool" setter="_set_monitor_performance" getter="_get_monitor_performance" default="false">
+		<member name="monitor_performance" type="bool" setter="set_monitor_performance" getter="get_monitor_performance" default="false">
 			If [code]true[/code], adds a performance monitor to "Debugger-&gt;Monitors" for each instance of this [BTPlayer] node.
 		</member>
 		<member name="update_mode" type="int" setter="set_update_mode" getter="get_update_mode" enum="BTPlayer.UpdateMode" default="1">
