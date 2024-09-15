@@ -10,10 +10,11 @@
 	<methods>
 		<method name="create_blackboard">
 			<return type="Blackboard" />
-			<param index="0" name="node" type="Node" />
+			<param index="0" name="prefetch_root" type="Node" />
 			<param index="1" name="parent_scope" type="Blackboard" default="null" />
+			<param index="2" name="prefetch_root_for_base_plan" type="Node" default="null" />
 			<description>
-				Constructs a new instance of a [Blackboard] using this plan. If [NodePath] prefetching is enabled, [param node] will be used to retrieve node instances for [NodePath] variables and substitute their values.
+				Constructs a new instance of a [Blackboard] using this plan. If [NodePath] prefetching is enabled, [param prefetch_root] will be used to retrieve node instances for [NodePath] variables and substitute their values.
 			</description>
 		</method>
 		<method name="get_base_plan" qualifiers="const">
@@ -38,9 +39,10 @@
 			<return type="void" />
 			<param index="0" name="blackboard" type="Blackboard" />
 			<param index="1" name="overwrite" type="bool" />
-			<param index="2" name="node" type="Node" />
+			<param index="2" name="prefetch_root" type="Node" />
+			<param index="3" name="prefetch_root_for_base_plan" type="Node" default="null" />
 			<description>
-				Populates [param blackboard] with the variables from this plan. If [param overwrite] is [code]true[/code], existing variables with the same names will be overwritten. If [NodePath] prefetching is enabled, [param node] will be used to retrieve node instances for [NodePath] variables and substitute their values.
+				Populates [param blackboard] with the variables from this plan. If [param overwrite] is [code]true[/code], existing variables with the same names will be overwritten. If [NodePath] prefetching is enabled, [param prefetch_root] will be used to retrieve node instances for [NodePath] variables and substitute their values.
 			</description>
 		</method>
 		<method name="set_base_plan">

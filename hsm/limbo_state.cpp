@@ -33,6 +33,10 @@ void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 void LimboState::_update_blackboard_plan() {
 }
 
+Node *LimboState::_get_prefetch_root_for_base_plan() {
+	return this;
+}
+
 Ref<BlackboardPlan> LimboState::_get_parent_scope_plan() const {
 	BlackboardPlan *parent_plan = nullptr;
 	const LimboState *state = this;
@@ -96,7 +100,7 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	}
 	if (blackboard_plan.is_valid() && !blackboard_plan->is_empty()) {
 		// Don't overwrite existing blackboard values as they may be initialized from code.
-		blackboard_plan->populate_blackboard(blackboard, false, this);
+		blackboard_plan->populate_blackboard(blackboard, false, this, _get_prefetch_root_for_base_plan());
 	}
 
 	_setup();

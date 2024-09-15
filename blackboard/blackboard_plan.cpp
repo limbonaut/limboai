@@ -387,33 +387,16 @@ void BlackboardPlan::sync_with_base_plan() {
 	}
 }
 
-// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
-inline void bb_add_var_dup_with_prefetch(const Ref<Blackboard> &p_blackboard, const StringName &p_name, const BBVariable &p_var, bool p_prefetch, Node *p_node) {
-	if (unlikely(p_prefetch && p_var.get_type() == Variant::NODE_PATH)) {
-		Node *n = p_node->get_node_or_null(p_var.get_value());
-		BBVariable var = p_var.duplicate(true);
-		if (n != nullptr) {
-			var.set_value(n);
-		} else {
-			ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p_name, p_var.get_value()));
-			var.set_value(Variant());
-		}
-		p_blackboard->assign_var(p_name, var);
-	} else {
-		p_blackboard->assign_var(p_name, p_var.duplicate(true));
-	}
-}
-
-Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_node, const Ref<Blackboard> &p_parent_scope) {
-	ERR_FAIL_COND_V(p_node == nullptr && prefetch_nodepath_vars, memnew(Blackboard));
+Ref<Blackboard> BlackboardPlan::create_blackboard(Node *p_prefetch_root, const Ref<Blackboard> &p_parent_scope, Node *p_prefetch_root_for_base_plan) {
+	ERR_FAIL_COND_V(p_prefetch_root == nullptr && prefetch_nodepath_vars, memnew(Blackboard));
 	Ref<Blackboard> bb = memnew(Blackboard);
 	bb->set_parent(p_parent_scope);
-	populate_blackboard(bb, true, p_node);
+	populate_blackboard(bb, true, p_prefetch_root, p_prefetch_root_for_base_plan);
 	return bb;
 }
 
-void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node) {
-	ERR_FAIL_COND(p_node == nullptr && prefetch_nodepath_vars);
+void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_prefetch_root, Node *p_prefetch_root_for_base_plan) {
+	ERR_FAIL_COND(p_prefetch_root == nullptr && prefetch_nodepath_vars);
 	ERR_FAIL_COND(p_blackboard.is_null());
 	for (const Pair<StringName, BBVariable> &p : var_list) {
 		if (p_blackboard->has_local_var(p.first) && !overwrite) {
@@ -429,7 +412,21 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 		}
 		bool has_mapping = parent_scope_mapping.has(p.first);
 		bool do_prefetch = !has_mapping && prefetch_nodepath_vars;
-		bb_add_var_dup_with_prefetch(p_blackboard, p.first, p.second, do_prefetch, p_node);
+
+		// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
+		BBVariable var = p.second.duplicate(true);
+		if (unlikely(do_prefetch && p.second.get_type() == Variant::NODE_PATH)) {
+			Node *prefetch_root = !p_prefetch_root_for_base_plan || !is_derived() || is_derived_var_changed(p.first) ? p_prefetch_root : p_prefetch_root_for_base_plan;
+			Node *n = prefetch_root->get_node_or_null(p.second.get_value());
+			if (n != nullptr) {
+				var.set_value(n);
+			} else {
+				ERR_PRINT(vformat("BlackboardPlan: Prefetch failed for variable $%s with value: %s", p.first, p.second.get_value()));
+				var.set_value(Variant());
+			}
+		}
+		p_blackboard->assign_var(p.first, var);
+
 		if (has_mapping) {
 			StringName target_var = parent_scope_mapping[p.first];
 			if (target_var != StringName()) {
@@ -450,8 +447,8 @@ void BlackboardPlan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("sync_with_base_plan"), &BlackboardPlan::sync_with_base_plan);
 	ClassDB::bind_method(D_METHOD("set_parent_scope_plan_provider", "callable"), &BlackboardPlan::set_parent_scope_plan_provider);
 	ClassDB::bind_method(D_METHOD("get_parent_scope_plan_provider"), &BlackboardPlan::get_parent_scope_plan_provider);
-	ClassDB::bind_method(D_METHOD("create_blackboard", "node", "parent_scope"), &BlackboardPlan::create_blackboard, DEFVAL(Ref<Blackboard>()));
-	ClassDB::bind_method(D_METHOD("populate_blackboard", "blackboard", "overwrite", "node"), &BlackboardPlan::populate_blackboard);
+	ClassDB::bind_method(D_METHOD("create_blackboard", "prefetch_root", "parent_scope", "prefetch_root_for_base_plan"), &BlackboardPlan::create_blackboard, DEFVAL(Ref<Blackboard>()), DEFVAL(Variant()));
+	ClassDB::bind_method(D_METHOD("populate_blackboard", "blackboard", "overwrite", "prefetch_root", "prefetch_root_for_base_plan"), &BlackboardPlan::populate_blackboard, DEFVAL(Variant()));
 
 	// To avoid cluttering the member namespace, we do not export unnecessary properties in this class.
 	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "prefetch_nodepath_vars", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_STORAGE), "set_prefetch_nodepath_vars", "is_prefetching_nodepath_vars");

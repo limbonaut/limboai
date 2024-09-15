@@ -48,7 +48,7 @@ void BTPlayer::_load_tree() {
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
 	Node *agent = GET_NODE(this, agent_node);
 	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
-	Node *scene_root = scene_root_hint ? scene_root_hint : get_owner();
+	Node *scene_root = _get_scene_root();
 	ERR_FAIL_COND_MSG(scene_root == nullptr,
 			"BTPlayer: Initialization failed - unable to establish scene root. This is likely due to BTPlayer not being owned by a scene node. Check BTPlayer.set_scene_root_hint().");
 	bt_instance = behavior_tree->instantiate(agent, blackboard, this, scene_root);
@@ -184,7 +184,7 @@ void BTPlayer::_notification(int p_notification) {
 				}
 				if (blackboard_plan.is_valid()) {
 					// Don't overwrite existing blackboard values as they may be initialized from code.
-					blackboard_plan->populate_blackboard(blackboard, false, this);
+					blackboard_plan->populate_blackboard(blackboard, false, this, _get_scene_root());
 				}
 				if (behavior_tree.is_valid()) {
 					_load_tree();
