@@ -88,9 +88,10 @@ public:
 
 	void sync_with_base_plan();
 	_FORCE_INLINE_ bool is_derived() const { return base.is_valid(); }
+	_FORCE_INLINE_ bool is_derived_var_changed(const StringName &p_name) const { return base.is_valid() && var_map.has(p_name) && var_map[p_name].is_value_changed(); }
 
-	Ref<Blackboard> create_blackboard(Node *p_agent, const Ref<Blackboard> &p_parent_scope = Ref<Blackboard>());
-	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_node);
+	Ref<Blackboard> create_blackboard(Node *p_prefetch_root, const Ref<Blackboard> &p_parent_scope = Ref<Blackboard>(), Node *p_prefetch_root_for_base_plan = nullptr);
+	void populate_blackboard(const Ref<Blackboard> &p_blackboard, bool overwrite, Node *p_prefetch_root, Node *p_prefetch_root_for_base_plan = nullptr);
 
 	BlackboardPlan();
 };
