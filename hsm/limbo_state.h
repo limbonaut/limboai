@@ -54,6 +54,7 @@ protected:
 
 	virtual bool _should_use_new_scope() const { return blackboard_plan.is_valid() || is_root(); }
 	virtual void _update_blackboard_plan();
+	virtual Node *_get_prefetch_root_for_base_plan();
 
 	virtual void _setup();
 	virtual void _enter();
