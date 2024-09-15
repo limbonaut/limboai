@@ -65,10 +65,14 @@ void BTState::_update_blackboard_plan() {
 	}
 }
 
+Node *BTState::_get_prefetch_root_for_base_plan() {
+	return _get_scene_root();
+}
+
 void BTState::_setup() {
 	LimboState::_setup();
 	ERR_FAIL_COND_MSG(behavior_tree.is_null(), "BTState: BehaviorTree is not assigned.");
-	Node *scene_root = scene_root_hint ? scene_root_hint : get_owner();
+	Node *scene_root = _get_scene_root();
 	ERR_FAIL_NULL_MSG(scene_root, "BTState: Initialization failed - unable to establish scene root. This is likely due to BTState not being owned by a scene node. Check BTState.set_scene_root_hint().");
 	bt_instance = behavior_tree->instantiate(get_agent(), get_blackboard(), this, scene_root);
 	ERR_FAIL_COND_MSG(bt_instance.is_null(), "BTState: Initialization failed - failed to instantiate behavior tree.");

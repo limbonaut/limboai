@@ -28,6 +28,8 @@ private:
 	Node *scene_root_hint = nullptr;
 	bool monitor_performance = false;
 
+	_FORCE_INLINE_ Node *_get_scene_root() const { return scene_root_hint ? scene_root_hint : get_owner(); }
+
 protected:
 	static void _bind_methods();
 
@@ -35,6 +37,7 @@ protected:
 
 	virtual bool _should_use_new_scope() const override { return true; }
 	virtual void _update_blackboard_plan() override;
+	virtual Node *_get_prefetch_root_for_base_plan() override;
 
 	virtual void _setup() override;
 	virtual void _exit() override;

@@ -416,7 +416,7 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 		// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
 		BBVariable var = p.second.duplicate(true);
 		if (unlikely(do_prefetch && p.second.get_type() == Variant::NODE_PATH)) {
-			Node *prefetch_root = !is_derived() || is_derived_var_changed(p.first) ? p_prefetch_root : p_prefetch_root_for_base_plan;
+			Node *prefetch_root = !p_prefetch_root_for_base_plan || !is_derived() || is_derived_var_changed(p.first) ? p_prefetch_root : p_prefetch_root_for_base_plan;
 			Node *n = prefetch_root->get_node_or_null(p.second.get_value());
 			if (n != nullptr) {
 				var.set_value(n);

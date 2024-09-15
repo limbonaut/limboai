@@ -50,6 +50,7 @@ private:
 
 	void _load_tree();
 	void _update_blackboard_plan();
+	_FORCE_INLINE_ Node *_get_scene_root() const { return scene_root_hint ? scene_root_hint : get_owner(); }
 
 protected:
 	static void _bind_methods();
