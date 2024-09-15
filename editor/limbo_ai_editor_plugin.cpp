@@ -869,7 +869,7 @@ void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTT
 
 	// Remove all tasks first so adding ordering is stable.
 	int before_pos = 0;
-	for (const Ref<BTTask> task : tasks_list) {
+	for (const Ref<BTTask> &task : tasks_list) {
 		if (task->get_parent() == p_to_task && p_to_pos > task->get_index()) {
 			before_pos += 1;
 		}
@@ -883,7 +883,7 @@ void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTT
 	}
 
 	// Re-add tasks in later undo action so indexes match the old order.
-	for (const Ref<BTTask> task : tasks_list) {
+	for (const Ref<BTTask> &task : tasks_list) {
 		undo_redo->add_undo_method(task->get_parent().ptr(), LW_NAME(add_child_at_index), task, task->get_index());
 	}
 
