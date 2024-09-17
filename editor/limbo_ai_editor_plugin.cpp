@@ -1279,9 +1279,9 @@ void LimboAIEditor::_update_misc_menu() {
 		layout_menu->set_name("LayoutMenu");
 		layout_menu->connect(LW_NAME(id_pressed), callable_mp(this, &LimboAIEditor::_misc_option_selected));
 		misc_menu->add_child(layout_menu);
+		layout_menu->add_radio_check_item(TTR("Classic"), MISC_LAYOUT_CLASSIC);
+		layout_menu->add_radio_check_item(TTR("Widescreen Optimized"), MISC_LAYOUT_WIDESCREEN_OPTIMIZED);
 	}
-	layout_menu->add_radio_check_item(TTR("Classic"), MISC_LAYOUT_CLASSIC);
-	layout_menu->add_radio_check_item(TTR("Widescreen Optimized"), MISC_LAYOUT_WIDESCREEN_OPTIMIZED);
 	misc_menu->add_submenu_item(TTR("Layout"), "LayoutMenu");
 	EditorLayout saved_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
 	layout_menu->set_item_checked(0, saved_layout == LAYOUT_CLASSIC);
