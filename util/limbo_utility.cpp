@@ -395,6 +395,9 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_ARRAY_TYPE: {
 			return "ARRAY_TYPE";
 		}
+		case PROPERTY_HINT_DICTIONARY_TYPE: {
+			return "DICTIONARY_TYPE";
+		}
 		case PROPERTY_HINT_LOCALE_ID: {
 			return "LOCALE_ID";
 		}
