@@ -46,6 +46,7 @@ LimboStringNames::LimboStringNames() {
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
 	changed = SN("changed");
+	Close = SN("Close");
 	dark_color_2 = SN("dark_color_2");
 	Debug = SN("Debug");
 	disabled_font_color = SN("disabled_font_color");
@@ -58,6 +59,7 @@ LimboStringNames::LimboStringNames() {
 	EditorFonts = SN("EditorFonts");
 	EditorIcons = SN("EditorIcons");
 	EditorStyles = SN("EditorStyles");
+	emit_signal = SN("emit_signal");
 	entered = SN("entered");
 	error_value = SN("error_value");
 	EVENT_FAILURE = SN("failure");
@@ -66,6 +68,8 @@ LimboStringNames::LimboStringNames() {
 	exited = SN("exited");
 	favorite_tasks_changed = SN("favorite_tasks_changed");
 	Favorites = SN("Favorites");
+	FlatButton = SN("FlatButton");
+	Focus = SN("Focus");
 	focus_exited = SN("focus_exited");
 	font = SN("font");
 	font_color = SN("font_color");
@@ -77,6 +81,7 @@ LimboStringNames::LimboStringNames() {
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
 	HeaderSmall = SN("HeaderSmall");
 	Help = SN("Help");
+	h_separation = SN("h_separation");
 	icon_max_width = SN("icon_max_width");
 	class_icon_size = SN("class_icon_size");
 	id_pressed = SN("id_pressed");
@@ -120,6 +125,7 @@ LimboStringNames::LimboStringNames() {
 	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
 	set_root_task = SN("set_root_task");
+	set_visible = SN("set_visible");
 	set_v_scroll = SN("set_v_scroll");
 	setup = SN("setup");
 	started = SN("started");

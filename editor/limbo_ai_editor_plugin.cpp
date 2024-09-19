@@ -261,6 +261,10 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	p_behavior_tree->editor_set_section_unfold("blackboard_plan", true);
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
+	// Remember current search info.
+	if (idx_history >= 0 && idx_history < history.size()) {
+		tab_search_context.insert(history[idx_history], task_tree->tree_search_get_search_info());
+	}
 
 	task_tree->load_bt(p_behavior_tree);
 
@@ -279,6 +283,18 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	usage_hint->hide();
 	task_tree->show();
 	task_palette->show();
+
+	// Restore search info from [tab_search_context].
+	if (idx_history >= 0 && idx_history < history.size()) {
+		// info for BehaviorTree available. Restore!
+		if (tab_search_context.has(history[idx_history])) {
+			task_tree->tree_search_set_search_info(tab_search_context[history[idx_history]]);
+		}
+		// new SearchContext.
+		else {
+			task_tree->tree_search_set_search_info(TreeSearch::SearchInfo());
+		}
+	}
 
 	_update_tabs();
 }
@@ -457,6 +473,8 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 			_on_save_pressed();
 		} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
 			_popup_file_dialog(load_dialog);
+		} else if (LW_IS_SHORTCUT("limbo_ai/find_task", p_event)) {
+			task_tree->tree_search_show_and_focus();
 		} else {
 			handled = false;
 		}
@@ -799,6 +817,9 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			EDITOR_FILE_SYSTEM()->scan();
 			EDIT_SCRIPT(template_path);
 		} break;
+		case MISC_SEARCH_TREE: {
+			task_tree->tree_search_show_and_focus();
+		}
 	}
 }
 
@@ -1319,6 +1340,9 @@ void LimboAIEditor::_update_misc_menu() {
 	misc_menu->add_item(
 			FILE_EXISTS(_get_script_template_path()) ? TTR("Edit Script Template") : TTR("Create Script Template"),
 			MISC_CREATE_SCRIPT_TEMPLATE);
+
+	misc_menu->add_separator();
+	misc_menu->add_icon_shortcut(theme_cache.search_icon, LW_GET_SHORTCUT("limbo_ai/find_task"), MISC_SEARCH_TREE);
 }
 
 void LimboAIEditor::_update_banners() {
@@ -1381,6 +1405,7 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.cut_icon = get_theme_icon(LW_NAME(ActionCut), LW_NAME(EditorIcons));
 	theme_cache.copy_icon = get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons));
 	theme_cache.paste_icon = get_theme_icon(LW_NAME(ActionPaste), LW_NAME(EditorIcons));
+	theme_cache.search_icon = get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons));
 
 	theme_cache.behavior_tree_icon = LimboUtility::get_singleton()->get_task_icon("BehaviorTree");
 	theme_cache.percent_icon = LimboUtility::get_singleton()->get_task_icon("LimboPercent");
@@ -1512,6 +1537,8 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
 	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
 	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
+	LW_SHORTCUT("limbo_ai/find_task", TTR("Find Task"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(F)));
+	LW_SHORTCUT("limbo_ai/hide_tree_search", TTR("Close Search"), (Key)(LW_KEY(ESCAPE)));
 
 	set_process_shortcut_input(true);
 
