@@ -193,18 +193,18 @@ void LimboDebuggerTab::_notification(int p_what) {
 
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
+			String conf_path = LAYOUT_CONFIG_FILE();
 			if (cf->load(conf_path) == OK) {
-				Variant value = cf->get_value("debugger", "update_interval_msec", 0);
+				Variant value = cf->get_value("LimboAI", "debugger_update_interval_msec", 0);
 				update_interval->set_value(value);
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
+			String conf_path = LAYOUT_CONFIG_FILE();
 			cf->load(conf_path);
-			cf->set_value("debugger", "update_interval_msec", update_interval->get_value());
+			cf->set_value("LimboAI", "debugger_update_interval_msec", update_interval->get_value());
 			cf->save(conf_path);
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {

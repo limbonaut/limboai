@@ -440,9 +440,9 @@ void TaskPalette::refresh() {
 		// Restore collapsed state from config.
 		Ref<ConfigFile> cf;
 		cf.instantiate();
-		String conf_path = PROJECT_CONFIG_FILE();
+		String conf_path = LAYOUT_CONFIG_FILE();
 		if (cf->load(conf_path) == OK) {
-			Variant value = cf->get_value("task_palette", "collapsed_sections", Array());
+			Variant value = cf->get_value("LimboAI", "task_palette_collapsed_sections", Array());
 			if (VARIANT_IS_ARRAY(value)) {
 				Array arr = value;
 				for (int i = 0; i < arr.size(); i++) {
@@ -547,19 +547,19 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_ENTER_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
+			String conf_path = LAYOUT_CONFIG_FILE();
 			if (cf->load(conf_path) == OK) {
-				Variant value = cf->get_value("task_palette", "type_filter", FilterSettings::TypeFilter(0));
+				Variant value = cf->get_value("LimboAI", "task_palette_type_filter", FilterSettings::TypeFilter(0));
 				if (VARIANT_IS_NUM(value)) {
 					filter_settings.type_filter = (FilterSettings::TypeFilter)(int)value;
 				}
 
-				value = cf->get_value("task_palette", "category_filter", FilterSettings::CategoryFilter(0));
+				value = cf->get_value("LimboAI", "task_palette_category_filter", FilterSettings::CategoryFilter(0));
 				if (VARIANT_IS_NUM(value)) {
 					filter_settings.category_filter = (FilterSettings::CategoryFilter)(int)value;
 				}
 
-				value = cf->get_value("task_palette", "excluded_categories", Array());
+				value = cf->get_value("LimboAI", "task_palette_excluded_categories", Array());
 				if (VARIANT_IS_ARRAY(value)) {
 					Array arr = value;
 					for (int i = 0; i < arr.size(); i++) {
@@ -574,7 +574,7 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			Ref<ConfigFile> cf;
 			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
+			String conf_path = LAYOUT_CONFIG_FILE();
 			cf->load(conf_path);
 
 			Array collapsed_sections;
@@ -584,16 +584,16 @@ void TaskPalette::_notification(int p_what) {
 					collapsed_sections.push_back(sec->get_category_name());
 				}
 			}
-			cf->set_value("task_palette", "collapsed_sections", collapsed_sections);
+			cf->set_value("LimboAI", "task_palette_collapsed_sections", collapsed_sections);
 
-			cf->set_value("task_palette", "type_filter", filter_settings.type_filter);
-			cf->set_value("task_palette", "category_filter", filter_settings.category_filter);
+			cf->set_value("LimboAI", "task_palette_type_filter", filter_settings.type_filter);
+			cf->set_value("LimboAI", "task_palette_category_filter", filter_settings.category_filter);
 
 			Array excluded_categories;
 			for (const String &cat : filter_settings.excluded_categories) {
 				excluded_categories.append(cat);
 			}
-			cf->set_value("task_palette", "excluded_categories", excluded_categories);
+			cf->set_value("LimboAI", "task_palette_excluded_categories", excluded_categories);
 
 			cf->save(conf_path);
 		} break;

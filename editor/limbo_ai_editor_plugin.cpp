@@ -293,6 +293,34 @@ Ref<BlackboardPlan> LimboAIEditor::get_edited_blackboard_plan() {
 	return task_tree->get_bt()->get_blackboard_plan();
 }
 
+void LimboAIEditor::set_window_layout(const Ref<ConfigFile> &p_configuration) {
+	Array open_bts;
+	open_bts = p_configuration->get_value("LimboAI", "bteditor_open_bts", open_bts);
+	for (int i = 0; i < open_bts.size(); i++) {
+		String path = open_bts[i];
+		if (FILE_EXISTS(path)) {
+			_load_bt(path);
+		}
+	}
+
+	hsc->set_split_offset(p_configuration->get_value("LimboAI", "bteditor_hsplit", hsc->get_split_offset()));
+}
+
+void LimboAIEditor::get_window_layout(const Ref<ConfigFile> &p_configuration) {
+	Array open_bts;
+	for (const Ref<BehaviorTree> &bt : history) {
+		open_bts.push_back(bt->get_path());
+	}
+	p_configuration->set_value("LimboAI", "bteditor_open_bts", open_bts);
+
+	int split_offset = hsc->get_split_offset();
+	if (editor_layout != (int)EDITOR_GET("limbo_ai/editor/layout")) {
+		// Editor layout settings changed - flip split offset.
+		split_offset *= -1;
+	}
+	p_configuration->set_value("LimboAI", "bteditor_hsplit", split_offset);
+}
+
 void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
 	Ref<BehaviorTree> bt = task_tree->get_bt();
 	if (p_dirty && !dirty.has(bt)) {
@@ -1361,27 +1389,7 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 
 void LimboAIEditor::_notification(int p_what) {
 	switch (p_what) {
-		case NOTIFICATION_ENTER_TREE: {
-			Ref<ConfigFile> cf;
-			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
-			if (cf->load(conf_path) == OK) {
-				hsc->set_split_offset(cf->get_value("bt_editor", "bteditor_hsplit", hsc->get_split_offset()));
-			}
-		} break;
 		case NOTIFICATION_EXIT_TREE: {
-			Ref<ConfigFile> cf;
-			cf.instantiate();
-			String conf_path = PROJECT_CONFIG_FILE();
-			cf->load(conf_path);
-			int split_offset = hsc->get_split_offset();
-			if (editor_layout != (int)EDITOR_GET("limbo_ai/editor/layout")) {
-				// Editor layout settings changed - flip split offset.
-				split_offset *= -1;
-			}
-			cf->set_value("bt_editor", "bteditor_hsplit", split_offset);
-			cf->save(conf_path);
-
 			task_tree->unload();
 			for (int i = 0; i < history.size(); i++) {
 				if (history[i]->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
@@ -1428,7 +1436,6 @@ void LimboAIEditor::_notification(int p_what) {
 
 			EDITOR_FILE_SYSTEM()->connect("resources_reload", callable_mp(this, &LimboAIEditor::_on_resources_reload));
 			EDITOR_FILE_SYSTEM()->connect("filesystem_changed", callable_mp(this, &LimboAIEditor::_on_filesystem_changed));
-
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
@@ -1854,6 +1861,22 @@ void LimboAIEditorPlugin::make_visible(bool p_visible) {
 void LimboAIEditorPlugin::_make_visible(bool p_visible) {
 #endif
 	limbo_ai_editor->set_visible(p_visible);
+}
+
+#ifdef LIMBOAI_MODULE
+void LimboAIEditorPlugin::get_window_layout(Ref<ConfigFile> p_configuration) {
+#elif LIMBOAI_GDEXTENSION
+void LimboAIEditorPlugin::_get_window_layout(const Ref<ConfigFile> &p_configuration) {
+#endif
+	limbo_ai_editor->get_window_layout(p_configuration);
+}
+
+#ifdef LIMBOAI_MODULE
+void LimboAIEditorPlugin::set_window_layout(Ref<ConfigFile> p_configuration) {
+#elif LIMBOAI_GDEXTENSION
+void LimboAIEditorPlugin::_set_window_layout(const Ref<ConfigFile> &p_configuration) {
+#endif
+	limbo_ai_editor->set_window_layout(p_configuration);
 }
 
 #ifdef LIMBOAI_MODULE

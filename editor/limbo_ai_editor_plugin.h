@@ -63,6 +63,7 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/variant.hpp>
+#include <godot_cpp/classes/config_file.hpp>
 
 using namespace godot;
 
@@ -263,6 +264,8 @@ public:
 	void set_plugin(EditorPlugin *p_plugin) { plugin = p_plugin; };
 	void edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_force_refresh = false);
 	Ref<BlackboardPlan> get_edited_blackboard_plan();
+	void set_window_layout(const Ref<ConfigFile> &p_configuration);
+	void get_window_layout(const Ref<ConfigFile> &p_configuration);
 
 	void apply_changes();
 
@@ -293,6 +296,8 @@ public:
 	virtual void apply_changes() override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
+	virtual void set_window_layout(Ref<ConfigFile> p_configuration) override;
+	virtual void get_window_layout(Ref<ConfigFile> p_configuration) override;
 
 #elif LIMBOAI_GDEXTENSION
 	bool _has_main_screen() const override { return true; }
@@ -303,6 +308,8 @@ public:
 	virtual void _edit(Object *p_object) override;
 	virtual bool _handles(Object *p_object) const override;
 	virtual Ref<Texture2D> _get_plugin_icon() const override;
+	virtual void _set_window_layout(const Ref<ConfigFile> &p_configuration) override;
+	virtual void _get_window_layout(const Ref<ConfigFile> &p_configuration) override;
 #endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	LimboAIEditorPlugin();
