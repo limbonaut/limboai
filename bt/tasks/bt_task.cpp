@@ -172,9 +172,8 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node
 		get_child(i)->initialize(p_agent, p_blackboard, p_scene_root);
 	}
 
-	if (!GDVIRTUAL_CALL(_setup)) {
-		_setup();
-	}
+	_setup();
+	GDVIRTUAL_CALL(_setup);
 }
 
 Ref<BTTask> BTTask::clone() const {
