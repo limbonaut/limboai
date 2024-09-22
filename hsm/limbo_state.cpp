@@ -190,11 +190,6 @@ void LimboState::_notification(int p_what) {
 				_update_blackboard_plan();
 			}
 		} break;
-		case NOTIFICATION_PREDELETE: {
-			if (is_active()) {
-				_exit();
-			}
-		} break;
 	}
 }
 

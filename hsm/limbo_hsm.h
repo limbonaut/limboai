@@ -55,6 +55,7 @@ private:
 	LimboState *previous_active;
 	LimboState *next_active;
 	bool updating = false;
+	bool was_active = false;
 
 	HashMap<TransitionKey, Transition, TransitionKeyHasher> transitions;
 
