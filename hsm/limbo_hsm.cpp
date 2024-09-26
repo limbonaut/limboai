@@ -263,6 +263,21 @@ void LimboHSM::_validate_property(PropertyInfo &p_property) const {
 void LimboHSM::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
+			if (was_active && is_root()) {
+				// Re-activate the root HSM if it was previously active.
+				// Typically, this happens when the node is re-entered scene repeatedly (e.g., re-parenting, pooling).
+				set_active(true);
+			}
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			if (is_root()) {
+				// Remember active status for re-parenting and exit state machine
+				// to release resources and signal connections if active.
+				was_active = active;
+				if (is_active()) {
+					_exit();
+				}
+			}
 		} break;
 		case NOTIFICATION_PROCESS: {
 			_update(get_process_delta_time());
