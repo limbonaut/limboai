@@ -18,7 +18,7 @@
 			Parameter that specifies the [AnimationPlayer] node.
 		</member>
 		<member name="max_time" type="float" setter="set_max_time" getter="get_max_time" default="1.0">
-			The maximum duration to wait for the animation to complete (in seconds). If the animation doesn't finish within this time, BTAwaitAnimation will return [code]FAILURE[/code].
+			The maximum duration to wait for the animation to complete (in seconds). If the animation doesn't finish within this time, BTAwaitAnimation will stop waiting and return [code]SUCCESS[/code].
 		</member>
 	</members>
 </class>

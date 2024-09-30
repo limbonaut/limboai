@@ -14,10 +14,10 @@
 	</tutorials>
 	<members>
 		<member name="num_failures_required" type="int" setter="set_num_failures_required" getter="get_num_failures_required" default="1">
-			If the specified number of child tasks return [code]SUCCESS[/code], BTParallel will also return [code]SUCCESS[/code].
+			If the specified number of child tasks return [code]FAILURE[/code], BTParallel will also return [code]FAILURE[/code].
 		</member>
 		<member name="num_successes_required" type="int" setter="set_num_successes_required" getter="get_num_successes_required" default="1">
-			If the specified number of child tasks return [code]FAILURE[/code], BTParallel will also return [code]FAILURE[/code].
+			If the specified number of child tasks return [code]SUCCESS[/code], BTParallel will also return [code]SUCCESS[/code].
 		</member>
 		<member name="repeat" type="bool" setter="set_repeat" getter="get_repeat" default="false">
 			When [code]true[/code], the child tasks will be executed again, regardless of whether they previously resulted in a [code]SUCCESS[/code] or [code]FAILURE[/code].
