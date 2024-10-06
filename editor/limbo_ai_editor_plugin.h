@@ -20,6 +20,7 @@
 #include "owner_picker.h"
 #include "task_palette.h"
 #include "task_tree.h"
+#include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
@@ -47,6 +48,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include "godot_cpp/classes/accept_dialog.hpp"
+#include <godot_cpp/classes/config_file.hpp>
 #include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_spin_slider.hpp>
@@ -63,7 +65,6 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/variant/packed_string_array.hpp>
 #include <godot_cpp/variant/variant.hpp>
-#include <godot_cpp/classes/config_file.hpp>
 
 using namespace godot;
 
@@ -100,6 +101,7 @@ private:
 		MISC_LAYOUT_WIDESCREEN_OPTIMIZED,
 		MISC_PROJECT_SETTINGS,
 		MISC_CREATE_SCRIPT_TEMPLATE,
+		MISC_SEARCH_TREE
 	};
 
 	enum TabMenu {
@@ -134,12 +136,14 @@ private:
 		Ref<Texture2D> cut_icon;
 		Ref<Texture2D> copy_icon;
 		Ref<Texture2D> paste_icon;
+		Ref<Texture2D> search_icon;
 	} theme_cache;
 
 	EditorPlugin *plugin;
 	EditorLayout editor_layout;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
+	HashMap<Ref<BehaviorTree>, TreeSearch::SearchInfo> tab_search_context;
 	bool updating_tabs = false;
 	bool request_update_tabs = false;
 	HashSet<Ref<BehaviorTree>> dirty;

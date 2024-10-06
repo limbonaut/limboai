@@ -9,9 +9,13 @@
  * =============================================================================
  */
 
+#ifndef TASK_TREE_H
+#define TASK_TREE_H
+
 #ifdef TOOLS_ENABLED
 
 #include "../bt/behavior_tree.h"
+#include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
 #include "scene/gui/control.h"
@@ -42,6 +46,9 @@ private:
 	bool editable;
 	bool updating_tree;
 	HashMap<RECT_CACHE_KEY, Rect2> probability_rect_cache;
+
+	Ref<TreeSearch> tree_search;
+	TreeSearchPanel *tree_search_panel;
 
 	struct ThemeCache {
 		Ref<Font> comment_font;
@@ -96,11 +103,15 @@ public:
 	Ref<BTTask> get_selected() const;
 	Vector<Ref<BTTask>> get_selected_tasks() const;
 	void clear_selection();
-
 	Rect2 get_selected_probability_rect() const;
 	double get_selected_probability_weight() const;
 	double get_selected_probability_percent() const;
 	bool selected_has_probability() const;
+
+	// TreeSearch API
+	void tree_search_show_and_focus();
+	TreeSearch::SearchInfo tree_search_get_search_info() const;
+	void tree_search_set_search_info(const TreeSearch::SearchInfo &p_search_info);
 
 	virtual bool editor_can_reload_from_file() { return false; }
 
@@ -109,3 +120,4 @@ public:
 };
 
 #endif // ! TOOLS_ENABLED
+#endif // ! TASK_TREE_H

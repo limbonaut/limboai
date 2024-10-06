@@ -106,6 +106,7 @@
 #include "util/limbo_string_names.h"
 #include "util/limbo_task_db.h"
 #include "util/limbo_utility.h"
+#include "editor/tree_search.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/behavior_tree_view.h"
@@ -267,6 +268,8 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(OwnerPicker);
 		GDREGISTER_CLASS(LimboAIEditor);
 		GDREGISTER_CLASS(LimboAIEditorPlugin);
+		GDREGISTER_INTERNAL_CLASS(TreeSearchPanel);
+		GDREGISTER_INTERNAL_CLASS(TreeSearch);
 #endif // LIMBOAI_GDEXTENSION
 
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
