@@ -165,7 +165,14 @@ jobs:
 
       - name: Set up Vulkan SDK
         run: |
-          sh misc/scripts/install_vulkan_sdk_macos.sh
+          # ! Note: Vulkan SDK changed packaging, so we need to inline these steps for the time being.
+          #sh misc/scripts/install_vulkan_sdk_macos.sh
+
+          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
+          unzip /tmp/vulkan-sdk.zip -d /tmp
+          /tmp/InstallVulkan.app/Contents/MacOS/InstallVulkan --accept-licenses --default-answer --confirm-command install
+          rm -Rf /tmp/InstallVulkan.app
+          rm -f /tmp/vulkan-sdk.zip
 
       - name: Set up scons cache
         uses: actions/cache@v4
