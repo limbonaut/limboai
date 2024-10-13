@@ -261,6 +261,10 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	p_behavior_tree->editor_set_section_unfold("blackboard_plan", true);
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
+	// Remember current search info.
+	if (idx_history >= 0 && idx_history < history.size() && task_tree->get_bt() == history[idx_history]) {
+		tab_search_context.insert(history[idx_history], task_tree->tree_search_get_search_info());
+	}
 
 	task_tree->load_bt(p_behavior_tree);
 
@@ -279,6 +283,16 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	usage_hint->hide();
 	task_tree->show();
 	task_palette->show();
+
+	// Restore search info from [tab_search_context].
+	if (idx_history >= 0 && idx_history < history.size()) {
+		if (tab_search_context.has(history[idx_history])) {
+			task_tree->tree_search_set_search_info(tab_search_context[history[idx_history]]);
+		}
+		else {
+			task_tree->tree_search_set_search_info(TreeSearch::SearchInfo());
+		}
+	}
 
 	_update_tabs();
 }
@@ -457,6 +471,8 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 			_on_save_pressed();
 		} else if (LW_IS_SHORTCUT("limbo_ai/load_behavior_tree", p_event)) {
 			_popup_file_dialog(load_dialog);
+		} else if (LW_IS_SHORTCUT("limbo_ai/find_task", p_event)) {
+			task_tree->tree_search_show_and_focus();
 		} else {
 			handled = false;
 		}
@@ -799,6 +815,9 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 			EDITOR_FILE_SYSTEM()->scan();
 			EDIT_SCRIPT(template_path);
 		} break;
+		case MISC_SEARCH_TREE: {
+			task_tree->tree_search_show_and_focus();
+		} break;
 	}
 }
 
@@ -1045,13 +1064,22 @@ void LimboAIEditor::_tab_closed(int p_tab) {
 	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
 		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
 	}
+	if (tab_search_context.has(history_bt)) {
+		tab_search_context.erase(history_bt);
+	}
+
 	history.remove_at(p_tab);
 	idx_history = MIN(idx_history, history.size() - 1);
+	TreeSearch::SearchInfo search_info_opened_tab;
 	if (idx_history < 0) {
 		_disable_editing();
 	} else {
 		EDIT_RESOURCE(history[idx_history]);
+		ERR_FAIL_COND(!tab_search_context.has(history[idx_history]));
+		search_info_opened_tab = tab_search_context[history[idx_history]];
 	}
+
+	task_tree->tree_search_set_search_info(search_info_opened_tab);
 	_update_tabs();
 }
 
@@ -1319,6 +1347,9 @@ void LimboAIEditor::_update_misc_menu() {
 	misc_menu->add_item(
 			FILE_EXISTS(_get_script_template_path()) ? TTR("Edit Script Template") : TTR("Create Script Template"),
 			MISC_CREATE_SCRIPT_TEMPLATE);
+
+	misc_menu->add_separator();
+	misc_menu->add_icon_shortcut(theme_cache.search_icon, LW_GET_SHORTCUT("limbo_ai/find_task"), MISC_SEARCH_TREE);
 }
 
 void LimboAIEditor::_update_banners() {
@@ -1381,6 +1412,7 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.cut_icon = get_theme_icon(LW_NAME(ActionCut), LW_NAME(EditorIcons));
 	theme_cache.copy_icon = get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons));
 	theme_cache.paste_icon = get_theme_icon(LW_NAME(ActionPaste), LW_NAME(EditorIcons));
+	theme_cache.search_icon = get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons));
 
 	theme_cache.behavior_tree_icon = LimboUtility::get_singleton()->get_task_icon("BehaviorTree");
 	theme_cache.percent_icon = LimboUtility::get_singleton()->get_task_icon("LimboPercent");
@@ -1512,6 +1544,8 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
 	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
 	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
+	LW_SHORTCUT("limbo_ai/find_task", TTR("Find Task"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(F)));
+	LW_SHORTCUT("limbo_ai/hide_tree_search", TTR("Close Search"), (Key)(LW_KEY(ESCAPE)));
 
 	set_process_shortcut_input(true);
 

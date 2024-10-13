@@ -62,6 +62,7 @@ public:
 	StringName button_up;
 	StringName call_deferred;
 	StringName changed;
+	StringName Close;
 	StringName dark_color_2;
 	StringName Debug;
 	StringName disabled_font_color;
@@ -74,6 +75,7 @@ public:
 	StringName EditorFonts;
 	StringName EditorIcons;
 	StringName EditorStyles;
+	StringName emit_signal;
 	StringName entered;
 	StringName error_value;
 	StringName EVENT_FAILURE;
@@ -82,6 +84,8 @@ public:
 	StringName exited;
 	StringName favorite_tasks_changed;
 	StringName Favorites;
+	StringName FlatButton;
+	StringName Focus;
 	StringName focus_exited;
 	StringName font_color;
 	StringName font_size;
@@ -93,6 +97,7 @@ public:
 	StringName GuiTreeArrowRight;
 	StringName HeaderSmall;
 	StringName Help;
+	StringName h_separation;
 	StringName icon_max_width;
 	StringName class_icon_size;
 	StringName id_pressed;
@@ -136,6 +141,7 @@ public:
 	StringName separation;
 	StringName set_custom_name;
 	StringName set_root_task;
+	StringName set_visible;
 	StringName set_v_scroll;
 	StringName setup;
 	StringName started;

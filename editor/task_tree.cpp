@@ -17,22 +17,23 @@
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
+#include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/script_language.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"
-#include "scene/gui/texture_rect.h"
 #include "scene/gui/label.h"
+#include "scene/gui/texture_rect.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
-#include <godot_cpp/classes/v_box_container.hpp>
-#include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/classes/texture_rect.hpp>
+#include <godot_cpp/classes/v_box_container.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
@@ -46,6 +47,12 @@ TreeItem *TaskTree::_create_tree(const Ref<BTTask> &p_task, TreeItem *p_parent, 
 		_create_tree(p_task->get_child(i), item);
 	}
 	_update_item(item);
+
+	// update TreeSearch if root task was created
+	if (tree->get_root() == item) {
+		tree_search->update_search(tree);
+	}
+
 	return item;
 }
 
@@ -105,6 +112,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 	if (!warning_text.is_empty()) {
 		p_item->add_button(0, theme_cache.task_warning_icon, 0, false, warning_text);
 	}
+	tree_search->notify_item_edited(p_item); // this is necessary to preserve custom drawing from tree search.
 }
 
 void TaskTree::_update_tree() {
@@ -434,7 +442,7 @@ void TaskTree::_normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask
 			to_pos = to_task->get_index();
 			{
 				Vector<Ref<BTTask>> selected = get_selected_tasks();
-				if (to_task == selected[selected.size()-1]) {
+				if (to_task == selected[selected.size() - 1]) {
 					to_pos += 1;
 				}
 			}
@@ -530,6 +538,8 @@ void TaskTree::_notification(int p_what) {
 			tree->connect("multi_selected", callable_mp(this, &TaskTree::_on_item_selected).unbind(3), CONNECT_DEFERRED);
 			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 			tree->connect("item_collapsed", callable_mp(this, &TaskTree::_on_item_collapsed));
+			tree_search_panel->connect("update_requested", callable_mp(tree_search.ptr(), &TreeSearch::update_search).bind(tree));
+			tree_search_panel->connect("visibility_changed", callable_mp(tree_search.ptr(), &TreeSearch::update_search).bind(tree));
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
@@ -562,12 +572,38 @@ void TaskTree::_bind_methods() {
 			PropertyInfo(Variant::INT, "type")));
 }
 
+// TreeSearch API
+void TaskTree::tree_search_show_and_focus() {
+	ERR_FAIL_NULL(tree_search);
+	tree_search_panel->set_visible(true);
+	tree_search_panel->focus_editor();
+}
+
+TreeSearch::SearchInfo TaskTree::tree_search_get_search_info() const {
+	if (!tree_search.is_valid()) {
+		return TreeSearch::SearchInfo();
+	}
+	return tree_search_panel->get_search_info();
+}
+
+void TaskTree::tree_search_set_search_info(const TreeSearch::SearchInfo &p_search_info) {
+	ERR_FAIL_NULL(tree_search);
+	tree_search_panel->set_search_info(p_search_info);
+}
+
+// TreeSearch Api ^
+
 TaskTree::TaskTree() {
 	editable = true;
 	updating_tree = false;
 
+	VBoxContainer *vbox_container = memnew(VBoxContainer);
+	add_child(vbox_container);
+	vbox_container->set_anchors_preset(PRESET_FULL_RECT);
+
 	tree = memnew(Tree);
-	add_child(tree);
+	tree->set_v_size_flags(Control::SIZE_EXPAND_FILL);
+	vbox_container->add_child(tree);
 	tree->set_columns(2);
 	tree->set_column_expand(0, true);
 	tree->set_column_expand(1, false);
@@ -578,6 +614,10 @@ TaskTree::TaskTree() {
 	tree->set_select_mode(Tree::SelectMode::SELECT_MULTI);
 
 	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
+
+	tree_search_panel = memnew(TreeSearchPanel);
+	tree_search = Ref(memnew(TreeSearch(tree_search_panel)));
+	vbox_container->add_child(tree_search_panel);
 }
 
 TaskTree::~TaskTree() {
