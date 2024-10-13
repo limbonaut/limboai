@@ -591,6 +591,7 @@ TreeSearchPanel::TreeSearchPanel() {
 
 	find_next_button->set_tooltip_text("Next Match");
 	find_prev_button->set_tooltip_text("Previous Match");
+	line_edit_search->set_tooltip_text("Match case if input contains capital letter.");
 
 	// Positioning and sizing
 	set_anchors_and_offsets_preset(LayoutPreset::PRESET_BOTTOM_WIDE);
