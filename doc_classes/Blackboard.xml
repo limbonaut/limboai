@@ -46,7 +46,7 @@
 			<param index="1" name="default" type="Variant" default="null" />
 			<param index="2" name="complain" type="bool" default="true" />
 			<description>
-				Returns variable value or [param default] if variable doesn't exist. If [param complain] is [code]true[/code], an error will be printed if variable doesn't exist.
+				Returns variable value or [param default] if variable doesn't exist. If [param complain] is [code]true[/code], an error will be printed if variable doesn't exist. If the variable doesn't exist in the current [Blackboard] scope, it will look in the parent scope [Blackboard] to find it.
 			</description>
 		</method>
 		<method name="get_vars_as_dict" qualifiers="const">
@@ -98,7 +98,7 @@
 			<param index="0" name="var_name" type="StringName" />
 			<param index="1" name="value" type="Variant" />
 			<description>
-				Assigns a value to a Blackboard variable.
+				Assigns a value to a variable in the current Blackboard scope. If the variable doesn't exist, it will be created. If the variable already exists in the parent scope, the parent scope value will NOT be changed.
 			</description>
 		</method>
 		<method name="top" qualifiers="const">
