@@ -126,7 +126,7 @@ Returns a Blackboard that serves as the parent scope for this instance.
 
 ``Variant`` **get_var**\ (\ var_name\: ``StringName``, default\: ``Variant`` = null, complain\: ``bool`` = true\ ) |const| :ref:`🔗<class_Blackboard_method_get_var>`
 
-Returns variable value or ``default`` if variable doesn't exist. If ``complain`` is ``true``, an error will be printed if variable doesn't exist.
+Returns variable value or ``default`` if variable doesn't exist. If ``complain`` is ``true``, an error will be printed if variable doesn't exist. If the variable doesn't exist in the current **Blackboard** scope, it will look in the parent scope **Blackboard** to find it.
 
 .. rst-class:: classref-item-separator
 
@@ -212,7 +212,7 @@ Assigns the parent scope. If a value isn't in the current Blackboard scope, it w
 
 |void| **set_var**\ (\ var_name\: ``StringName``, value\: ``Variant``\ ) :ref:`🔗<class_Blackboard_method_set_var>`
 
-Assigns a value to a Blackboard variable.
+Assigns a value to a variable in the current Blackboard scope. If the variable doesn't exist, it will be created. If the variable already exists in the parent scope, the parent scope value will NOT be changed.
 
 .. rst-class:: classref-item-separator
 
