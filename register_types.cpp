@@ -101,12 +101,12 @@
 #include "editor/debugger/limbo_debugger.h"
 #include "editor/debugger/limbo_debugger_plugin.h"
 #include "editor/mode_switch_button.h"
+#include "editor/tree_search.h"
 #include "hsm/limbo_hsm.h"
 #include "hsm/limbo_state.h"
 #include "util/limbo_string_names.h"
 #include "util/limbo_task_db.h"
 #include "util/limbo_utility.h"
-#include "editor/tree_search.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/behavior_tree_view.h"

@@ -101,6 +101,18 @@ jobs:
         run: |
           bin/${{ env.BIN }} --test --headless
 
+  static-checks:
+    name: ⚙️ Static checks
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Clone LimboAI module
+        uses: actions/checkout@v4
+
+      - name: Code style checks
+        uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files
+
   cache-env:
     runs-on: ubuntu-latest
     outputs:
