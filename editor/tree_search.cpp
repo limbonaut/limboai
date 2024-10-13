@@ -143,7 +143,7 @@ void TreeSearch::_highlight_tree_item(TreeItem *p_tree_item) {
 }
 
 // Custom draw callback for highlighting (bind the parent_draw_method to this)
-void TreeSearch::_draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect, const Callable p_parent_draw_method) {
+void TreeSearch::_draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect, const Callable &p_parent_draw_method) {
 	if (!p_tree_item) {
 		return;
 	}
@@ -533,42 +533,6 @@ TreeSearch::TreeSearch(TreeSearchPanel *p_search_panel) {
 
 /* ------- TreeSearchPanel ------- */
 
-void TreeSearchPanel::_initialize_controls() {
-	line_edit_search = memnew(LineEdit);
-	check_button_filter_highlight = memnew(CheckBox);
-	close_button = memnew(Button);
-	find_next_button = memnew(Button);
-	find_prev_button = memnew(Button);
-	label_filter = memnew(Label);
-
-	line_edit_search->set_placeholder(TTR("Search tree"));
-
-	close_button->set_theme_type_variation(LW_NAME(FlatButton));
-	find_next_button->set_theme_type_variation(LW_NAME(FlatButton));
-	find_prev_button->set_theme_type_variation(LW_NAME(FlatButton));
-
-	find_next_button->set_tooltip_text("Next Match");
-	find_prev_button->set_tooltip_text("Previous Match");
-
-	// Positioning and sizing
-	set_anchors_and_offsets_preset(LayoutPreset::PRESET_BOTTOM_WIDE);
-	set_v_size_flags(SIZE_SHRINK_CENTER); // Do not expand vertically
-
-	line_edit_search->set_h_size_flags(SIZE_EXPAND_FILL);
-
-	_add_spacer(0.1); // -> Otherwise the lineedits expand margin touches the left border.
-	add_child(line_edit_search);
-	add_child(find_prev_button);
-	add_child(find_next_button);
-	_add_spacer(0.25);
-
-	add_child(check_button_filter_highlight);
-	add_child(label_filter);
-
-	_add_spacer(0.25);
-	add_child(close_button);
-}
-
 void TreeSearchPanel::_add_spacer(float p_width_multiplier) {
 	Control *spacer = memnew(Control);
 	spacer->set_custom_minimum_size(Vector2(8.0 * EDSCALE * p_width_multiplier, 0.0));
@@ -612,7 +576,40 @@ void TreeSearchPanel::_bind_methods() {
 }
 
 TreeSearchPanel::TreeSearchPanel() {
-	_initialize_controls();
+	line_edit_search = memnew(LineEdit);
+	check_button_filter_highlight = memnew(CheckBox);
+	close_button = memnew(Button);
+	find_next_button = memnew(Button);
+	find_prev_button = memnew(Button);
+	label_filter = memnew(Label);
+
+	line_edit_search->set_placeholder(TTR("Search tree"));
+
+	close_button->set_theme_type_variation(LW_NAME(FlatButton));
+	find_next_button->set_theme_type_variation(LW_NAME(FlatButton));
+	find_prev_button->set_theme_type_variation(LW_NAME(FlatButton));
+
+	find_next_button->set_tooltip_text("Next Match");
+	find_prev_button->set_tooltip_text("Previous Match");
+
+	// Positioning and sizing
+	set_anchors_and_offsets_preset(LayoutPreset::PRESET_BOTTOM_WIDE);
+	set_v_size_flags(SIZE_SHRINK_CENTER); // Do not expand vertically
+
+	line_edit_search->set_h_size_flags(SIZE_EXPAND_FILL);
+
+	_add_spacer(0.1); // -> Otherwise the lineedits expand margin touches the left border.
+	add_child(line_edit_search);
+	add_child(find_prev_button);
+	add_child(find_next_button);
+	_add_spacer(0.25);
+
+	add_child(check_button_filter_highlight);
+	add_child(label_filter);
+
+	_add_spacer(0.25);
+	add_child(close_button);
+
 	set_visible(false);
 }
 
@@ -624,9 +621,6 @@ TreeSearch::TreeSearchMode TreeSearchPanel::get_search_mode() const {
 }
 
 String TreeSearchPanel::get_text() const {
-	if (!line_edit_search) {
-		return String();
-	}
 	return line_edit_search->get_text();
 }
 

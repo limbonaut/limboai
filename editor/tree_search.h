@@ -77,7 +77,7 @@ private:
 	void _highlight_tree_item(TreeItem *p_tree_item);
 
 	// Custom draw-Callback (bind inherited Callable).
-	void _draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect, const Callable p_parent_draw_method);
+	void _draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect, const Callable &p_parent_draw_method);
 
 	void _update_matching_entries(const String &p_search_mask);
 	void _update_ordered_tree_items(TreeItem *p_tree_item);
@@ -140,7 +140,6 @@ private:
 	Label *label_filter;
 	LineEdit *line_edit_search;
 	CheckBox *check_button_filter_highlight;
-	void _initialize_controls();
 	void _add_spacer(float width_multiplier = 1.f);
 
 	void _notification(int p_what);

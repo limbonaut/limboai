@@ -262,7 +262,7 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	p_behavior_tree->notify_property_list_changed();
 #endif // LIMBOAI_MODULE
 	// Remember current search info.
-	if (idx_history >= 0 && idx_history < history.size()) {
+	if (idx_history >= 0 && idx_history < history.size() && task_tree->get_bt() == history[idx_history]) {
 		tab_search_context.insert(history[idx_history], task_tree->tree_search_get_search_info());
 	}
 
@@ -286,11 +286,9 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 
 	// Restore search info from [tab_search_context].
 	if (idx_history >= 0 && idx_history < history.size()) {
-		// info for BehaviorTree available. Restore!
 		if (tab_search_context.has(history[idx_history])) {
 			task_tree->tree_search_set_search_info(tab_search_context[history[idx_history]]);
 		}
-		// new SearchContext.
 		else {
 			task_tree->tree_search_set_search_info(TreeSearch::SearchInfo());
 		}
@@ -819,7 +817,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 		} break;
 		case MISC_SEARCH_TREE: {
 			task_tree->tree_search_show_and_focus();
-		}
+		} break;
 	}
 }
 
@@ -1066,13 +1064,22 @@ void LimboAIEditor::_tab_closed(int p_tab) {
 	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
 		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
 	}
+	if (tab_search_context.has(history_bt)) {
+		tab_search_context.erase(history_bt);
+	}
+
 	history.remove_at(p_tab);
 	idx_history = MIN(idx_history, history.size() - 1);
+	TreeSearch::SearchInfo search_info_opened_tab;
 	if (idx_history < 0) {
 		_disable_editing();
 	} else {
 		EDIT_RESOURCE(history[idx_history]);
+		ERR_FAIL_COND(!tab_search_context.has(history[idx_history]));
+		search_info_opened_tab = tab_search_context[history[idx_history]];
 	}
+
+	task_tree->tree_search_set_search_info(search_info_opened_tab);
 	_update_tabs();
 }
 
