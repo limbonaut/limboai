@@ -288,8 +288,7 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 	if (idx_history >= 0 && idx_history < history.size()) {
 		if (tab_search_context.has(history[idx_history])) {
 			task_tree->tree_search_set_search_info(tab_search_context[history[idx_history]]);
-		}
-		else {
+		} else {
 			task_tree->tree_search_set_search_info(TreeSearch::SearchInfo());
 		}
 	}

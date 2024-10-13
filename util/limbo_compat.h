@@ -114,12 +114,13 @@ using namespace godot;
 #define ADD_STYLEBOX_OVERRIDE(m_control, m_name, m_stylebox) (m_control->add_theme_stylebox_override(m_name, m_stylebox))
 #define GET_NODE(m_parent, m_path) m_parent->get_node_internal(m_path)
 #define OBJECT_DB_GET_INSTANCE(m_id) ObjectDB::get_instance(m_id)
-#define EDITOR_DEF(m_setting, m_value) do {	/* do-while(0) ideom to avoid any potential semicolon errors. */\
-	EditorInterface::get_singleton()->get_editor_settings()->set_initial_value(m_setting, m_value, false); 	\
-		if (!EDITOR_SETTINGS()->has_setting(m_setting)) {                                                  	\
-			EDITOR_SETTINGS()->set_setting(m_setting, m_value);                                            	\
-		}                                                                                                  	\
-	} while(0)
+#define EDITOR_DEF(m_setting, m_value)                                                                         \
+	do { /* do-while(0) ideom to avoid any potential semicolon errors. */                                      \
+		EditorInterface::get_singleton()->get_editor_settings()->set_initial_value(m_setting, m_value, false); \
+		if (!EDITOR_SETTINGS()->has_setting(m_setting)) {                                                      \
+			EDITOR_SETTINGS()->set_setting(m_setting, m_value);                                                \
+		}                                                                                                      \
+	} while (0)
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
 	return Variant(p_obj).has_key(p_prop);
