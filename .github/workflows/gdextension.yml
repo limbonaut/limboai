@@ -187,6 +187,7 @@ jobs:
             platform: ios
             target: template_release
             arch: universal
+            scons-flags: ios_simulator=yes
             should-build: ${{ !inputs.test-build }}
 
           - name: 🍏 iOS (simulator, debug)
@@ -194,6 +195,7 @@ jobs:
             platform: ios
             target: template_debug
             arch: universal
+            scons-flags: ios_simulator=yes
             should-build: ${{ !inputs.test-build }}
 
         exclude:
@@ -299,7 +301,7 @@ jobs:
           DEBUG_FLAGS: ${{ inputs.debug-symbols && 'debug_symbols=yes symbols_visibility=visible' || 'debug_symbols=no' }}
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{matrix.opts.scons-flags}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
