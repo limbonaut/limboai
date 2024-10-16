@@ -168,6 +168,20 @@ jobs:
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
+          - name: 🍏 iOS (universal, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: universal
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (universal, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: universal
+            should-build: ${{ !inputs.test-build }}
+
         exclude:
           - { opts: { should-build: false } }
 
