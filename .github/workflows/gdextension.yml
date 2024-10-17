@@ -168,6 +168,36 @@ jobs:
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
+          - name: 🍏 iOS (arm64, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (arm64, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (simulator, release)
+            runner: macos-latest
+            platform: ios
+            target: template_release
+            arch: universal
+            scons-flags: ios_simulator=yes
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🍏 iOS (simulator, debug)
+            runner: macos-latest
+            platform: ios
+            target: template_debug
+            arch: universal
+            scons-flags: ios_simulator=yes
+            should-build: ${{ !inputs.test-build }}
+
         exclude:
           - { opts: { should-build: false } }
 
@@ -271,7 +301,7 @@ jobs:
           DEBUG_FLAGS: ${{ inputs.debug-symbols && 'debug_symbols=yes symbols_visibility=visible' || 'debug_symbols=no' }}
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{matrix.opts.scons-flags}} ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
