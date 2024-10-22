@@ -35,6 +35,7 @@
 #include "editor/editor_file_system.h"
 #include "editor/editor_help.h"
 #include "editor/editor_interface.h"
+#include "editor/editor_main_screen.h"
 #include "editor/editor_paths.h"
 #include "editor/editor_settings.h"
 #include "editor/filesystem_dock.h"

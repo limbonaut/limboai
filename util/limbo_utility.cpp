@@ -416,6 +416,12 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_MAX: {
 			return "MAX";
 		}
+		case PROPERTY_HINT_DICTIONARY_TYPE: {
+			return "DICTIONARY_TYPE";
+		}
+		case PROPERTY_HINT_TOOL_BUTTON: {
+			return "TOOL_BUTTON";
+		}
 	}
 	return "";
 }
