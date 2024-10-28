@@ -40,6 +40,7 @@ LimboStringNames::LimboStringNames() {
 	add_child = SN("add_child");
 	add_child_at_index = SN("add_child_at_index");
 	AnimationFilter = SN("AnimationFilter");
+	BBParam = SN("BBParam");
 	behavior_tree_finished = SN("behavior_tree_finished");
 	bold = SN("bold");
 	button_down = SN("button_down");
