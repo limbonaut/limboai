@@ -56,6 +56,7 @@ public:
 	StringName add_child;
 	StringName Add;
 	StringName AnimationFilter;
+	StringName BBParam;
 	StringName behavior_tree_finished;
 	StringName bold;
 	StringName button_down;
