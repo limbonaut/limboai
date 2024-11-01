@@ -209,7 +209,34 @@ void LimboAIEditor::_save_bt(String p_path) {
 #elif LIMBOAI_GDEXTENSION
 	task_tree->get_bt()->take_over_path(p_path);
 #endif
-	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
+
+	// This is a workaround, because EditorNode::save_resource() function is not accessible in GDExtension.
+	if (RESOURCE_IS_BUILT_IN(task_tree->get_bt())) {
+		// If built-in resource - save the containing resource instead.
+		String file_path = p_path.get_slice("::", 0);
+		ERR_FAIL_COND_MSG(!RESOURCE_EXISTS(file_path, "Resource"), "LimboAI: SAVE FAILED - resource file doesn't exist: " + file_path);
+		if (RESOURCE_IS_SCENE_FILE(file_path)) {
+			// Packed scene - save the scene instead.
+			if (EditorInterface::get_singleton()->get_open_scenes().has(file_path)) {
+				// If scene is open, switch to it first, and then ask to save.
+				// This is needed because saving the currently edited scene can have complications.
+				EditorInterface::get_singleton()->open_scene_from_path(file_path);
+				EditorInterface::get_singleton()->save_scene();
+			} else {
+				// If scene is not currently open in the editor, load and resave it.
+				Ref<Resource> scene = RESOURCE_LOAD(file_path, "PackedScene");
+				RESOURCE_SAVE(scene, file_path, ResourceSaver::FLAG_NONE);
+			}
+		} else {
+			// Not a packed scene - save the containing resource to file.
+			Ref<Resource> res = RESOURCE_LOAD(file_path, "Resource");
+			RESOURCE_SAVE(res, file_path, ResourceSaver::FLAG_NONE);
+		}
+	} else {
+		// If external resource - save to file.
+		RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
+	}
+
 	_update_tabs();
 	_mark_as_dirty(false);
 }
