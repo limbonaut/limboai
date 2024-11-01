@@ -14,8 +14,14 @@
 			<param index="0" name="from_state" type="LimboState" />
 			<param index="1" name="to_state" type="LimboState" />
 			<param index="2" name="event" type="StringName" />
+			<param index="3" name="guard" type="Callable" default="Callable()" />
 			<description>
-				Establishes a transition from one state to another when [param event] is dispatched. Both [param from_state] and [param to_state] must be immediate children of this state.
+				Establishes a transition from one state to another when [param event] is dispatched. Both [param from_state] and [param to_state] must be immediate children of this [LimboHSM].
+				Optionally, a [param guard] function can be specified, which must return a boolean value. If the guard function returns [code]false[/code], the transition will not occur. The guard function is called immediately before the transition is considered. For a state-wide guard function, check out [method LimboState.set_guard].
+				[codeblock]
+				func my_guard() -&gt; bool:
+				    return is_some_condition_met()
+				[/codeblock]
 			</description>
 		</method>
 		<method name="change_active_state">

@@ -45,27 +45,27 @@ Methods
 .. table::
    :widths: auto
 
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`add_transition<class_LimboHSM_method_add_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`change_active_state<class_LimboHSM_method_change_active_state>`\ (\ state\: :ref:`LimboState<class_LimboState>`\ )                                                                    |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_active_state<class_LimboHSM_method_get_active_state>`\ (\ ) |const|                                                                                                               |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>`\ (\ ) |const|                                                                                                                   |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | :ref:`LimboState<class_LimboState>` | :ref:`get_previous_active_state<class_LimboHSM_method_get_previous_active_state>`\ (\ ) |const|                                                                                             |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | ``bool``                            | :ref:`has_transition<class_LimboHSM_method_has_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |const|                                         |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`initialize<class_LimboHSM_method_initialize>`\ (\ agent\: ``Node``, parent_scope\: :ref:`Blackboard<class_Blackboard>` = null\ )                                                      |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`remove_transition<class_LimboHSM_method_remove_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ )                                           |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`set_active<class_LimboHSM_method_set_active>`\ (\ active\: ``bool``\ )                                                                                                                |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-   | |void|                              | :ref:`update<class_LimboHSM_method_update>`\ (\ delta\: ``float``\ )                                                                                                                        |
-   +-------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`add_transition<class_LimboHSM_method_add_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``, guard\: ``Callable`` = Callable()\ ) |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`change_active_state<class_LimboHSM_method_change_active_state>`\ (\ state\: :ref:`LimboState<class_LimboState>`\ )                                                                                                       |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_active_state<class_LimboHSM_method_get_active_state>`\ (\ ) |const|                                                                                                                                                  |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_leaf_state<class_LimboHSM_method_get_leaf_state>`\ (\ ) |const|                                                                                                                                                      |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | :ref:`LimboState<class_LimboState>` | :ref:`get_previous_active_state<class_LimboHSM_method_get_previous_active_state>`\ (\ ) |const|                                                                                                                                |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | ``bool``                            | :ref:`has_transition<class_LimboHSM_method_has_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) |const|                                                                            |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`initialize<class_LimboHSM_method_initialize>`\ (\ agent\: ``Node``, parent_scope\: :ref:`Blackboard<class_Blackboard>` = null\ )                                                                                         |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`remove_transition<class_LimboHSM_method_remove_transition>`\ (\ from_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ )                                                                              |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`set_active<class_LimboHSM_method_set_active>`\ (\ active\: ``bool``\ )                                                                                                                                                   |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                              | :ref:`update<class_LimboHSM_method_update>`\ (\ delta\: ``float``\ )                                                                                                                                                           |
+   +-------------------------------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 .. rst-class:: classref-section-separator
 
@@ -191,9 +191,16 @@ Method Descriptions
 
 .. rst-class:: classref-method
 
-|void| **add_transition**\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``\ ) :ref:`🔗<class_LimboHSM_method_add_transition>`
+|void| **add_transition**\ (\ from_state\: :ref:`LimboState<class_LimboState>`, to_state\: :ref:`LimboState<class_LimboState>`, event\: ``StringName``, guard\: ``Callable`` = Callable()\ ) :ref:`🔗<class_LimboHSM_method_add_transition>`
 
-Establishes a transition from one state to another when ``event`` is dispatched. Both ``from_state`` and ``to_state`` must be immediate children of this state.
+Establishes a transition from one state to another when ``event`` is dispatched. Both ``from_state`` and ``to_state`` must be immediate children of this **LimboHSM**.
+
+Optionally, a ``guard`` function can be specified, which must return a boolean value. If the guard function returns ``false``, the transition will not occur. The guard function is called immediately before the transition is considered. For a state-wide guard function, check out :ref:`LimboState.set_guard<class_LimboState_method_set_guard>`.
+
+::
+
+    func my_guard() -> bool:
+        return is_some_condition_met()
 
 .. rst-class:: classref-item-separator
 
