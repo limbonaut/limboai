@@ -234,9 +234,9 @@ BT::Status BTTask::execute(double p_delta) {
 				data.children.get(i)->abort();
 			}
 		}
-		if (!GDVIRTUAL_CALL(_enter)) {
-			_enter();
-		}
+		// First native, then script.
+		_enter();
+		GDVIRTUAL_CALL(_enter);
 	} else {
 		data.elapsed += p_delta;
 	}
@@ -246,9 +246,9 @@ BT::Status BTTask::execute(double p_delta) {
 	}
 
 	if (data.status != RUNNING) {
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
+		// First script, then native.
+		GDVIRTUAL_CALL(_exit);
+		_exit();
 		data.elapsed = 0.0;
 	}
 	return data.status;
@@ -259,9 +259,9 @@ void BTTask::abort() {
 		get_child(i)->abort();
 	}
 	if (data.status == RUNNING) {
-		if (!GDVIRTUAL_CALL(_exit)) {
-			_exit();
-		}
+		// First script, then native.
+		GDVIRTUAL_CALL(_exit);
+		_exit();
 	}
 	data.status = FRESH;
 	data.elapsed = 0.0;
