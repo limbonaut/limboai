@@ -265,22 +265,46 @@ void LimboHSM::_validate_property(PropertyInfo &p_property) const {
 	}
 }
 
+void LimboHSM::_exit_if_not_inside_tree() {
+	if (is_active() && !is_inside_tree()) {
+		_exit();
+	}
+}
+
 void LimboHSM::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_POST_ENTER_TREE: {
 			if (was_active && is_root()) {
 				// Re-activate the root HSM if it was previously active.
-				// Typically, this happens when the node is re-entered scene repeatedly (e.g., re-parenting, pooling).
+				// Typically, this happens when the node is re-entered scene repeatedly (such as with object pooling).
 				set_active(true);
 			}
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			if (is_root()) {
-				// Remember active status for re-parenting and exit state machine
-				// to release resources and signal connections if active.
-				was_active = active;
+				// Exit the state machine if the root HSM is no longer in the scene tree (except when being reparented).
+				// This ensures that resources and signal connections are released if active.
+				was_active = is_active();
 				if (is_active()) {
-					_exit();
+					// Check if the HSM node is being deleted.
+					bool is_being_deleted = false;
+					Node *node = this;
+					while (node) {
+						if (node->is_queued_for_deletion()) {
+							is_being_deleted = true;
+							break;
+						}
+						node = node->get_parent();
+					}
+
+					if (is_being_deleted) {
+						// Exit the state machine immediately if the HSM is being deleted.
+						_exit();
+					} else {
+						// Use deferred mode to prevent exiting during Node re-parenting.
+						// This allows the HSM to remain active when it (or one of its parents) is reparented.
+						callable_mp(this, &LimboHSM::_exit_if_not_inside_tree).call_deferred();
+					}
 				}
 			}
 		} break;
