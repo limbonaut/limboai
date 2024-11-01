@@ -215,7 +215,7 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK(beta_updates->num_callbacks == 0);
 		CHECK(beta_exits->num_callbacks == 1); // * exited
 	}
-	SUBCASE("Test transition with guard") {
+	SUBCASE("Test transition with state-wide guard") {
 		Ref<TestGuard> guard = memnew(TestGuard);
 		state_beta->set_guard(callable_mp(guard.ptr(), &TestGuard::can_enter));
 
@@ -229,6 +229,25 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		SUBCASE("When entry is not permitted") {
 			guard->permitted_to_enter = false;
 			hsm->dispatch("event_one");
+			CHECK(hsm->get_active_state() == state_alpha);
+			CHECK(alpha_exits->num_callbacks == 0);
+			CHECK(beta_entries->num_callbacks == 0);
+		}
+	}
+	SUBCASE("Test transition with transition-scoped guard") {
+		Ref<TestGuard> guard = memnew(TestGuard);
+		hsm->add_transition(state_alpha, state_beta, "guarded_transition", callable_mp(guard.ptr(), &TestGuard::can_enter));
+
+		SUBCASE("When entry is permitted") {
+			guard->permitted_to_enter = true;
+			hsm->dispatch("guarded_transition");
+			CHECK(hsm->get_active_state() == state_beta);
+			CHECK(alpha_exits->num_callbacks == 1);
+			CHECK(beta_entries->num_callbacks == 1);
+		}
+		SUBCASE("When entry is not permitted") {
+			guard->permitted_to_enter = false;
+			hsm->dispatch("guarded_transition");
 			CHECK(hsm->get_active_state() == state_alpha);
 			CHECK(alpha_exits->num_callbacks == 0);
 			CHECK(beta_entries->num_callbacks == 0);
