@@ -60,6 +60,7 @@ private:
 	HashMap<TransitionKey, Transition, TransitionKeyHasher> transitions;
 
 	void _get_transition(LimboState *p_from_state, const StringName &p_event, Transition &r_transition) const;
+	void _exit_if_not_inside_tree();
 
 protected:
 	static void _bind_methods();
