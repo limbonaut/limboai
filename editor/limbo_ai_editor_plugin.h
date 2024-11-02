@@ -205,11 +205,12 @@ private:
 	void _update_misc_menu();
 	void _update_banners();
 	void _new_bt();
-	void _save_bt(String p_path);
-	void _load_bt(String p_path);
+	void _save_bt(const Ref<BehaviorTree> &p_bt, const String &p_path);
+	void _save_current_bt(const String &p_path);
+	void _load_bt(const String &p_path);
 	void _update_task_tree(const Ref<BehaviorTree> &p_bt, const Ref<BTTask> &p_specific_task = nullptr);
 	void _disable_editing();
-	void _mark_as_dirty(bool p_dirty);
+	void _set_as_dirty(const Ref<BehaviorTree> &p_bt, bool p_dirty);
 	void _create_user_task_dir();
 	void _remove_task_from_favorite(const String &p_task);
 	void _save_and_restart();
@@ -271,7 +272,7 @@ public:
 	void set_window_layout(const Ref<ConfigFile> &p_configuration);
 	void get_window_layout(const Ref<ConfigFile> &p_configuration);
 
-	void apply_changes();
+	void save_all(bool p_external_only = false);
 
 #ifdef LIMBOAI_GDEXTENSION
 	virtual void _shortcut_input(const Ref<InputEvent> &p_event) override { _process_shortcut_input(p_event); }
@@ -297,23 +298,23 @@ public:
 
 	virtual String get_name() const override { return "LimboAI"; }
 	virtual void make_visible(bool p_visible) override;
-	virtual void apply_changes() override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
 	virtual void set_window_layout(Ref<ConfigFile> p_configuration) override;
 	virtual void get_window_layout(Ref<ConfigFile> p_configuration) override;
+	virtual void save_external_data() override;
 
 #elif LIMBOAI_GDEXTENSION
 	bool _has_main_screen() const override { return true; }
 
 	virtual String _get_plugin_name() const override { return "LimboAI"; }
 	virtual void _make_visible(bool p_visible) override;
-	virtual void _apply_changes() override;
 	virtual void _edit(Object *p_object) override;
 	virtual bool _handles(Object *p_object) const override;
 	virtual Ref<Texture2D> _get_plugin_icon() const override;
 	virtual void _set_window_layout(const Ref<ConfigFile> &p_configuration) override;
 	virtual void _get_window_layout(const Ref<ConfigFile> &p_configuration) override;
+	virtual void _save_external_data() override;
 #endif // LIMBOAI_MODULE & LIMBOAI_GDEXTENSION
 
 	LimboAIEditorPlugin();
