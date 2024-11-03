@@ -1370,7 +1370,7 @@ void LimboAIEditor::_update_favorite_tasks() {
 		}
 		btn->set_text(task_name);
 		btn->set_meta(LW_NAME(task_meta), task_meta);
-		BUTTON_SET_ICON(btn, LimboUtility::get_singleton()->get_task_icon(task_meta));
+		btn->set_button_icon(LimboUtility::get_singleton()->get_task_icon(task_meta));
 		btn->set_tooltip_text(vformat(TTR("Add %s task."), task_name));
 		btn->set_flat(true);
 		btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to be of the proper size.
@@ -1542,11 +1542,11 @@ void LimboAIEditor::_notification(int p_what) {
 
 			ADD_STYLEBOX_OVERRIDE(tab_bar_panel, "panel", get_theme_stylebox("tabbar_background", "TabContainer"));
 
-			BUTTON_SET_ICON(new_btn, get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(load_btn, get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(save_btn, get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(new_script_btn, get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(misc_btn, get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
+			new_btn->set_button_icon(get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
+			load_btn->set_button_icon(get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
+			save_btn->set_button_icon(get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
+			new_script_btn->set_button_icon(get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
+			misc_btn->set_button_icon(get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
 
 			_update_favorite_tasks();
 		} break;
