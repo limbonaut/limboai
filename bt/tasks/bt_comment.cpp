@@ -30,7 +30,7 @@ PackedStringArray BTComment::get_configuration_warnings() {
 	if (get_child_count_excluding_comments() > 0) {
 		warnings.append("Can only have other comment tasks as children.");
 	}
-	if (get_parent() == nullptr) {
+	if (get_parent().is_null()) {
 		warnings.append("Can't be the root task.");
 	}
 	return warnings;

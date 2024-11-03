@@ -80,7 +80,7 @@ void BTCooldown::_chill() {
 		timer->set_time_left(duration);
 	} else {
 		timer = SCENE_TREE()->create_timer(duration, process_pause);
-		ERR_FAIL_NULL(timer);
+		ERR_FAIL_COND(timer.is_null());
 		timer->connect(LW_NAME(timeout), callable_mp(this, &BTCooldown::_on_timeout), CONNECT_ONE_SHOT);
 	}
 }

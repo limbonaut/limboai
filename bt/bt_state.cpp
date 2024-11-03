@@ -98,7 +98,7 @@ void BTState::_update(double p_delta) {
 		// Bail out if a transition happened in the meantime.
 		return;
 	}
-	ERR_FAIL_NULL(bt_instance);
+	ERR_FAIL_COND(bt_instance.is_null());
 	BT::Status status = bt_instance->update(p_delta);
 	if (status == BTTask::SUCCESS) {
 		get_root()->dispatch(success_event, Variant());

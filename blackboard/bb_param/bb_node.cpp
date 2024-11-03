@@ -13,7 +13,7 @@
 
 Variant BBNode::get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboard, const Variant &p_default) {
 	ERR_FAIL_NULL_V_MSG(p_scene_root, Variant(), "BBNode: get_value() failed - scene_root is null.");
-	ERR_FAIL_NULL_V_MSG(p_blackboard, Variant(), "BBNode: get_value() failed - blackboard is null.");
+	ERR_FAIL_COND_V_MSG(p_blackboard.is_null(), Variant(), "BBNode: get_value() failed - blackboard is null.");
 
 	Variant val;
 	if (get_value_source() == SAVED_VALUE) {

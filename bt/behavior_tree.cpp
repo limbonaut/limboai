@@ -78,10 +78,10 @@ void BehaviorTree::copy_other(const Ref<BehaviorTree> &p_other) {
 }
 
 Ref<BTInstance> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_instance_owner, Node *p_custom_scene_root) const {
-	ERR_FAIL_COND_V_MSG(root_task == nullptr, nullptr, "BehaviorTree: Instantiation failed - BT has no valid root task.");
+	ERR_FAIL_COND_V_MSG(root_task.is_null(), nullptr, "BehaviorTree: Instantiation failed - BT has no valid root task.");
 	ERR_FAIL_NULL_V_MSG(p_agent, nullptr, "BehaviorTree: Instantiation failed - agent can't be null.");
 	ERR_FAIL_NULL_V_MSG(p_instance_owner, nullptr, "BehaviorTree: Instantiation failed -- instance owner can't be null.");
-	ERR_FAIL_NULL_V_MSG(p_blackboard, nullptr, "BehaviorTree: Instantiation failed - blackboard can't be null.");
+	ERR_FAIL_COND_V_MSG(p_blackboard.is_null(), nullptr, "BehaviorTree: Instantiation failed - blackboard can't be null.");
 	Node *scene_root = p_custom_scene_root ? p_custom_scene_root : p_instance_owner->get_owner();
 	ERR_FAIL_NULL_V_MSG(scene_root, nullptr, "BehaviorTree: Instantiation failed - unable to establish scene root. This is likely due to the instance owner not being owned by a scene node and custom_scene_root being null.");
 	Ref<BTTask> root_copy = root_task->clone();

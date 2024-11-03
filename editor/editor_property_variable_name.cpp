@@ -36,7 +36,7 @@ int EditorPropertyVariableName::last_caret_column = 0;
 //***** EditorPropertyVariableName
 
 void EditorPropertyVariableName::_show_variables_popup() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	variables_popup->clear();
 	variables_popup->reset_size();
@@ -109,7 +109,7 @@ void EditorPropertyVariableName::_update_status() {
 }
 
 void EditorPropertyVariableName::_status_pressed() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	if (!plan->has_var(name_edit->get_text())) {
 		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(),
 				expected_type == Variant::NIL ? Variant::FLOAT : expected_type,
@@ -120,14 +120,14 @@ void EditorPropertyVariableName::_status_pressed() {
 }
 
 void EditorPropertyVariableName::_status_mouse_entered() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	if (!plan->has_var(name_edit->get_text())) {
 		status_btn->set_button_icon(theme_cache.var_add_icon);
 	}
 }
 
 void EditorPropertyVariableName::_status_mouse_exited() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	_update_status();
 }
 
@@ -262,7 +262,7 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 	Variant default_value;
 	if (is_mapping) {
 		plan.reference_ptr(Object::cast_to<BlackboardPlan>(p_object));
-		ERR_FAIL_NULL_V(plan, false);
+		ERR_FAIL_COND_V(plan.is_null(), false);
 		String var_name = p_path.trim_prefix("mapping/");
 		if (plan->has_var(var_name)) {
 			BBVariable variable = plan->get_var(var_name);
@@ -277,7 +277,7 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 				plan = parent_plan;
 			}
 		}
-		ERR_FAIL_NULL_V(plan, false);
+		ERR_FAIL_COND_V(plan.is_null(), false);
 	} else {
 		plan = editor_plan_provider.call();
 	}
