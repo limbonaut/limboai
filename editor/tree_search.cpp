@@ -559,9 +559,9 @@ void TreeSearchPanel::_notification(int p_what) {
 			break;
 		}
 		case NOTIFICATION_THEME_CHANGED: {
-			BUTTON_SET_ICON(close_button, get_theme_icon(LW_NAME(Close), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(find_prev_button, get_theme_icon("MoveUp", LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(find_next_button, get_theme_icon("MoveDown", LW_NAME(EditorIcons)));
+			close_button->set_button_icon(get_theme_icon(LW_NAME(Close), LW_NAME(EditorIcons)));
+			find_prev_button->set_button_icon(get_theme_icon("MoveUp", LW_NAME(EditorIcons)));
+			find_next_button->set_button_icon(get_theme_icon("MoveDown", LW_NAME(EditorIcons)));
 			label_filter->set_text(TTR("Filter"));
 			break;
 		}
