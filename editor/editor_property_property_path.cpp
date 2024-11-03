@@ -156,7 +156,7 @@ void EditorPropertyPropertyPath::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_ENTER_TREE:
 		case NOTIFICATION_THEME_CHANGED: {
-			BUTTON_SET_ICON(action_menu, get_theme_icon(LW_NAME(GuiTabMenuHl), LW_NAME(EditorIcons)));
+			action_menu->set_button_icon(get_theme_icon(LW_NAME(GuiTabMenuHl), LW_NAME(EditorIcons)));
 			action_menu->get_popup()->set_item_icon(ACTION_CLEAR, get_theme_icon(LW_NAME(Clear), LW_NAME(EditorIcons)));
 			action_menu->get_popup()->set_item_icon(ACTION_COPY, get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons)));
 			action_menu->get_popup()->set_item_icon(ACTION_EDIT, get_theme_icon(LW_NAME(Edit), LW_NAME(EditorIcons)));
