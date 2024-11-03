@@ -46,7 +46,7 @@ LineEdit *BlackboardPlanEditor::_get_name_edit(int p_row_index) const {
 }
 
 void BlackboardPlanEditor::_add_var() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	int suffix = 1;
 	StringName var_name = default_var_name == StringName() ? "var" : default_var_name;
@@ -65,14 +65,14 @@ void BlackboardPlanEditor::_add_var() {
 }
 
 void BlackboardPlanEditor::_trash_var(int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	StringName var_name = plan->get_var_by_index(p_index).first;
 	plan->remove_var(var_name);
 	_refresh();
 }
 
 void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	LineEdit *name_edit = _get_name_edit(p_index);
 	ERR_FAIL_NULL(name_edit);
@@ -96,7 +96,7 @@ void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index
 }
 
 void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	BBVariable var = plan->get_var_by_index(p_index).second;
 	if (var.get_type() == p_new_type) {
@@ -115,14 +115,14 @@ void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_inde
 }
 
 void BlackboardPlanEditor::_change_var_hint(PropertyHint p_new_hint, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	plan->get_var_by_index(p_index).second.set_hint(p_new_hint);
 	plan->notify_property_list_changed();
 	_refresh();
 }
 
 void BlackboardPlanEditor::_change_var_hint_string(const String &p_new_hint_string, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	plan->get_var_by_index(p_index).second.set_hint_string(p_new_hint_string);
 	plan->notify_property_list_changed();
 }
@@ -472,14 +472,14 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 // ***** EditorInspectorPluginBBPlan *****
 
 void EditorInspectorPluginBBPlan::_edit_plan(const Ref<BlackboardPlan> &p_plan) {
-	ERR_FAIL_NULL(p_plan);
+	ERR_FAIL_COND(p_plan.is_null());
 	plan_editor->edit_plan(p_plan);
 	plan_editor->popup_centered();
 }
 
 void EditorInspectorPluginBBPlan::_open_base_plan(const Ref<BlackboardPlan> &p_plan) {
-	ERR_FAIL_NULL(p_plan);
-	ERR_FAIL_NULL(p_plan->get_base_plan());
+	ERR_FAIL_COND(p_plan.is_null());
+	ERR_FAIL_COND(p_plan->get_base_plan().is_null());
 	EditorInterface::get_singleton()->call_deferred("edit_resource", p_plan->get_base_plan());
 }
 
@@ -501,7 +501,7 @@ void EditorInspectorPluginBBPlan::parse_begin(Object *p_object) {
 void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
 #endif
 	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	PanelContainer *panel = memnew(PanelContainer);
 	ADD_STYLEBOX_OVERRIDE(panel, LW_NAME(panel), toolbar_style);
