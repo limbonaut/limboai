@@ -97,7 +97,7 @@ void LimboAIEditor::_commit_action_with_update(EditorUndoRedoManager *p_undo_red
 	p_undo_redo->add_do_method(this, LW_NAME(_update_task_tree), task_tree->get_bt());
 	p_undo_redo->add_undo_method(this, LW_NAME(_update_task_tree), task_tree->get_bt());
 	p_undo_redo->commit_action();
-	_mark_as_dirty(true);
+	_set_as_dirty(task_tree->get_bt(), true);
 }
 
 void LimboAIEditor::_add_task(const Ref<BTTask> &p_task, bool p_as_sibling) {
@@ -201,20 +201,58 @@ void LimboAIEditor::_new_bt() {
 	EDIT_RESOURCE(bt);
 }
 
-void LimboAIEditor::_save_bt(String p_path) {
-	ERR_FAIL_COND_MSG(p_path.is_empty(), "Empty p_path");
-	ERR_FAIL_COND_MSG(task_tree->get_bt().is_null(), "Behavior Tree is null.");
+void LimboAIEditor::_save_bt(const Ref<BehaviorTree> &p_bt, const String &p_path) {
+	ERR_FAIL_COND(p_path.is_empty());
+	ERR_FAIL_COND(!p_path.begins_with("res://"));
+	ERR_FAIL_COND(p_bt.is_null());
+
+	if (p_bt->get_path() != p_path) {
 #ifdef LIMBOAI_MODULE
-	task_tree->get_bt()->set_path(p_path, true);
+		task_tree->get_bt()->set_path(p_path, true);
 #elif LIMBOAI_GDEXTENSION
-	task_tree->get_bt()->take_over_path(p_path);
+		task_tree->get_bt()->take_over_path(p_path);
 #endif
-	RESOURCE_SAVE(task_tree->get_bt(), p_path, ResourceSaver::FLAG_CHANGE_PATH);
+	}
+
+	// This is a workaround, because EditorNode::save_resource() function is not accessible in GDExtension.
+	if (RESOURCE_IS_BUILT_IN(p_bt)) {
+		// If built-in resource - save the containing resource instead.
+		String file_path = p_path.get_slice("::", 0);
+		ERR_FAIL_COND_MSG(!RESOURCE_EXISTS(file_path, "Resource"), "LimboAI: SAVE FAILED - resource file doesn't exist: " + file_path);
+		if (RESOURCE_IS_SCENE_FILE(file_path)) {
+			// Packed scene - save the scene instead.
+			if (EditorInterface::get_singleton()->get_open_scenes().has(file_path)) {
+				// If scene is open, switch to it first, and then ask to save.
+				// This is needed because saving the currently edited scene can have complications.
+				EditorInterface::get_singleton()->open_scene_from_path(file_path);
+				EditorInterface::get_singleton()->save_scene();
+			} else {
+				// If scene is not currently open in the editor, load and resave it.
+				Ref<Resource> scene = RESOURCE_LOAD(file_path, "PackedScene");
+				RESOURCE_SAVE(scene, file_path, ResourceSaver::FLAG_NONE);
+			}
+		} else {
+			// Not a packed scene - save the containing resource to file.
+			Ref<Resource> res = RESOURCE_LOAD(file_path, "Resource");
+			RESOURCE_SAVE(res, file_path, ResourceSaver::FLAG_NONE);
+		}
+	} else {
+		// If external resource - save to file.
+		RESOURCE_SAVE(p_bt, p_path, ResourceSaver::FLAG_CHANGE_PATH);
+	}
+
+	_set_as_dirty(p_bt, false);
 	_update_tabs();
-	_mark_as_dirty(false);
 }
 
-void LimboAIEditor::_load_bt(String p_path) {
+void LimboAIEditor::_save_current_bt(const String &p_path) {
+	ERR_FAIL_COND_MSG(p_path.is_empty(), "LimboAI: SAVE FAILED - p_path is empty");
+	ERR_FAIL_COND_MSG(task_tree->get_bt().is_null(), "LimboAI: SAVE FAILED - bt is null");
+
+	_save_bt(task_tree->get_bt(), p_path);
+}
+
+void LimboAIEditor::_load_bt(const String &p_path) {
 	ERR_FAIL_COND_MSG(p_path.is_empty(), "Empty p_path");
 	Ref<BehaviorTree> bt = RESOURCE_LOAD(p_path, "BehaviorTree");
 	ERR_FAIL_COND(!bt.is_valid());
@@ -268,8 +306,8 @@ void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_for
 
 	task_tree->load_bt(p_behavior_tree);
 
-	if (task_tree->get_bt().is_valid() && !task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
-		task_tree->get_bt()->connect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty).bind(true));
+	if (task_tree->get_bt().is_valid() && !task_tree->get_bt()->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty))) {
+		task_tree->get_bt()->connect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty).bind(task_tree->get_bt(), true));
 	}
 
 	int idx = history.find(p_behavior_tree);
@@ -334,12 +372,11 @@ void LimboAIEditor::get_window_layout(const Ref<ConfigFile> &p_configuration) {
 	p_configuration->set_value("LimboAI", "bteditor_hsplit", split_offset);
 }
 
-void LimboAIEditor::_mark_as_dirty(bool p_dirty) {
-	Ref<BehaviorTree> bt = task_tree->get_bt();
-	if (p_dirty && !dirty.has(bt)) {
-		dirty.insert(bt);
-	} else if (p_dirty == false && dirty.has(bt)) {
-		dirty.erase(bt);
+void LimboAIEditor::_set_as_dirty(const Ref<BehaviorTree> &p_bt, bool p_dirty) {
+	if (p_dirty && !dirty.has(p_bt)) {
+		dirty.insert(p_bt);
+	} else if (p_dirty == false && dirty.has(p_bt)) {
+		dirty.erase(p_bt);
 	}
 }
 
@@ -872,7 +909,7 @@ void LimboAIEditor::_on_save_pressed() {
 	if (path.is_empty()) {
 		save_dialog->popup_centered_ratio();
 	} else {
-		_save_bt(path);
+		_save_current_bt(path);
 	}
 }
 
@@ -1060,8 +1097,8 @@ void LimboAIEditor::_tab_clicked(int p_tab) {
 void LimboAIEditor::_tab_closed(int p_tab) {
 	ERR_FAIL_INDEX(p_tab, history.size());
 	Ref<BehaviorTree> history_bt = history[p_tab];
-	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
-		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+	if (history_bt.is_valid() && history_bt->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty))) {
+		history_bt->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty));
 	}
 	if (tab_search_context.has(history_bt)) {
 		tab_search_context.erase(history_bt);
@@ -1241,10 +1278,13 @@ void LimboAIEditor::_reload_modified() {
 
 void LimboAIEditor::_resave_modified(String _str) {
 	for (const String &res_path : disk_changed_files) {
-		Ref<BehaviorTree> res = RESOURCE_LOAD(res_path, "BehaviorTree");
-		if (res.is_valid()) {
-			ERR_FAIL_COND(!res->is_class("BehaviorTree"));
-			RESOURCE_SAVE(res, res->get_path(), 0);
+		Ref<BehaviorTree> bt = RESOURCE_LOAD(res_path, "BehaviorTree");
+		if (bt.is_valid()) {
+			ERR_FAIL_COND(!bt->is_class("BehaviorTree"));
+			if (RESOURCE_IS_EXTERNAL(bt)) {
+				// Only resave external - scene files are handled by the editor.
+				_save_bt(bt, bt->get_path());
+			}
 		}
 	}
 	task_tree->update_tree();
@@ -1269,14 +1309,13 @@ void LimboAIEditor::_rename_task_confirmed() {
 	undo_redo->commit_action();
 }
 
-void LimboAIEditor::apply_changes() {
+void LimboAIEditor::save_all(bool p_external_only) {
 	for (int i = 0; i < history.size(); i++) {
 		Ref<BehaviorTree> bt = history.get(i);
 		String path = bt->get_path();
-		if (RESOURCE_EXISTS(path, "BehaviorTree")) {
-			RESOURCE_SAVE(bt, path, 0);
+		if (RESOURCE_EXISTS(path, "BehaviorTree") && (!p_external_only || RESOURCE_PATH_IS_EXTERNAL(path))) {
+			_save_bt(bt, path);
 		}
-		dirty.clear();
 	}
 }
 
@@ -1423,14 +1462,14 @@ void LimboAIEditor::_notification(int p_what) {
 		case NOTIFICATION_EXIT_TREE: {
 			task_tree->unload();
 			for (int i = 0; i < history.size(); i++) {
-				if (history[i]->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty))) {
-					history[i]->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_mark_as_dirty));
+				if (history[i]->is_connected(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty))) {
+					history[i]->disconnect(LW_NAME(changed), callable_mp(this, &LimboAIEditor::_set_as_dirty));
 				}
 			}
 		} break;
 		case NOTIFICATION_READY: {
 			// **** Signals
-			save_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_save_bt));
+			save_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_save_current_bt));
 			load_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_load_bt));
 			extract_dialog->connect("file_selected", callable_mp(this, &LimboAIEditor::_extract_subtree));
 			new_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_new_bt));
@@ -1494,7 +1533,7 @@ void LimboAIEditor::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("_remove_task", "task"), &LimboAIEditor::_remove_task);
 	ClassDB::bind_method(D_METHOD("_add_task_with_prototype", "prototype_task"), &LimboAIEditor::_add_task_with_prototype);
 	ClassDB::bind_method(D_METHOD("_new_bt"), &LimboAIEditor::_new_bt);
-	ClassDB::bind_method(D_METHOD("_save_bt", "path"), &LimboAIEditor::_save_bt);
+	ClassDB::bind_method(D_METHOD("_save_bt", "path"), &LimboAIEditor::_save_current_bt);
 	ClassDB::bind_method(D_METHOD("_load_bt", "path"), &LimboAIEditor::_load_bt);
 	ClassDB::bind_method(D_METHOD("_update_task_tree", "bt", "specific_task"), &LimboAIEditor::_update_task_tree, DEFVAL(Variant()));
 	ClassDB::bind_method(D_METHOD("edit_bt", "behavior_tree", "force_refresh"), &LimboAIEditor::edit_bt, Variant(false));
@@ -1851,14 +1890,6 @@ LimboAIEditor::~LimboAIEditor() {
 
 //**** LimboAIEditorPlugin
 
-#ifdef LIMBOAI_MODULE
-void LimboAIEditorPlugin::apply_changes() {
-#elif LIMBOAI_GDEXTENSION
-void LimboAIEditorPlugin::_apply_changes() {
-#endif
-	limbo_ai_editor->apply_changes();
-}
-
 void LimboAIEditorPlugin::_bind_methods() {
 }
 
@@ -1931,6 +1962,14 @@ bool LimboAIEditorPlugin::_handles(Object *p_object) const {
 		return true;
 	}
 	return false;
+}
+
+#ifdef LIMBOAI_MODULE
+void LimboAIEditorPlugin::save_external_data() {
+#elif LIMBOAI_GDEXTENSION
+void LimboAIEditorPlugin::_save_external_data() {
+#endif
+	limbo_ai_editor->save_all(true);
 }
 
 #ifdef LIMBOAI_GDEXTENSION
