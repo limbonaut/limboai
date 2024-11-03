@@ -209,7 +209,7 @@ void LimboDebuggerTab::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			alert_icon->set_texture(get_theme_icon(LW_NAME(StatusWarning), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(resource_header, LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
+			resource_header->set_button_icon(LimboUtility::get_singleton()->get_task_icon("BehaviorTree"));
 		} break;
 	}
 }
