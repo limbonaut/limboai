@@ -32,16 +32,16 @@ void BTNewScope::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 
 #ifdef TOOLS_ENABLED
 void BTNewScope::_set_parent_scope_plan_from_bt() {
-	ERR_FAIL_NULL(get_blackboard_plan());
+	ERR_FAIL_COND(get_blackboard_plan().is_null());
 	Ref<BehaviorTree> bt = get_root()->editor_get_behavior_tree();
-	ERR_FAIL_NULL(bt);
+	ERR_FAIL_COND(bt.is_null());
 	get_blackboard_plan()->set_parent_scope_plan_provider(Callable(bt.ptr(), "get_blackboard_plan"));
 }
 #endif // TOOLS_ENABLED
 
 void BTNewScope::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) {
 	ERR_FAIL_COND(p_agent == nullptr);
-	ERR_FAIL_COND(p_blackboard == nullptr);
+	ERR_FAIL_COND(p_blackboard.is_null());
 
 	Ref<Blackboard> bb;
 	if (blackboard_plan.is_valid()) {
