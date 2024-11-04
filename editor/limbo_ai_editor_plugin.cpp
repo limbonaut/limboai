@@ -1588,7 +1588,7 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(S)));
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
-	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
+	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(G)));
 	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
 	LW_SHORTCUT("limbo_ai/find_task", TTR("Find Task"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(F)));
 	LW_SHORTCUT("limbo_ai/hide_tree_search", TTR("Close Search"), (Key)(LW_KEY(ESCAPE)));
