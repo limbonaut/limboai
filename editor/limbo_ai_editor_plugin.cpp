@@ -476,6 +476,14 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		} else if (LW_IS_SHORTCUT("limbo_ai/close_tab", p_event)) {
 			_tab_menu_option_selected(TAB_CLOSE);
 			handled = true;
+		} else if (LW_IS_SHORTCUT("limbo_ai/editor_save_scene", p_event)) {
+			// This intercepts the editor save action, but does not set the event as handled because we don't know the user's intention.
+			// We just want to save the currently edited BT as well, which may cause a loop with built-in resource if done from "_save_external_data".
+			// Workaround for: https://github.com/limbonaut/limboai/issues/240#issuecomment-2453087424
+			if (task_tree->get_bt().is_valid() && RESOURCE_IS_BUILT_IN(task_tree->get_bt())) {
+				_on_save_pressed();
+			}
+			handled = false; // intentionally not set as handled
 		}
 	}
 
@@ -1584,6 +1592,9 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
 	LW_SHORTCUT("limbo_ai/find_task", TTR("Find Task"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(F)));
 	LW_SHORTCUT("limbo_ai/hide_tree_search", TTR("Close Search"), (Key)(LW_KEY(ESCAPE)));
+
+	// Intercept editor save scene action.
+	LW_SHORTCUT("limbo_ai/editor_save_scene", TTR("Save Scene"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(S)));
 
 	set_process_shortcut_input(true);
 

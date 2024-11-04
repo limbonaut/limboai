@@ -95,7 +95,7 @@ protected:
 public:
 	void load_bt(const Ref<BehaviorTree> &p_behavior_tree);
 	void unload();
-	Ref<BehaviorTree> get_bt() const { return bt; }
+	_FORCE_INLINE_ Ref<BehaviorTree> get_bt() const { return bt; }
 	void update_tree() { _update_tree(); }
 	void update_task(const Ref<BTTask> &p_task);
 	void add_selection(const Ref<BTTask> &p_task);
