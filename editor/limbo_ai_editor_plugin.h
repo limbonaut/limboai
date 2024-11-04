@@ -241,7 +241,6 @@ private:
 	void _on_tree_task_selected(const Ref<BTTask> &p_task);
 	void _on_tree_task_activated();
 	void _on_visibility_changed();
-	void _on_header_pressed();
 	void _on_save_pressed();
 	void _on_history_back();
 	void _on_history_forward();

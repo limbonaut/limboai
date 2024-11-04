@@ -66,12 +66,28 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
 #include <godot_cpp/core/error_macros.hpp>
 #endif // LIMBOAI_GDEXTENSION
+
+namespace {
+
+// If built-in resource - switch to the owner scene (open it if not already).
+inline void _switch_to_owner_scene_if_builtin(const Ref<BehaviorTree> &p_behavior_tree) {
+	if (p_behavior_tree.is_valid() && p_behavior_tree->get_path().contains("::")) {
+		String current_scene = SCENE_TREE()->get_edited_scene_root()->get_scene_file_path();
+		String scene_path = p_behavior_tree->get_path().get_slice("::", 0);
+		if (current_scene != scene_path) {
+			EditorInterface::get_singleton()->open_scene_from_path(scene_path);
+		}
+	}
+}
+
+} // unnamed namespace
 
 //**** LimboAIEditor
 
@@ -290,6 +306,8 @@ void LimboAIEditor::_disable_editing() {
 
 void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_force_refresh) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "p_behavior_tree is null");
+
+	_switch_to_owner_scene_if_builtin(p_behavior_tree);
 
 	if (!p_force_refresh && task_tree->get_bt() == p_behavior_tree) {
 		return;
@@ -882,6 +900,7 @@ void LimboAIEditor::_on_tree_task_activated() {
 
 void LimboAIEditor::_on_visibility_changed() {
 	if (task_tree->is_visible_in_tree()) {
+		_switch_to_owner_scene_if_builtin(task_tree->get_bt());
 		Ref<BTTask> sel = task_tree->get_selected();
 		if (sel.is_valid()) {
 			EDIT_RESOURCE(sel);
@@ -897,16 +916,6 @@ void LimboAIEditor::_on_visibility_changed() {
 		_update_tabs();
 		request_update_tabs = false;
 	}
-}
-
-void LimboAIEditor::_on_header_pressed() {
-	task_tree->clear_selection();
-#ifdef LIMBOAI_MODULE
-	if (task_tree->get_bt().is_valid()) {
-		task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
-	}
-#endif // LIMBOAI_MODULE
-	EDIT_RESOURCE(task_tree->get_bt());
 }
 
 void LimboAIEditor::_on_save_pressed() {
@@ -1959,8 +1968,9 @@ void LimboAIEditorPlugin::edit(Object *p_object) {
 #elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_edit(Object *p_object) {
 #endif
-	if (Object::cast_to<BehaviorTree>(p_object)) {
-		limbo_ai_editor->edit_bt(Object::cast_to<BehaviorTree>(p_object));
+	Ref<BehaviorTree> bt = Object::cast_to<BehaviorTree>(p_object);
+	if (bt.is_valid()) {
+		limbo_ai_editor->edit_bt(bt);
 	}
 }
 
