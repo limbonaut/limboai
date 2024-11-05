@@ -20,7 +20,7 @@
 		<method name="_exit" qualifiers="virtual">
 			<return type="void" />
 			<description>
-				Called when the state is exited.
+				Called when the state is exited. This happens on a transition to another state, and when the state machine is removed from the scene tree (e.g., when the node is freed with [method Node.queue_free] or the scene changes). Due to implementation details, [method _exit] will not be called on [method Object.free]!
 			</description>
 		</method>
 		<method name="_setup" qualifiers="virtual">

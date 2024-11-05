@@ -234,7 +234,7 @@ Called when the state is entered.
 
 |void| **_exit**\ (\ ) |virtual| :ref:`🔗<class_LimboState_private_method__exit>`
 
-Called when the state is exited.
+Called when the state is exited. This happens on a transition to another state, and when the state machine is removed from the scene tree (e.g., when the node is freed with :ref:`Node.queue_free<class_Node_method_queue_free>` or the scene changes). Due to implementation details, :ref:`_exit<class_LimboState_private_method__exit>` will not be called on :ref:`Object.free<class_Object_method_free>`!
 
 .. rst-class:: classref-item-separator
 
