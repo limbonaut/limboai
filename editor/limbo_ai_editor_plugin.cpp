@@ -66,12 +66,28 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
 #include <godot_cpp/core/error_macros.hpp>
 #endif // LIMBOAI_GDEXTENSION
+
+namespace {
+
+// If built-in resource - switch to the owner scene (open it if not already).
+inline void _switch_to_owner_scene_if_builtin(const Ref<BehaviorTree> &p_behavior_tree) {
+	if (p_behavior_tree.is_valid() && p_behavior_tree->get_path().contains("::")) {
+		String current_scene = SCENE_TREE()->get_edited_scene_root()->get_scene_file_path();
+		String scene_path = p_behavior_tree->get_path().get_slice("::", 0);
+		if (current_scene != scene_path) {
+			EditorInterface::get_singleton()->open_scene_from_path(scene_path);
+		}
+	}
+}
+
+} // unnamed namespace
 
 //**** LimboAIEditor
 
@@ -291,6 +307,8 @@ void LimboAIEditor::_disable_editing() {
 void LimboAIEditor::edit_bt(const Ref<BehaviorTree> &p_behavior_tree, bool p_force_refresh) {
 	ERR_FAIL_COND_MSG(p_behavior_tree.is_null(), "p_behavior_tree is null");
 
+	_switch_to_owner_scene_if_builtin(p_behavior_tree);
+
 	if (!p_force_refresh && task_tree->get_bt() == p_behavior_tree) {
 		return;
 	}
@@ -476,6 +494,14 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 		} else if (LW_IS_SHORTCUT("limbo_ai/close_tab", p_event)) {
 			_tab_menu_option_selected(TAB_CLOSE);
 			handled = true;
+		} else if (LW_IS_SHORTCUT("limbo_ai/editor_save_scene", p_event)) {
+			// This intercepts the editor save action, but does not set the event as handled because we don't know the user's intention.
+			// We just want to save the currently edited BT as well, which may cause a loop with built-in resource if done from "_save_external_data".
+			// Workaround for: https://github.com/limbonaut/limboai/issues/240#issuecomment-2453087424
+			if (task_tree->get_bt().is_valid() && RESOURCE_IS_BUILT_IN(task_tree->get_bt())) {
+				_on_save_pressed();
+			}
+			handled = false; // intentionally not set as handled
 		}
 	}
 
@@ -874,6 +900,7 @@ void LimboAIEditor::_on_tree_task_activated() {
 
 void LimboAIEditor::_on_visibility_changed() {
 	if (task_tree->is_visible_in_tree()) {
+		_switch_to_owner_scene_if_builtin(task_tree->get_bt());
 		Ref<BTTask> sel = task_tree->get_selected();
 		if (sel.is_valid()) {
 			EDIT_RESOURCE(sel);
@@ -889,16 +916,6 @@ void LimboAIEditor::_on_visibility_changed() {
 		_update_tabs();
 		request_update_tabs = false;
 	}
-}
-
-void LimboAIEditor::_on_header_pressed() {
-	task_tree->clear_selection();
-#ifdef LIMBOAI_MODULE
-	if (task_tree->get_bt().is_valid()) {
-		task_tree->get_bt()->editor_set_section_unfold("blackboard_plan", true);
-	}
-#endif // LIMBOAI_MODULE
-	EDIT_RESOURCE(task_tree->get_bt());
 }
 
 void LimboAIEditor::_on_save_pressed() {
@@ -1580,10 +1597,13 @@ LimboAIEditor::LimboAIEditor() {
 	LW_SHORTCUT("limbo_ai/save_behavior_tree", TTR("Save Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(S)));
 	LW_SHORTCUT("limbo_ai/load_behavior_tree", TTR("Load Behavior Tree"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(L)));
 	LW_SHORTCUT("limbo_ai/open_debugger", TTR("Open Debugger"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY_MASK(ALT) | LW_KEY(D)));
-	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(J)));
+	LW_SHORTCUT("limbo_ai/jump_to_owner", TTR("Jump to Owner"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(G)));
 	LW_SHORTCUT("limbo_ai/close_tab", TTR("Close Tab"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(W)));
 	LW_SHORTCUT("limbo_ai/find_task", TTR("Find Task"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(F)));
 	LW_SHORTCUT("limbo_ai/hide_tree_search", TTR("Close Search"), (Key)(LW_KEY(ESCAPE)));
+
+	// Intercept editor save scene action.
+	LW_SHORTCUT("limbo_ai/editor_save_scene", TTR("Save Scene"), (Key)(LW_KEY_MASK(CMD_OR_CTRL) | LW_KEY(S)));
 
 	set_process_shortcut_input(true);
 
@@ -1948,8 +1968,9 @@ void LimboAIEditorPlugin::edit(Object *p_object) {
 #elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_edit(Object *p_object) {
 #endif
-	if (Object::cast_to<BehaviorTree>(p_object)) {
-		limbo_ai_editor->edit_bt(Object::cast_to<BehaviorTree>(p_object));
+	Ref<BehaviorTree> bt = Object::cast_to<BehaviorTree>(p_object);
+	if (bt.is_valid()) {
+		limbo_ai_editor->edit_bt(bt);
 	}
 }
 
