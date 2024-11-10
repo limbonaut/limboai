@@ -453,8 +453,9 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 #endif
 			continue;
 		}
+		bool is_bound = property_bindings.has(p.first);
 		bool has_mapping = parent_scope_mapping.has(p.first);
-		bool do_prefetch = !has_mapping && prefetch_nodepath_vars;
+		bool do_prefetch = !is_bound && !has_mapping && prefetch_nodepath_vars;
 
 		// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
 		BBVariable var = p.second.duplicate(true);
@@ -476,6 +477,17 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable %s to parent scope because the parent scope is not set.", LimboUtility::get_singleton()->decorate_var(p.first)));
 				p_blackboard->link_var(p.first, p_blackboard->get_parent(), target_var);
 			}
+		} else if (is_bound) {
+			// Bind variable to a property of a scene node.
+			NodePath binding_path = property_bindings[p.first];
+			ERR_CONTINUE_MSG(binding_path.get_subname_count() != 1, vformat("BlackboardPlan: Can't bind variable %s using property path that contains multiple sub-names: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
+			NodePath node_path{ binding_path.get_concatenated_names() };
+			StringName prop_name = binding_path.get_subname(0);
+			// TODO: Implement binding for base plan as well.
+			Node *binding_root = p_prefetch_root;
+			Node *n = binding_root->get_node_or_null(node_path);
+			ERR_CONTINUE_MSG(n == nullptr, vformat("BlackboardPlan: Binding failed for variable %s using property path: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
+			var.bind(n, prop_name);
 		}
 	}
 }
