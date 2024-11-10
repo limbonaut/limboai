@@ -31,22 +31,43 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		StringName value = p_value;
-		bool properties_changed = false;
+		bool prop_list_changed = false;
 		if (value == StringName()) {
 			if (parent_scope_mapping.has(mapped_var_name)) {
-				properties_changed = true;
+				prop_list_changed = true;
 				parent_scope_mapping.erase(mapped_var_name);
 			}
 		} else {
 			if (!parent_scope_mapping.has(mapped_var_name)) {
-				properties_changed = true;
+				prop_list_changed = true;
 			}
 			parent_scope_mapping[mapped_var_name] = value;
 		}
-		if (properties_changed) {
+		if (prop_list_changed) {
 			notify_property_list_changed();
 		}
 		return true;
+	}
+
+	// * Binding
+	if (name_str.begins_with("binding/")) {
+		StringName bound_var = name_str.get_slicec('/', 1);
+		NodePath value = p_value;
+		bool prop_list_changed = false;
+		if (value.is_empty()) {
+			if (property_bindings.has(bound_var)) {
+				prop_list_changed = true;
+				property_bindings.erase(bound_var);
+			}
+		} else {
+			if (!property_bindings.has(bound_var)) {
+				prop_list_changed = true;
+			}
+			property_bindings[bound_var] = value;
+		}
+		if (prop_list_changed) {
+			notify_property_list_changed();
+		}
 	}
 
 	// * Storage
@@ -66,6 +87,8 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 			var_map[var_name].set_hint((PropertyHint)(int)p_value);
 		} else if (what == "hint_string") {
 			var_map[var_name].set_hint_string(p_value);
+		} else if (what == "property_binding") {
+			property_bindings[var_name] = NodePath(p_value);
 		} else {
 			return false;
 		}
@@ -82,6 +105,8 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	if (var_map.has(p_name)) {
 		if (has_mapping(p_name)) {
 			r_ret = "Mapped to " + LimboUtility::get_singleton()->decorate_var(parent_scope_mapping[p_name]);
+		} else if (has_property_binding(p_name)) {
+			r_ret = "Bound to " + property_bindings[p_name];
 		} else {
 			r_ret = var_map[p_name].get_value();
 		}
@@ -92,11 +117,15 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		ERR_FAIL_COND_V(mapped_var_name == StringName(), false);
-		if (parent_scope_mapping.has(mapped_var_name)) {
-			r_ret = parent_scope_mapping[mapped_var_name];
-		} else {
-			r_ret = StringName();
-		}
+		r_ret = parent_scope_mapping.has(mapped_var_name) ? parent_scope_mapping[mapped_var_name] : StringName();
+		return true;
+	}
+
+	// * Binding
+	if (name_str.begins_with("binding/")) {
+		StringName bound_var = name_str.get_slicec('/', 1);
+		ERR_FAIL_COND_V(bound_var == StringName(), false);
+		r_ret = property_bindings.has(bound_var) ? property_bindings[bound_var] : NodePath();
 		return true;
 	}
 
@@ -129,7 +158,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 
 		// * Editor
 		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
-			if (has_mapping(var_name)) {
+			if (has_mapping(var_name) || has_property_binding(var_name)) {
 				p_list->push_back(PropertyInfo(Variant::STRING, var_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
 			} else {
 				p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
@@ -157,6 +186,15 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 			PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
 			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
 		}
+	}
+
+	// * Binding
+	p_list->push_back(PropertyInfo(Variant::NIL, "Binding", PROPERTY_HINT_NONE, "binding/", PROPERTY_USAGE_GROUP));
+	for (const Pair<StringName, BBVariable> &p : var_list) {
+		PropertyUsageFlags usage = has_property_binding(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+		// PROPERTY_HINT_LINK is used to signal that NodePath should point to a property.
+		// Our inspector plugin will know how to handle it.
+		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, "", usage));
 	}
 }
 
@@ -197,6 +235,11 @@ void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_parent_sco
 
 bool BlackboardPlan::has_mapping(const StringName &p_name) const {
 	return is_mapping_enabled() && parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
+}
+
+void BlackboardPlan::set_property_binding(const StringName &p_name, const NodePath &p_path) {
+	property_bindings[p_name] = p_path;
+	emit_changed();
 }
 
 void BlackboardPlan::set_prefetch_nodepath_vars(bool p_enable) {
