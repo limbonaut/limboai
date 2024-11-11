@@ -48,12 +48,15 @@ Node *_get_base_node(Object *p_edited_object, SceneTree *p_scene_tree) {
 } // unnamed namespace
 
 Node *EditorPropertyPropertyPath::_get_selected_node() {
+	ERR_FAIL_NULL_V(get_edited_object(), nullptr);
+
 	NodePath path = get_edited_object()->get(get_edited_property());
 	if (path.is_empty()) {
 		return nullptr;
 	}
 
 	Node *base_node = _get_base_node(get_edited_object(), get_tree());
+	ERR_FAIL_NULL_V(base_node, nullptr);
 	Node *selected_node = base_node->get_node_or_null(path);
 	return selected_node;
 }
@@ -96,9 +99,9 @@ void EditorPropertyPropertyPath::_property_selected(const NodePath &p_property_p
 	}
 	Node *base_node = _get_base_node(get_edited_object(), get_tree());
 	ERR_FAIL_NULL(base_node);
-	Node *chosen_node = get_tree()->get_edited_scene_root()->get_node_or_null(p_node_path);
-	ERR_FAIL_NULL(chosen_node);
-	NodePath path = String(base_node->get_path_to(chosen_node)) + String(p_property_path);
+	Node *selected_node = get_tree()->get_edited_scene_root()->get_node_or_null(p_node_path);
+	ERR_FAIL_NULL(selected_node);
+	NodePath path = String(base_node->get_path_to(selected_node)) + String(p_property_path);
 
 	emit_changed(get_edited_property(), path);
 	update_property();
@@ -217,6 +220,7 @@ bool EditorInspectorPluginPropertyPath::_parse_property(Object *p_object, const 
 
 	EditorPropertyPropertyPath *ed = memnew(EditorPropertyPropertyPath);
 
+	// Convert the hint text to an array of valid types.
 	PackedInt32Array valid_types;
 	PackedStringArray type_specifiers = p_hint_text.split(",");
 	for (const String &t : type_specifiers) {

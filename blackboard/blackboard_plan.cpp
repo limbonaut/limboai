@@ -122,7 +122,7 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 			if (!edited_node) {
 				edited_node = SCENE_TREE()->get_edited_scene_root();
 			}
-			Node *bound_node = edited_node->get_node_or_null(binding);
+			Node *bound_node = edited_node ? edited_node->get_node_or_null(binding) : nullptr;
 
 			String shortened_path;
 			if (bound_node) {
