@@ -12,7 +12,6 @@
 #ifndef EDITOR_PROPERTY_PROPERTY_PATH
 #define EDITOR_PROPERTY_PROPERTY_PATH
 
-#include "core/variant/variant.h"
 #ifdef TOOLS_ENABLED
 
 #ifdef LIMBOAI_MODULE

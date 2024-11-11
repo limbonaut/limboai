@@ -13,7 +13,6 @@
 
 #include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
-#include "core/variant/variant.h"
 
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_data.h"
@@ -135,8 +134,16 @@ void EditorPropertyPropertyPath::_update_property() {
 	if (path.is_empty()) {
 		assign_button->set_text(TTR("Bind..."));
 	} else {
-		String text = (String)path.get_name(path.get_name_count() - 1) +
-				":" + (String)path.get_concatenated_subnames();
+		Node *base_node = _get_base_node(get_edited_object(), get_tree());
+		ERR_FAIL_NULL(base_node);
+		Node *selected_node = base_node->get_node_or_null(path);
+		String text;
+		if (selected_node) {
+			text = (String)selected_node->get_name() +
+					":" + (String)path.get_concatenated_subnames();
+		} else {
+			text = (String)path;
+		}
 		assign_button->set_text(text);
 		assign_button->set_tooltip_text(path);
 	}
@@ -211,9 +218,9 @@ bool EditorInspectorPluginPropertyPath::_parse_property(Object *p_object, const 
 	EditorPropertyPropertyPath *ed = memnew(EditorPropertyPropertyPath);
 
 	PackedInt32Array valid_types;
-	Vector<String> type_specifiers = p_hint_text.split(",");
+	PackedStringArray type_specifiers = p_hint_text.split(",");
 	for (const String &t : type_specifiers) {
-		if (t.is_numeric()) {
+		if (t.is_valid_int()) {
 			valid_types.append(t.to_int());
 		}
 	}

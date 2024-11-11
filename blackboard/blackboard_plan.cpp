@@ -13,6 +13,16 @@
 
 #include "../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
+#include "editor/editor_inspector.h"
+#include "editor/editor_interface.h"
+#elif LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_inspector.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#endif
+
 bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	String name_str = p_name;
 
@@ -107,9 +117,22 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 			r_ret = "Mapped to " + LimboUtility::get_singleton()->decorate_var(parent_scope_mapping[p_name]);
 		} else if (has_property_binding(p_name)) {
 			const NodePath &binding = property_bindings[p_name];
-			String path_str = (String)binding.get_name(binding.get_name_count() - 1) +
-					":" + (String)binding.get_concatenated_subnames();
-			r_ret = "Bound to " + path_str;
+
+			Node *edited_node = Object::cast_to<Node>(EditorInterface::get_singleton()->get_inspector()->get_edited_object());
+			if (!edited_node) {
+				edited_node = SCENE_TREE()->get_edited_scene_root();
+			}
+			Node *bound_node = edited_node->get_node_or_null(binding);
+
+			String shortened_path;
+			if (bound_node) {
+				shortened_path = (String)bound_node->get_name() +
+						":" + (String)binding.get_concatenated_subnames();
+			} else {
+				shortened_path = (String)binding.get_name(binding.get_name_count() - 1) +
+						":" + (String)binding.get_concatenated_subnames();
+			}
+			r_ret = String::utf8("🔗 ") + shortened_path;
 		} else {
 			r_ret = var_map[p_name].get_value();
 		}
