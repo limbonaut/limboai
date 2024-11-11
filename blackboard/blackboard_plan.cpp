@@ -26,6 +26,7 @@
 bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	String name_str = p_name;
 
+#ifdef TOOLS_ENABLED
 	// * Editor
 	if (var_map.has(p_name)) {
 		BBVariable &var = var_map[p_name];
@@ -36,6 +37,7 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 		}
 		return true;
 	}
+#endif // TOOLS_ENABLED
 
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
@@ -111,6 +113,7 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	String name_str = p_name;
 
+#ifdef TOOLS_ENABLED
 	// * Editor
 	if (var_map.has(p_name)) {
 		if (has_mapping(p_name)) {
@@ -138,6 +141,7 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 		}
 		return true;
 	}
+#endif // TOOLS_ENABLED
 
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
@@ -182,6 +186,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		String var_name = p.first;
 		BBVariable var = p.second;
 
+#ifdef TOOLS_ENABLED
 		// * Editor
 		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
 			if (has_mapping(var_name) || has_property_binding(var_name)) {
@@ -190,6 +195,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 				p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
 			}
 		}
+#endif // TOOLS_ENABLED
 
 		// * Storage
 		if (is_derived() && (!var.is_value_changed() || var.get_value() == base->var_map[var_name].get_value())) {
