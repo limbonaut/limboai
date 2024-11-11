@@ -106,7 +106,10 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 		if (has_mapping(p_name)) {
 			r_ret = "Mapped to " + LimboUtility::get_singleton()->decorate_var(parent_scope_mapping[p_name]);
 		} else if (has_property_binding(p_name)) {
-			r_ret = "Bound to " + property_bindings[p_name];
+			const NodePath &binding = property_bindings[p_name];
+			String path_str = (String)binding.get_name(binding.get_name_count() - 1) +
+					":" + (String)binding.get_concatenated_subnames();
+			r_ret = "Bound to " + path_str;
 		} else {
 			r_ret = var_map[p_name].get_value();
 		}
@@ -194,7 +197,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		PropertyUsageFlags usage = has_property_binding(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
 		// PROPERTY_HINT_LINK is used to signal that NodePath should point to a property.
 		// Our inspector plugin will know how to handle it.
-		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, "", usage));
+		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, itos(p.second.get_type()), usage));
 	}
 }
 

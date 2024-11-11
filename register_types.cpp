@@ -120,6 +120,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "editor/editor_property_property_path.h"
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/memory.hpp>
@@ -263,6 +264,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_CLASS(LimboDebuggerPlugin);
 		GDREGISTER_CLASS(BlackboardPlanEditor);
 		GDREGISTER_CLASS(EditorInspectorPluginBBPlan);
+		GDREGISTER_CLASS(EditorPropertyPropertyPath);
 		GDREGISTER_CLASS(EditorPropertyVariableName);
 		GDREGISTER_CLASS(EditorInspectorPluginVariableName);
 		GDREGISTER_CLASS(OwnerPicker);
