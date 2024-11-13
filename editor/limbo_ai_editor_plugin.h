@@ -26,6 +26,7 @@
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
 #include "editor/editor_node.h"
+#include "editor/editor_main_screen.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
 #include "editor/plugins/editor_plugin.h"
