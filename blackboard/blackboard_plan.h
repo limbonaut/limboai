@@ -51,6 +51,8 @@ private:
 	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
 	bool prefetch_nodepath_vars = true;
 
+	_FORCE_INLINE_ bool _is_var_hidden(const String &p_name, const BBVariable &p_var) const { return p_var.get_type() == Variant::NIL || (is_derived() && p_name.begins_with("_")); }
+
 protected:
 	static void _bind_methods();
 
