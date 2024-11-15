@@ -63,6 +63,7 @@ public:
 	StringName button_up;
 	StringName call_deferred;
 	StringName changed;
+	StringName Clear;
 	StringName Close;
 	StringName dark_color_2;
 	StringName Debug;
@@ -83,6 +84,7 @@ public:
 	StringName EVENT_FINISHED;
 	StringName EVENT_SUCCESS;
 	StringName exited;
+	StringName ExternalLink;
 	StringName favorite_tasks_changed;
 	StringName Favorites;
 	StringName FlatButton;
@@ -94,6 +96,7 @@ public:
 	StringName freed;
 	StringName gui_input;
 	StringName GuiOptionArrow;
+	StringName GuiTabMenuHl;
 	StringName GuiTreeArrowDown;
 	StringName GuiTreeArrowRight;
 	StringName HeaderSmall;

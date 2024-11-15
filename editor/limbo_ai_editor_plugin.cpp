@@ -25,6 +25,7 @@
 #include "blackboard_plan_editor.h"
 #include "debugger/limbo_debugger_plugin.h"
 #include "editor_property_bb_param.h"
+#include "editor_property_property_path.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
@@ -1918,9 +1919,13 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 		case NOTIFICATION_READY: {
 			add_debugger_plugin(memnew(LimboDebuggerPlugin));
 			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
+
 			EditorInspectorPluginVariableName *var_plugin = memnew(EditorInspectorPluginVariableName);
 			var_plugin->set_editor_plan_provider(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
 			add_inspector_plugin(var_plugin);
+
+			EditorInspectorPluginPropertyPath *path_plugin = memnew(EditorInspectorPluginPropertyPath);
+			add_inspector_plugin(path_plugin);
 #ifdef LIMBOAI_MODULE
 			// ! Only used in the module version.
 			EditorInspectorPluginBBParam *param_plugin = memnew(EditorInspectorPluginBBParam);

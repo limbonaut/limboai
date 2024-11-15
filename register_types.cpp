@@ -120,6 +120,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "editor/editor_property_property_path.h"
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/core/memory.hpp>
@@ -250,24 +251,26 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 #ifdef TOOLS_ENABLED
 	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
 #ifdef LIMBOAI_GDEXTENSION
-		GDREGISTER_CLASS(TaskTree);
-		GDREGISTER_CLASS(TaskButton);
-		GDREGISTER_CLASS(TaskPaletteSection);
-		GDREGISTER_CLASS(TaskPalette);
-		GDREGISTER_CLASS(ActionBanner);
-		GDREGISTER_CLASS(ModeSwitchButton);
-		GDREGISTER_CLASS(CompatShortcutBin);
-		GDREGISTER_CLASS(CompatScreenSelect);
-		GDREGISTER_CLASS(CompatWindowWrapper);
-		GDREGISTER_CLASS(LimboDebuggerTab);
-		GDREGISTER_CLASS(LimboDebuggerPlugin);
-		GDREGISTER_CLASS(BlackboardPlanEditor);
-		GDREGISTER_CLASS(EditorInspectorPluginBBPlan);
-		GDREGISTER_CLASS(EditorPropertyVariableName);
-		GDREGISTER_CLASS(EditorInspectorPluginVariableName);
-		GDREGISTER_CLASS(OwnerPicker);
-		GDREGISTER_CLASS(LimboAIEditor);
-		GDREGISTER_CLASS(LimboAIEditorPlugin);
+		GDREGISTER_INTERNAL_CLASS(TaskTree);
+		GDREGISTER_INTERNAL_CLASS(TaskButton);
+		GDREGISTER_INTERNAL_CLASS(TaskPaletteSection);
+		GDREGISTER_INTERNAL_CLASS(TaskPalette);
+		GDREGISTER_INTERNAL_CLASS(ActionBanner);
+		GDREGISTER_INTERNAL_CLASS(ModeSwitchButton);
+		GDREGISTER_INTERNAL_CLASS(CompatShortcutBin);
+		GDREGISTER_INTERNAL_CLASS(CompatScreenSelect);
+		GDREGISTER_INTERNAL_CLASS(CompatWindowWrapper);
+		GDREGISTER_INTERNAL_CLASS(LimboDebuggerTab);
+		GDREGISTER_INTERNAL_CLASS(LimboDebuggerPlugin);
+		GDREGISTER_INTERNAL_CLASS(BlackboardPlanEditor);
+		GDREGISTER_INTERNAL_CLASS(EditorInspectorPluginBBPlan);
+		GDREGISTER_INTERNAL_CLASS(EditorInspectorPluginPropertyPath);
+		GDREGISTER_INTERNAL_CLASS(EditorPropertyPropertyPath);
+		GDREGISTER_INTERNAL_CLASS(EditorPropertyVariableName);
+		GDREGISTER_INTERNAL_CLASS(EditorInspectorPluginVariableName);
+		GDREGISTER_INTERNAL_CLASS(OwnerPicker);
+		GDREGISTER_INTERNAL_CLASS(LimboAIEditor);
+		GDREGISTER_INTERNAL_CLASS(LimboAIEditorPlugin);
 		GDREGISTER_INTERNAL_CLASS(TreeSearchPanel);
 		GDREGISTER_INTERNAL_CLASS(TreeSearch);
 #endif // LIMBOAI_GDEXTENSION

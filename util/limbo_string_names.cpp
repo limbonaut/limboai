@@ -47,6 +47,7 @@ LimboStringNames::LimboStringNames() {
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
 	changed = SN("changed");
+	Clear = SN("Clear");
 	Close = SN("Close");
 	dark_color_2 = SN("dark_color_2");
 	Debug = SN("Debug");
@@ -67,6 +68,7 @@ LimboStringNames::LimboStringNames() {
 	EVENT_FINISHED = SN("finished");
 	EVENT_SUCCESS = SN("success");
 	exited = SN("exited");
+	ExternalLink = SN("ExternalLink");
 	favorite_tasks_changed = SN("favorite_tasks_changed");
 	Favorites = SN("Favorites");
 	FlatButton = SN("FlatButton");
@@ -78,6 +80,7 @@ LimboStringNames::LimboStringNames() {
 	freed = SN("freed");
 	gui_input = SN("gui_input");
 	GuiOptionArrow = SN("GuiOptionArrow");
+	GuiTabMenuHl = SN("GuiTabMenuHl");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
 	HeaderSmall = SN("HeaderSmall");

@@ -34,17 +34,24 @@ private:
 	// When base is not null, the plan is considered to be derived from the base plan.
 	// A derived plan can only have variables that exist in the base plan,
 	// and only the values can be different in those variables.
+	// The derived plan is synced with the base plan to maintain consistency.
 	Ref<BlackboardPlan> base;
 
 	// Mapping between variables in this plan and their parent scope names.
 	// Used for linking variables to their parent scope counterparts upon Blackboard creation/population.
 	HashMap<StringName, StringName> parent_scope_mapping;
-	// Fetcher function for the parent scope plan. Funtion should return a Ref<BlackboardPlan>.
-	// Used in the inspector. When set, mapping feature becomes available.
+	// Fetcher function for the parent scope plan. Function should return a Ref<BlackboardPlan>.
+	// Used in the inspector: enables mapping feature when set.
 	Callable parent_scope_plan_provider;
+
+	// Bindings to properties in the scene to which this plan belongs.
+	HashMap<StringName, NodePath> property_bindings;
+	bool property_binding_enabled = false;
 
 	// If true, NodePath variables will be prefetched, so that the vars will contain node pointers instead (upon BB creation/population).
 	bool prefetch_nodepath_vars = true;
+
+	_FORCE_INLINE_ bool _is_var_hidden(const String &p_name, const BBVariable &p_var) const { return p_var.get_type() == Variant::NIL || (is_derived() && p_name.begins_with("_")); }
 
 protected:
 	static void _bind_methods();
@@ -68,6 +75,10 @@ public:
 
 	bool is_mapping_enabled() const { return parent_scope_plan_provider.is_valid() && (parent_scope_plan_provider.call() != Ref<BlackboardPlan>()); }
 	bool has_mapping(const StringName &p_name) const;
+
+	bool has_property_binding(const StringName &p_name) const { return property_bindings.has(p_name); }
+	void set_property_binding(const StringName &p_name, const NodePath &p_path);
+	NodePath get_property_binding(const StringName &p_name) const { return property_bindings.has(p_name) ? property_bindings[p_name] : NodePath(); }
 
 	void set_prefetch_nodepath_vars(bool p_enable);
 	bool is_prefetching_nodepath_vars() const;

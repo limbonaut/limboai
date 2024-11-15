@@ -13,9 +13,20 @@
 
 #include "../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
+#include "editor/editor_inspector.h"
+#include "editor/editor_interface.h"
+#elif LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_inspector.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#endif
+
 bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 	String name_str = p_name;
 
+#ifdef TOOLS_ENABLED
 	// * Editor
 	if (var_map.has(p_name)) {
 		BBVariable &var = var_map[p_name];
@@ -26,27 +37,49 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 		}
 		return true;
 	}
+#endif // TOOLS_ENABLED
 
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		StringName value = p_value;
-		bool properties_changed = false;
+		bool prop_list_changed = false;
 		if (value == StringName()) {
 			if (parent_scope_mapping.has(mapped_var_name)) {
-				properties_changed = true;
+				prop_list_changed = true;
 				parent_scope_mapping.erase(mapped_var_name);
 			}
 		} else {
 			if (!parent_scope_mapping.has(mapped_var_name)) {
-				properties_changed = true;
+				prop_list_changed = true;
 			}
 			parent_scope_mapping[mapped_var_name] = value;
 		}
-		if (properties_changed) {
+		if (prop_list_changed) {
 			notify_property_list_changed();
 		}
 		return true;
+	}
+
+	// * Binding
+	if (name_str.begins_with("binding/")) {
+		StringName bound_var = name_str.get_slicec('/', 1);
+		NodePath value = p_value;
+		bool prop_list_changed = false;
+		if (value.is_empty()) {
+			if (property_bindings.has(bound_var)) {
+				prop_list_changed = true;
+				property_bindings.erase(bound_var);
+			}
+		} else {
+			if (!property_bindings.has(bound_var)) {
+				prop_list_changed = true;
+			}
+			property_bindings[bound_var] = value;
+		}
+		if (prop_list_changed) {
+			notify_property_list_changed();
+		}
 	}
 
 	// * Storage
@@ -66,6 +99,8 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 			var_map[var_name].set_hint((PropertyHint)(int)p_value);
 		} else if (what == "hint_string") {
 			var_map[var_name].set_hint_string(p_value);
+		} else if (what == "property_binding") {
+			property_bindings[var_name] = NodePath(p_value);
 		} else {
 			return false;
 		}
@@ -78,24 +113,60 @@ bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {
 bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	String name_str = p_name;
 
+#ifdef TOOLS_ENABLED
 	// * Editor
 	if (var_map.has(p_name)) {
 		if (has_mapping(p_name)) {
 			r_ret = "Mapped to " + LimboUtility::get_singleton()->decorate_var(parent_scope_mapping[p_name]);
+		} else if (has_property_binding(p_name)) {
+			const NodePath &binding = property_bindings[p_name];
+
+			Node *edited_node = Object::cast_to<Node>(EditorInterface::get_singleton()->get_inspector()->get_edited_object());
+			if (!edited_node) {
+				edited_node = SCENE_TREE()->get_edited_scene_root();
+			}
+			Node *bound_node = edited_node ? edited_node->get_node_or_null(binding) : nullptr;
+
+			String shortened_path;
+			if (bound_node) {
+				shortened_path = (String)bound_node->get_name() +
+						":" + (String)binding.get_concatenated_subnames();
+			} else {
+				shortened_path = (String)binding.get_name(binding.get_name_count() - 1) +
+						":" + (String)binding.get_concatenated_subnames();
+			}
+			r_ret = String::utf8("🔗 ") + shortened_path;
 		} else {
 			r_ret = var_map[p_name].get_value();
 		}
 		return true;
 	}
+#endif // TOOLS_ENABLED
 
 	// * Mapping
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		ERR_FAIL_COND_V(mapped_var_name == StringName(), false);
-		if (parent_scope_mapping.has(mapped_var_name)) {
+		if (has_mapping(mapped_var_name)) {
 			r_ret = parent_scope_mapping[mapped_var_name];
+		} else if (has_property_binding(mapped_var_name)) {
+			r_ret = RTR("Already bound to property.");
 		} else {
 			r_ret = StringName();
+		}
+		return true;
+	}
+
+	// * Binding
+	if (name_str.begins_with("binding/")) {
+		StringName bound_var = name_str.get_slicec('/', 1);
+		ERR_FAIL_COND_V(bound_var == StringName(), false);
+		if (has_property_binding(bound_var)) {
+			r_ret = property_bindings[bound_var];
+		} else if (has_mapping(bound_var)) {
+			r_ret = RTR("Already mapped to variable.");
+		} else {
+			r_ret = NodePath();
 		}
 		return true;
 	}
@@ -127,14 +198,16 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 		String var_name = p.first;
 		BBVariable var = p.second;
 
+#ifdef TOOLS_ENABLED
 		// * Editor
-		if (var.get_type() != Variant::NIL && (!is_derived() || !var_name.begins_with("_"))) {
-			if (has_mapping(var_name)) {
+		if (!_is_var_hidden(var_name, var)) {
+			if (has_mapping(var_name) || has_property_binding(var_name)) {
 				p_list->push_back(PropertyInfo(Variant::STRING, var_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
 			} else {
 				p_list->push_back(PropertyInfo(var.get_type(), var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR));
 			}
 		}
+#endif // TOOLS_ENABLED
 
 		// * Storage
 		if (is_derived() && (!var.is_value_changed() || var.get_value() == base->var_map[var_name].get_value())) {
@@ -153,9 +226,32 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	if (is_mapping_enabled()) {
 		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
-			// Serialize only non-empty mappings.
-			PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
-			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
+			if (_is_var_hidden(p.first, p.second)) {
+				continue;
+			}
+			if (unlikely(has_property_binding(p.first))) {
+				p_list->push_back(PropertyInfo(Variant::STRING, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+			} else {
+				// Serialize only non-empty mappings.
+				PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
+			}
+		}
+	}
+
+	// * Binding
+	p_list->push_back(PropertyInfo(Variant::NIL, "Binding", PROPERTY_HINT_NONE, "binding/", PROPERTY_USAGE_GROUP));
+	for (const Pair<StringName, BBVariable> &p : var_list) {
+		if (_is_var_hidden(p.first, p.second)) {
+			continue;
+		}
+		if (unlikely(has_mapping(p.first))) {
+			p_list->push_back(PropertyInfo(Variant::STRING, "binding/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+		} else {
+			PropertyUsageFlags usage = has_property_binding(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+			// PROPERTY_HINT_LINK is used to signal that NodePath should point to a property.
+			// Our inspector plugin will know how to handle it.
+			p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, itos(p.second.get_type()), usage));
 		}
 	}
 }
@@ -197,6 +293,11 @@ void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_parent_sco
 
 bool BlackboardPlan::has_mapping(const StringName &p_name) const {
 	return is_mapping_enabled() && parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
+}
+
+void BlackboardPlan::set_property_binding(const StringName &p_name, const NodePath &p_path) {
+	property_bindings[p_name] = p_path;
+	emit_changed();
 }
 
 void BlackboardPlan::set_prefetch_nodepath_vars(bool p_enable) {
@@ -410,8 +511,9 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 #endif
 			continue;
 		}
+		bool is_bound = has_property_binding(p.first) || (is_derived() && get_base_plan()->has_property_binding(p.first));
 		bool has_mapping = parent_scope_mapping.has(p.first);
-		bool do_prefetch = !has_mapping && prefetch_nodepath_vars;
+		bool do_prefetch = !is_bound && !has_mapping && prefetch_nodepath_vars;
 
 		// Add a variable duplicate to the blackboard, optionally with NodePath prefetch.
 		BBVariable var = p.second.duplicate(true);
@@ -433,6 +535,24 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable %s to parent scope because the parent scope is not set.", LimboUtility::get_singleton()->decorate_var(p.first)));
 				p_blackboard->link_var(p.first, p_blackboard->get_parent(), target_var);
 			}
+		} else if (is_bound) {
+			// Bind variable to a property of a scene node.
+			NodePath binding_path;
+			Node *binding_root;
+			if (has_property_binding(p.first)) {
+				binding_path = property_bindings[p.first];
+				binding_root = p_prefetch_root;
+			} else {
+				binding_path = get_base_plan()->property_bindings[p.first];
+				binding_root = p_prefetch_root_for_base_plan;
+			}
+			ERR_CONTINUE_MSG(binding_path.get_subname_count() != 1, vformat("BlackboardPlan: Can't bind variable %s using property path that contains multiple sub-names: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
+			NodePath node_path{ binding_path.get_concatenated_names() };
+			StringName prop_name = binding_path.get_subname(0);
+			// TODO: Implement binding for base plan as well.
+			Node *n = binding_root->get_node_or_null(node_path);
+			ERR_CONTINUE_MSG(n == nullptr, vformat("BlackboardPlan: Binding failed for variable %s using property path: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
+			var.bind(n, prop_name);
 		}
 	}
 }
