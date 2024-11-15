@@ -147,7 +147,13 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	if (name_str.begins_with("mapping/")) {
 		StringName mapped_var_name = name_str.get_slicec('/', 1);
 		ERR_FAIL_COND_V(mapped_var_name == StringName(), false);
-		r_ret = parent_scope_mapping.has(mapped_var_name) ? parent_scope_mapping[mapped_var_name] : StringName();
+		if (has_mapping(mapped_var_name)) {
+			r_ret = parent_scope_mapping[mapped_var_name];
+		} else if (has_property_binding(mapped_var_name)) {
+			r_ret = RTR("Already bound to property.");
+		} else {
+			r_ret = StringName();
+		}
 		return true;
 	}
 
@@ -155,7 +161,13 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 	if (name_str.begins_with("binding/")) {
 		StringName bound_var = name_str.get_slicec('/', 1);
 		ERR_FAIL_COND_V(bound_var == StringName(), false);
-		r_ret = property_bindings.has(bound_var) ? property_bindings[bound_var] : NodePath();
+		if (has_property_binding(bound_var)) {
+			r_ret = property_bindings[bound_var];
+		} else if (has_mapping(bound_var)) {
+			r_ret = RTR("Already mapped to variable.");
+		} else {
+			r_ret = NodePath();
+		}
 		return true;
 	}
 
@@ -214,19 +226,27 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	if (is_mapping_enabled()) {
 		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
-			// Serialize only non-empty mappings.
-			PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
-			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
+			if (unlikely(has_property_binding(p.first))) {
+				p_list->push_back(PropertyInfo(Variant::STRING, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+			} else {
+				// Serialize only non-empty mappings.
+				PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
+			}
 		}
 	}
 
 	// * Binding
 	p_list->push_back(PropertyInfo(Variant::NIL, "Binding", PROPERTY_HINT_NONE, "binding/", PROPERTY_USAGE_GROUP));
 	for (const Pair<StringName, BBVariable> &p : var_list) {
-		PropertyUsageFlags usage = has_property_binding(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
-		// PROPERTY_HINT_LINK is used to signal that NodePath should point to a property.
-		// Our inspector plugin will know how to handle it.
-		p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, itos(p.second.get_type()), usage));
+		if (unlikely(has_mapping(p.first))) {
+			p_list->push_back(PropertyInfo(Variant::STRING, "binding/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+		} else {
+			PropertyUsageFlags usage = has_property_binding(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+			// PROPERTY_HINT_LINK is used to signal that NodePath should point to a property.
+			// Our inspector plugin will know how to handle it.
+			p_list->push_back(PropertyInfo(Variant::NODE_PATH, "binding/" + p.first, PROPERTY_HINT_LINK, itos(p.second.get_type()), usage));
+		}
 	}
 }
 

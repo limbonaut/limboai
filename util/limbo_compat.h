@@ -152,6 +152,7 @@ Variant _GLOBAL_DEF(const PropertyInfo &p_info, const Variant &p_default, bool p
 #define EDSCALE (EditorInterface::get_singleton()->get_editor_scale())
 
 String TTR(const String &p_text, const String &p_context = "");
+#define RTR(m_text) TTR(m_text)
 
 #endif // ! LIMBOAI_GDEXTENSION
 
