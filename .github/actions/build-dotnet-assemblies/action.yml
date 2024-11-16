@@ -8,6 +8,9 @@ inputs:
       - linuxbsd
       - windows
       - macos
+  bin:
+    required: true
+    type: string
 
 runs:
   using: "composite"
@@ -22,7 +25,7 @@ runs:
     - name: Generate C# glue
       shell: bash
       run: |
-        ./bin/${BIN} --headless --generate-mono-glue ./modules/mono/glue || true
+        ./bin/${{inputs.bin}} --headless --generate-mono-glue ./modules/mono/glue || true
 
     - name: Build .NET assemblies
       shell: bash
