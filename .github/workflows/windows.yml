@@ -33,8 +33,9 @@ on:
 # Global Settings
 env:
   BUILD_IMAGE_VERSION: 4.3-f40
+  MESA_VERSION: 23.1.9-1
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no
+  SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
 
 jobs:
   windows-builds:
@@ -228,6 +229,15 @@ jobs:
           url=https://github.com/godotengine/godot-angle-static/releases/download/chromium%2F6601.2/godot-angle-static
           curl -L -o windows_${{matrix.opts.arch}}.zip $url-${{matrix.opts.arch}}-${{matrix.opts.llvm && 'llvm' || 'gcc'}}-release.zip
           unzip windows_${{matrix.opts.arch}}.zip
+          rm windows_${{matrix.opts.arch}}.zip
+
+      - name: Mesa libs
+        run: |
+          mkdir -p deps/mesa
+          cd deps/mesa
+          curl -L -o mesa_${{matrix.opts.arch}}.zip https://github.com/godotengine/godot-nir-static/releases/download/${{env.MESA_VERSION}}/godot-nir-static-${{matrix.opts.arch}}-${{matrix.opts.llvm && 'llvm' || 'gcc'}}-release.zip
+          unzip -o mesa_${{matrix.opts.arch}}.zip
+          rm -f mesa_${{matrix.opts.arch}}.zip
 
       - name: Pull build container
         run: |
@@ -245,6 +255,7 @@ jobs:
               ${{env.SCONSFLAGS}} \
               ${{matrix.opts.scons-flags}} \
               angle_libs=/build/deps/angle \
+              mesa_libs=/build/deps/mesa \
           "
           podman_run="podman run -it --rm \
             --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
