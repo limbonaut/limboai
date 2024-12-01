@@ -221,6 +221,14 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
+      - name: Static ANGLE libs
+        run: |
+          mkdir -p deps/angle
+          cd deps/angle
+          url=https://github.com/godotengine/godot-angle-static/releases/download/chromium%2F6601.2/godot-angle-static
+          curl -L -o windows_${{matrix.opts.arch}}.zip $url-${{matrix.opts.arch}}-${{matrix.opts.llvm && 'llvm' || 'gcc'}}-release.zip
+          unzip windows_${{matrix.opts.arch}}.zip
+
       - name: Pull build container
         run: |
           podman pull ghcr.io/limbonaut/godot-windows:${{env.BUILD_IMAGE_VERSION}}
@@ -236,6 +244,7 @@ jobs:
               module_mono_enabled=${{matrix.opts.dotnet}} \
               ${{env.SCONSFLAGS}} \
               ${{matrix.opts.scons-flags}} \
+              angle_libs=/build/deps/angle \
           "
           podman_run="podman run -it --rm \
             --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
