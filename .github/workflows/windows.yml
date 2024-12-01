@@ -261,10 +261,10 @@ jobs:
             --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
             --env BUILD_NAME=${BUILD_NAME} \
             --env NUM_CORES=$(nproc --all) \
-            --env SCONS_CACHE_LIMIT=${SCONS_CACHE_LIMIT} \
             --env DOTNET_NOLOGO=true \
             --env DOTNET_CLI_TELEMETRY_OPTOUT=true \
-            --env SCONS_CACHE=${{github.workspace}}/.scons_cache/
+            --env SCONS_CACHE=/build/.scons_cache/ \
+            --env SCONS_CACHE_LIMIT=${SCONS_CACHE_LIMIT} \
             -v ${GITHUB_WORKSPACE}/:/build/ \
             -w /build godot-windows:${{env.BUILD_IMAGE_VERSION}} bash -c \
           "
