@@ -227,6 +227,7 @@ jobs:
           sudo apt-get install libwayland-dev
 
       - name: Set up scons cache
+        if: inputs.test-build # ! Only cache test/PR builds
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/

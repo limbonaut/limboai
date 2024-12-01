@@ -175,6 +175,7 @@ jobs:
           rm -f /tmp/vulkan-sdk.zip
 
       - name: Set up scons cache
+        if: inputs.test-build # ! Only cache test/PR builds
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/

@@ -11,7 +11,7 @@ on:
         type: string
         default: master
       test-build:
-        description: Limit the number of test builds
+        description: Limit to pre-defined test builds
         type: boolean
         default: false
       debug-symbols:
@@ -30,7 +30,7 @@ on:
         type: string
         default: master
       test-build:
-        description: Limit the number of test builds
+        description: Limit to pre-defined test builds
         type: boolean
         default: false
       debug-symbols:
@@ -285,6 +285,7 @@ jobs:
         uses: ammaraskar/msvc-problem-matcher@master
 
       - name: Set up scons cache
+        if: inputs.test-build # ! Only cache test/PR builds
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
