@@ -208,7 +208,7 @@ jobs:
           path: modules/limboai
           ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Inits GODOT_VERSION, LIMBOAI_VERSION, NAME_PREFIX, GODOT_VERSION_STATUS, BUILD_NAME environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up scons cache
@@ -259,6 +259,7 @@ jobs:
           "
           podman_run="podman run -it --rm \
             --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
+            --env BUILD_NAME=${BUILD_NAME} \
             --env NUM_CORES=$(nproc --all) \
             --env SCONS_CACHE_LIMIT=${SCONS_CACHE_LIMIT} \
             --env DOTNET_NOLOGO=true \
