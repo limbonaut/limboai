@@ -5,13 +5,13 @@ on:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
-        default: master
+        default: 4.3
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
       test-build:
-        description: Should we perform only a limited number of test builds?
+        description: Limit to pre-defined test builds
         type: boolean
         default: false
 
@@ -20,28 +20,29 @@ on:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
-        default: master
+        default: 4.3
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
       test-build:
-        description: Should we perform only a limited number of test builds?
+        description: Limit to pre-defined test builds
         type: boolean
         default: false
 
 # Global Settings
 env:
-  SCONS_CACHE_MSVC_CONFIG: true
+  BUILD_IMAGE_VERSION: 4.3-f40
+  MESA_VERSION: 23.1.9-1
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
-  DOTNET_NOLOGO: true
-  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
 
 jobs:
   windows-builds:
-    runs-on: "windows-latest"
+    runs-on: "ubuntu-24.04"
     name: ${{ matrix.opts.name }}
+    outputs:
+      built-dotnet-editor: ${{ steps.mark-dotnet-editor.outputs.built-dotnet-editor }}
     strategy:
       fail-fast: false
       matrix:
@@ -51,18 +52,21 @@ jobs:
           - name: Editor (x86_64, release)
             target: editor
             arch: x86_64
+            llvm: false
             dotnet: false
             should-build: true
 
           - name: Template (x86_64, release)
             target: template_release
             arch: x86_64
+            llvm: false
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_64, debug)
             target: template_debug
             arch: x86_64
+            llvm: false
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
@@ -71,18 +75,21 @@ jobs:
           # - name: Editor (x86_32, release)
           #   target: editor
           #   arch: x86_32
+          #   llvm: false
           #   dotnet: false
           # should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, release)
             target: template_release
             arch: x86_32
+            llvm: false
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
           - name: Template (x86_32, debug)
             target: template_debug
             arch: x86_32
+            llvm: false
             dotnet: false
             should-build: ${{ !inputs.test-build }}
 
@@ -91,19 +98,24 @@ jobs:
           # - name: Editor (arm64, release)
           #   target: editor
           #   arch: arm64
+          #   llvm: true
           #   dotnet: false
           #   should-build: ${{ !inputs.test-build }}
 
           - name: Template (arm64, release)
             target: template_release
             arch: arm64
+            llvm: true
             dotnet: false
+            scons-flags: mingw_prefix=/root/llvm-mingw
             should-build: ${{ !inputs.test-build }}
 
           - name: Template (arm64, debug)
             target: template_debug
             arch: arm64
+            llvm: true
             dotnet: false
+            scons-flags: mingw_prefix=/root/llvm-mingw
             should-build: ${{ !inputs.test-build }}
 
           # * .NET x86_64
@@ -111,18 +123,21 @@ jobs:
           - name: Editor .NET (x86_64, release)
             target: editor
             arch: x86_64
+            llvm: false
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_64, release)
             target: template_release
             arch: x86_64
+            llvm: false
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_64, debug)
             target: template_debug
             arch: x86_64
+            llvm: false
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
@@ -131,46 +146,54 @@ jobs:
           # - name: Editor .NET (x86_32, release)
           #   target: editor
           #   arch: x86_32
+          #   llvm: false
           #   dotnet: true
           # should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, release)
             target: template_release
             arch: x86_32
+            llvm: false
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
           - name: Template .NET (x86_32, debug)
             target: template_debug
             arch: x86_32
+            llvm: false
             dotnet: true
             should-build: ${{ !inputs.test-build }}
 
             # * .NET arm64
 
-          # - name: Editor (arm64, release)
+          # - name: Editor .NET (arm64, release)
           #   target: editor
           #   arch: arm64
+          #   llvm: true
           #   dotnet: true
           #   should-build: ${{ !inputs.test-build }}
 
-          - name: Template (arm64, release)
+          - name: Template .NET (arm64, release)
             target: template_release
             arch: arm64
+            llvm: true
             dotnet: true
+            scons-flags: mingw_prefix=/root/llvm-mingw
             should-build: ${{ !inputs.test-build }}
 
-          - name: Template (arm64, debug)
+          - name: Template .NET (arm64, debug)
             target: template_debug
             arch: arm64
+            llvm: true
             dotnet: true
+            scons-flags: mingw_prefix=/root/llvm-mingw
             should-build: ${{ !inputs.test-build }}
 
         exclude:
           - { opts: { should-build: false } }
 
     env:
-      BIN: godot.windows.${{matrix.opts.target}}.${{matrix.opts.arch}}${{  matrix.opts.dotnet == true && '.mono' || ''  }}
+      BIN: godot.windows.${{matrix.opts.target}}.${{matrix.opts.arch}}${{matrix.opts.llvm && '.llvm' || ''}}${{matrix.opts.dotnet == true && '.mono' || ''}}
 
     steps:
       - name: Clone Godot
@@ -185,26 +208,11 @@ jobs:
           path: modules/limboai
           ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Inits GODOT_VERSION, LIMBOAI_VERSION, NAME_PREFIX, GODOT_VERSION_STATUS, BUILD_NAME environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.x"
-          architecture: "x64"
-
-      - name: Set up scons
-        run: |
-          python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
-          python --version
-          scons --version
-
-      - name: Set up MSVC problem matcher
-        uses: ammaraskar/msvc-problem-matcher@master
-
       - name: Set up scons cache
+        if: inputs.test-build # ! Only cache test/PR builds
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
@@ -214,17 +222,54 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
-      - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
+      - name: Static ANGLE libs
         run: |
-          scons -j2 platform=windows target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}}
+          mkdir -p deps/angle
+          cd deps/angle
+          url=https://github.com/godotengine/godot-angle-static/releases/download/chromium%2F6601.2/godot-angle-static
+          curl -L -o windows_${{matrix.opts.arch}}.zip $url-${{matrix.opts.arch}}-${{matrix.opts.llvm && 'llvm' || 'gcc'}}-release.zip
+          unzip windows_${{matrix.opts.arch}}.zip
+          rm windows_${{matrix.opts.arch}}.zip
 
-      - name: Build .NET assemblies
-        if: matrix.opts.dotnet && matrix.opts.target == 'editor'
-        uses: ./modules/limboai/.github/actions/build-dotnet-assemblies
-        with:
-          platform: windows
+      - name: Mesa libs
+        run: |
+          mkdir -p deps/mesa
+          cd deps/mesa
+          curl -L -o mesa_${{matrix.opts.arch}}.zip https://github.com/godotengine/godot-nir-static/releases/download/${{env.MESA_VERSION}}/godot-nir-static-${{matrix.opts.arch}}-${{matrix.opts.llvm && 'llvm' || 'gcc'}}-release.zip
+          unzip -o mesa_${{matrix.opts.arch}}.zip
+          rm -f mesa_${{matrix.opts.arch}}.zip
+
+      - name: Pull build container
+        run: |
+          podman pull ghcr.io/limbonaut/godot-windows:${{env.BUILD_IMAGE_VERSION}}
+
+      - name: Build using container
+        shell: bash
+        run: |
+          scons_command="scons \
+              platform=windows \
+              target=${{matrix.opts.target}} \
+              arch=${{matrix.opts.arch}} \
+              use_llvm=${{matrix.opts.llvm}} \
+              module_mono_enabled=${{matrix.opts.dotnet}} \
+              ${{env.SCONSFLAGS}} \
+              ${{matrix.opts.scons-flags}} \
+              angle_libs=/build/deps/angle \
+              mesa_libs=/build/deps/mesa \
+          "
+          podman_run="podman run -it --rm \
+            --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
+            --env BUILD_NAME=${BUILD_NAME} \
+            --env NUM_CORES=$(nproc --all) \
+            --env DOTNET_NOLOGO=true \
+            --env DOTNET_CLI_TELEMETRY_OPTOUT=true \
+            --env SCONS_CACHE=/build/.scons_cache/ \
+            --env SCONS_CACHE_LIMIT=${SCONS_CACHE_LIMIT} \
+            -v ${GITHUB_WORKSPACE}/:/build/ \
+            -w /build godot-windows:${{env.BUILD_IMAGE_VERSION}} bash -c \
+          "
+          echo "Running ${podman_run} \"${scons_command}\""
+          ${podman_run} "${scons_command}"
 
       - name: Prepare artifact
         shell: bash
@@ -252,3 +297,62 @@ jobs:
         with:
           name: ${{env.NAME_PREFIX}}${{matrix.opts.dotnet == true && '.dotnet' || ''}}.${{matrix.opts.target}}.windows.${{matrix.opts.arch}}
           path: out/*
+
+      - name: Mark .NET editor as built
+        if: matrix.opts.dotnet && matrix.opts.target == 'editor'
+        id: mark-dotnet-editor
+        run: echo "built-dotnet-editor=true" >> $GITHUB_OUTPUT
+
+
+  dotnet-assemblies:
+    name: .NET assembly for ${{matrix.opts.arch}}
+    needs: windows-builds
+    if: always() && needs.windows-builds.outputs.built-dotnet-editor == 'true'
+    runs-on: "windows-latest"
+    strategy:
+      fail-fast: false
+      matrix:
+        opts:
+          - arch: x86_64
+            llvm: false
+    env:
+      BIN: godot.windows.editor.${{matrix.opts.arch}}${{matrix.opts.llvm && '.llvm' || ''}}.mono
+    steps:
+      - name: Clone Godot
+        uses: actions/checkout@v4
+        with:
+          repository: godotengine/godot
+          ref: ${{ inputs.godot-ref }}
+
+      - name: Clone LimboAI module
+        uses: actions/checkout@v4
+        with:
+          path: modules/limboai
+          ref: ${{ inputs.limboai-ref }}
+
+      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
+
+      - name: Reconstruct artifact name
+        shell: bash
+        run: |
+          echo "ARTIFACT=${{env.NAME_PREFIX}}.dotnet.editor.windows.${{matrix.opts.arch}}" >> $GITHUB_ENV
+
+      - name: Download editor artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{env.ARTIFACT}}
+          path: bin/
+
+      - name: Build .NET assemblies
+        uses: ./modules/limboai/.github/actions/build-dotnet-assemblies
+        with:
+          platform: windows
+          bin: ${{env.BIN}}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.ARTIFACT}}
+          overwrite: true
+          path: bin/*

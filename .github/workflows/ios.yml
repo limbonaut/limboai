@@ -145,15 +145,16 @@ jobs:
           rm -Rf /tmp/InstallVulkan.app
           rm -f /tmp/vulkan-sdk.zip
 
-      - name: Set up scons cache
-        uses: actions/cache@v4
-        with:
-          path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-          restore-keys: |
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
-            ${{env.BIN}}-${{inputs.godot-ref}}
+      # ! Note: we stopped using the scons cache in release builds.
+      # - name: Set up scons cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{github.workspace}}/.scons_cache/
+      #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #     restore-keys: |
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
         env:

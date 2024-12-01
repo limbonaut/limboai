@@ -120,15 +120,16 @@ jobs:
           python --version
           scons --version
 
-      - name: Set up scons cache
-        uses: actions/cache@v4
-        with:
-          path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-          restore-keys: |
-            ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
-            ${{env.CACHE_NAME}}-${{inputs.godot-ref}}
+      # ! Note: we stopped using the scons cache in release builds.
+      # - name: Set up scons cache
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: ${{github.workspace}}/.scons_cache/
+      #     key: ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #     restore-keys: |
+      #       ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #       ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+      #       ${{env.CACHE_NAME}}-${{inputs.godot-ref}}
 
       - name: Compilation
         env:
