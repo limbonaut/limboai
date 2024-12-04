@@ -46,7 +46,7 @@ LineEdit *BlackboardPlanEditor::_get_name_edit(int p_row_index) const {
 }
 
 void BlackboardPlanEditor::_add_var() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	int suffix = 1;
 	StringName var_name = default_var_name == StringName() ? "var" : default_var_name;
@@ -65,14 +65,14 @@ void BlackboardPlanEditor::_add_var() {
 }
 
 void BlackboardPlanEditor::_trash_var(int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	StringName var_name = plan->get_var_by_index(p_index).first;
 	plan->remove_var(var_name);
 	_refresh();
 }
 
 void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	LineEdit *name_edit = _get_name_edit(p_index);
 	ERR_FAIL_NULL(name_edit);
@@ -96,7 +96,7 @@ void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index
 }
 
 void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	BBVariable var = plan->get_var_by_index(p_index).second;
 	if (var.get_type() == p_new_type) {
@@ -115,14 +115,14 @@ void BlackboardPlanEditor::_change_var_type(Variant::Type p_new_type, int p_inde
 }
 
 void BlackboardPlanEditor::_change_var_hint(PropertyHint p_new_hint, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	plan->get_var_by_index(p_index).second.set_hint(p_new_hint);
 	plan->notify_property_list_changed();
 	_refresh();
 }
 
 void BlackboardPlanEditor::_change_var_hint_string(const String &p_new_hint_string, int p_index) {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	plan->get_var_by_index(p_index).second.set_hint_string(p_new_hint_string);
 	plan->notify_property_list_changed();
 }
@@ -278,7 +278,7 @@ void BlackboardPlanEditor::_refresh() {
 		Button *drag_button = memnew(Button);
 		props_hbox->add_child(drag_button);
 		drag_button->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
-		BUTTON_SET_ICON(drag_button, theme_cache.grab_icon);
+		drag_button->set_button_icon(theme_cache.grab_icon);
 		drag_button->connect(LW_NAME(gui_input), callable_mp(this, &BlackboardPlanEditor::_drag_button_gui_input));
 		drag_button->connect(LW_NAME(button_down), callable_mp(this, &BlackboardPlanEditor::_drag_button_down).bind(row_panel));
 		drag_button->connect(LW_NAME(button_up), callable_mp(this, &BlackboardPlanEditor::_drag_button_up));
@@ -297,7 +297,7 @@ void BlackboardPlanEditor::_refresh() {
 		type_choice->set_custom_minimum_size(Size2(170, 0.0) * EDSCALE);
 		type_choice->set_text(Variant::get_type_name(var.get_type()));
 		type_choice->set_tooltip_text(Variant::get_type_name(var.get_type()));
-		BUTTON_SET_ICON(type_choice, get_theme_icon(Variant::get_type_name(var.get_type()), LW_NAME(EditorIcons)));
+		type_choice->set_button_icon(get_theme_icon(Variant::get_type_name(var.get_type()), LW_NAME(EditorIcons)));
 		type_choice->set_text_overrun_behavior(TextServer::OVERRUN_TRIM_ELLIPSIS);
 		type_choice->set_flat(true);
 		type_choice->set_text_alignment(HORIZONTAL_ALIGNMENT_LEFT);
@@ -326,7 +326,7 @@ void BlackboardPlanEditor::_refresh() {
 		Button *trash_button = memnew(Button);
 		props_hbox->add_child(trash_button);
 		trash_button->set_custom_minimum_size(Size2(24.0, 0.0) * EDSCALE);
-		BUTTON_SET_ICON(trash_button, theme_cache.trash_icon);
+		trash_button->set_button_icon(theme_cache.trash_icon);
 		trash_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_trash_var).bind(i));
 	}
 }
@@ -337,7 +337,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 			theme_cache.trash_icon = get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons));
 			theme_cache.grab_icon = get_theme_icon(LW_NAME(TripleBar), LW_NAME(EditorIcons));
 
-			BUTTON_SET_ICON(add_var_tool, get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
+			add_var_tool->set_button_icon(get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
 
 			type_menu->clear();
 			for (int i = 0; i < Variant::VARIANT_MAX; i++) {
@@ -472,14 +472,14 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 // ***** EditorInspectorPluginBBPlan *****
 
 void EditorInspectorPluginBBPlan::_edit_plan(const Ref<BlackboardPlan> &p_plan) {
-	ERR_FAIL_NULL(p_plan);
+	ERR_FAIL_COND(p_plan.is_null());
 	plan_editor->edit_plan(p_plan);
 	plan_editor->popup_centered();
 }
 
 void EditorInspectorPluginBBPlan::_open_base_plan(const Ref<BlackboardPlan> &p_plan) {
-	ERR_FAIL_NULL(p_plan);
-	ERR_FAIL_NULL(p_plan->get_base_plan());
+	ERR_FAIL_COND(p_plan.is_null());
+	ERR_FAIL_COND(p_plan->get_base_plan().is_null());
 	EditorInterface::get_singleton()->call_deferred("edit_resource", p_plan->get_base_plan());
 }
 
@@ -501,7 +501,7 @@ void EditorInspectorPluginBBPlan::parse_begin(Object *p_object) {
 void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
 #endif
 	Ref<BlackboardPlan> plan = Object::cast_to<BlackboardPlan>(p_object);
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	PanelContainer *panel = memnew(PanelContainer);
 	ADD_STYLEBOX_OVERRIDE(panel, LW_NAME(panel), toolbar_style);
@@ -522,7 +522,7 @@ void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
 		goto_btn->set_text(TTR("Edit Base"));
 		goto_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
 		goto_btn->set_custom_minimum_size(Size2(150.0, 0.0) * EDSCALE);
-		BUTTON_SET_ICON(goto_btn, EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(Edit), LW_NAME(EditorIcons)));
+		goto_btn->set_button_icon(EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(Edit), LW_NAME(EditorIcons)));
 		goto_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_open_base_plan).bind(plan));
 	} else {
 		Button *edit_btn = memnew(Button);
@@ -530,7 +530,7 @@ void EditorInspectorPluginBBPlan::_parse_begin(Object *p_object) {
 		edit_btn->set_text(TTR("Manage..."));
 		edit_btn->set_h_size_flags(Control::SIZE_SHRINK_CENTER);
 		edit_btn->set_custom_minimum_size(Size2(150.0, 0.0) * EDSCALE);
-		BUTTON_SET_ICON(edit_btn, EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(EditAddRemove), LW_NAME(EditorIcons)));
+		edit_btn->set_button_icon(EditorInterface::get_singleton()->get_editor_theme()->get_icon(LW_NAME(EditAddRemove), LW_NAME(EditorIcons)));
 		edit_btn->connect(LW_NAME(pressed), callable_mp(this, &EditorInspectorPluginBBPlan::_edit_plan).bind(plan));
 	}
 
