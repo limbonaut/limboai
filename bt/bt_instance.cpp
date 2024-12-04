@@ -42,6 +42,7 @@ BT::Status BTInstance::update(double p_delta) {
 	double start = Time::get_singleton()->get_ticks_usec();
 #endif
 
+	const Ref<BTInstance> keep_alive{ this }; // keep instance alive until update is finished
 	last_status = root_task->execute(p_delta);
 	emit_signal(LW_NAME(updated), last_status);
 
