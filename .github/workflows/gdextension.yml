@@ -41,7 +41,7 @@ on:
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: use_mingw=yes dev_build=no
+  SCONSFLAGS: use_mingw=yes dev_build=no debug_symbols=yes symbols_visibility=visible verbose=yes
   EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
   GODOT_VERSION: 4.3-stable
@@ -61,6 +61,7 @@ jobs:
             platform: linux
             target: template_release
             arch: x86_64
+            bin: liblimboai.linux.template_release.x86_64.so
             should-build: true
 
           - name: 🐧 Linux (x86_64, debug)
@@ -68,20 +69,23 @@ jobs:
             platform: linux
             target: editor
             arch: x86_64
+            bin: liblimboai.linux.editor.x86_64.so
             should-build: true
 
           - name: 🪟 Windows (x86_64, release)
-            runner: windows-latest
+            runner: ubuntu-latest
             platform: windows
             target: template_release
             arch: x86_64
+            bin: liblimboai.windows.template_release.x86_64.dll
             should-build: true
 
           - name: 🪟 Windows (x86_64, debug)
-            runner: windows-latest
+            runner: ubuntu-latest
             platform: windows
             target: editor
             arch: x86_64
+            bin: liblimboai.windows.editor.x86_64.dll
             should-build: true
 
           - name: 🍎 macOS (universal, release)
@@ -89,6 +93,7 @@ jobs:
             platform: macos
             target: template_release
             arch: universal
+            bin: liblimboai.macos.template_release
             should-build: true
 
           - name: 🍎 macOS (universal, debug)
@@ -96,6 +101,7 @@ jobs:
             platform: macos
             target: editor
             arch: universal
+            bin: liblimboai.macos.editor
             should-build: true
 
           - name: 🌐 Web (wasm32, release)
@@ -103,6 +109,7 @@ jobs:
             platform: web
             target: template_release
             arch: wasm32
+            bin: liblimboai.web.template_release.wasm32.wasm
             should-build: ${{ !inputs.test-build }}
 
           - name: 🌐 Web (wasm32, debug)
@@ -110,6 +117,7 @@ jobs:
             platform: web
             target: template_debug
             arch: wasm32
+            bin: liblimboai.web.template_debug.wasm32.wasm
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, release)
@@ -117,6 +125,7 @@ jobs:
             platform: android
             target: template_release
             arch: arm64
+            bin: liblimboai.android.template_release.arm64.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, debug)
@@ -124,6 +133,7 @@ jobs:
             platform: android
             target: template_debug
             arch: arm64
+            bin: liblimboai.android.template_debug.arm64.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm32, release)
@@ -131,6 +141,7 @@ jobs:
             platform: android
             target: template_release
             arch: arm32
+            bin: liblimboai.android.template_release.arm32.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm32, debug)
@@ -138,6 +149,7 @@ jobs:
             platform: android
             target: template_debug
             arch: arm32
+            bin: liblimboai.android.template_debug.arm32.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, release)
@@ -145,6 +157,7 @@ jobs:
             platform: android
             target: template_release
             arch: x86_64
+            bin: liblimboai.android.template_release.x86_64.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, debug)
@@ -152,6 +165,7 @@ jobs:
             platform: android
             target: template_debug
             arch: x86_64
+            bin: liblimboai.android.template_debug.x86_64.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_32, release)
@@ -159,6 +173,7 @@ jobs:
             platform: android
             target: template_release
             arch: x86_32
+            bin: liblimboai.android.template_release.x86_32.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_32, debug)
@@ -166,6 +181,7 @@ jobs:
             platform: android
             target: template_debug
             arch: x86_32
+            bin: liblimboai.android.template_debug.x86_32.so
             should-build: ${{ !inputs.test-build }}
 
           - name: 🍏 iOS (arm64, release)
@@ -173,6 +189,7 @@ jobs:
             platform: ios
             target: template_release
             arch: arm64
+            bin: liblimboai.ios.template_release.arm64.dylib
             should-build: ${{ !inputs.test-build }}
 
           - name: 🍏 iOS (arm64, debug)
@@ -180,6 +197,7 @@ jobs:
             platform: ios
             target: template_debug
             arch: arm64
+            bin: liblimboai.ios.template_debug.arm64.dylib
             should-build: ${{ !inputs.test-build }}
 
           - name: 🍏 iOS (simulator, release)
@@ -188,6 +206,7 @@ jobs:
             target: template_release
             arch: universal
             scons-flags: ios_simulator=yes
+            bin: liblimboai.ios.template_release.universal.simulator.dylib
             should-build: ${{ !inputs.test-build }}
 
           - name: 🍏 iOS (simulator, debug)
@@ -196,13 +215,11 @@ jobs:
             target: template_debug
             arch: universal
             scons-flags: ios_simulator=yes
+            bin: liblimboai.ios.template_debug.universal.simulator.dylib
             should-build: ${{ !inputs.test-build }}
 
         exclude:
           - { opts: { should-build: false } }
-
-    env:
-      BIN: liblimboai.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}
 
     steps:
       - name: Clone LimboAI module
@@ -280,20 +297,22 @@ jobs:
           ndk-version: r23c
           link-to-sdk: true
 
-      - name: Set up MSVC problem matcher on Windows
-        if: matrix.opts.platform == 'windows'
-        uses: ammaraskar/msvc-problem-matcher@master
-
       - name: Set up scons cache
         if: inputs.test-build # ! Only cache test/PR builds
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+          key: ${{matrix.opts.bin}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
           restore-keys: |
-            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}
-            ${{env.BIN}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}
+            ${{matrix.opts.bin}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+            ${{matrix.opts.bin}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}-${{inputs.limboai-ref}}
+            ${{matrix.opts.bin}}-${{inputs.debug-symbols}}-${{inputs.godot-cpp-ref}}
+
+      - name: Set up MinGW
+        if: matrix.opts.platform == 'windows'
+        run: |
+          sudo apt update
+          sudo apt install g++-mingw-w64-x86-64-posix
 
       - name: Compilation
         shell: bash
@@ -303,6 +322,53 @@ jobs:
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
           scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{env.DEBUG_FLAGS}} ${{matrix.opts.scons-flags}} ${{env.SCONSFLAGS}}
+
+      - name: Split debug symbols (Linux)
+        if: inputs.debug-symbols && matrix.opts.platform == 'linux'
+        shell: bash
+        run: |
+          cd demo/addons/limboai/bin/
+          objcopy --only-keep-debug ${{matrix.opts.bin}} ${{matrix.opts.bin}}.debug
+          objcopy --add-gnu-debuglink ${{matrix.opts.bin}}.debug ${{matrix.opts.bin}}
+          strip --strip-debug ${{matrix.opts.bin}}
+          readelf --debug-dump=links ${{matrix.opts.bin}}
+          nm ${{matrix.opts.bin}}
+
+      - name: Split debug symbols (Windows)
+        if: inputs.debug-symbols && matrix.opts.platform == 'windows'
+        shell: bash
+        run: |
+          cd demo/addons/limboai/bin/
+          x86_64-w64-mingw32-objcopy --only-keep-debug ${{matrix.opts.bin}} ${{matrix.opts.bin}}.debug
+          x86_64-w64-mingw32-objcopy --add-gnu-debuglink ${{matrix.opts.bin}}.debug ${{matrix.opts.bin}}
+          x86_64-w64-mingw32-strip --strip-debug ${{matrix.opts.bin}}
+          x86_64-w64-mingw32-nm ${{matrix.opts.bin}}
+
+      - name: Split debug symbols (macOS & iOS)
+        if: inputs.debug-symbols && (matrix.opts.platform == 'macos' || matrix.opts.platform == 'ios')
+        shell: bash
+        run: |
+          cd demo/addons/limboai/bin/
+          if [ "${{matrix.opts.platform}}" == "macos" ]; then
+            cd liblimboai.*.framework/
+          fi
+          dsymutil ${{matrix.opts.bin}}
+          strip -x ${{matrix.opts.bin}}
+          nm ${{matrix.opts.bin}}
+
+      - name: Split debug symbols (Web)
+        if: inputs.debug-symbols && matrix.opts.platform == 'web'
+        shell: bash
+        run: |
+          ls -R emsdk-cache/
+          echo "---"
+          echo ${PATH}
+
+      - name: Split debug symbols (Android)
+        if: inputs.debug-symbols && matrix.opts.platform == 'android'
+        shell: bash
+        run: |
+          cd demo/addons/limboai/bin/
 
       - name: Prepare artifact
         shell: bash
