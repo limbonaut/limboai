@@ -68,9 +68,6 @@ Control *TaskButton::_do_make_tooltip() const {
 		help_symbol = "class|" + task_meta + "|";
 	}
 
-	EditorHelpBit *help_bit = memnew(EditorHelpBit(help_symbol));
-	help_bit->set_content_height_limits(1, 360 * EDSCALE);
-
 	String desc = _module_get_help_description(task_meta);
 	if (desc.is_empty() && is_resource) {
 		// ! HACK: Force documentation parsing.
@@ -84,14 +81,10 @@ Control *TaskButton::_do_make_tooltip() const {
 			desc = _module_get_help_description(task_meta);
 		}
 	}
-	if (desc.is_empty() && help_bit->get_description().is_empty()) {
+	if (desc.is_empty()) {
 		desc = "[i]" + TTR("No description.") + "[/i]";
 	}
-	if (!desc.is_empty()) {
-		help_bit->set_description(desc);
-	}
-
-	EditorHelpBitTooltip::show_tooltip(help_bit, const_cast<TaskButton *>(this));
+	EditorHelpBitTooltip::show_tooltip(const_cast<TaskButton *>(this), help_symbol, desc);
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
