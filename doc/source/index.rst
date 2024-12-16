@@ -85,6 +85,7 @@ Creating your own behavior trees
    getting-started/gdextension
    getting-started/c-sharp
    getting-started/featured-classes
+   getting-started/contributing
 
 .. toctree::
    :hidden:
