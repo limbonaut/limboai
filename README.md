@@ -121,7 +121,8 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 
 ## Contributing
 
-Contributions are welcome! Please open issues for bug reports, feature requests, or code changes. Keep the minor versions backward-compatible when submitting pull requests.
+Contributions are welcome! Please open issues for bug reports, feature requests, or code changes.
+For detailed guidelines on contributing to code or documentation, check out our [Contributing](https://limboai.readthedocs.io/en/latest/getting-started/contributing.html) page.
 
 If you have an idea for a behavior tree task or a feature that could be useful in a variety of projects, open an issue to discuss it.
 
