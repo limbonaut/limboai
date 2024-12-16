@@ -31,7 +31,7 @@ Compiling as module of the Godot Engine
    git checkout 4.3-stable  # Replace "4.3-stable" with the latest stable tag
    git clone https://github.com/limbonaut/limboai modules/limboai
 
-Consult the `Godot Engine documentation <https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html>`_~
+Consult the `Godot Engine documentation <https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html>`_
 for detailed instructions on building the engine.
 
 **Unit tests** can be compiled using the ``tests=yes`` build option. To execute them,
