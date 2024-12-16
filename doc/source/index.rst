@@ -26,6 +26,7 @@ one big state machine into multiple smaller ones.
 
    getting-started/getting-limboai
    getting-started/c-sharp
+   getting-started/contributing
 
 .. toctree::
    :hidden:
