@@ -197,7 +197,7 @@ Let's illustrate this with a practical code example:
     func _idle_update(delta: float) -> void:
         var dir: Vector2 = Input.get_vector(
             &"ui_left", &"ui_right", &"ui_up", &"ui_down")
-        if dir.is_zero_approx():
+        if not dir.is_zero_approx():
             hsm.dispatch(&"movement_started")
 
 
