@@ -1,8 +1,8 @@
 .. _hsm:
 
 
-State Machines
-==============
+Create State Machines
+=====================
 
 This guide will show how to set up and use a state machine using :ref:`LimboHSM<class_LimboHSM>`.
 

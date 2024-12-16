@@ -1,7 +1,7 @@
 .. _custom_tasks:
 
-Creating custom tasks in GDScript
-=================================
+Creating custom tasks
+=====================
 
 By default, user tasks should be placed in the ``res://ai/tasks``
 directory. You can set an alternative location for user tasks in the
@@ -145,3 +145,47 @@ Example 2: InRange condition
            return SUCCESS
        else:
            return FAILURE
+
+.. _creating_tasks_in_c
+
+Creating tasks in C#
+--------------------
+
+You can use the following script template for custom tasks:
+
+.. code:: csharp
+
+    using Godot;
+    using System;
+
+    [Tool]
+    public partial class _CLASS_ : _BASE_
+    {
+        public override string _GenerateName()
+        {
+            return "_CLASS_";
+        }
+
+        public override void _Setup()
+        {
+        }
+
+        public override void _Enter()
+        {
+        }
+
+        public override void _Exit()
+        {
+        }
+
+        public override Status _Tick(double delta)
+        {
+            return Status.Success;
+        }
+
+        public override string[] _GetConfigurationWarnings()
+        {
+            return Array.Empty<string>();
+        }
+    }
+
