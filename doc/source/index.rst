@@ -1,9 +1,6 @@
 LimboAI Documentation
 =====================
 
-About
------
-
 **LimboAI** is an open-source C++ module for **Godot Engine 4** providing a combination of
 **Behavior Trees** and **State Machines** for crafting your game’s AI. It comes with a
 behavior tree editor, built-in documentation, visual debugger, and more! While
@@ -40,7 +37,6 @@ one big state machine into multiple smaller ones.
    behavior-trees/custom-tasks
    behavior-trees/using-blackboard
    behavior-trees/accessing-nodes
-   behavior-trees/debugging
 
 .. toctree::
    :hidden:
