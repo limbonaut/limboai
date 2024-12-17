@@ -297,7 +297,7 @@ public:
 #ifdef LIMBOAI_MODULE
 	bool has_main_screen() const override { return true; }
 
-	virtual String get_name() const override { return "LimboAI"; }
+	virtual String get_plugin_name() const override { return "LimboAI"; }
 	virtual void make_visible(bool p_visible) override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
