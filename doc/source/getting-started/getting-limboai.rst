@@ -3,13 +3,12 @@ Getting LimboAI
 
 LimboAI can be used as either a C++ module or as a GDExtension shared library.
 There are some differences between the two. In short, GDExtension version is more
-convenient to use but somewhat limited in features. The module version is the most feature-full and slightly more performant, but it requires using custom engine builds including the export templates.
+convenient to use but somewhat limited in features. The module version provides better editor
+experience and is slightly more performant, but it requires using custom engine builds including the export templates.
 Whichever you choose to use, your project will stay compatible with both and you can switch from one to
 the other any time.
 
-Choose the version you'd like to use. The module version provides better editor
-experience and performance, while the GDExtension version is more convenient to use.
-If you're unsure, start with the GDExtension version.
+Choose the version you'd like to use. If you're unsure, start with the GDExtension version.
 You can change your decision at any time - both versions are fully compatible.
 
 Get GDExtension version
