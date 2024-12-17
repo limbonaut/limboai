@@ -18,7 +18,6 @@ Get GDExtension version
 GDExtension is the most convenient way of using the LimboAI plugin, but it comes
 with certain limitations:
 
-* Built-in documentation is not available. The plugin will open online documentation instead when requested.
 * Documentation tooltips are not available.
 * Handy :ref:`class_BBParam` property editor is not available in the extension due to dependencies on the engine classes that are not available in the Godot API.
 
