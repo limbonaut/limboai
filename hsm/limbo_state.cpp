@@ -24,7 +24,7 @@ void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	blackboard_plan = p_plan;
 
 	if (Engine::get_singleton()->is_editor_hint() && blackboard_plan.is_valid()) {
-		blackboard_plan->set_parent_scope_plan_provider(callable_mp(this, &LimboState::_get_parent_scope_plan));
+		blackboard_plan->set_parent_scope_plan_provider(Callable(this, "_get_parent_scope_plan"));
 	}
 
 	_update_blackboard_plan();
@@ -212,6 +212,8 @@ void LimboState::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_blackboard_plan", "plan"), &LimboState::set_blackboard_plan);
 	ClassDB::bind_method(D_METHOD("get_blackboard_plan"), &LimboState::get_blackboard_plan);
+
+	ClassDB::bind_method(D_METHOD("_get_parent_scope_plan"), &LimboState::_get_parent_scope_plan);
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);

@@ -35,7 +35,7 @@ void BTNewScope::_set_parent_scope_plan_from_bt() {
 	ERR_FAIL_NULL(get_blackboard_plan());
 	Ref<BehaviorTree> bt = get_root()->editor_get_behavior_tree();
 	ERR_FAIL_NULL(bt);
-	get_blackboard_plan()->set_parent_scope_plan_provider(callable_mp(bt.ptr(), &BehaviorTree::get_blackboard_plan));
+	get_blackboard_plan()->set_parent_scope_plan_provider(Callable(bt.ptr(), "get_blackboard_plan"));
 }
 #endif // TOOLS_ENABLED
 
