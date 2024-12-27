@@ -211,7 +211,7 @@ private:
 	void _update_task_tree(const Ref<BehaviorTree> &p_bt, const Ref<BTTask> &p_specific_task = nullptr);
 	void _disable_editing();
 	void _set_as_dirty(const Ref<BehaviorTree> &p_bt, bool p_dirty);
-	void _create_user_task_dir();
+	void _create_user_task_dir(String task_dir);
 	void _remove_task_from_favorite(const String &p_task);
 	void _save_and_restart();
 	void _extract_subtree(const String &p_path);

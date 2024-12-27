@@ -95,9 +95,9 @@ void LimboTaskDB::scan_user_tasks() {
 		tasks_cache[LimboTaskDB::get_misc_category()] = List<String>();
 	}
 
-	for (int i = 1; i < 4; i++) {
-		String dir1 = ProjectSettings::get_singleton()->get_setting_with_override("limbo_ai/behavior_tree/user_task_dir_" + itos(i));
-		_populate_from_user_dir(dir1, &tasks_cache);
+	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir");
+	for String user_task_dir : user_task_directories) {
+		_populate_from_user_dir(user_task_dir, &tasks_cache);
 	}
 
 	for (KeyValue<String, List<String>> &E : tasks_cache) {
