@@ -1897,7 +1897,7 @@ LimboAIEditor::LimboAIEditor() {
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR), "res://ai/trees");
 	PackedStringArray user_task_dir_default;
 	user_task_dir_default.append("res://ai/tasks");
-	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/user_task_dirs", PROPERTY_HINT_TYPE_STRING , vformat("%s/%s:", Variant::STRING, PROPERTY_HINT_DIR)), user_task_dir_default);
+	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/user_task_dirs", PROPERTY_HINT_TYPE_STRING, vformat("%s/%s:", Variant::STRING, PROPERTY_HINT_DIR)), user_task_dir_default);
 
 	String bt_default_dir = GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir");
 	save_dialog->set_current_dir(bt_default_dir);
