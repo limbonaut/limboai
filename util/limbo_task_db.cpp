@@ -95,8 +95,8 @@ void LimboTaskDB::scan_user_tasks() {
 		tasks_cache[LimboTaskDB::get_misc_category()] = List<String>();
 	}
 
-	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir");
-	for String user_task_dir : user_task_directories) {
+	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dirs");
+	for (const String &user_task_dir : user_task_directories) {
 		_populate_from_user_dir(user_task_dir, &tasks_cache);
 	}
 

@@ -1044,7 +1044,7 @@ void LimboAIEditor::_on_filesystem_changed() {
 }
 
 void LimboAIEditor::_on_new_script_pressed() {
-	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir");
+	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dirs");
 	ERR_FAIL_INDEX_MSG(0, user_task_directories.size(), "LimboAI: No user task directory set");
 	String default_task_dir = user_task_directories[0];
 	SCRIPT_EDITOR()->open_script_create_dialog("BTAction", default_task_dir.path_join("new_task"));
@@ -1417,8 +1417,8 @@ void LimboAIEditor::_update_banners() {
 		}
 	}
 
-	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dir");
-	for (String task_dir : user_task_directories) {
+	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dirs");
+	for (const String &task_dir : user_task_directories) {
 		if (!task_dir.is_empty() && !DirAccess::dir_exists_absolute(task_dir)) {
 			ActionBanner *banner = memnew(ActionBanner);
 			banner->set_text(vformat(TTR("Task folder not found: %s"), task_dir));
@@ -1897,7 +1897,7 @@ LimboAIEditor::LimboAIEditor() {
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR), "res://ai/trees");
 	PackedStringArray user_task_dir_default;
 	user_task_dir_default.append("res://ai/tasks");
-	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/user_task_dir", PROPERTY_HINT_TYPE_STRING , "4/14:"), user_task_dir_default);
+	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/user_task_dirs", PROPERTY_HINT_TYPE_STRING , vformat("%s/%s:", Variant::STRING, PROPERTY_HINT_DIR)), user_task_dir_default);
 
 	String bt_default_dir = GLOBAL_GET("limbo_ai/behavior_tree/behavior_tree_default_dir");
 	save_dialog->set_current_dir(bt_default_dir);
