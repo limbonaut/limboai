@@ -57,6 +57,7 @@ public:
 	void erase_var(const StringName &p_name);
 	void clear() { data.clear(); }
 	TypedArray<StringName> list_vars() const;
+	void print_state() const;
 
 	Dictionary get_vars_as_dict() const;
 	void populate_from_dict(const Dictionary &p_dictionary);

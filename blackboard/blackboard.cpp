@@ -10,6 +10,7 @@
  */
 
 #include "blackboard.h"
+#include "../util/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/variant/variant.h"
@@ -75,6 +76,26 @@ TypedArray<StringName> Blackboard::list_vars() const {
 	return var_names;
 }
 
+void Blackboard::print_state() const {
+	Ref<Blackboard> bb{ this };
+	int scope_idx = 0;
+	while (bb.is_valid()) {
+		int i = 0;
+		String line = "Scope " + itos(scope_idx) + ": { ";
+		for (const KeyValue<StringName, BBVariable> &kv : bb->data) {
+			if (i > 0) {
+				line += ", ";
+			}
+			line += String(kv.key) + ": " + String(kv.value.get_value());
+			i++;
+		}
+		line += " }";
+		PRINT_LINE(line);
+		bb = bb->get_parent();
+		scope_idx++;
+	}
+}
+
 Dictionary Blackboard::get_vars_as_dict() const {
 	Dictionary dict;
 	for (const KeyValue<StringName, BBVariable> &kv : data) {
@@ -136,6 +157,7 @@ void Blackboard::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("erase_var", "var_name"), &Blackboard::erase_var);
 	ClassDB::bind_method(D_METHOD("clear"), &Blackboard::clear);
 	ClassDB::bind_method(D_METHOD("list_vars"), &Blackboard::list_vars);
+	ClassDB::bind_method(D_METHOD("print_state"), &Blackboard::print_state);
 	ClassDB::bind_method(D_METHOD("get_vars_as_dict"), &Blackboard::get_vars_as_dict);
 	ClassDB::bind_method(D_METHOD("populate_from_dict", "dictionary"), &Blackboard::populate_from_dict);
 	ClassDB::bind_method(D_METHOD("top"), &Blackboard::top);
