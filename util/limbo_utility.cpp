@@ -575,7 +575,7 @@ inline void _open_online_doc_page(const String &p_page) {
 }
 
 void LimboUtility::open_doc_introduction() {
-	_open_online_doc_page("getting-started/introduction.html");
+	_open_online_doc_page("behavior-trees/introduction.html");
 }
 
 void LimboUtility::open_doc_online() {
@@ -583,11 +583,11 @@ void LimboUtility::open_doc_online() {
 }
 
 void LimboUtility::open_doc_gdextension_limitations() {
-	_open_online_doc_page("getting-started/gdextension.html#limitations-of-the-gdextension-version");
+	_open_online_doc_page("getting-started/getting-limboai.html#get-gdextension-version");
 }
 
 void LimboUtility::open_doc_custom_tasks() {
-	_open_online_doc_page("getting-started/custom-tasks.html");
+	_open_online_doc_page("behavior-trees/custom-tasks.html");
 }
 
 void LimboUtility::open_doc_class(const String &p_class_name) {
