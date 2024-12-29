@@ -86,6 +86,12 @@
 				Fills the Blackboard with multiple variables from a dictionary. The dictionary keys must be variable names and the dictionary values must be variable values. Keys must be StringName or String.
 			</description>
 		</method>
+		<method name="print_state" qualifiers="const">
+			<return type="void" />
+			<description>
+				Prints the values of all variables in each scope.
+			</description>
+		</method>
 		<method name="set_parent">
 			<return type="void" />
 			<param index="0" name="blackboard" type="Blackboard" />
