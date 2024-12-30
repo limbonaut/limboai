@@ -54,6 +54,8 @@ Methods
    +---------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                                      | :ref:`populate_from_dict<class_Blackboard_method_populate_from_dict>`\ (\ dictionary\: ``Dictionary``\ )                                                                                            |
    +---------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+   | |void|                                      | :ref:`print_state<class_Blackboard_method_print_state>`\ (\ ) |const|                                                                                                                               |
+   +---------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                                      | :ref:`set_parent<class_Blackboard_method_set_parent>`\ (\ blackboard\: :ref:`Blackboard<class_Blackboard>`\ )                                                                                       |
    +---------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
    | |void|                                      | :ref:`set_var<class_Blackboard_method_set_var>`\ (\ var_name\: ``StringName``, value\: ``Variant``\ )                                                                                               |
@@ -189,6 +191,18 @@ Returns all variable names in the Blackboard. Parent scopes are not included.
 |void| **populate_from_dict**\ (\ dictionary\: ``Dictionary``\ ) :ref:`🔗<class_Blackboard_method_populate_from_dict>`
 
 Fills the Blackboard with multiple variables from a dictionary. The dictionary keys must be variable names and the dictionary values must be variable values. Keys must be StringName or String.
+
+.. rst-class:: classref-item-separator
+
+----
+
+.. _class_Blackboard_method_print_state:
+
+.. rst-class:: classref-method
+
+|void| **print_state**\ (\ ) |const| :ref:`🔗<class_Blackboard_method_print_state>`
+
+Prints the values of all variables in each scope.
 
 .. rst-class:: classref-item-separator
 
