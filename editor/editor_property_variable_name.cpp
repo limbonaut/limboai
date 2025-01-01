@@ -89,7 +89,7 @@ void EditorPropertyVariableName::_update_status() {
 		BUTTON_SET_ICON(status_btn, theme_cache.var_empty_icon);
 		status_btn->set_tooltip_text(TTR("Variable name not specified.\nClick to open the blackboard plan."));
 	} else if (plan->has_var(var_name)) {
-		if (expected_type == Variant::NIL || plan->get_var(var_name).get_type() == expected_type) {
+		if (expected_type == Variant::NIL || plan->get_var(var_name).get_type() == Variant::NIL || plan->get_var(var_name).get_type() == expected_type) {
 			BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
 			status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
 		} else {

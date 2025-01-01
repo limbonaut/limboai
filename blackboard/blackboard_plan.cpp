@@ -200,7 +200,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 
 #ifdef TOOLS_ENABLED
 		// * Editor
-		if (!_is_var_hidden(var_name, var)) {
+		if (!_is_var_nil(var) || !_is_var_private(var_name, var)) {
 			if (has_mapping(var_name) || has_property_binding(var_name)) {
 				p_list->push_back(PropertyInfo(Variant::STRING, var_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
 			} else {
@@ -226,7 +226,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	if (is_mapping_enabled()) {
 		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
 		for (const Pair<StringName, BBVariable> &p : var_list) {
-			if (_is_var_hidden(p.first, p.second)) {
+			if (_is_var_private(p.first, p.second)) {
 				continue;
 			}
 			if (unlikely(has_property_binding(p.first))) {
@@ -242,7 +242,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	// * Binding
 	p_list->push_back(PropertyInfo(Variant::NIL, "Binding", PROPERTY_HINT_NONE, "binding/", PROPERTY_USAGE_GROUP));
 	for (const Pair<StringName, BBVariable> &p : var_list) {
-		if (_is_var_hidden(p.first, p.second)) {
+		if (_is_var_nil(p.second) || _is_var_private(p.first, p.second)) {
 			continue;
 		}
 		if (unlikely(has_mapping(p.first))) {
