@@ -200,7 +200,7 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 
 #ifdef TOOLS_ENABLED
 		// * Editor
-		if (!_is_var_nil(var) || !_is_var_private(var_name, var)) {
+		if (!_is_var_nil(var) && !_is_var_private(var_name, var)) {
 			if (has_mapping(var_name) || has_property_binding(var_name)) {
 				p_list->push_back(PropertyInfo(Variant::STRING, var_name, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
 			} else {
