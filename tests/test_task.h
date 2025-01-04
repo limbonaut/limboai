@@ -78,7 +78,7 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 		SUBCASE("Test next_sibling()") {
 			CHECK(child1->next_sibling() == child2);
 			CHECK(child2->next_sibling() == child3);
-			CHECK(child3->next_sibling() == nullptr);
+			CHECK(child3->next_sibling().is_null());
 		}
 		SUBCASE("Test remove_child()") {
 			task->remove_child(child2);
@@ -153,7 +153,7 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 			CHECK(child3->get_root() == task);
 		}
 		SUBCASE("Test get_parent()") {
-			CHECK(task->get_parent() == nullptr);
+			CHECK(task->get_parent().is_null());
 			CHECK(child1->get_parent() == task);
 			CHECK(child2->get_parent() == task);
 			CHECK(child2->get_parent() == task);
