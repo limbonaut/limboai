@@ -34,6 +34,21 @@ Here's an example of how you can interact with the :ref:`Blackboard<class_Blackb
         if blackboard.has_var(speed_var):
             # ...
 
+If you are accessing a variable that holds an object instance, and it is
+expected that the instance may be null or freed, you can do it like this:
+
+.. code:: gdscript
+
+    @export var object_var: StringName = &"object"
+
+    func _tick(delta: float) -> Status:
+        # Get object instance stored in the "object" variable.
+        # - Important: Avoid specifying a type for "obj" in GDScript
+        #   to prevent errors when the instance is freed.
+        var obj = blackboard.get_var(object_var)
+        if is_instance_valid(obj):
+            # ...
+
 It is recommended to suffix variable name properties with ``_var``, like in the example above, which enables the
 inspector to provide a more convenient property editor for the variable. This editor
 allows you to select or add the variable to the blackboard plan, and provides a
