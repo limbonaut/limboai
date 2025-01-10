@@ -130,8 +130,6 @@ Scopes are created automatically to prevent naming collisions between contextual
 - Under :ref:`LimboHSM<class_LimboHSM>` nodes: A new scope is created at the root level,
   and each :ref:`BTState<class_BTState>` child also receives its own separate scope.
 
-Such scopes 
-
 Sharing data between several agents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
