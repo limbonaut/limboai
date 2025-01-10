@@ -122,10 +122,13 @@ This creates a "blackboard scope chain," where each :ref:`Blackboard<class_Black
 and there is no limit to how many blackboards can be in this chain.
 It's important to note that the :ref:`Blackboard<class_Blackboard>` doesn't modify values in the parent scopes.
 
-Some scopes are created automatically. For instance, when using the :ref:`BTNewScope<class_BTNewScope>`
-and :ref:`BTSubtree<class_BTSubtree>` decorators, or when a :ref:`LimboState<class_LimboState>`
-has non-empty blackboard plan defined, or when a root-level :ref:`LimboHSM<class_LimboHSM>`
-node is used. Such scopes prevent naming collisions between contextually separate environments.
+Scopes are created automatically to prevent naming collisions between contextually separate environments:
+
+- Within :ref:`BTNewScope<class_BTNewScope>`.
+- Under :ref:`BTSubtree<class_BTSubtree>` decorators.
+- With :ref:`LimboState<class_LimboState>` that have a non-empty blackboard plan defined.
+- Under :ref:`LimboHSM<class_LimboHSM>` nodes: A new scope is created at the root level,
+  and each :ref:`BTState<class_BTState>` child also receives its own separate scope.
 
 Sharing data between several agents
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
