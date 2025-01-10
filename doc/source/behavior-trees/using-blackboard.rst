@@ -127,8 +127,8 @@ Scopes are created automatically to prevent naming collisions between contextual
 - Within :ref:`BTNewScope<class_BTNewScope>`.
 - Under :ref:`BTSubtree<class_BTSubtree>` decorators.
 - With :ref:`LimboState<class_LimboState>` that have a non-empty blackboard plan defined.
-- Under :ref:LimboHSM<class_LimboHSM> nodes: A new scope is created at the root level,
-  and each :ref:BTState<class_BTState> child also receives its own separate scope.
+- Under :ref:`LimboHSM<class_LimboHSM>` nodes: A new scope is created at the root level,
+  and each :ref:`BTState<class_BTState>` child also receives its own separate scope.
 
 Such scopes 
 
