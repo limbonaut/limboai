@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = "LimboAI"
-copyright = "2021-present Serhii Snitsaruk and the LimboAI contributors"
+copyright = "2023-present Serhii Snitsaruk and the LimboAI contributors"
 author = "Serhii Snitsaruk and the LimboAI contributors"
 release = "1.0"
 
