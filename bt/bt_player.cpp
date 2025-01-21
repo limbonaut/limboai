@@ -91,6 +91,11 @@ void BTPlayer::set_bt_instance(const Ref<BTInstance> &p_bt_instance) {
 	blackboard = p_bt_instance->get_blackboard();
 	agent_node = p_bt_instance->get_agent()->get_path();
 
+#ifdef DEBUG_ENABLED
+	bt_instance->set_monitor_performance(monitor_performance);
+	bt_instance->register_with_debugger();
+#endif // DEBUG_ENABLED
+
 	blackboard_plan.unref();
 	behavior_tree.unref();
 }
