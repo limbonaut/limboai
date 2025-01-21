@@ -42,7 +42,7 @@
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
-void BTPlayer::_load_tree() {
+void BTPlayer::_instantiate_bt() {
 	bt_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Initialization failed - needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
@@ -68,6 +68,19 @@ void BTPlayer::_update_blackboard_plan() {
 	}
 
 	blackboard_plan->set_base_plan(behavior_tree.is_valid() ? behavior_tree->get_blackboard_plan() : nullptr);
+}
+
+void BTPlayer::_initialize() {
+	if (blackboard.is_null()) {
+		blackboard = Ref<Blackboard>(memnew(Blackboard));
+	}
+	if (blackboard_plan.is_valid()) {
+		// Don't overwrite existing blackboard values as they may be initialized from code.
+		blackboard_plan->populate_blackboard(blackboard, false, this, _get_scene_root());
+	}
+	if (behavior_tree.is_valid()) {
+		_instantiate_bt();
+	}
 }
 
 void BTPlayer::set_bt_instance(const Ref<BTInstance> &p_bt_instance) {
@@ -104,7 +117,8 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 	} else {
 		behavior_tree = p_tree;
 		if (get_owner() && is_inside_tree()) {
-			_load_tree();
+			_update_blackboard_plan();
+			_initialize();
 		}
 	}
 }
@@ -179,16 +193,7 @@ void BTPlayer::_notification(int p_notification) {
 		} break;
 		case NOTIFICATION_READY: {
 			if (!Engine::get_singleton()->is_editor_hint()) {
-				if (blackboard.is_null()) {
-					blackboard = Ref<Blackboard>(memnew(Blackboard));
-				}
-				if (blackboard_plan.is_valid()) {
-					// Don't overwrite existing blackboard values as they may be initialized from code.
-					blackboard_plan->populate_blackboard(blackboard, false, this, _get_scene_root());
-				}
-				if (behavior_tree.is_valid()) {
-					_load_tree();
-				}
+				_initialize();
 			} else {
 				_update_blackboard_plan();
 			}

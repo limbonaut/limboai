@@ -83,7 +83,7 @@ void BTInstance::register_with_debugger() {
 
 void BTInstance::unregister_with_debugger() {
 #ifdef DEBUG_ENABLED
-	if (LimboDebugger::get_singleton()->is_active()) {
+	if (LimboDebugger::get_singleton() && LimboDebugger::get_singleton()->is_active()) {
 		LimboDebugger::get_singleton()->unregister_bt_instance(get_instance_id());
 	}
 #endif
@@ -151,5 +151,6 @@ BTInstance::~BTInstance() {
 	emit_signal(LW_NAME(freed));
 #ifdef DEBUG_ENABLED
 	_remove_custom_monitor();
+	unregister_with_debugger();
 #endif
 }
