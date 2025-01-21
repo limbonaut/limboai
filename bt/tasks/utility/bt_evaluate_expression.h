@@ -1,8 +1,7 @@
 /**
  * bt_evaluate_expression.h
  * =============================================================================
- * Copyright 2021-2024 Serhii Snitsaruk
- * Copyright 2024 Wilson E. Alvarez
+ * Copyright (c) 2023-present Serhii Snitsaruk and the LimboAI contributors.
  *
  * Use of this source code is governed by an MIT-style
  * license that can be found in the LICENSE file or at
