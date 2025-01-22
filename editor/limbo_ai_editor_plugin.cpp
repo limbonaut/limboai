@@ -893,6 +893,14 @@ void LimboAIEditor::_on_tree_task_activated() {
 	Ref<Script> scr = selected->get_script();
 	if (scr.is_valid()) {
 		EDIT_SCRIPT(scr->get_path());
+	} else if (IS_CLASS(selected, BTSubtree)) {
+		Ref<BehaviorTree> subtree = static_cast<Ref<BTSubtree>>(selected)->get_subtree();
+		if (subtree.is_valid()) {
+			EDIT_RESOURCE(subtree);
+		} else {
+			LimboUtility::get_singleton()->open_doc_class(selected->get_class());
+		}
+		EDIT_RESOURCE(subtree);
 	} else {
 		LimboUtility::get_singleton()->open_doc_class(selected->get_class());
 	}
