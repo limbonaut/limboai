@@ -163,7 +163,7 @@ void BTTask::set_custom_name(const String &p_name) {
 
 void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node *p_scene_root) {
 	ERR_FAIL_NULL(p_agent);
-	ERR_FAIL_NULL(p_blackboard);
+	ERR_FAIL_COND(p_blackboard.is_null());
 	ERR_FAIL_NULL(p_scene_root);
 	data.agent = p_agent;
 	data.blackboard = p_blackboard;
