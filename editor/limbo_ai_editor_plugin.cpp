@@ -917,6 +917,7 @@ void LimboAIEditor::_on_visibility_changed() {
 		}
 
 		task_palette->refresh();
+		_update_banners();
 	}
 	_update_favorite_tasks();
 
@@ -1419,9 +1420,11 @@ void LimboAIEditor::_update_misc_menu() {
 }
 
 void LimboAIEditor::_update_banners() {
-	for (int i = 0; i < banners->get_child_count(); i++) {
+	for (int i = banners->get_child_count() - 1; i >= 0; i--) {
 		if (banners->get_child(i)->has_meta(LW_NAME(managed))) {
-			banners->get_child(i)->queue_free();
+			Node *banner = banners->get_child(i);
+			banners->remove_child(banner);
+			memfree(banner);
 		}
 	}
 
@@ -1435,7 +1438,7 @@ void LimboAIEditor::_update_banners() {
 			banner->add_spacer();
 			banner->add_action(TTR("Help..."), callable_mp(LimboUtility::get_singleton(), &LimboUtility::open_doc_custom_tasks));
 			banner->set_meta(LW_NAME(managed), Variant(true));
-			banners->call_deferred(LW_NAME(add_child), banner);
+			banners->add_child(banner);
 		}
 	}
 
@@ -1449,7 +1452,7 @@ void LimboAIEditor::_update_banners() {
 			banner->add_action(TTR("Remove"), callable_mp(this, &LimboAIEditor::_remove_task_from_favorite).bind(task_meta), true);
 			banner->add_action(TTR("Edit Favorite Tasks..."), callable_mp(this, &LimboAIEditor::_edit_project_settings));
 			banner->set_meta(LW_NAME(managed), Variant(true));
-			banners->call_deferred(LW_NAME(add_child), banner);
+			banners->add_child(banner);
 		}
 	}
 
@@ -1459,7 +1462,7 @@ void LimboAIEditor::_update_banners() {
 		banner->set_text(TTR("Restart required to apply changes to editor layout"));
 		banner->add_action(TTR("Save & Restart"), callable_mp(this, &LimboAIEditor::_save_and_restart), true);
 		banner->set_meta(LW_NAME(managed), Variant(true));
-		banners->call_deferred(LW_NAME(add_child), banner);
+		banners->add_child(banner);
 	}
 }
 
@@ -1508,7 +1511,6 @@ void LimboAIEditor::_notification(int p_what) {
 			task_tree->connect("task_activated", callable_mp(this, &LimboAIEditor::_on_tree_task_activated));
 			task_tree->connect("probability_clicked", callable_mp(this, &LimboAIEditor::_action_selected).bind(ACTION_EDIT_PROBABILITY));
 			task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_on_visibility_changed));
-			task_tree->connect("visibility_changed", callable_mp(this, &LimboAIEditor::_update_banners));
 			save_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_on_save_pressed));
 			misc_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_update_misc_menu));
 			misc_btn->get_popup()->connect("id_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
