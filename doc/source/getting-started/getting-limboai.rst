@@ -14,6 +14,10 @@ You can change your decision at any time - both versions are fully compatible.
 Get GDExtension version
 ------------------------
 
+Precompiled builds are available on the official
+`LimboAI GitHub <https://github.com/limbonaut/limboai#getting-limboai>`_ page,
+and in the Asset Library.
+
 GDExtension is the most convenient way of using the LimboAI plugin, but it comes
 with certain limitations:
 
@@ -34,8 +38,7 @@ Get module version
 -------------------
 
 Precompiled builds are available on the official
-`LimboAI GitHub <https://github.com/limbonaut/limboai#getting-limboai>`_ page,
-and in the Asset Library (coming soon!).
+`LimboAI GitHub <https://github.com/limbonaut/limboai#getting-limboai>`_ page.
 
 Installation instructions:
 
@@ -44,3 +47,5 @@ Installation instructions:
 3. Extract the pre-compiled editor and the demo project files.
 4. Launch the pre-compiled editor binary, import and open the demo project.
 5. Run the project.
+
+**Important**: To export your game using the module version of LimboAI, make sure to use the pre-compiled export templates included in the same GitHub release build.
