@@ -93,7 +93,7 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 			}
 
 			EditorData &ed = EditorNode::get_editor_data();
-			Ref<Texture2D> script_icon = ed.get_script_icon(s);
+			Ref<Texture2D> script_icon = ed.get_script_icon(s->get_path());
 			if (script_icon.is_valid()) {
 				return script_icon;
 			}
