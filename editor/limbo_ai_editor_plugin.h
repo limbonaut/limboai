@@ -26,6 +26,7 @@
 #include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/templates/hash_set.h"
+#include "editor/editor_main_screen.h"
 #include "editor/editor_node.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
@@ -42,6 +43,7 @@
 #include "scene/gui/popup.h"
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
+#include "scene/gui/tab_bar.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/texture.h"
 #endif // LIMBOAI_MODULE
@@ -295,7 +297,7 @@ public:
 #ifdef LIMBOAI_MODULE
 	bool has_main_screen() const override { return true; }
 
-	virtual String get_name() const override { return "LimboAI"; }
+	virtual String get_plugin_name() const override { return "LimboAI"; }
 	virtual void make_visible(bool p_visible) override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
