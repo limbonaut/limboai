@@ -122,7 +122,7 @@ jobs:
           - name: 🤖 Android (arm64, debug)
             runner: ubuntu-20.04
             platform: android
-            target: template_debug
+            target: editor
             arch: arm64
             should-build: ${{ !inputs.test-build }}
 
@@ -136,7 +136,7 @@ jobs:
           - name: 🤖 Android (arm32, debug)
             runner: ubuntu-20.04
             platform: android
-            target: template_debug
+            target: editor
             arch: arm32
             should-build: ${{ !inputs.test-build }}
 
@@ -150,7 +150,7 @@ jobs:
           - name: 🤖 Android (x86_64, debug)
             runner: ubuntu-20.04
             platform: android
-            target: template_debug
+            target: editor
             arch: x86_64
             should-build: ${{ !inputs.test-build }}
 
@@ -164,7 +164,7 @@ jobs:
           - name: 🤖 Android (x86_32, debug)
             runner: ubuntu-20.04
             platform: android
-            target: template_debug
+            target: editor
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
