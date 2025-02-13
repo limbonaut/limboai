@@ -108,7 +108,7 @@ jobs:
           - name: 🌐 Web (wasm32, debug)
             runner: ubuntu-20.04
             platform: web
-            target: template_debug
+            target: editor
             arch: wasm32
             should-build: ${{ !inputs.test-build }}
 
@@ -178,7 +178,7 @@ jobs:
           - name: 🍏 iOS (arm64, debug)
             runner: macos-latest
             platform: ios
-            target: template_debug
+            target: editor
             arch: arm64
             should-build: ${{ !inputs.test-build }}
 
@@ -193,7 +193,7 @@ jobs:
           - name: 🍏 iOS (simulator, debug)
             runner: macos-latest
             platform: ios
-            target: template_debug
+            target: editor
             arch: universal
             scons-flags: ios_simulator=yes
             should-build: ${{ !inputs.test-build }}
