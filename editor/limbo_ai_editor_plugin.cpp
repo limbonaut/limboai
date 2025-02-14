@@ -200,7 +200,7 @@ void LimboAIEditor::_remove_task(const Ref<BTTask> &p_task) {
 	ERR_FAIL_COND(p_task.is_null());
 	ERR_FAIL_COND(task_tree->get_bt().is_null());
 	EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Remove BT Task"));
-	if (p_task->get_parent() == nullptr) {
+	if (p_task->get_parent().is_null()) {
 		ERR_FAIL_COND(task_tree->get_bt()->get_root_task() != p_task);
 		undo_redo->add_do_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), Variant());
 		undo_redo->add_undo_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), task_tree->get_bt()->get_root_task());
@@ -745,7 +745,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 
 void LimboAIEditor::_on_probability_edited(double p_value) {
 	Ref<BTTask> selected = task_tree->get_selected();
-	ERR_FAIL_COND(selected == nullptr);
+	ERR_FAIL_COND(selected.is_null());
 	Ref<BTProbabilitySelector> probability_selector = selected->get_parent();
 	ERR_FAIL_COND(probability_selector.is_null());
 	if (percent_mode->is_pressed()) {
@@ -1252,7 +1252,7 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 		} break;
 		case TAB_JUMP_TO_OWNER: {
 			Ref<BehaviorTree> bt = history[idx_history];
-			ERR_FAIL_NULL(bt);
+			ERR_FAIL_COND(bt.is_null());
 			String bt_path = bt->get_path();
 			if (!bt_path.is_empty()) {
 				owner_picker->pick_and_open_owner_of_resource(bt_path);
@@ -1370,7 +1370,7 @@ void LimboAIEditor::_update_favorite_tasks() {
 		}
 		btn->set_text(task_name);
 		btn->set_meta(LW_NAME(task_meta), task_meta);
-		BUTTON_SET_ICON(btn, LimboUtility::get_singleton()->get_task_icon(task_meta));
+		btn->set_button_icon(LimboUtility::get_singleton()->get_task_icon(task_meta));
 		btn->set_tooltip_text(vformat(TTR("Add %s task."), task_name));
 		btn->set_flat(true);
 		btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to be of the proper size.
@@ -1542,11 +1542,11 @@ void LimboAIEditor::_notification(int p_what) {
 
 			ADD_STYLEBOX_OVERRIDE(tab_bar_panel, "panel", get_theme_stylebox("tabbar_background", "TabContainer"));
 
-			BUTTON_SET_ICON(new_btn, get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(load_btn, get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(save_btn, get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(new_script_btn, get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(misc_btn, get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
+			new_btn->set_button_icon(get_theme_icon(LW_NAME(New), LW_NAME(EditorIcons)));
+			load_btn->set_button_icon(get_theme_icon(LW_NAME(Load), LW_NAME(EditorIcons)));
+			save_btn->set_button_icon(get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
+			new_script_btn->set_button_icon(get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
+			misc_btn->set_button_icon(get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
 
 			_update_favorite_tasks();
 		} break;
