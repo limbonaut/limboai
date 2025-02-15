@@ -66,5 +66,5 @@ option again to update and tidy up the XML files.
 
 Sphinx RST files for the class documentation are generated from
 XML files using the Godot script ``make_rst.py`` and stored in the ``doc/source/classes`` directory.
-This process is performed using our own script ``gdextension/update_rst.sh``. RST files
+This process is performed using our own script ``scripts/update_rst.sh``. RST files
 in ``doc/source/classes`` should not be edited manually.
