@@ -404,9 +404,11 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_ONESHOT: {
 			return "ONESHOT";
 		}
+#ifdef LIMBOAI_MODULE
 		case PROPERTY_HINT_NO_NODEPATH: {
 			return "NO_NODEPATH";
 		}
+#endif // ! LIMBOAI_MODULE
 		case PROPERTY_HINT_LOCALE_ID: {
 			return "LOCALE_ID";
 		}
