@@ -100,6 +100,7 @@
 #include "editor/debugger/behavior_tree_data.h"
 #include "editor/debugger/limbo_debugger.h"
 #include "editor/debugger/limbo_debugger_plugin.h"
+#include "editor/editor_property_bb_param.h"
 #include "editor/mode_switch_button.h"
 #include "editor/tree_search.h"
 #include "hsm/limbo_hsm.h"
@@ -268,6 +269,8 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(EditorPropertyPropertyPath);
 		GDREGISTER_INTERNAL_CLASS(EditorPropertyVariableName);
 		GDREGISTER_INTERNAL_CLASS(EditorInspectorPluginVariableName);
+		GDREGISTER_INTERNAL_CLASS(EditorPropertyBBParam);
+		GDREGISTER_INTERNAL_CLASS(EditorInspectorPluginBBParam);
 		GDREGISTER_INTERNAL_CLASS(OwnerPicker);
 		GDREGISTER_INTERNAL_CLASS(LimboAIEditor);
 		GDREGISTER_INTERNAL_CLASS(LimboAIEditorPlugin);
