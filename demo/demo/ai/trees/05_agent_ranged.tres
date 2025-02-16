@@ -1,10 +1,10 @@
 [gd_resource type="BehaviorTree" load_steps=41 format=3 uid="uid://cqluon1y1hnn5"]
 
-[ext_resource type="Script" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_4xk1i"]
-[ext_resource type="Script" path="res://demo/ai/tasks/is_aligned_with_target.gd" id="2_a8qex"]
-[ext_resource type="Script" path="res://demo/ai/tasks/arrive_pos.gd" id="3_q4r2p"]
-[ext_resource type="Script" path="res://demo/ai/tasks/select_flanking_pos.gd" id="4_53hao"]
-[ext_resource type="Script" path="res://demo/ai/tasks/face_target.gd" id="5_aexyq"]
+[ext_resource type="Script" uid="uid://ccr43pgd4488l" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_4xk1i"]
+[ext_resource type="Script" uid="uid://dbhd2dvt77sm4" path="res://demo/ai/tasks/is_aligned_with_target.gd" id="2_a8qex"]
+[ext_resource type="Script" uid="uid://df82exuqnfdb2" path="res://demo/ai/tasks/arrive_pos.gd" id="3_q4r2p"]
+[ext_resource type="Script" uid="uid://ct71h72pech3b" path="res://demo/ai/tasks/select_flanking_pos.gd" id="4_53hao"]
+[ext_resource type="Script" uid="uid://dbo0kq2cwb4qv" path="res://demo/ai/tasks/face_target.gd" id="5_aexyq"]
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_46tbn"]
 var/speed/name = &"speed"

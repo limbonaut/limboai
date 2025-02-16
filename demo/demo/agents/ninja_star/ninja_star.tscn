@@ -1,9 +1,9 @@
 [gd_scene load_steps=10 format=3 uid="uid://bj5n72nomeaci"]
 
-[ext_resource type="Script" path="res://demo/agents/ninja_star/ninja_star.gd" id="1_pja57"]
+[ext_resource type="Script" uid="uid://ea3wq7unbfaw" path="res://demo/agents/ninja_star/ninja_star.gd" id="1_pja57"]
 [ext_resource type="Texture2D" uid="uid://2uyxh7sy8qny" path="res://demo/assets/weapon_ninja_star.png" id="1_ptof7"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_2rj5a"]
-[ext_resource type="Script" path="res://demo/agents/scripts/hitbox.gd" id="2_iem02"]
+[ext_resource type="Script" uid="uid://dntc3c582m5w8" path="res://demo/agents/scripts/hitbox.gd" id="2_iem02"]
 [ext_resource type="Texture2D" uid="uid://bdusy0qqtw0th" path="res://demo/assets/smoke.png" id="5_t37aw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_7uc1b"]

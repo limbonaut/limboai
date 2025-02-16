@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=3 uid="uid://c5fhe3tulhlco"]
 
-[ext_resource type="Script" path="res://demo/props/dummy.gd" id="1_kqftw"]
+[ext_resource type="Script" uid="uid://mapy7metn1kt" path="res://demo/props/dummy.gd" id="1_kqftw"]
 [ext_resource type="Texture2D" uid="uid://cltutcxjx8jnl" path="res://demo/assets/dummy.png" id="1_vdhcl"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_535g7"]
-[ext_resource type="Script" path="res://demo/agents/scripts/hurtbox.gd" id="4_pkfnd"]
-[ext_resource type="Script" path="res://demo/agents/scripts/health.gd" id="5_8qcls"]
+[ext_resource type="Script" uid="uid://dq5h6yydckjc1" path="res://demo/agents/scripts/hurtbox.gd" id="4_pkfnd"]
+[ext_resource type="Script" uid="uid://5byn62y1oa76" path="res://demo/agents/scripts/health.gd" id="5_8qcls"]
 
 [sub_resource type="Animation" id="Animation_1o3gy"]
 length = 0.001
@@ -345,9 +345,9 @@ tracks/8/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_blnjx"]
 _data = {
-"RESET": SubResource("Animation_1o3gy"),
-"hurt": SubResource("Animation_3r20x"),
-"idle": SubResource("Animation_sf5ej")
+&"RESET": SubResource("Animation_1o3gy"),
+&"hurt": SubResource("Animation_3r20x"),
+&"idle": SubResource("Animation_sf5ej")
 }
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pknym"]

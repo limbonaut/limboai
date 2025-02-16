@@ -1,9 +1,9 @@
 [gd_scene load_steps=18 format=3 uid="uid://wdauoepicegb"]
 
-[ext_resource type="Script" path="res://demo/agents/fireball/fireball.gd" id="1_ituf4"]
+[ext_resource type="Script" uid="uid://cw0jj6rj3e4dp" path="res://demo/agents/fireball/fireball.gd" id="1_ituf4"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_6n8mx"]
 [ext_resource type="Texture2D" uid="uid://235liwnxn1n5" path="res://demo/assets/fireball.png" id="3_1an0e"]
-[ext_resource type="Script" path="res://demo/agents/scripts/hitbox.gd" id="4_rjhgc"]
+[ext_resource type="Script" uid="uid://dntc3c582m5w8" path="res://demo/agents/scripts/hitbox.gd" id="4_rjhgc"]
 [ext_resource type="Texture2D" uid="uid://bdusy0qqtw0th" path="res://demo/assets/smoke.png" id="5_dcbp6"]
 
 [sub_resource type="Curve" id="Curve_mukra"]
@@ -104,8 +104,8 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_cphpk"]
 _data = {
-"RESET": SubResource("Animation_wr7y0"),
-"default": SubResource("Animation_ey8it")
+&"RESET": SubResource("Animation_wr7y0"),
+&"default": SubResource("Animation_ey8it")
 }
 
 [node name="Fireball" type="Node2D"]

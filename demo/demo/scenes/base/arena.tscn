@@ -2824,8 +2824,8 @@ tracks/116/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_an3cu"]
 _data = {
-"RESET": SubResource("Animation_gwtgs"),
-"float": SubResource("Animation_75lmk")
+&"RESET": SubResource("Animation_gwtgs"),
+&"float": SubResource("Animation_75lmk")
 }
 
 [node name="Arena" type="Node2D"]

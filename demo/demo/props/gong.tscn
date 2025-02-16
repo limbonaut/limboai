@@ -1,11 +1,11 @@
 [gd_scene load_steps=12 format=3 uid="uid://bpd1wmw2f7bvg"]
 
-[ext_resource type="Script" path="res://demo/props/gong.gd" id="1_77c1i"]
+[ext_resource type="Script" uid="uid://d3cmj6skb7k07" path="res://demo/props/gong.gd" id="1_77c1i"]
 [ext_resource type="Texture2D" uid="uid://i476iia1ua8q" path="res://demo/assets/env_gong.png" id="1_kbnv6"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="1_vl1mv"]
 [ext_resource type="Texture2D" uid="uid://dj4oayt5ttvh8" path="res://demo/assets/fx.png" id="2_dib3m"]
-[ext_resource type="Script" path="res://demo/agents/scripts/hurtbox.gd" id="5_xeb5y"]
-[ext_resource type="Script" path="res://demo/agents/scripts/health.gd" id="6_6a3q1"]
+[ext_resource type="Script" uid="uid://dq5h6yydckjc1" path="res://demo/agents/scripts/hurtbox.gd" id="5_xeb5y"]
+[ext_resource type="Script" uid="uid://5byn62y1oa76" path="res://demo/agents/scripts/health.gd" id="6_6a3q1"]
 
 [sub_resource type="Animation" id="Animation_i5ovs"]
 length = 0.001
@@ -807,8 +807,8 @@ tracks/32/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_332s2"]
 _data = {
-"RESET": SubResource("Animation_i5ovs"),
-"struck": SubResource("Animation_ie54r")
+&"RESET": SubResource("Animation_i5ovs"),
+&"struck": SubResource("Animation_ie54r")
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nixvt"]
