@@ -44,7 +44,8 @@ env:
   SCONSFLAGS: use_mingw=yes dev_build=no
   EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
-  GODOT_VERSION: 4.3-stable
+  GODOT_VERSION: 4.4-beta3
+  GODOT_REPO: godotengine/godot-builds
 
 jobs:
   gdextension:
@@ -351,7 +352,7 @@ jobs:
           echo "Downloading Godot ${GODOT_VERSION}"
           mkdir bin
           cd bin
-          wget "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" -O godot.zip
+          wget "https://github.com/${GODOT_REPO}/releases/download/${GODOT_VERSION}/Godot_v${GODOT_VERSION}_linux.x86_64.zip" -O godot.zip
           unzip godot.zip
           rm godot.zip
           mv Godot_* godot
