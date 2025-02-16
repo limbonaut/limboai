@@ -68,9 +68,6 @@ Control *TaskButton::_do_make_tooltip() const {
 		help_symbol = "class|" + task_meta + "|";
 	}
 
-	EditorHelpBit *help_bit = memnew(EditorHelpBit(help_symbol));
-	help_bit->set_content_height_limits(1, 360 * EDSCALE);
-
 	String desc = _module_get_help_description(task_meta);
 	if (desc.is_empty() && is_resource) {
 		// ! HACK: Force documentation parsing.
@@ -84,14 +81,10 @@ Control *TaskButton::_do_make_tooltip() const {
 			desc = _module_get_help_description(task_meta);
 		}
 	}
-	if (desc.is_empty() && help_bit->get_description().is_empty()) {
+	if (desc.is_empty()) {
 		desc = "[i]" + TTR("No description.") + "[/i]";
 	}
-	if (!desc.is_empty()) {
-		help_bit->set_description(desc);
-	}
-
-	EditorHelpBitTooltip::show_tooltip(help_bit, const_cast<TaskButton *>(this));
+	EditorHelpBitTooltip::show_tooltip(const_cast<TaskButton *>(this), help_symbol, desc);
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -184,7 +177,7 @@ void TaskPaletteSection::set_filter(String p_filter_text) {
 void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_meta) {
 	TaskButton *btn = memnew(TaskButton);
 	btn->set_text(p_name);
-	BUTTON_SET_ICON(btn, icon);
+	btn->set_button_icon(icon);
 	btn->set_tooltip_text("dummy_text"); // Force tooltip to be shown.
 	btn->set_task_meta(p_meta);
 	btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to  be of the proper size.
@@ -195,7 +188,7 @@ void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture
 
 void TaskPaletteSection::set_collapsed(bool p_collapsed) {
 	tasks_container->set_visible(!p_collapsed);
-	BUTTON_SET_ICON(section_header, (p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
+	section_header->set_button_icon((p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
 }
 
 bool TaskPaletteSection::is_collapsed() const {
@@ -214,7 +207,7 @@ void TaskPaletteSection::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
-			BUTTON_SET_ICON(section_header, (is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
+			section_header->set_button_icon((is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
 			section_header->add_theme_font_override(LW_NAME(font), get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts)));
 		} break;
 	}
@@ -600,13 +593,13 @@ void TaskPalette::_notification(int p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			_do_update_theme_item_cache();
 
-			BUTTON_SET_ICON(tool_filters, get_theme_icon(LW_NAME(AnimationFilter), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(tool_refresh, get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons)));
+			tool_filters->set_button_icon(get_theme_icon(LW_NAME(AnimationFilter), LW_NAME(EditorIcons)));
+			tool_refresh->set_button_icon(get_theme_icon(LW_NAME(Reload), LW_NAME(EditorIcons)));
 
 			filter_edit->set_right_icon(get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons)));
 
-			BUTTON_SET_ICON(select_all, LimboUtility::get_singleton()->get_task_icon("LimboSelectAll"));
-			BUTTON_SET_ICON(deselect_all, LimboUtility::get_singleton()->get_task_icon("LimboDeselectAll"));
+			select_all->set_button_icon(LimboUtility::get_singleton()->get_task_icon("LimboSelectAll"));
+			deselect_all->set_button_icon(LimboUtility::get_singleton()->get_task_icon("LimboDeselectAll"));
 
 			category_choice->queue_redraw();
 

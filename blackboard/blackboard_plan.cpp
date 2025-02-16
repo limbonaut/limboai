@@ -532,7 +532,7 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 		if (has_mapping) {
 			StringName target_var = parent_scope_mapping[p.first];
 			if (target_var != StringName()) {
-				ERR_CONTINUE_MSG(p_blackboard->get_parent() == nullptr, vformat("BlackboardPlan: Cannot link variable %s to parent scope because the parent scope is not set.", LimboUtility::get_singleton()->decorate_var(p.first)));
+				ERR_CONTINUE_MSG(p_blackboard->get_parent().is_null(), vformat("BlackboardPlan: Cannot link variable %s to parent scope because the parent scope is not set.", LimboUtility::get_singleton()->decorate_var(p.first)));
 				p_blackboard->link_var(p.first, p_blackboard->get_parent(), target_var);
 			}
 		} else if (is_bound) {

@@ -192,7 +192,7 @@ void TaskTree::_on_item_collapsed(Object *p_obj) {
 	}
 
 	Ref<BTTask> task = item->get_metadata(0);
-	ERR_FAIL_NULL(task);
+	ERR_FAIL_COND(task.is_null());
 	task->set_display_collapsed(item->is_collapsed());
 }
 
@@ -574,7 +574,7 @@ void TaskTree::_bind_methods() {
 
 // TreeSearch API
 void TaskTree::tree_search_show_and_focus() {
-	ERR_FAIL_NULL(tree_search);
+	ERR_FAIL_COND(tree_search.is_null());
 	tree_search_panel->set_visible(true);
 	tree_search_panel->focus_editor();
 }
@@ -587,7 +587,7 @@ TreeSearch::SearchInfo TaskTree::tree_search_get_search_info() const {
 }
 
 void TaskTree::tree_search_set_search_info(const TreeSearch::SearchInfo &p_search_info) {
-	ERR_FAIL_NULL(tree_search);
+	ERR_FAIL_COND(tree_search.is_null());
 	tree_search_panel->set_search_info(p_search_info);
 }
 

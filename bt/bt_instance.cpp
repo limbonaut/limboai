@@ -25,7 +25,7 @@
 #endif
 
 Ref<BTInstance> BTInstance::create(Ref<BTTask> p_root_task, String p_source_bt_path, Node *p_owner_node) {
-	ERR_FAIL_NULL_V(p_root_task, nullptr);
+	ERR_FAIL_COND_V(p_root_task.is_null(), nullptr);
 	ERR_FAIL_NULL_V(p_owner_node, nullptr);
 	Ref<BTInstance> inst;
 	inst.instantiate();
@@ -103,7 +103,7 @@ double BTInstance::_get_mean_update_time_msec_and_reset() {
 
 void BTInstance::_add_custom_monitor() {
 	ERR_FAIL_NULL(get_owner_node());
-	ERR_FAIL_NULL(root_task);
+	ERR_FAIL_COND(root_task.is_null());
 	ERR_FAIL_NULL(root_task->get_agent());
 
 	if (monitor_id == StringName()) {

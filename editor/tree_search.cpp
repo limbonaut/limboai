@@ -158,7 +158,7 @@ void TreeSearch::_draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect,
 		if (font.is_null()) {
 			font = p_tree_item->get_tree()->get_theme_font(LW_NAME(font));
 		}
-		ERR_FAIL_NULL(font);
+		ERR_FAIL_COND(font.is_null());
 		float font_size = p_tree_item->get_custom_font_size(0);
 		if (font_size == -1) {
 			font_size = p_tree_item->get_tree()->get_theme_font_size(LW_NAME(font));
@@ -176,7 +176,7 @@ void TreeSearch::_draw_highlight_item(TreeItem *p_tree_item, const Rect2 p_rect,
 
 		// Stylebox
 		Ref<StyleBox> stylebox = p_tree_item->get_tree()->get_theme_stylebox(LW_NAME(Focus));
-		ERR_FAIL_NULL(stylebox);
+		ERR_FAIL_COND(stylebox.is_null());
 
 		// Extract separation
 		float h_sep = p_tree_item->get_tree()->get_theme_constant(LW_NAME(h_separation));
@@ -559,9 +559,9 @@ void TreeSearchPanel::_notification(int p_what) {
 			break;
 		}
 		case NOTIFICATION_THEME_CHANGED: {
-			BUTTON_SET_ICON(close_button, get_theme_icon(LW_NAME(Close), LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(find_prev_button, get_theme_icon("MoveUp", LW_NAME(EditorIcons)));
-			BUTTON_SET_ICON(find_next_button, get_theme_icon("MoveDown", LW_NAME(EditorIcons)));
+			close_button->set_button_icon(get_theme_icon(LW_NAME(Close), LW_NAME(EditorIcons)));
+			find_prev_button->set_button_icon(get_theme_icon("MoveUp", LW_NAME(EditorIcons)));
+			find_next_button->set_button_icon(get_theme_icon("MoveDown", LW_NAME(EditorIcons)));
 			label_filter->set_text(TTR("Filter"));
 			break;
 		}

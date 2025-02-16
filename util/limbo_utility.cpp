@@ -93,7 +93,7 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 			}
 
 			EditorData &ed = EditorNode::get_editor_data();
-			Ref<Texture2D> script_icon = ed.get_script_icon(s);
+			Ref<Texture2D> script_icon = ed.get_script_icon(s->get_path());
 			if (script_icon.is_valid()) {
 				return script_icon;
 			}
@@ -395,6 +395,20 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_ARRAY_TYPE: {
 			return "ARRAY_TYPE";
 		}
+		case PROPERTY_HINT_DICTIONARY_TYPE: {
+			return "DICTIONARY_TYPE";
+		}
+		case PROPERTY_HINT_TOOL_BUTTON: {
+			return "TOOL_BUTTON";
+		}
+		case PROPERTY_HINT_ONESHOT: {
+			return "ONESHOT";
+		}
+#ifdef LIMBOAI_MODULE
+		case PROPERTY_HINT_NO_NODEPATH: {
+			return "NO_NODEPATH";
+		}
+#endif // ! LIMBOAI_MODULE
 		case PROPERTY_HINT_LOCALE_ID: {
 			return "LOCALE_ID";
 		}

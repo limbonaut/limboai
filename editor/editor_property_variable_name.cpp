@@ -36,7 +36,7 @@ int EditorPropertyVariableName::last_caret_column = 0;
 //***** EditorPropertyVariableName
 
 void EditorPropertyVariableName::_show_variables_popup() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 
 	variables_popup->clear();
 	variables_popup->reset_size();
@@ -86,30 +86,30 @@ void EditorPropertyVariableName::_update_status() {
 	}
 	String var_name = name_edit->get_text();
 	if (var_name.is_empty() && allow_empty) {
-		BUTTON_SET_ICON(status_btn, theme_cache.var_empty_icon);
+		status_btn->set_button_icon(theme_cache.var_empty_icon);
 		status_btn->set_tooltip_text(TTR("Variable name not specified.\nClick to open the blackboard plan."));
 	} else if (plan->has_var(var_name)) {
 		if (expected_type == Variant::NIL || plan->get_var(var_name).get_type() == Variant::NIL || plan->get_var(var_name).get_type() == expected_type) {
-			BUTTON_SET_ICON(status_btn, theme_cache.var_exists_icon);
+			status_btn->set_button_icon(theme_cache.var_exists_icon);
 			status_btn->set_tooltip_text(TTR("This variable is present in the blackboard plan.\nClick to open the blackboard plan."));
 		} else {
-			BUTTON_SET_ICON(status_btn, theme_cache.var_error_icon);
+			status_btn->set_button_icon(theme_cache.var_error_icon);
 			status_btn->set_tooltip_text(TTR(vformat(
 					"The %s variable in the blackboard plan should be of type %s.\nClick to open the blackboard plan.",
 					LimboUtility::get_singleton()->decorate_var(var_name),
 					Variant::get_type_name(expected_type))));
 		}
 	} else if (name_edit->get_text().begins_with("_")) {
-		BUTTON_SET_ICON(status_btn, theme_cache.var_private_icon);
+		status_btn->set_button_icon(theme_cache.var_private_icon);
 		status_btn->set_tooltip_text(TTR("This variable is private and is not included in the blackboard plan.\nClick to open the blackboard plan."));
 	} else {
-		BUTTON_SET_ICON(status_btn, theme_cache.var_not_found_icon);
+		status_btn->set_button_icon(theme_cache.var_not_found_icon);
 		status_btn->set_tooltip_text(TTR("No matching variable found in the blackboard plan!\nClick to open the blackboard plan."));
 	}
 }
 
 void EditorPropertyVariableName::_status_pressed() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	if (!plan->has_var(name_edit->get_text())) {
 		BlackboardPlanEditor::get_singleton()->set_defaults(name_edit->get_text(),
 				expected_type == Variant::NIL ? Variant::FLOAT : expected_type,
@@ -120,14 +120,14 @@ void EditorPropertyVariableName::_status_pressed() {
 }
 
 void EditorPropertyVariableName::_status_mouse_entered() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	if (!plan->has_var(name_edit->get_text())) {
-		BUTTON_SET_ICON(status_btn, theme_cache.var_add_icon);
+		status_btn->set_button_icon(theme_cache.var_add_icon);
 	}
 }
 
 void EditorPropertyVariableName::_status_mouse_exited() {
-	ERR_FAIL_NULL(plan);
+	ERR_FAIL_COND(plan.is_null());
 	_update_status();
 }
 
@@ -182,7 +182,7 @@ void EditorPropertyVariableName::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_THEME_CHANGED: {
-			BUTTON_SET_ICON(drop_btn, get_theme_icon(LW_NAME(GuiOptionArrow), LW_NAME(EditorIcons)));
+			drop_btn->set_button_icon(get_theme_icon(LW_NAME(GuiOptionArrow), LW_NAME(EditorIcons)));
 			theme_cache.var_add_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarAdd));
 			theme_cache.var_exists_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarExists));
 			theme_cache.var_not_found_icon = LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboVarNotFound));
@@ -262,7 +262,7 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 	Variant default_value;
 	if (is_mapping) {
 		plan.reference_ptr(Object::cast_to<BlackboardPlan>(p_object));
-		ERR_FAIL_NULL_V(plan, false);
+		ERR_FAIL_COND_V(plan.is_null(), false);
 		String var_name = p_path.trim_prefix("mapping/");
 		if (plan->has_var(var_name)) {
 			BBVariable variable = plan->get_var(var_name);
@@ -277,7 +277,7 @@ bool EditorInspectorPluginVariableName::_parse_property(Object *p_object, const 
 				plan = parent_plan;
 			}
 		}
-		ERR_FAIL_NULL_V(plan, false);
+		ERR_FAIL_COND_V(plan.is_null(), false);
 	} else {
 		plan = editor_plan_provider.call();
 	}
