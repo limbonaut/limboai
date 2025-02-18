@@ -28,6 +28,7 @@ LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
 	_generate_name = SN("_generate_name");
+	_param_type = SN("_param_type");
 	_replace_task = SN("_replace_task");
 	_update_task_tree = SN("_update_task_tree");
 	_weight_ = SN("_weight_");
@@ -41,12 +42,14 @@ LimboStringNames::LimboStringNames() {
 	add_child_at_index = SN("add_child_at_index");
 	AnimationFilter = SN("AnimationFilter");
 	BBParam = SN("BBParam");
+	BBString = SN("BBString");
 	behavior_tree_finished = SN("behavior_tree_finished");
 	bold = SN("bold");
 	button_down = SN("button_down");
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
 	changed = SN("changed");
+	class_icon_size = SN("class_icon_size");
 	Clear = SN("Clear");
 	Close = SN("Close");
 	dark_color_2 = SN("dark_color_2");
@@ -83,15 +86,15 @@ LimboStringNames::LimboStringNames() {
 	GuiTabMenuHl = SN("GuiTabMenuHl");
 	GuiTreeArrowDown = SN("GuiTreeArrowDown");
 	GuiTreeArrowRight = SN("GuiTreeArrowRight");
+	h_separation = SN("h_separation");
 	HeaderSmall = SN("HeaderSmall");
 	Help = SN("Help");
-	h_separation = SN("h_separation");
 	icon_max_width = SN("icon_max_width");
-	class_icon_size = SN("class_icon_size");
 	id_pressed = SN("id_pressed");
 	Info = SN("Info");
 	item_collapsed = SN("item_collapsed");
 	item_selected = SN("item_selected");
+	LimboExtraVariable = SN("LimboExtraVariable");
 	LimboVarAdd = SN("LimboVarAdd");
 	LimboVarEmpty = SN("LimboVarEmpty");
 	LimboVarError = SN("LimboVarError");
@@ -116,6 +119,7 @@ LimboStringNames::LimboStringNames() {
 	popup_hide = SN("popup_hide");
 	pressed = SN("pressed");
 	probability_clicked = SN("probability_clicked");
+	property_changed = SN("property_changed");
 	Reload = SN("Reload");
 	Remove = SN("Remove");
 	remove_child = SN("remove_child");
@@ -123,14 +127,15 @@ LimboStringNames::LimboStringNames() {
 	request_open_in_screen = SN("request_open_in_screen");
 	rmb_pressed = SN("rmb_pressed");
 	Save = SN("Save");
+	saved_value = SN("saved_value");
 	Script = SN("Script");
 	ScriptCreate = SN("ScriptCreate");
 	Search = SN("Search");
 	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
 	set_root_task = SN("set_root_task");
-	set_visible = SN("set_visible");
 	set_v_scroll = SN("set_v_scroll");
+	set_visible = SN("set_visible");
 	setup = SN("setup");
 	started = SN("started");
 	StatusWarning = SN("StatusWarning");
@@ -138,9 +143,9 @@ LimboStringNames::LimboStringNames() {
 	task_activated = SN("task_activated");
 	task_button_pressed = SN("task_button_pressed");
 	task_button_rmb = SN("task_button_rmb");
-	tasks_dragged = SN("tasks_dragged");
 	task_meta = SN("task_meta");
 	task_selected = SN("task_selected");
+	tasks_dragged = SN("tasks_dragged");
 	text_changed = SN("text_changed");
 	text_submitted = SN("text_submitted");
 	timeout = SN("timeout");
@@ -150,6 +155,7 @@ LimboStringNames::LimboStringNames() {
 	TripleBar = SN("TripleBar");
 	update_mode = SN("update_mode");
 	updated = SN("updated");
+	variable = SN("variable");
 	visibility_changed = SN("visibility_changed");
 	window_visibility_changed = SN("window_visibility_changed");
 

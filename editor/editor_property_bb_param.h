@@ -14,19 +14,26 @@
 #ifndef EDITOR_PROPERTY_BB_PARAM_H
 #define EDITOR_PROPERTY_BB_PARAM_H
 
+#include "../compat/forward_decl.h"
+
 #ifdef LIMBOAI_MODULE
-
 #include "editor/editor_inspector.h"
+#endif // ! LIMBOAI_MODULE
 
-#include "../blackboard/bb_param/bb_param.h"
-#include "../blackboard/blackboard_plan.h"
-#include "mode_switch_button.h"
-
-#include "scene/gui/box_container.h"
-#include "scene/gui/margin_container.h"
-#include "scene/gui/menu_button.h"
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_inspector_plugin.hpp>
+#include <godot_cpp/classes/editor_property.hpp>
+using namespace godot;
+#endif // ! LIMBOAI_GDEXTENSION
 
 class EditorPropertyVariableName;
+class BBParam;
+class BlackboardPlan;
+GODOT_FORWARD_DECLARATIONS()
+class MarginContainer;
+class MenuButton;
+class HBoxContainer;
+ENDOF_FORWARD_DECLARATIONS()
 
 class EditorPropertyBBParam : public EditorProperty {
 	GDCLASS(EditorPropertyBBParam, EditorProperty);
@@ -49,7 +56,7 @@ private:
 
 	Ref<BBParam> _get_edited_param();
 
-	void _create_value_editor(Variant::Type p_type);
+	void _create_value_editor(Object *p_object, const String &p_property, Variant::Type p_type);
 	void _remove_value_editor();
 
 	void _value_edited(const String &p_property, Variant p_value, const String &p_name = "", bool p_changing = false);
@@ -57,10 +64,16 @@ private:
 	void _type_selected(int p_index);
 
 protected:
+	static void _bind_methods() {}
+
 	void _notification(int p_what);
 
 public:
+#ifdef LIMBOAI_MODULE
 	virtual void update_property() override;
+#elif LIMBOAI_GDEXTENSION
+	virtual void _update_property() override;
+#endif
 	void setup(PropertyHint p_hint, const String &p_hint_text, const Ref<BlackboardPlan> &p_plan);
 
 	EditorPropertyBBParam();
@@ -72,14 +85,20 @@ class EditorInspectorPluginBBParam : public EditorInspectorPlugin {
 private:
 	Callable plan_getter;
 
+protected:
+	static void _bind_methods() {}
+
 public:
+#ifdef LIMBOAI_MODULE
 	virtual bool can_handle(Object *p_object) override;
 	virtual bool parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide = false) override;
+#elif LIMBOAI_GDEXTENSION
+	virtual bool _can_handle(Object *p_object) const override;
+	virtual bool _parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide = false) override;
+#endif
 
 	void set_plan_getter(const Callable &p_getter) { plan_getter = p_getter; }
 };
-
-#endif // ! LIMBOAI_MODULE
 
 #endif // ! EDITOR_PROPERTY_BB_PARAM_H
 

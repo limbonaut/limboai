@@ -11,37 +11,32 @@
 
 #ifdef TOOLS_ENABLED
 
-#ifdef LIMBOAI_MODULE
-
 #include "editor_property_bb_param.h"
 
-#include "../blackboard/bb_param/bb_param.h"
 #include "../blackboard/bb_param/bb_variant.h"
 #include "../util/limbo_string_names.h"
 #include "editor_property_variable_name.h"
-#include "mode_switch_button.h"
 
-#include "core/error/error_macros.h"
-#include "core/io/marshalls.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/object/ref_counted.h"
-#include "core/os/memory.h"
-#include "core/string/print_string.h"
-#include "core/variant/variant.h"
-#include "editor/editor_inspector.h"
-#include "editor/editor_properties.h"
-#include "editor/editor_properties_array_dict.h"
-#include "editor/editor_properties_vector.h"
-#include "editor/editor_settings.h"
-#include "scene/gui/base_button.h"
-#include "scene/gui/box_container.h"
-#include "scene/gui/button.h"
-#include "scene/gui/line_edit.h"
+#ifdef LIMBOAI_MODULE
+#include "editor/editor_interface.h"
+#include "scene/gui/margin_container.h"
 #include "scene/gui/menu_button.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/editor_inspector.hpp>
+#include <godot_cpp/classes/editor_interface.hpp>
+#include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/margin_container.hpp>
+#include <godot_cpp/classes/menu_button.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 Ref<BBParam> EditorPropertyBBParam::_get_edited_param() {
-	Ref<BBParam> param = get_edited_property_value();
+	Ref<BBParam> param;
+	if (get_edited_object()) {
+		param = get_edited_object()->get(get_edited_property());
+	}
 	if (param.is_null()) {
 		// Create parameter resource if null.
 		param = ClassDB::instantiate(param_type);
@@ -50,159 +45,50 @@ Ref<BBParam> EditorPropertyBBParam::_get_edited_param() {
 	return param;
 }
 
-void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
+void EditorPropertyBBParam::_create_value_editor(Object *p_object, const String &p_property, Variant::Type p_type) {
 	if (value_editor) {
-		if (value_editor->get_meta(SNAME("_param_type")) == Variant(p_type)) {
+		if (value_editor->get_meta(LW_NAME(_param_type)) == Variant(p_type)) {
 			return;
 		}
 		_remove_value_editor();
 	}
 
+	const String hint_text = p_type == Variant::OBJECT ? "Resource" : "";
+	value_editor = EditorInterface::get_singleton()->get_inspector()->instantiate_property_editor(p_object, p_type, p_property, property_hint, hint_text, PROPERTY_USAGE_EDITOR);
+
 	bool is_bottom = false;
-
 	switch (p_type) {
-		case Variant::NIL: {
-			value_editor = memnew(EditorPropertyNil);
-		} break;
-		case Variant::BOOL: {
-			value_editor = memnew(EditorPropertyCheck);
-		} break;
-		case Variant::INT: {
-			EditorPropertyInteger *editor = memnew(EditorPropertyInteger);
-			editor->setup(-100000, 100000, 1, false, true, true);
-			value_editor = editor;
-		} break;
-		case Variant::FLOAT: {
-			EditorPropertyFloat *editor = memnew(EditorPropertyFloat);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true, false, true, true);
-			value_editor = editor;
-		} break;
-		case Variant::STRING: {
-			if (property_hint == PROPERTY_HINT_MULTILINE_TEXT) {
-				value_editor = memnew(EditorPropertyMultilineText);
-			} else {
-				value_editor = memnew(EditorPropertyText);
-			}
-			is_bottom = (property_hint == PROPERTY_HINT_MULTILINE_TEXT);
-		} break;
-		case Variant::VECTOR2: {
-			EditorPropertyVector2 *editor = memnew(EditorPropertyVector2);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-		} break;
-		case Variant::VECTOR2I: {
-			EditorPropertyVector2i *editor = memnew(EditorPropertyVector2i);
-			editor->setup(-100000, 100000);
-			value_editor = editor;
-		} break;
-		case Variant::RECT2: {
-			EditorPropertyRect2 *editor = memnew(EditorPropertyRect2);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::RECT2I: {
-			EditorPropertyRect2i *editor = memnew(EditorPropertyRect2i);
-			editor->setup(-100000, 100000);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::VECTOR3: {
-			EditorPropertyVector3 *editor = memnew(EditorPropertyVector3);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::VECTOR3I: {
-			EditorPropertyVector3i *editor = memnew(EditorPropertyVector3i);
-			editor->setup(-100000, 100000);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::VECTOR4: {
-			EditorPropertyVector4 *editor = memnew(EditorPropertyVector4);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::VECTOR4I: {
-			EditorPropertyVector4i *editor = memnew(EditorPropertyVector4i);
-			editor->setup(-100000, 100000);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::TRANSFORM2D: {
-			EditorPropertyTransform2D *editor = memnew(EditorPropertyTransform2D);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::PLANE: {
-			EditorPropertyPlane *editor = memnew(EditorPropertyPlane);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::QUATERNION: {
-			EditorPropertyQuaternion *editor = memnew(EditorPropertyQuaternion);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::AABB: {
-			EditorPropertyAABB *editor = memnew(EditorPropertyAABB);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::BASIS: {
-			EditorPropertyBasis *editor = memnew(EditorPropertyBasis);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::TRANSFORM3D: {
-			EditorPropertyTransform3D *editor = memnew(EditorPropertyTransform3D);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::PROJECTION: {
-			EditorPropertyProjection *editor = memnew(EditorPropertyProjection);
-			editor->setup(-100000, 100000, EDITOR_GET("interface/inspector/default_float_step"), true);
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::COLOR: {
-			value_editor = memnew(EditorPropertyColor);
-		} break;
+		case Variant::STRING:
 		case Variant::STRING_NAME: {
-			EditorPropertyText *editor = memnew(EditorPropertyText);
-			editor->set_string_name(true);
-			value_editor = editor;
 			is_bottom = (property_hint == PROPERTY_HINT_MULTILINE_TEXT);
-		} break;
-		case Variant::NODE_PATH: {
-			value_editor = memnew(EditorPropertyNodePath);
-		} break;
-			// case Variant::RID: {
-			// } break;
-			// case Variant::SIGNAL: {
-			// } break;
-			// case Variant::CALLABLE: {
-			// } break;
-		case Variant::OBJECT: {
-			// Only resources are supported.
-			EditorPropertyResource *editor = memnew(EditorPropertyResource);
-			editor->setup(_get_edited_param().ptr(), SNAME("saved_value"), "Resource");
-			value_editor = editor;
-			is_bottom = true;
-		} break;
-		case Variant::DICTIONARY: {
-			value_editor = memnew(EditorPropertyDictionary);
-			is_bottom = true;
 		} break;
 
+		case Variant::NIL:
+		case Variant::BOOL:
+		case Variant::INT:
+		case Variant::FLOAT:
+		case Variant::VECTOR2:
+		case Variant::VECTOR2I:
+		case Variant::COLOR:
+		case Variant::NODE_PATH: {
+			is_bottom = false;
+		} break;
+
+		case Variant::RECT2:
+		case Variant::RECT2I:
+		case Variant::VECTOR3:
+		case Variant::VECTOR3I:
+		case Variant::VECTOR4:
+		case Variant::VECTOR4I:
+		case Variant::TRANSFORM2D:
+		case Variant::PLANE:
+		case Variant::QUATERNION:
+		case Variant::AABB:
+		case Variant::BASIS:
+		case Variant::TRANSFORM3D:
+		case Variant::PROJECTION:
+		case Variant::OBJECT:
+		case Variant::DICTIONARY:
 		case Variant::ARRAY:
 		case Variant::PACKED_BYTE_ARRAY:
 		case Variant::PACKED_INT32_ARRAY:
@@ -213,23 +99,20 @@ void EditorPropertyBBParam::_create_value_editor(Variant::Type p_type) {
 		case Variant::PACKED_VECTOR2_ARRAY:
 		case Variant::PACKED_VECTOR3_ARRAY:
 		case Variant::PACKED_COLOR_ARRAY: {
-			EditorPropertyArray *editor = memnew(EditorPropertyArray);
-			editor->setup(p_type);
-			value_editor = editor;
 			is_bottom = true;
 		} break;
 
 		default: {
 			ERR_PRINT("Unexpected variant type!");
-			value_editor = memnew(EditorPropertyNil);
 		}
 	}
+
 	value_editor->set_name_split_ratio(0.0);
 	value_editor->set_use_folding(is_using_folding());
 	value_editor->set_selectable(false);
 	value_editor->set_h_size_flags(SIZE_EXPAND_FILL);
-	value_editor->set_meta(SNAME("_param_type"), p_type);
-	value_editor->connect(SNAME("property_changed"), callable_mp(this, &EditorPropertyBBParam::_value_edited));
+	value_editor->set_meta(LW_NAME(_param_type), p_type);
+	value_editor->connect(LW_NAME(property_changed), callable_mp(this, &EditorPropertyBBParam::_value_edited));
 	if (is_bottom) {
 		bottom_container->add_child(value_editor);
 		set_bottom_editor(bottom_container);
@@ -272,7 +155,11 @@ void EditorPropertyBBParam::_variable_edited(const String &p_property, Variant p
 	_get_edited_param()->set_variable(p_value);
 }
 
+#ifdef LIMBOAI_MODULE
 void EditorPropertyBBParam::update_property() {
+#elif LIMBOAI_GDEXTENSION
+void EditorPropertyBBParam::_update_property() {
+#endif
 	if (!initialized) {
 		// Initialize UI -- needed after https://github.com/godotengine/godot/commit/db7175458a0532f1efe733f303ad2b55a02a52a5
 		_notification(NOTIFICATION_THEME_CHANGED);
@@ -282,19 +169,20 @@ void EditorPropertyBBParam::update_property() {
 
 	if (param->get_value_source() == BBParam::BLACKBOARD_VAR) {
 		_remove_value_editor();
-		variable_editor->set_object_and_property(param.ptr(), SNAME("variable"));
+		variable_editor->set_object_and_property(param.ptr(), LW_NAME(variable));
 		variable_editor->setup(plan, false, param->get_variable_expected_type());
 		variable_editor->update_property();
 		variable_editor->show();
 		bottom_container->hide();
-		type_choice->set_button_icon(get_editor_theme_icon(SNAME("LimboExtraVariable")));
+		type_choice->set_button_icon(LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboExtraVariable)));
 	} else {
-		_create_value_editor(param->get_type());
+		// _create_value_editor(param->get_type());
+		_create_value_editor(param.ptr(), LW_NAME(saved_value), param->get_type());
 		variable_editor->hide();
 		value_editor->show();
-		value_editor->set_object_and_property(param.ptr(), SNAME("saved_value"));
+		value_editor->set_object_and_property(param.ptr(), LW_NAME(saved_value));
 		value_editor->update_property();
-		type_choice->set_button_icon(get_editor_theme_icon(Variant::get_type_name(param->get_type())));
+		type_choice->set_button_icon(get_theme_icon(Variant::get_type_name(param->get_type()), LW_NAME(EditorIcons)));
 	}
 }
 
@@ -316,27 +204,27 @@ void EditorPropertyBBParam::_notification(int p_what) {
 
 			{
 				String type = Variant::get_type_name(_get_edited_param()->get_type());
-				type_choice->set_button_icon(get_editor_theme_icon(type));
+				type_choice->set_button_icon(get_theme_icon(type, LW_NAME(EditorIcons)));
 			}
 
 			// Initialize type choice.
 			PopupMenu *type_menu = type_choice->get_popup();
 			type_menu->clear();
-			type_menu->add_icon_item(get_editor_theme_icon(SNAME("LimboExtraVariable")), TTR("Blackboard Variable"), ID_BIND_VAR);
+			type_menu->add_icon_item(LimboUtility::get_singleton()->get_task_icon(LW_NAME(LimboExtraVariable)), TTR("Blackboard Variable"), ID_BIND_VAR);
 			type_menu->add_separator();
 			Ref<BBParam> param = _get_edited_param();
-			bool is_variant_param = param->is_class_ptr(BBVariant::get_class_ptr_static());
+			bool is_variant_param = IS_CLASS(param, BBVariant);
 			if (is_variant_param) {
 				for (int i = 0; i < Variant::VARIANT_MAX; i++) {
 					if (i == Variant::RID || i == Variant::CALLABLE || i == Variant::SIGNAL) {
 						continue;
 					}
 					String type = Variant::get_type_name(Variant::Type(i));
-					type_menu->add_icon_item(get_editor_theme_icon(type), type, i);
+					type_menu->add_icon_item(get_theme_icon(type, LW_NAME(EditorIcons)), type, i);
 				}
 			} else { // Not a variant param.
 				String type = Variant::get_type_name(param->get_type());
-				type_menu->add_icon_item(get_editor_theme_icon(type), type, param->get_type());
+				type_menu->add_icon_item(get_theme_icon(type, LW_NAME(EditorIcons)), type, param->get_type());
 			}
 
 			initialized = true;
@@ -367,18 +255,26 @@ EditorPropertyBBParam::EditorPropertyBBParam() {
 	variable_editor = memnew(EditorPropertyVariableName);
 	editor_hbox->add_child(variable_editor);
 	variable_editor->set_h_size_flags(SIZE_EXPAND_FILL);
-	variable_editor->connect(SNAME("property_changed"), callable_mp(this, &EditorPropertyBBParam::_variable_edited));
+	variable_editor->connect(LW_NAME(property_changed), callable_mp(this, &EditorPropertyBBParam::_variable_edited));
 
-	param_type = SNAME("BBString");
+	param_type = LW_NAME(BBString);
 }
 
 //***** EditorInspectorPluginBBParam
 
+#ifdef LIMBOAI_MODULE
 bool EditorInspectorPluginBBParam::can_handle(Object *p_object) {
+#elif LIMBOAI_GDEXTENSION
+bool EditorInspectorPluginBBParam::_can_handle(Object *p_object) const {
+#endif
 	return true; // Handles everything.
 }
 
+#ifdef LIMBOAI_MODULE
 bool EditorInspectorPluginBBParam::parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide) {
+#elif LIMBOAI_GDEXTENSION
+bool EditorInspectorPluginBBParam::_parse_property(Object *p_object, const Variant::Type p_type, const String &p_path, const PropertyHint p_hint, const String &p_hint_text, const BitField<PropertyUsageFlags> p_usage, const bool p_wide) {
+#endif
 	if (p_hint == PROPERTY_HINT_RESOURCE_TYPE && p_hint_text.begins_with("BB")) {
 		// TODO: Add more rigid hint check.
 		EditorPropertyBBParam *editor = memnew(EditorPropertyBBParam());
@@ -388,7 +284,5 @@ bool EditorInspectorPluginBBParam::parse_property(Object *p_object, const Varian
 	}
 	return false;
 }
-
-#endif // ! LIMBOAI_MODULE
 
 #endif // ! TOOLS_ENABLED

@@ -44,6 +44,7 @@ public:
 	_FORCE_INLINE_ static LimboStringNames *get_singleton() { return singleton; }
 
 	StringName _generate_name;
+	StringName _param_type;
 	StringName _replace_task;
 	StringName _update_task_tree;
 	StringName _weight_;
@@ -57,12 +58,14 @@ public:
 	StringName Add;
 	StringName AnimationFilter;
 	StringName BBParam;
+	StringName BBString;
 	StringName behavior_tree_finished;
 	StringName bold;
 	StringName button_down;
 	StringName button_up;
 	StringName call_deferred;
 	StringName changed;
+	StringName class_icon_size;
 	StringName Clear;
 	StringName Close;
 	StringName dark_color_2;
@@ -88,8 +91,8 @@ public:
 	StringName favorite_tasks_changed;
 	StringName Favorites;
 	StringName FlatButton;
-	StringName Focus;
 	StringName focus_exited;
+	StringName Focus;
 	StringName font_color;
 	StringName font_size;
 	StringName font;
@@ -99,15 +102,15 @@ public:
 	StringName GuiTabMenuHl;
 	StringName GuiTreeArrowDown;
 	StringName GuiTreeArrowRight;
+	StringName h_separation;
 	StringName HeaderSmall;
 	StringName Help;
-	StringName h_separation;
 	StringName icon_max_width;
-	StringName class_icon_size;
 	StringName id_pressed;
 	StringName Info;
 	StringName item_collapsed;
 	StringName item_selected;
+	StringName LimboExtraVariable;
 	StringName LimboVarAdd;
 	StringName LimboVarEmpty;
 	StringName LimboVarError;
@@ -132,6 +135,7 @@ public:
 	StringName popup_hide;
 	StringName pressed;
 	StringName probability_clicked;
+	StringName property_changed;
 	StringName Reload;
 	StringName remove_child;
 	StringName Remove;
@@ -139,14 +143,15 @@ public:
 	StringName request_open_in_screen;
 	StringName rmb_pressed;
 	StringName Save;
+	StringName saved_value;
 	StringName Script;
 	StringName ScriptCreate;
 	StringName Search;
 	StringName separation;
 	StringName set_custom_name;
 	StringName set_root_task;
-	StringName set_visible;
 	StringName set_v_scroll;
+	StringName set_visible;
 	StringName setup;
 	StringName started;
 	StringName StatusWarning;
@@ -154,9 +159,9 @@ public:
 	StringName task_activated;
 	StringName task_button_pressed;
 	StringName task_button_rmb;
-	StringName tasks_dragged;
 	StringName task_meta;
 	StringName task_selected;
+	StringName tasks_dragged;
 	StringName text_changed;
 	StringName text_submitted;
 	StringName timeout;
@@ -166,6 +171,7 @@ public:
 	StringName TripleBar;
 	StringName update_mode;
 	StringName updated;
+	StringName variable;
 	StringName visibility_changed;
 	StringName window_visibility_changed;
 
