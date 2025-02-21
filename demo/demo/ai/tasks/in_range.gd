@@ -36,7 +36,7 @@ func _generate_name() -> String:
 
 # Called to initialize the task.
 func _setup() -> void:
-	## Small performace optimization
+	## Small performance optimization
 	_min_distance_squared = distance_min * distance_min
 	_max_distance_squared = distance_max * distance_max
 
