@@ -37,6 +37,7 @@ void LimboHSM::set_active(bool p_active) {
 		} break;
 	}
 	set_process_input(p_active);
+	set_process_unhandled_input(p_active);
 
 	if (active) {
 		_enter();
@@ -53,12 +54,14 @@ void LimboHSM::change_active_state(LimboState *p_state) {
 	if (active_state) {
 		active_state->_exit();
 		active_state->set_process_input(false);
+		active_state->set_process_unhandled_input(false);
 		previous_active = active_state;
 	}
 
 	active_state = p_state;
 	active_state->_enter();
 	active_state->set_process_input(true);
+	active_state->set_process_unhandled_input(true);
 
 	emit_signal(LW_NAME(active_state_changed), active_state, previous_active);
 }
