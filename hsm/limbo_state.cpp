@@ -241,4 +241,5 @@ LimboState::LimboState() {
 	set_process(false);
 	set_physics_process(false);
 	set_process_input(false);
+	set_process_unhandled_input(false);
 }
