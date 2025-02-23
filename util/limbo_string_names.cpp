@@ -134,6 +134,7 @@ LimboStringNames::LimboStringNames() {
 	Search = SN("Search");
 	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
+	_set_enabled = SN("_set_enabled");
 	set_root_task = SN("set_root_task");
 	set_v_scroll = SN("set_v_scroll");
 	set_visible = SN("set_visible");

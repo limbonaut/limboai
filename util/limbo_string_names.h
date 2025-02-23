@@ -150,6 +150,7 @@ public:
 	StringName Search;
 	StringName separation;
 	StringName set_custom_name;
+	StringName _set_enabled;
 	StringName set_root_task;
 	StringName set_v_scroll;
 	StringName set_visible;

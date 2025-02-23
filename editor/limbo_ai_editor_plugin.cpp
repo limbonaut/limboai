@@ -612,7 +612,11 @@ void LimboAIEditor::_action_selected(int p_id) {
 		case ACTION_ENABLED: {
 			Ref<BTTask> task = task_tree->get_selected();
 			if (task.is_valid()) {
-				task->set_enabled(!task->is_enabled());
+				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Toggle enabled"));
+				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !task->is_enabled());
+				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), task->is_enabled());
+				undo_redo->commit_action();
+				_set_as_dirty(task_tree->get_bt(), true);
 			}
 		} break;
 		case ACTION_CHANGE_TYPE: {
