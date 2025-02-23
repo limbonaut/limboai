@@ -164,7 +164,7 @@ public:
 	}
 
 	_FORCE_INLINE_ int get_child_count() const { return data.children.size(); }
-	int get_child_count_excluding_comments() const;
+	int get_enabled_child_count() const;
 
 	void add_child(Ref<BTTask> p_child);
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);

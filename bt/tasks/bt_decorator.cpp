@@ -13,7 +13,7 @@
 
 PackedStringArray BTDecorator::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
-	if (get_child_count_excluding_comments() != 1) {
+	if (get_enabled_child_count() != 1) {
 		warnings.append("Decorator should have a single child task.");
 	}
 	return warnings;

@@ -31,7 +31,7 @@ Ref<BTTask> BTComment::clone() const {
 
 PackedStringArray BTComment::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
-	if (get_child_count_excluding_comments() > 0) {
+	if (get_enabled_child_count() > 0) {
 		warnings.append("Can only have other comment tasks as children.");
 	}
 	if (get_parent().is_null()) {

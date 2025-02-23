@@ -13,7 +13,7 @@
 
 PackedStringArray BTAction::get_configuration_warnings() {
 	PackedStringArray warnings = BTTask::get_configuration_warnings();
-	if (get_child_count_excluding_comments() != 0) {
+	if (get_enabled_child_count() != 0) {
 		warnings.append("Action can't have child tasks.");
 	}
 	return warnings;
