@@ -296,7 +296,7 @@ void BTTask::abort() {
 	data.elapsed = 0.0;
 }
 
-int BTTask::get_child_count_excluding_comments() const {
+int BTTask::get_enabled_child_count() const {
 	int count = 0;
 	for (int i = 0; i < data.children.size(); i++) {
 		if (data.children[i]->is_enabled()) {
@@ -432,7 +432,7 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("execute", "delta"), &BTTask::execute);
 	ClassDB::bind_method(D_METHOD("get_child", "idx"), &BTTask::get_child);
 	ClassDB::bind_method(D_METHOD("get_child_count"), &BTTask::get_child_count);
-	ClassDB::bind_method(D_METHOD("get_child_count_excluding_comments"), &BTTask::get_child_count_excluding_comments);
+	ClassDB::bind_method(D_METHOD("get_enabled_child_count"), &BTTask::get_enabled_child_count);
 	ClassDB::bind_method(D_METHOD("add_child", "task"), &BTTask::add_child);
 	ClassDB::bind_method(D_METHOD("add_child_at_index", "task", "idx"), &BTTask::add_child_at_index);
 	ClassDB::bind_method(D_METHOD("remove_child", "task"), &BTTask::remove_child);
@@ -445,6 +445,10 @@ void BTTask::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_task_name"), &BTTask::get_task_name);
 	ClassDB::bind_method(D_METHOD("abort"), &BTTask::abort);
 	ClassDB::bind_method(D_METHOD("editor_get_behavior_tree"), &BTTask::editor_get_behavior_tree);
+
+#ifndef DISABLE_DEPRECATED
+	ClassDB::bind_method(D_METHOD("get_child_count_excluding_comments"), &BTTask::get_enabled_child_count);
+#endif
 
 	// Properties, setters and getters.
 	ClassDB::bind_method(D_METHOD("get_agent"), &BTTask::get_agent);
@@ -471,7 +475,7 @@ void BTTask::_bind_methods() {
 	// To avoid confusion, we're not exposing it in the public API.
 	ClassDB::bind_method(D_METHOD("_set_enabled", "enabled"), &BTTask::set_enabled);
 	ClassDB::bind_method(D_METHOD("_is_enabled"), &BTTask::is_enabled);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "_enabled"), "_set_enabled", "_is_enabled");
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_enabled", "_is_enabled");
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);

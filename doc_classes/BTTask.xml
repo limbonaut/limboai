@@ -108,10 +108,16 @@
 				Returns the number of child tasks.
 			</description>
 		</method>
-		<method name="get_child_count_excluding_comments" qualifiers="const">
+		<method name="get_child_count_excluding_comments" qualifiers="const" deprecated="Use [method get_enabled_child_count] instead.">
 			<return type="int" />
 			<description>
 				Returns the number of child tasks not counting [BTComment] tasks.
+			</description>
+		</method>
+		<method name="get_enabled_child_count" qualifiers="const">
+			<return type="int" />
+			<description>
+				Returns the number of enabled child tasks. [BTComment] tasks and tasks that are disabled in the editor are not included in the count.
 			</description>
 		</method>
 		<method name="get_index" qualifiers="const">
