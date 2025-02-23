@@ -163,6 +163,12 @@
 				Returns [code]true[/code] if this task is a descendant of [param task]. In other words, this task must be a child of [param task] or one of its children or grandchildren.
 			</description>
 		</method>
+		<method name="is_enabled" qualifiers="const">
+			<return type="bool" />
+			<description>
+				Returns [code]true[/code] if this task is enabled in the editor. If [code]false[/code], this task and its branch will not be instantiated at runtime, as if they never existed. [BTComment] always returns [code]false[/code].
+			</description>
+		</method>
 		<method name="is_root" qualifiers="const">
 			<return type="bool" />
 			<description>

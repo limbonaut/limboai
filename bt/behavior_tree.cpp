@@ -89,6 +89,10 @@ Ref<BTInstance> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &
 	return BTInstance::create(root_copy, get_path(), p_instance_owner);
 }
 
+void BehaviorTree::emit_branch_changed(const Ref<BTTask> &p_branch) {
+	emit_signal(LW_NAME(branch_changed), p_branch);
+}
+
 void BehaviorTree::_plan_changed() {
 	emit_signal(LW_NAME(plan_changed));
 	emit_changed();
@@ -126,6 +130,7 @@ void BehaviorTree::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "root_task", PROPERTY_HINT_RESOURCE_TYPE, "BTTask", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "set_root_task", "get_root_task");
 
 	ADD_SIGNAL(MethodInfo("plan_changed"));
+	ADD_SIGNAL(MethodInfo("branch_changed", PropertyInfo(Variant::OBJECT, "branch", PROPERTY_HINT_RESOURCE_TYPE, "BTTask")));
 }
 
 BehaviorTree::BehaviorTree() {

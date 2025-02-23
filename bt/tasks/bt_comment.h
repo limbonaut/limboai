@@ -22,8 +22,11 @@ protected:
 	static void _bind_methods() {}
 
 public:
+	virtual void set_enabled(bool p_enabled) override;
 	virtual Ref<BTTask> clone() const override;
 	virtual PackedStringArray get_configuration_warnings() override;
+
+	BTComment();
 };
 
 #endif // BT_COMMENT_H

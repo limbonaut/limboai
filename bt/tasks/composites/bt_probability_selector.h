@@ -45,7 +45,7 @@ private:
 	_FORCE_INLINE_ double _get_total_weight() const {
 		double total = 0.0;
 		for (int i = 0; i < get_child_count(); i++) {
-			if (!IS_CLASS(get_child(i), BTComment)) {
+			if (get_child(i)->is_enabled()) {
 				total += _get_weight(i);
 			}
 		}

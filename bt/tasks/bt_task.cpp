@@ -48,6 +48,15 @@ void BT::_bind_methods() {
 	BIND_ENUM_CONSTANT(SUCCESS);
 }
 
+void BTTask::_emit_branch_changed() {
+#ifdef TOOLS_ENABLED
+	Ref<BehaviorTree> bt = editor_get_behavior_tree();
+	if (Engine::get_singleton()->is_editor_hint() && bt.is_valid()) {
+		bt->emit_branch_changed(this);
+	}
+#endif
+}
+
 String BTTask::_generate_name() {
 	String ret;
 
@@ -107,6 +116,22 @@ void BTTask::_set_children(Array p_children) {
 	if (num_null > 0) {
 		data.children.resize(num_children - num_null);
 	}
+}
+
+void BTTask::set_enabled(bool p_enabled) {
+	data.enabled = p_enabled;
+	_emit_branch_changed();
+}
+
+bool BTTask::is_enabled_in_tree() const {
+	const BTTask *task = this;
+	while (task != nullptr) {
+		if (!task->data.enabled) {
+			return false;
+		}
+		task = task->data.parent;
+	}
+	return true;
 }
 
 void BTTask::set_display_collapsed(bool p_display_collapsed) {
@@ -177,6 +202,10 @@ void BTTask::initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard, Node
 }
 
 Ref<BTTask> BTTask::clone() const {
+	if (!data.enabled && !Engine::get_singleton()->is_editor_hint()) {
+		return nullptr;
+	}
+
 	Ref<BTTask> inst = duplicate(false);
 
 	// * Children are duplicated via children property. See _set_children().
@@ -270,7 +299,7 @@ void BTTask::abort() {
 int BTTask::get_child_count_excluding_comments() const {
 	int count = 0;
 	for (int i = 0; i < data.children.size(); i++) {
-		if (!IS_CLASS(data.children[i], BTComment)) {
+		if (data.children[i]->is_enabled()) {
 			count += 1;
 		}
 	}
@@ -437,6 +466,12 @@ void BTTask::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::ARRAY, "children", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR | PROPERTY_USAGE_INTERNAL), "_set_children", "_get_children");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "status", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_status");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "elapsed_time", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NONE), "", "get_elapsed_time");
+
+	// `_enabled` is hidden as it has no effect after the BT is instantiated at runtime.
+	// To avoid confusion, we're not exposing it in the public API.
+	ClassDB::bind_method(D_METHOD("_set_enabled", "enabled"), &BTTask::set_enabled);
+	ClassDB::bind_method(D_METHOD("is_enabled"), &BTTask::is_enabled);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_enabled", "is_enabled");
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);

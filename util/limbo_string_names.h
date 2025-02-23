@@ -61,6 +61,7 @@ public:
 	StringName BBString;
 	StringName behavior_tree_finished;
 	StringName bold;
+	StringName branch_changed;
 	StringName button_down;
 	StringName button_up;
 	StringName call_deferred;
@@ -149,6 +150,7 @@ public:
 	StringName Search;
 	StringName separation;
 	StringName set_custom_name;
+	StringName _set_enabled;
 	StringName set_root_task;
 	StringName set_v_scroll;
 	StringName set_visible;
