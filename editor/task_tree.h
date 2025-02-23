@@ -78,6 +78,7 @@ private:
 	void _on_item_collapsed(Object *p_obj);
 	void _on_item_mouse_selected(const Vector2 &p_pos, MouseButton p_button_index);
 	void _on_task_changed();
+	void _on_branch_changed(const Ref<BTTask> &p_branch);
 
 	Variant _get_drag_data_fw(const Point2 &p_point);
 	bool _can_drop_data_fw(const Point2 &p_point, const Variant &p_data) const;

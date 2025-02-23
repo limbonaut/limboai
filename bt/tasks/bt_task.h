@@ -85,6 +85,7 @@ private:
 		Status status = FRESH;
 		double elapsed = 0.0;
 		bool display_collapsed = false;
+		bool enabled = true;
 #ifdef TOOLS_ENABLED
 		ObjectID behavior_tree_id;
 #endif
@@ -97,6 +98,9 @@ private:
 
 protected:
 	static void _bind_methods();
+
+	void _set_enabled(bool p_enabled) { data.enabled = p_enabled; }
+	void _emit_branch_changed();
 
 	virtual String _generate_name();
 	virtual void _setup() {}
@@ -121,6 +125,11 @@ public:
 #ifdef LIMBOAI_MODULE
 	virtual bool editor_can_reload_from_file() override { return false; }
 #endif // LIMBOAI_MODULE
+
+	_FORCE_INLINE_ bool is_enabled() const { return data.enabled; }
+	// Note: BTComment overrides set_enabled() to be always disabled.
+	virtual void set_enabled(bool p_enabled);
+	bool is_enabled_in_tree() const;
 
 	_FORCE_INLINE_ Node *get_agent() const { return data.agent; }
 	void set_agent(Node *p_agent) { data.agent = p_agent; }
@@ -155,7 +164,7 @@ public:
 	}
 
 	_FORCE_INLINE_ int get_child_count() const { return data.children.size(); }
-	int get_child_count_excluding_comments() const;
+	int get_enabled_child_count() const;
 
 	void add_child(Ref<BTTask> p_child);
 	void add_child_at_index(Ref<BTTask> p_child, int p_idx);

@@ -561,6 +561,11 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), task->get_script() == Variant());
 
 	menu->add_separator();
+	const Ref<Texture2D> &enabled_icon = task->is_enabled() ? theme_cache.checked_icon : theme_cache.unchecked_icon;
+	menu->add_icon_item(enabled_icon, TTR("Enabled"), ACTION_ENABLED);
+	menu->set_item_checked(ACTION_ENABLED, task->is_enabled());
+
+	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.cut_icon, LW_GET_SHORTCUT("limbo_ai/cut_task"), ACTION_CUT);
 	menu->add_icon_shortcut(theme_cache.copy_icon, LW_GET_SHORTCUT("limbo_ai/copy_task"), ACTION_COPY);
 	menu->add_icon_shortcut(theme_cache.paste_icon, LW_GET_SHORTCUT("limbo_ai/paste_task"), ACTION_PASTE);
@@ -603,6 +608,16 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_dialog->popup_centered();
 			rename_edit->select_all();
 			rename_edit->grab_focus();
+		} break;
+		case ACTION_ENABLED: {
+			Ref<BTTask> task = task_tree->get_selected();
+			if (task.is_valid()) {
+				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Toggle enabled"));
+				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !task->is_enabled());
+				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), task->is_enabled());
+				undo_redo->commit_action();
+				_set_as_dirty(task_tree->get_bt(), true);
+			}
 		} break;
 		case ACTION_CHANGE_TYPE: {
 			change_type_palette->clear_filter();
@@ -1482,6 +1497,8 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.copy_icon = get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons));
 	theme_cache.paste_icon = get_theme_icon(LW_NAME(ActionPaste), LW_NAME(EditorIcons));
 	theme_cache.search_icon = get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons));
+	theme_cache.checked_icon = get_theme_icon("GuiChecked", LW_NAME(EditorIcons));
+	theme_cache.unchecked_icon = get_theme_icon("GuiUnchecked", LW_NAME(EditorIcons));
 
 	theme_cache.behavior_tree_icon = LimboUtility::get_singleton()->get_task_icon("BehaviorTree");
 	theme_cache.percent_icon = LimboUtility::get_singleton()->get_task_icon("LimboPercent");

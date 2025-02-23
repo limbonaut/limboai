@@ -45,6 +45,7 @@ LimboStringNames::LimboStringNames() {
 	BBString = SN("BBString");
 	behavior_tree_finished = SN("behavior_tree_finished");
 	bold = SN("bold");
+	branch_changed = SN("branch_changed");
 	button_down = SN("button_down");
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
@@ -133,6 +134,7 @@ LimboStringNames::LimboStringNames() {
 	Search = SN("Search");
 	separation = SN("separation");
 	set_custom_name = SN("set_custom_name");
+	_set_enabled = SN("_set_enabled");
 	set_root_task = SN("set_root_task");
 	set_v_scroll = SN("set_v_scroll");
 	set_visible = SN("set_visible");

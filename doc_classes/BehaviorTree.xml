@@ -62,6 +62,12 @@
 		</member>
 	</members>
 	<signals>
+		<signal name="branch_changed">
+			<param index="0" name="branch" type="BTTask" />
+			<description>
+				Emitted when a contained [BTTask] or its branch changes in a way that requires refreshing the entire branch. This signal is emitted only in the editor.
+			</description>
+		</signal>
 		<signal name="plan_changed">
 			<description>
 				Emitted when the [BlackboardPlan] changes.
