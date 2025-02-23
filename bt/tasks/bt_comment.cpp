@@ -18,6 +18,10 @@
 using namespace godot;
 #endif
 
+void BTComment::set_enabled(bool p_enabled) {
+	// BTComment is always disabled.
+}
+
 Ref<BTTask> BTComment::clone() const {
 	if (Engine::get_singleton()->is_editor_hint()) {
 		return BTTask::clone();
@@ -34,4 +38,8 @@ PackedStringArray BTComment::get_configuration_warnings() {
 		warnings.append("Can't be the root task.");
 	}
 	return warnings;
+}
+
+BTComment::BTComment() {
+	_set_enabled(false);
 }

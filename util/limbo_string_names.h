@@ -61,6 +61,7 @@ public:
 	StringName BBString;
 	StringName behavior_tree_finished;
 	StringName bold;
+	StringName branch_changed;
 	StringName button_down;
 	StringName button_up;
 	StringName call_deferred;

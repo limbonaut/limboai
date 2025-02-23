@@ -82,6 +82,7 @@ private:
 		ACTION_CHANGE_TYPE,
 		ACTION_EDIT_SCRIPT,
 		ACTION_OPEN_DOC,
+		ACTION_ENABLED,
 		ACTION_CUT,
 		ACTION_COPY,
 		ACTION_PASTE,
@@ -139,6 +140,8 @@ private:
 		Ref<Texture2D> copy_icon;
 		Ref<Texture2D> paste_icon;
 		Ref<Texture2D> search_icon;
+		Ref<Texture2D> checked_icon;
+		Ref<Texture2D> unchecked_icon;
 	} theme_cache;
 
 	EditorPlugin *plugin;

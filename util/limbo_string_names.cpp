@@ -45,6 +45,7 @@ LimboStringNames::LimboStringNames() {
 	BBString = SN("BBString");
 	behavior_tree_finished = SN("behavior_tree_finished");
 	bold = SN("bold");
+	branch_changed = SN("branch_changed");
 	button_down = SN("button_down");
 	button_up = SN("button_up");
 	call_deferred = SN("call_deferred");
