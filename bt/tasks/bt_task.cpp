@@ -474,8 +474,8 @@ void BTTask::_bind_methods() {
 	// `_enabled` is hidden as it has no effect after the BT is instantiated at runtime.
 	// To avoid confusion, we're not exposing it in the public API.
 	ClassDB::bind_method(D_METHOD("_set_enabled", "enabled"), &BTTask::set_enabled);
-	ClassDB::bind_method(D_METHOD("_is_enabled"), &BTTask::is_enabled);
-	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_enabled", "_is_enabled");
+	ClassDB::bind_method(D_METHOD("is_enabled"), &BTTask::is_enabled);
+	ADD_PROPERTY(PropertyInfo(Variant::BOOL, "_enabled", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_DEFAULT | PROPERTY_USAGE_INTERNAL), "_set_enabled", "is_enabled");
 
 	GDVIRTUAL_BIND(_setup);
 	GDVIRTUAL_BIND(_enter);
