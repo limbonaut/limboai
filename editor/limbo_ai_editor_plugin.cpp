@@ -630,27 +630,27 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_edit->grab_focus();
 		} break;
 		case ACTION_ENABLED: {
-			Vector<Ref<BTTask>> toggled = task_tree->get_selected_tasks();
-			if (toggled.is_empty()) {
+			Vector<Ref<BTTask>> group = task_tree->get_selected_tasks();
+			if (group.is_empty()) {
 				return;
 			}
-			bool is_enabled = false;
-			for (const Ref<BTTask> &task : toggled) {
+			bool group_enabled = false;
+			for (const Ref<BTTask> &task : group) {
 				if (task->is_enabled()) {
-					is_enabled = true;
+					group_enabled = true;
 					break;
 				}
 			}
-			for (int i = toggled.size() - 1; i >= 0; i--) {
-				if (toggled[i]->is_enabled() != is_enabled) {
-					toggled.remove_at(i);
+			for (int i = group.size() - 1; i >= 0; i--) {
+				if (group[i]->is_enabled() != group_enabled) {
+					group.remove_at(i);
 				}
 			}
-			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(is_enabled ? TTR("Disable tasks") : TTR("Enable tasks"));
-			for (const Ref<BTTask> &task : toggled) {
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(group_enabled ? TTR("Disable tasks") : TTR("Enable tasks"));
+			for (const Ref<BTTask> &task : group) {
 				ERR_CONTINUE(task.is_null());
-				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !is_enabled);
-				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), is_enabled);
+				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !group_enabled);
+				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), group_enabled);
 			}
 			undo_redo->commit_action();
 			_set_as_dirty(task_tree->get_bt(), true);
