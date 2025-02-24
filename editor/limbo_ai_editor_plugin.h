@@ -142,6 +142,7 @@ private:
 		Ref<Texture2D> search_icon;
 		Ref<Texture2D> checked_icon;
 		Ref<Texture2D> unchecked_icon;
+		Ref<Texture2D> indeterminate_icon;
 	} theme_cache;
 
 	EditorPlugin *plugin;
@@ -152,7 +153,7 @@ private:
 	bool updating_tabs = false;
 	bool request_update_tabs = false;
 	HashSet<Ref<BehaviorTree>> dirty;
-	Ref<BTTask> clipboard_task;
+	Vector<Ref<BTTask>> clipboard;
 
 	VBoxContainer *vbox;
 	PanelContainer *tab_bar_panel;
