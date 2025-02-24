@@ -208,14 +208,15 @@ void TaskTree::_on_branch_changed(const Ref<BTTask> &p_branch) {
 	if (!item) {
 		return;
 	}
-	bool was_selected = item->is_selected(0);
+	Vector<Ref<BTTask>> selection = get_selected_tasks();
 	TreeItem *parent = item->get_parent();
 	Ref<BTTask> task = item->get_metadata(0);
 	int index = item->get_index();
 	memdelete(item);
-	TreeItem *created = _create_tree(task, parent, index);
-	if (created && was_selected) {
-		created->select(0);
+	_create_tree(task, parent, index);
+	clear_selection();
+	for (const Ref<BTTask> &sel : selection) {
+		add_selection(sel);
 	}
 }
 
