@@ -553,7 +553,7 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 		return;
 	}
 
-	if (task_tree->selected_has_probability() && selected.size() == 1) {
+	if (selected.size() == 1 && task_tree->selected_has_probability()) {
 		menu->add_icon_item(theme_cache.percent_icon, TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
 	}
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, LW_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
@@ -612,7 +612,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 	switch (p_id) {
 		case ACTION_RENAME: {
 			Ref<BTTask> task = task_tree->get_selected();
-			if (!task.is_valid()) {
+			if (task.is_null()) {
 				return;
 			}
 			if (IS_CLASS(task, BTComment)) {
@@ -646,7 +646,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 					group.remove_at(i);
 				}
 			}
-			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(group_enabled ? TTR("Disable tasks") : TTR("Enable tasks"));
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(group_enabled ? TTR("Disable BT tasks") : TTR("Enable BT tasks"));
 			for (const Ref<BTTask> &task : group) {
 				ERR_CONTINUE(task.is_null());
 				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !group_enabled);
