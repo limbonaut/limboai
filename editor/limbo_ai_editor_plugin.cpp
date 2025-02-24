@@ -548,30 +548,48 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->clear();
 
-	Ref<BTTask> task = task_tree->get_selected();
-	ERR_FAIL_COND_MSG(task.is_null(), "LimboAIEditor: get_selected() returned null");
+	Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+	if (selected.is_empty()) {
+		return;
+	}
 
-	if (task_tree->selected_has_probability()) {
+	if (task_tree->selected_has_probability() && selected.size() == 1) {
 		menu->add_icon_item(theme_cache.percent_icon, TTR("Edit Probability"), ACTION_EDIT_PROBABILITY);
 	}
 	menu->add_icon_shortcut(theme_cache.rename_task_icon, LW_GET_SHORTCUT("limbo_ai/rename_task"), ACTION_RENAME);
 	menu->add_icon_item(theme_cache.change_type_icon, TTR("Change Type"), ACTION_CHANGE_TYPE);
 	menu->add_icon_item(theme_cache.edit_script_icon, TTR("Edit Script"), ACTION_EDIT_SCRIPT);
 	menu->add_icon_item(theme_cache.doc_icon, TTR("Open Documentation"), ACTION_OPEN_DOC);
-	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), task->get_script() == Variant());
+	menu->set_item_disabled(menu->get_item_index(ACTION_RENAME), selected.size() != 1);
+	menu->set_item_disabled(menu->get_item_index(ACTION_CHANGE_TYPE), selected.size() != 1);
+	menu->set_item_disabled(menu->get_item_index(ACTION_EDIT_SCRIPT), selected.size() != 1 || selected[0]->get_script() == Variant());
+	menu->set_item_disabled(menu->get_item_index(ACTION_OPEN_DOC), selected.size() != 1);
 
 	menu->add_separator();
-	const Ref<Texture2D> &enabled_icon = task->is_enabled() ? theme_cache.checked_icon : theme_cache.unchecked_icon;
-	menu->add_icon_item(enabled_icon, TTR("Enabled"), ACTION_ENABLED);
-	menu->set_item_checked(ACTION_ENABLED, task->is_enabled());
+	{
+		int acc = 0;
+		for (const Ref<BTTask> &task : selected) {
+			acc += task->is_enabled() ? 1 : -1;
+		}
+		Ref<Texture2D> icon;
+		if (Math::abs(acc) == selected.size() && acc > 0) {
+			icon = theme_cache.checked_icon;
+		} else if (Math::abs(acc) == selected.size() && acc < 0) {
+			icon = theme_cache.unchecked_icon;
+		} else {
+			icon = theme_cache.indeterminate_icon;
+		}
+		menu->add_icon_item(icon, TTR("Enabled"), ACTION_ENABLED);
+		menu->set_item_checked(menu->get_item_index(ACTION_ENABLED), selected[0]->is_enabled());
+	}
 
 	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.cut_icon, LW_GET_SHORTCUT("limbo_ai/cut_task"), ACTION_CUT);
 	menu->add_icon_shortcut(theme_cache.copy_icon, LW_GET_SHORTCUT("limbo_ai/copy_task"), ACTION_COPY);
 	menu->add_icon_shortcut(theme_cache.paste_icon, LW_GET_SHORTCUT("limbo_ai/paste_task"), ACTION_PASTE);
 	menu->add_icon_shortcut(theme_cache.paste_icon, LW_GET_SHORTCUT("limbo_ai/paste_task_after"), ACTION_PASTE_AFTER);
-	menu->set_item_disabled(ACTION_PASTE, clipboard_task.is_null());
-	menu->set_item_disabled(ACTION_PASTE_AFTER, clipboard_task.is_null());
+	menu->set_item_disabled(menu->get_item_index(ACTION_PASTE), clipboard.is_empty() || selected.size() != 1);
+	menu->set_item_disabled(menu->get_item_index(ACTION_PASTE_AFTER), clipboard.is_empty() || selected.size() != 1);
 
 	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.move_task_up_icon, LW_GET_SHORTCUT("limbo_ai/move_task_up"), ACTION_MOVE_UP);
@@ -579,6 +597,8 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 	menu->add_icon_shortcut(theme_cache.duplicate_task_icon, LW_GET_SHORTCUT("limbo_ai/duplicate_task"), ACTION_DUPLICATE);
 	menu->add_icon_item(theme_cache.make_root_icon, TTR("Make Root"), ACTION_MAKE_ROOT);
 	menu->add_icon_item(theme_cache.extract_subtree_icon, TTR("Extract Subtree"), ACTION_EXTRACT_SUBTREE);
+	menu->set_item_disabled(menu->get_item_index(ACTION_MAKE_ROOT), selected.size() != 1);
+	menu->set_item_disabled(menu->get_item_index(ACTION_EXTRACT_SUBTREE), selected.size() != 1);
 
 	menu->add_separator();
 	menu->add_icon_shortcut(theme_cache.remove_task_icon, LW_GET_SHORTCUT("limbo_ai/remove_task"), ACTION_REMOVE);
@@ -591,10 +611,10 @@ void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
 void LimboAIEditor::_action_selected(int p_id) {
 	switch (p_id) {
 		case ACTION_RENAME: {
-			if (!task_tree->get_selected().is_valid()) {
+			Ref<BTTask> task = task_tree->get_selected();
+			if (!task.is_valid()) {
 				return;
 			}
-			Ref<BTTask> task = task_tree->get_selected();
 			if (IS_CLASS(task, BTComment)) {
 				rename_dialog->set_title(TTR("Edit Comment"));
 				rename_dialog->get_ok_button()->set_text(TTR("OK"));
@@ -610,14 +630,30 @@ void LimboAIEditor::_action_selected(int p_id) {
 			rename_edit->grab_focus();
 		} break;
 		case ACTION_ENABLED: {
-			Ref<BTTask> task = task_tree->get_selected();
-			if (task.is_valid()) {
-				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Toggle enabled"));
-				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !task->is_enabled());
-				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), task->is_enabled());
-				undo_redo->commit_action();
-				_set_as_dirty(task_tree->get_bt(), true);
+			Vector<Ref<BTTask>> toggled = task_tree->get_selected_tasks();
+			if (toggled.is_empty()) {
+				return;
 			}
+			bool is_enabled = false;
+			for (const Ref<BTTask> &task : toggled) {
+				if (task->is_enabled()) {
+					is_enabled = true;
+					break;
+				}
+			}
+			for (int i = toggled.size() - 1; i >= 0; i--) {
+				if (toggled[i]->is_enabled() != is_enabled) {
+					toggled.remove_at(i);
+				}
+			}
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(is_enabled ? TTR("Disable tasks") : TTR("Enable tasks"));
+			for (const Ref<BTTask> &task : toggled) {
+				ERR_CONTINUE(task.is_null());
+				undo_redo->add_do_method(task.ptr(), LW_NAME(_set_enabled), !is_enabled);
+				undo_redo->add_undo_method(task.ptr(), LW_NAME(_set_enabled), is_enabled);
+			}
+			undo_redo->commit_action();
+			_set_as_dirty(task_tree->get_bt(), true);
 		} break;
 		case ACTION_CHANGE_TYPE: {
 			change_type_palette->clear_filter();
@@ -655,105 +691,146 @@ void LimboAIEditor::_action_selected(int p_id) {
 			LimboUtility::get_singleton()->open_doc_class(help_class);
 		} break;
 		case ACTION_COPY: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid()) {
-				clipboard_task = sel->clone();
+			Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+			if (selected.is_empty()) {
+				return;
+			}
+			clipboard.clear();
+			for (const Ref<BTTask> &task : selected) {
+				clipboard.push_back(task->clone());
 			}
 		} break;
 		case ACTION_PASTE: {
-			if (clipboard_task.is_valid()) {
-				_add_task(clipboard_task->clone(), false);
+			for (const Ref<BTTask> &task : clipboard) {
+				_add_task(task->clone(), false);
 			}
 		} break;
 		case ACTION_PASTE_AFTER: {
-			if (clipboard_task.is_valid()) {
-				_add_task(clipboard_task->clone(), true);
+			for (const Ref<BTTask> &task : clipboard) {
+				_add_task(task->clone(), true);
 			}
 		} break;
 		case ACTION_MOVE_UP: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid() && sel->get_parent().is_valid()) {
-				Ref<BTTask> parent = sel->get_parent();
-				int idx = sel->get_index();
-				if (idx > 0 && idx < parent->get_child_count()) {
-					EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Move BT Task"));
-					undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), sel);
-					undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), sel, idx - 1);
-					undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), sel);
-					undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), sel, idx);
-					_commit_action_with_update(undo_redo);
+			Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+			if (selected.is_empty()) {
+				return;
+			}
+			for (const Ref<BTTask> &task : selected) {
+				if (task->get_index() <= 0) {
+					// If any selected is at the top of its hierarchy, we shouldn't move.
+					return;
 				}
 			}
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Move BT Tasks"));
+			for (int i = 0; i < selected.size(); i++) {
+				Ref<BTTask> parent = selected[i]->get_parent();
+				int idx = selected[i]->get_index();
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), selected[i]);
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), selected[i], idx - 1);
+			}
+			for (int i = selected.size() - 1; i >= 0; i--) {
+				Ref<BTTask> parent = selected[i]->get_parent();
+				int idx = selected[i]->get_index();
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), selected[i]);
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), selected[i], idx);
+			}
+			_commit_action_with_update(undo_redo);
 		} break;
 		case ACTION_MOVE_DOWN: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid() && sel->get_parent().is_valid()) {
-				Ref<BTTask> parent = sel->get_parent();
-				int idx = sel->get_index();
-				if (idx >= 0 && idx < (parent->get_child_count() - 1)) {
-					EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Move BT Task"));
-					undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), sel);
-					undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), sel, idx + 1);
-					undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), sel);
-					undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), sel, idx);
-					_commit_action_with_update(undo_redo);
+			Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+			if (selected.is_empty()) {
+				return;
+			}
+			for (const Ref<BTTask> &task : selected) {
+				if (task->get_parent().is_null() || task->get_index() >= task->get_parent()->get_child_count() - 1) {
+					// If any selected is at the bottom of its hierarchy, we shouldn't move.
+					return;
 				}
 			}
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Move BT Tasks"));
+			for (int i = 0; i < selected.size(); i++) {
+				Ref<BTTask> parent = selected[i]->get_parent();
+				int idx = selected[i]->get_index();
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), selected[i]);
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), selected[i], idx);
+			}
+			for (int i = selected.size() - 1; i >= 0; i--) {
+				Ref<BTTask> parent = selected[i]->get_parent();
+				int idx = selected[i]->get_index();
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), selected[i]);
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), selected[i], idx + 1);
+			}
+			_commit_action_with_update(undo_redo);
 		} break;
 		case ACTION_DUPLICATE: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid()) {
-				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Duplicate BT Task"));
-				Ref<BTTask> parent = sel->get_parent();
+			Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+			if (selected.is_empty()) {
+				return;
+			}
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Duplicate BT Tasks"));
+			Vector<Ref<BTTask>> duplicated;
+			for (int i = selected.size() - 1; i >= 0; i--) {
+				Ref<BTTask> parent = selected[i]->get_parent();
 				if (parent.is_null()) {
-					parent = sel;
+					parent = selected[i];
 				}
-				const Ref<BTTask> &sel_dup = sel->clone();
-				undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), sel_dup, sel->get_index() + 1);
-				undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), sel_dup);
-				_commit_action_with_update(undo_redo);
+				const Ref<BTTask> &dup = selected[i]->clone();
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(add_child_at_index), dup, selected[i]->get_index() + 1);
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(remove_child), dup);
+				duplicated.append(dup);
+			}
+			_commit_action_with_update(undo_redo);
+			task_tree->clear_selection();
+			for (const Ref<BTTask> &dup : duplicated) {
+				task_tree->add_selection(dup);
 			}
 		} break;
 		case ACTION_MAKE_ROOT: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid() && task_tree->get_bt()->get_root_task() != sel) {
-				Ref<BTTask> parent = sel->get_parent();
+			Ref<BTTask> task = task_tree->get_selected();
+			if (task.is_valid() && task_tree->get_bt()->get_root_task() != task) {
+				Ref<BTTask> parent = task->get_parent();
 				ERR_FAIL_COND(parent.is_null());
 				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Make Root"));
-				undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), sel);
+				undo_redo->add_do_method(parent.ptr(), LW_NAME(remove_child), task);
 				Ref<BTTask> old_root = task_tree->get_bt()->get_root_task();
-				undo_redo->add_do_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), sel);
-				undo_redo->add_do_method(sel.ptr(), LW_NAME(add_child), old_root);
-				undo_redo->add_undo_method(sel.ptr(), LW_NAME(remove_child), old_root);
+				undo_redo->add_do_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), task);
+				undo_redo->add_do_method(task.ptr(), LW_NAME(add_child), old_root);
+				undo_redo->add_undo_method(task.ptr(), LW_NAME(remove_child), old_root);
 				undo_redo->add_undo_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), old_root);
-				undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), sel, sel->get_index());
+				undo_redo->add_undo_method(parent.ptr(), LW_NAME(add_child_at_index), task, task->get_index());
 				_commit_action_with_update(undo_redo);
 			}
 		} break;
 		case ACTION_EXTRACT_SUBTREE: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid() && !IS_CLASS(sel, BTSubtree)) {
+			Ref<BTTask> task = task_tree->get_selected();
+			if (task.is_valid() && !IS_CLASS(task, BTSubtree)) {
 				extract_dialog->popup_centered_ratio();
 			}
 		} break;
 		case ACTION_CUT:
 		case ACTION_REMOVE: {
-			Ref<BTTask> sel = task_tree->get_selected();
-			if (sel.is_valid()) {
-				if (p_id == ACTION_CUT) {
-					clipboard_task = sel->clone();
-				}
-				EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Remove BT Task"));
-				if (sel->is_root()) {
+			Vector<Ref<BTTask>> selected = task_tree->get_selected_tasks();
+			if (selected.is_empty()) {
+				return;
+			}
+			if (p_id == ACTION_CUT) {
+				clipboard.clear();
+			}
+			EditorUndoRedoManager *undo_redo = _new_undo_redo_action(TTR("Remove BT Task"), UndoRedo::MERGE_ALL);
+			for (const Ref<BTTask> &task : selected) {
+				if (task->is_root()) {
 					undo_redo->add_do_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), Variant());
 					undo_redo->add_undo_method(task_tree->get_bt().ptr(), LW_NAME(set_root_task), task_tree->get_bt()->get_root_task());
 				} else {
-					undo_redo->add_do_method(sel->get_parent().ptr(), LW_NAME(remove_child), sel);
-					undo_redo->add_undo_method(sel->get_parent().ptr(), LW_NAME(add_child_at_index), sel, sel->get_index());
+					undo_redo->add_do_method(task->get_parent().ptr(), LW_NAME(remove_child), task);
+					undo_redo->add_undo_method(task->get_parent().ptr(), LW_NAME(add_child_at_index), task, task->get_index());
 				}
-				_commit_action_with_update(undo_redo);
-				EDIT_RESOURCE(task_tree->get_selected());
+				if (p_id == ACTION_CUT) {
+					clipboard.append(task->clone());
+				}
 			}
+			_commit_action_with_update(undo_redo);
+			EDIT_RESOURCE(task_tree->get_selected());
 		} break;
 	}
 }
@@ -1499,6 +1576,7 @@ void LimboAIEditor::_do_update_theme_item_cache() {
 	theme_cache.search_icon = get_theme_icon(LW_NAME(Search), LW_NAME(EditorIcons));
 	theme_cache.checked_icon = get_theme_icon("GuiChecked", LW_NAME(EditorIcons));
 	theme_cache.unchecked_icon = get_theme_icon("GuiUnchecked", LW_NAME(EditorIcons));
+	theme_cache.indeterminate_icon = get_theme_icon("GuiIndeterminate", LW_NAME(EditorIcons));
 
 	theme_cache.behavior_tree_icon = LimboUtility::get_singleton()->get_task_icon("BehaviorTree");
 	theme_cache.percent_icon = LimboUtility::get_singleton()->get_task_icon("LimboPercent");
