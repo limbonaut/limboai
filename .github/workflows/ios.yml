@@ -25,7 +25,7 @@ on:
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra
+  SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -135,15 +135,7 @@ jobs:
           dotnet --info
 
       - name: Set up Vulkan SDK
-        run: |
-          # ! Note: Vulkan SDK changed packaging, so we need to inline these steps for the time being.
-          #sh misc/scripts/install_vulkan_sdk_macos.sh
-
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
-          unzip /tmp/vulkan-sdk.zip -d /tmp
-          /tmp/InstallVulkan.app/Contents/MacOS/InstallVulkan --accept-licenses --default-answer --confirm-command install
-          rm -Rf /tmp/InstallVulkan.app
-          rm -f /tmp/vulkan-sdk.zip
+        run: sh misc/scripts/install_vulkan_sdk_macos.sh
 
       # ! Note: we stopped using the scons cache in release builds.
       # - name: Set up scons cache
@@ -199,15 +191,7 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Vulkan SDK
-        run: |
-          # ! Note: Vulkan SDK changed packaging, so we need to inline these steps for the time being.
-          #sh misc/scripts/install_vulkan_sdk_macos.sh
-
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
-          unzip /tmp/vulkan-sdk.zip -d /tmp
-          /tmp/InstallVulkan.app/Contents/MacOS/InstallVulkan --accept-licenses --default-answer --confirm-command install
-          rm -Rf /tmp/InstallVulkan.app
-          rm -f /tmp/vulkan-sdk.zip
+        run: sh misc/scripts/install_vulkan_sdk_macos.sh
 
       - name: Download templates artifact
         uses: actions/download-artifact@v4

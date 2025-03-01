@@ -164,17 +164,7 @@ jobs:
           dotnet --info
 
       - name: Set up Vulkan SDK
-        run: |
-          # ! Note: Vulkan SDK changed packaging, so we need to inline these steps for the time being.
-          #sh misc/scripts/install_vulkan_sdk_macos.sh
-
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/config.json" -o /tmp/vulkan-sdk.json
-          sdk_version=`jq -r '.version' /tmp/vulkan-sdk.json`
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
-          unzip /tmp/vulkan-sdk.zip -d /tmp
-          /tmp/InstallVulkan-${sdk_version}.app/Contents/MacOS/InstallVulkan-${sdk_version} --accept-licenses --default-answer --confirm-command install
-          rm -Rf /tmp/InstallVulkan-${sdk_version}.app
-          rm -f /tmp/vulkan-sdk.zip
+        run: sh misc/scripts/install_vulkan_sdk_macos.sh
 
       - name: Set up scons cache
         if: inputs.test-build # ! Only cache test/PR builds
