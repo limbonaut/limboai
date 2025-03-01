@@ -25,9 +25,9 @@ on:
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  # With `lto=full` VM seems to run out of ram and build fails
-  SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra werror=yes tests=no
-  EM_VERSION: 3.1.45
+  # Note: With `lto=full` VM runs out of ram and the build fails.
+  SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra
+  EM_VERSION: 3.1.64
   EM_CACHE_FOLDER: "emsdk-cache"
 
 jobs:
@@ -104,7 +104,7 @@ jobs:
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
