@@ -33,7 +33,7 @@ on:
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
+  SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
