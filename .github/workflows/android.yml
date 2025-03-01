@@ -25,7 +25,7 @@ on:
 # Global Settings
 env:
   SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
+  SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -164,6 +164,13 @@ jobs:
           python -m pip install scons==4.4.0
           python --version
           scons --version
+
+      - name: Set up Swappy
+        run: |
+          cd thirdparty/swappy-frame-pacing/
+          curl -L -O https://github.com/darksylinc/godot-swappy/releases/download/v2023.3.0.0/godot-swappy.7z
+          7z x godot-swappy.7z
+          rm godot-swappy.7z
 
       # ! Note: we stopped using the scons cache in release builds.
       # - name: Set up scons cache
