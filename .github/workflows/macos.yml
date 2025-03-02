@@ -32,10 +32,10 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CACHE_LIMIT: 4
 
 jobs:
   macos-builds:
@@ -164,17 +164,7 @@ jobs:
           dotnet --info
 
       - name: Set up Vulkan SDK
-        run: |
-          # ! Note: Vulkan SDK changed packaging, so we need to inline these steps for the time being.
-          #sh misc/scripts/install_vulkan_sdk_macos.sh
-
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/config.json" -o /tmp/vulkan-sdk.json
-          sdk_version=`jq -r '.version' /tmp/vulkan-sdk.json`
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
-          unzip /tmp/vulkan-sdk.zip -d /tmp
-          /tmp/InstallVulkan-${sdk_version}.app/Contents/MacOS/InstallVulkan-${sdk_version} --accept-licenses --default-answer --confirm-command install
-          rm -Rf /tmp/InstallVulkan-${sdk_version}.app
-          rm -f /tmp/vulkan-sdk.zip
+        run: sh misc/scripts/install_vulkan_sdk_macos.sh
 
       - name: Set up scons cache
         if: inputs.test-build # ! Only cache test/PR builds
@@ -188,10 +178,8 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons -j2 platform=macos target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}}
+          scons -j2 platform=macos target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Build .NET assemblies
         if: matrix.opts.dotnet && matrix.opts.target == 'editor'

@@ -32,14 +32,14 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
+  SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CACHE_LIMIT: 4
 
 jobs:
   linux-builds:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     name: ${{ matrix.opts.name }}
     strategy:
       fail-fast: false
@@ -242,7 +242,7 @@ jobs:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=linuxbsd target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}}
+          scons platform=linuxbsd target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Build .NET assemblies
         if: matrix.opts.dotnet && matrix.opts.target == 'editor'

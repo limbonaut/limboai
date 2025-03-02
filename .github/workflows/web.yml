@@ -24,15 +24,15 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_LIMIT: 4096
-  # With `lto=full` VM seems to run out of ram and build fails
-  SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra werror=yes tests=no
-  EM_VERSION: 3.1.45
+  # Note: With `lto=full` VM runs out of ram and the build fails.
+  SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra
+  EM_VERSION: 3.1.64
   EM_CACHE_FOLDER: "emsdk-cache"
+  CACHE_LIMIT: 4
 
 jobs:
   web-builds:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
@@ -104,7 +104,7 @@ jobs:
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@v14
+        uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -132,10 +132,8 @@ jobs:
       #       ${{env.CACHE_NAME}}-${{inputs.godot-ref}}
 
       - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=web target=${{matrix.target}} threads=${{matrix.threads}} dlink_enabled=${{matrix.dlink}} ${{env.SCONSFLAGS}}
+          scons platform=web target=${{matrix.target}} threads=${{matrix.threads}} dlink_enabled=${{matrix.dlink}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Prepare artifacts
         run: |

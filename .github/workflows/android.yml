@@ -24,14 +24,14 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes tests=no verbose=yes warnings=extra werror=yes
+  SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CACHE_LIMIT: 4
 
 jobs:
   android-builds:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     name: ${{ matrix.name }}
     strategy:
       fail-fast: false
@@ -165,6 +165,13 @@ jobs:
           python --version
           scons --version
 
+      - name: Set up Swappy
+        run: |
+          cd thirdparty/swappy-frame-pacing/
+          curl -L -O https://github.com/darksylinc/godot-swappy/releases/download/v2023.3.0.0/godot-swappy.7z
+          7z x godot-swappy.7z
+          rm godot-swappy.7z
+
       # ! Note: we stopped using the scons cache in release builds.
       # - name: Set up scons cache
       #   uses: actions/cache@v4
@@ -177,11 +184,8 @@ jobs:
       #       ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}}
-          ls platform/android/java/lib/libs/*
+          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -190,7 +194,7 @@ jobs:
           path: platform/android/java/lib/libs/*
 
   make-android-package:
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
     needs: android-builds
     name: ${{ matrix.name }}
 

@@ -58,14 +58,14 @@ jobs:
       matrix:
         opts:
           - name: 🐧 Linux (x86_64, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: linux
             target: template_release
             arch: x86_64
             should-build: true
 
           - name: 🐧 Linux (x86_64, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: linux
             target: editor
             arch: x86_64
@@ -100,70 +100,70 @@ jobs:
             should-build: true
 
           - name: 🌐 Web (wasm32, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: web
             target: template_release
             arch: wasm32
             should-build: ${{ !inputs.test-build }}
 
           - name: 🌐 Web (wasm32, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: web
             target: editor
             arch: wasm32
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: template_release
             arch: arm64
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm64, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: editor
             arch: arm64
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm32, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: template_release
             arch: arm32
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (arm32, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: editor
             arch: arm32
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: template_release
             arch: x86_64
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_64, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: editor
             arch: x86_64
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_32, release)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: template_release
             arch: x86_32
             should-build: ${{ !inputs.test-build }}
 
           - name: 🤖 Android (x86_32, debug)
-            runner: ubuntu-20.04
+            runner: ubuntu-22.04
             platform: android
             target: editor
             arch: x86_32
