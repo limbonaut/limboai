@@ -38,10 +38,13 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 > **🛈** YouTube videos produced by various creators
 
-<a href="https://www.youtube.com/watch?v=NWaMArUg7mY"><img src="https://img.youtube.com/vi/NWaMArUg7mY/0.jpg" width=410></a>
-<a href="https://www.youtube.com/watch?v=aP0Aacdxmno"><img src="https://img.youtube.com/vi/aP0Aacdxmno/0.jpg" width=410></a>
-<a href="https://www.youtube.com/watch?v=vZHzMO90IwQ"><img src="https://img.youtube.com/vi/vZHzMO90IwQ/0.jpg" width=410></a>
-<a href="https://www.youtube.com/watch?v=gAk3xl5fBsM"><img src="https://img.youtube.com/vi/gAk3xl5fBsM/0.jpg" width=410></a>
+<a href="https://www.youtube.com/watch?v=cGqO7SVKqkM"><img src="https://img.youtube.com/vi/cGqO7SVKqkM/0.jpg" width=272></a>
+<a href="https://www.youtube.com/watch?v=E_FIy2dTkNc"><img src="https://img.youtube.com/vi/E_FIy2dTkNc/0.jpg" width=272></a>
+<a href="https://www.youtube.com/watch?v=45DaBV9FgOQ"><img src="https://img.youtube.com/vi/45DaBV9FgOQ/0.jpg" width=272></a>
+<a href="https://www.youtube.com/watch?v=vZHzMO90IwQ"><img src="https://img.youtube.com/vi/vZHzMO90IwQ/0.jpg" width=272></a>
+<a href="https://www.youtube.com/watch?v=gAk3xl5fBsM"><img src="https://img.youtube.com/vi/gAk3xl5fBsM/0.jpg" width=272></a>
+<a href="https://www.youtube.com/watch?v=aP0Aacdxmno"><img src="https://img.youtube.com/vi/aP0Aacdxmno/0.jpg" width=272></a>
+<!-- <a href="https://www.youtube.com/watch?v=NWaMArUg7mY"><img src="https://img.youtube.com/vi/NWaMArUg7mY/0.jpg" width=272></a> -->
 
 ## Features
 
