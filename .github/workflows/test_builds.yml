@@ -32,7 +32,7 @@ env:
 jobs:
   unit-tests:
     name: 🧪 Unit tests
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-22.04"
 
     # Settings
     env:
@@ -101,7 +101,7 @@ jobs:
 
   static-checks:
     name: ⚙️ Static checks
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Clone LimboAI module
         uses: actions/checkout@v4
