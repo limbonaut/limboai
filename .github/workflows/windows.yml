@@ -32,10 +32,10 @@ on:
 
 # Global Settings
 env:
+  SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
   BUILD_IMAGE_VERSION: 4.3-f40
   MESA_VERSION: 23.1.9-1
-  SCONS_CACHE_LIMIT: 4096
-  SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
+  CACHE_LIMIT: 4
 
 jobs:
   windows-builds:
@@ -256,6 +256,8 @@ jobs:
               ${{matrix.opts.scons-flags}} \
               angle_libs=/build/deps/angle \
               mesa_libs=/build/deps/mesa \
+              cache_path=/build/.scons_cache \
+              cache_limit=${{env.CACHE_LIMIT}}
           "
           podman_run="podman run -it --rm \
             --env GODOT_VERSION_STATUS=${GODOT_VERSION_STATUS} \
@@ -263,8 +265,6 @@ jobs:
             --env NUM_CORES=$(nproc --all) \
             --env DOTNET_NOLOGO=true \
             --env DOTNET_CLI_TELEMETRY_OPTOUT=true \
-            --env SCONS_CACHE=/build/.scons_cache/ \
-            --env SCONS_CACHE_LIMIT=${SCONS_CACHE_LIMIT} \
             -v ${GITHUB_WORKSPACE}/:/build/ \
             -w /build godot-windows:${{env.BUILD_IMAGE_VERSION}} bash -c \
           "
@@ -302,7 +302,6 @@ jobs:
         if: matrix.opts.dotnet && matrix.opts.target == 'editor'
         id: mark-dotnet-editor
         run: echo "built-dotnet-editor=true" >> $GITHUB_OUTPUT
-
 
   dotnet-assemblies:
     name: .NET assembly for ${{matrix.opts.arch}}

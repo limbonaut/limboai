@@ -24,10 +24,10 @@ on:
 
 # Global Settings
 env:
-  SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: production=yes verbose=yes warnings=extra
   DOTNET_NOLOGO: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
+  CACHE_LIMIT: 4
 
 jobs:
   android-builds:
@@ -184,11 +184,8 @@ jobs:
       #       ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
-        env:
-          SCONS_CACHE: ${{github.workspace}}/.scons_cache/
         run: |
-          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}}
-          ls platform/android/java/lib/libs/*
+          scons platform=android target=${{matrix.target}} arch=${{matrix.arch}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
