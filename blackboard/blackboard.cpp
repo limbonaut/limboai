@@ -12,19 +12,6 @@
 #include "blackboard.h"
 #include "../util/limbo_compat.h"
 
-#ifdef LIMBOAI_MODULE
-#include "core/variant/variant.h"
-#include "scene/main/node.h"
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/node.hpp>
-#include <godot_cpp/classes/ref.hpp>
-#include <godot_cpp/classes/ref_counted.hpp>
-#include <godot_cpp/core/object.hpp>
-using namespace godot;
-#endif
-
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);
 	while (bb->get_parent().is_valid()) {

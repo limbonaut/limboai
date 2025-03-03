@@ -15,12 +15,6 @@
 
 #include "../util/limbo_string_names.h"
 
-#ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
-#include "core/object/object.h"
-#include "core/variant/variant.h"
-#endif // LIMBOAI_MODULE
-
 void ModeSwitchButton::add_mode(int p_id, const Ref<Texture2D> &p_icon, const String &p_tooltip) {
 	bool unique_id = true;
 	for (int i = 0; i < modes.size(); i++) {

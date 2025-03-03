@@ -11,6 +11,16 @@
 
 #include "bt_set_agent_property.h"
 
+#include "../../../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void BTSetAgentProperty::set_property(StringName p_prop) {
 	property = p_prop;
 	emit_changed();

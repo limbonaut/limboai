@@ -15,7 +15,6 @@
 
 #include "../blackboard/bb_param/bb_param.h"
 #include "../bt/tasks/bt_task.h"
-#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 #include "blackboard_plan_editor.h"

@@ -11,6 +11,16 @@
 
 #include "bt_pause_animation.h"
 
+#include "../../../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 //**** Setters / Getters
 
 void BTPauseAnimation::set_animation_player(Ref<BBNode> p_animation_player) {

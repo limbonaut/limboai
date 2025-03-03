@@ -18,7 +18,6 @@
 #include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
-#include "scene/gui/control.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/style_box_flat.h"
 
@@ -26,7 +25,6 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
 #include <godot_cpp/classes/texture2d.hpp>

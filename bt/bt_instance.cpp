@@ -12,7 +12,8 @@
 #include "bt_instance.h"
 
 #include "../editor/debugger/limbo_debugger.h"
-#include "behavior_tree.h"
+#include "../util/limbo_compat.h"
+#include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/os/time.h"
@@ -20,9 +21,14 @@
 #endif
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/performance.hpp>
 #include <godot_cpp/classes/time.hpp>
 #endif
+
+Node *BTInstance::get_owner_node() const {
+	return owner_node_id ? Object::cast_to<Node>(OBJECT_DB_GET_INSTANCE(owner_node_id)) : nullptr;
+}
 
 Ref<BTInstance> BTInstance::create(Ref<BTTask> p_root_task, String p_source_bt_path, Node *p_owner_node) {
 	ERR_FAIL_COND_V(p_root_task.is_null(), nullptr);

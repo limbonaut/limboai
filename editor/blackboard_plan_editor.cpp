@@ -20,14 +20,12 @@
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_interface.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/gui/line_edit.h"
 #include "scene/gui/margin_container.h"
 #include "scene/gui/panel_container.h"
 #include "scene/resources/style_box_flat.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/input.hpp>

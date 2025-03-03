@@ -14,31 +14,9 @@
 #include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
-#ifdef LIMBOAI_MODULE
-#include "core/config/engine.h"
-#include "core/debugger/engine_debugger.h"
-#include "core/error/error_macros.h"
-#include "core/io/resource_loader.h"
-#include "core/object/class_db.h"
-#include "core/os/memory.h"
-#include "core/string/string_name.h"
-#include "core/variant/variant.h"
-#include "main/performance.h"
-
-#define IS_DEBUGGER_ACTIVE() (EngineDebugger::is_active())
-#define GET_TICKS_USEC() (OS::get_singleton()->get_ticks_usec())
-
-#endif // ! LIMBOAI_MODULE
-
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/engine_debugger.hpp>
-#include <godot_cpp/classes/performance.hpp>
-#include <godot_cpp/classes/time.hpp>
-
-#define IS_DEBUGGER_ACTIVE() (EngineDebugger::get_singleton()->is_active())
-#define GET_TICKS_USEC() (Time::get_singleton()->get_ticks_usec())
-
-#endif // ! LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 

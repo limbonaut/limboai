@@ -13,13 +13,13 @@
 
 #include "task_tree.h"
 
-#include "../bt/tasks/bt_comment.h"
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../util/limbo_compat.h"
 #include "../util/limbo_utility.h"
 #include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
+#include "../bt/tasks/bt_comment.h"
 #include "core/object/script_language.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"

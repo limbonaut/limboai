@@ -17,9 +17,11 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/resource.h"
+#include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #endif // LIMBOAI_GDEXTENSION
 

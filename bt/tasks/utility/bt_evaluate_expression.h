@@ -14,6 +14,9 @@
 
 #include "../bt_action.h"
 
+#include "../../../blackboard/bb_param/bb_node.h"
+#include "../../../blackboard/bb_param/bb_variant.h"
+
 #ifdef LIMBOAI_MODULE
 #include "core/math/expression.h"
 #endif
@@ -21,9 +24,6 @@
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/expression.hpp>
 #endif
-
-#include "../../../blackboard/bb_param/bb_node.h"
-#include "../../../blackboard/bb_param/bb_variant.h"
 
 class BTEvaluateExpression : public BTAction {
 	GDCLASS(BTEvaluateExpression, BTAction);

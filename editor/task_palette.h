@@ -15,9 +15,9 @@
 #define TASK_PALETTE_H
 
 #ifdef LIMBOAI_MODULE
+// TODO: includes
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
-#include "scene/gui/check_box.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/panel_container.h"
@@ -26,13 +26,11 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
-#include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/flow_container.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
 #include <godot_cpp/classes/popup_panel.hpp>
 #include <godot_cpp/classes/scroll_container.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
 using namespace godot;

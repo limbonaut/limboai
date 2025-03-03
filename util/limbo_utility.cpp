@@ -13,7 +13,8 @@
 
 #include "../bt/tasks/bt_task.h"
 #include "../util/limbo_compat.h"
-#include "limboai_version.h"
+#include "../util/limbo_string_names.h"
+#include "limboai_version.gen.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
@@ -31,16 +32,12 @@
 #endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/classes/input_event_key.hpp"
-#include "godot_cpp/classes/project_settings.hpp"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
+#include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/script.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
-#include <godot_cpp/classes/theme.hpp>
-#include <godot_cpp/core/error_macros.hpp>
+#include <godot_cpp/variant/dictionary.hpp>
 #endif // ! LIMBOAI_GDEXTENSION
 
 LimboUtility *LimboUtility::singleton = nullptr;

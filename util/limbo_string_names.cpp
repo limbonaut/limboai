@@ -12,16 +12,11 @@
 #include "limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-
 #define SN(m_arg) (StaticCString::create(m_arg))
-
 #endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/variant/string_name.hpp"
-
 #define SN(m_arg) (StringName(m_arg))
-
 #endif // ! LIMBOAI_GDEXTENSION
 
 LimboStringNames *LimboStringNames::singleton = nullptr;

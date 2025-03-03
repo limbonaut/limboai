@@ -17,32 +17,16 @@
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
 #include "../../util/limbo_compat.h"
+#include "../../util/limbo_string_names.h"
 #include "../../util/limbo_utility.h"
-#include "limbo_debugger.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/debugger/engine_debugger.h"
-#include "core/error/error_macros.h"
-#include "core/math/math_defs.h"
-#include "core/object/callable_method_pointer.h"
-#include "core/os/memory.h"
-#include "core/string/print_string.h"
-#include "core/string/ustring.h"
-#include "core/variant/array.h"
 #include "editor/editor_interface.h"
 #include "editor/editor_paths.h"
 #include "editor/filesystem_dock.h"
-#include "editor/plugins/editor_debugger_plugin.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/gui/box_container.h"
-#include "scene/gui/control.h"
-#include "scene/gui/item_list.h"
-#include "scene/gui/label.h"
-#include "scene/gui/line_edit.h"
 #include "scene/gui/separator.h"
-#include "scene/gui/split_container.h"
 #include "scene/gui/tab_container.h"
-#include "scene/gui/texture_rect.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

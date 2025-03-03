@@ -73,8 +73,6 @@ _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop)
 #ifdef LIMBOAI_GDEXTENSION
 
 #include <godot_cpp/classes/ref_counted.hpp>
-#include <godot_cpp/variant/utility_functions.hpp>
-#include <godot_cpp/variant/variant.hpp>
 
 using namespace godot;
 

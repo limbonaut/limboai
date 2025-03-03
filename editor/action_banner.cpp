@@ -13,7 +13,6 @@
 
 #include "action_banner.h"
 
-#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
@@ -22,6 +21,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "../util/limbo_compat.h"
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #endif // LIMBOAI_GDEXTENSION

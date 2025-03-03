@@ -25,9 +25,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 
-#include "godot_cpp/classes/editor_interface.hpp"
-#include "godot_cpp/core/error_macros.hpp"
-#include "godot_cpp/variant/typed_array.hpp"
+#include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
@@ -35,8 +33,6 @@
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/translation_server.hpp>
-
-using namespace godot;
 
 Variant _EDITOR_GET(const String &p_setting) {
 	Ref<EditorSettings> es = EditorInterface::get_singleton()->get_editor_settings();

@@ -18,7 +18,9 @@
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_file_system.h"
 #include "editor/editor_interface.h"
-#elif LIMBOAI_GDEXTENSION
+#endif
+
+#ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_file_system.hpp>
 #include <godot_cpp/classes/editor_file_system_directory.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>

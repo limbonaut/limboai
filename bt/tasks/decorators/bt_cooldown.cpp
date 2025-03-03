@@ -11,11 +11,16 @@
 
 #include "bt_cooldown.h"
 
+#include "../../../util/limbo_compat.h"
+#include "../../../util/limbo_string_names.h"
+
 #ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
 #include "scene/main/scene_tree.h"
 #endif
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #endif
 

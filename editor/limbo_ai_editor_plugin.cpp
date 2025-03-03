@@ -26,6 +26,7 @@
 #include "debugger/limbo_debugger_plugin.h"
 #include "editor_property_bb_param.h"
 #include "editor_property_property_path.h"
+#include "editor_property_variable_name.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/project_settings.h"
@@ -34,9 +35,7 @@
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/editor_file_system.h"
-#include "editor/editor_help.h"
 #include "editor/editor_interface.h"
-#include "editor/editor_paths.h"
 #include "editor/editor_settings.h"
 #include "editor/filesystem_dock.h"
 #include "editor/gui/editor_bottom_panel.h"
@@ -44,7 +43,6 @@
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/project_settings_editor.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/gui/panel_container.h"
 #include "scene/gui/separator.h"
 #endif // LIMBOAI_MODULE
 
@@ -56,23 +54,20 @@
 #include <godot_cpp/classes/editor_file_system.hpp>
 #include <godot_cpp/classes/editor_inspector.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/editor_paths.hpp>
 #include <godot_cpp/classes/editor_settings.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/file_system_dock.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
-#include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/script_editor.hpp>
-#include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
-#include <godot_cpp/core/error_macros.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 namespace {

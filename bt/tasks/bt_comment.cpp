@@ -13,10 +13,13 @@
 
 #include "bt_task.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
-using namespace godot;
-#endif
+#endif // LIMBOAI_GDEXTENSION
 
 void BTComment::set_enabled(bool p_enabled) {
 	// BTComment is always disabled.

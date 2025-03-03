@@ -11,6 +11,16 @@
 
 #include "bt_subtree.h"
 
+#include "../../../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void BTSubtree::set_subtree(const Ref<BehaviorTree> &p_subtree) {
 	if (Engine::get_singleton()->is_editor_hint()) {
 		if (subtree.is_valid() && subtree->is_connected(LW_NAME(changed), callable_mp(this, &BTSubtree::_update_blackboard_plan))) {

@@ -15,11 +15,8 @@
 #include "limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/object/object.h"
-
 #include "core/input/shortcut.h"
-#include "core/object/class_db.h"
-#include "core/variant/binder_common.h"
+#include "core/object/object.h"
 #include "core/variant/variant.h"
 #include "scene/resources/texture.h"
 #endif // LIMBOAI_MODULE
@@ -28,8 +25,6 @@
 #include <godot_cpp/classes/object.hpp>
 #include <godot_cpp/classes/shortcut.hpp>
 #include <godot_cpp/classes/texture2d.hpp>
-#include <godot_cpp/core/binder_common.hpp>
-#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION

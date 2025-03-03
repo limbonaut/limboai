@@ -19,12 +19,12 @@
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
+// TODO: includes
 #include "core/config/project_settings.h"
 #include "core/error/error_macros.h"
 #include "editor/editor_help.h"
 #include "editor/editor_node.h"
 #include "editor/editor_paths.h"
-#include "editor/plugins/script_editor_plugin.h"
 #include "editor/themes/editor_scale.h"
 #include "scene/gui/check_box.h"
 #endif // LIMBO_MODULE
@@ -33,22 +33,16 @@
 #include <godot_cpp/classes/button_group.hpp>
 #include <godot_cpp/classes/check_box.hpp>
 #include <godot_cpp/classes/config_file.hpp>
-#include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/editor_paths.hpp>
 #include <godot_cpp/classes/font.hpp>
-#include <godot_cpp/classes/global_constants.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/h_flow_container.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/popup_menu.hpp>
 #include <godot_cpp/classes/project_settings.hpp>
-#include <godot_cpp/classes/resource_loader.hpp>
-#include <godot_cpp/classes/script_editor.hpp>
-#include <godot_cpp/classes/script_editor_base.hpp>
 #include <godot_cpp/classes/style_box.hpp>
-#include <godot_cpp/core/error_macros.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

@@ -101,6 +101,7 @@
 #include "editor/debugger/limbo_debugger.h"
 #include "editor/debugger/limbo_debugger_plugin.h"
 #include "editor/editor_property_bb_param.h"
+#include "editor/editor_property_variable_name.h"
 #include "editor/mode_switch_button.h"
 #include "editor/tree_search.h"
 #include "hsm/limbo_hsm.h"
@@ -117,7 +118,6 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/os/memory.h"
-#include "core/string/print_string.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

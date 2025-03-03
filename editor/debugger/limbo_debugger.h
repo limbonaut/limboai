@@ -12,20 +12,15 @@
 #ifndef LIMBO_DEBUGGER_H
 #define LIMBO_DEBUGGER_H
 
-#include "../../bt/bt_instance.h"
-#include "../../bt/tasks/bt_task.h"
-
 #ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/object/object.h"
-#include "core/string/node_path.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/object.hpp>
-#include <godot_cpp/core/class_db.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
-#include <godot_cpp/variant/node_path.hpp>
+using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
 class LimboDebugger : public Object {

@@ -13,26 +13,20 @@
 
 #include "tree_search.h"
 
-#include "../util/limbo_compat.h" // for edscale
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/math/math_funcs.h"
 #include "editor/editor_interface.h"
 #include "editor/themes/editor_scale.h"
-#include "scene/main/viewport.h"
 #include "scene/resources/font.h"
-#include "scene/resources/style_box_flat.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "../util/limbo_compat.h" // for edscale
 #include <godot_cpp/classes/editor_interface.hpp> // for edge scale
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
-#include <godot_cpp/classes/viewport.hpp>
-#include <godot_cpp/core/math.hpp>
-
 #endif // LIMBOAI_GDEXTENSION
 
 #define UPPER_BOUND (1 << 15) // for substring search.

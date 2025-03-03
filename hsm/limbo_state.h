@@ -23,6 +23,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/core/gdvirtual.gen.inc>
 #include <godot_cpp/templates/hash_map.hpp>
 #endif // LIMBOAI_GDEXTENSION

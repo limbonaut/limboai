@@ -43,6 +43,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/label.hpp>
@@ -51,8 +52,6 @@
 #include <godot_cpp/classes/panel.hpp>
 #include <godot_cpp/classes/popup.hpp>
 #include <godot_cpp/classes/shortcut.hpp>
-#include <godot_cpp/classes/window.hpp>
-#include <godot_cpp/variant/rect2.hpp>
 
 using namespace godot;
 
