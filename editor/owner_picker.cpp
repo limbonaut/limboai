@@ -13,18 +13,13 @@
 
 #include "owner_picker.h"
 
-#include "../util/limbo_compat.h"
-
-#ifdef LIMBOAI_MODULE
-#include "editor/editor_file_system.h"
-#include "editor/editor_interface.h"
-#endif
+#include "../compat/editor.h"
+#include "../compat/resource.h"
+#include "../compat/resource_loader.h"
+#include "../compat/translation.h"
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/editor_file_system.hpp>
 #include <godot_cpp/classes/editor_file_system_directory.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/resource_loader.hpp>
 #endif
 
 Vector<String> OwnerPicker::_find_owners(const String &p_path) const {

@@ -11,15 +11,15 @@
 
 #include "bt_task.h"
 
-#include "../../blackboard/blackboard.h"
-#include "../../util/limbo_compat.h"
+#include "../../compat/object.h"
+#include "../../compat/print.h"
 #include "../../util/limbo_string_names.h"
 #include "../behavior_tree.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
 #include "core/object/script_language.h"
 #include "core/templates/hash_map.h"
-#include "core/variant/variant.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

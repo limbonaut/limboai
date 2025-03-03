@@ -11,6 +11,8 @@
 
 #include "blackboard_plan.h"
 
+#include "../compat/scene_tree.h"
+#include "../compat/translation.h"
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
@@ -19,8 +21,6 @@
 #elif LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_inspector.hpp>
 #include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/engine.hpp>
-#include <godot_cpp/classes/scene_tree.hpp>
 #endif
 
 bool BlackboardPlan::_set(const StringName &p_name, const Variant &p_value) {

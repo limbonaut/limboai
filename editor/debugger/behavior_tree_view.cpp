@@ -14,23 +14,18 @@
 #include "behavior_tree_view.h"
 
 #include "../../bt/tasks/bt_task.h"
+#include "../../compat/editor_scale.h"
+#include "../../compat/editor_settings.h"
 #include "../../util/limbo_string_names.h"
 #include "../../util/limbo_utility.h"
 #include "behavior_tree_data.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
-#include "core/math/color.h"
-#include "core/math/math_defs.h"
-#include "core/object/callable_method_pointer.h"
 #include "core/os/time.h"
-#include "core/typedefs.h"
-#include "editor/editor_settings.h"
-#include "editor/themes/editor_scale.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/time.hpp>
 #endif // LIMBOAI_GDEXTENSION

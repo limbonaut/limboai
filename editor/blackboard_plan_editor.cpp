@@ -13,16 +13,15 @@
 
 #include "blackboard_plan_editor.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/editor_scale.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_interface.h"
-#include "editor/themes/editor_scale.h"
+#include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
-#include "scene/gui/panel_container.h"
-#include "scene/resources/style_box_flat.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -31,7 +30,6 @@
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/label.hpp>
-#include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/margin_container.hpp>
 #include <godot_cpp/classes/theme.hpp>
 using namespace godot;

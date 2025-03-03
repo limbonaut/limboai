@@ -11,7 +11,7 @@
 
 #include "bt_call_method.h"
 
-#include "../../../util/limbo_compat.h"
+#include "../../../compat/resource.h"
 #include "../../../util/limbo_string_names.h"
 #include "../../../util/limbo_utility.h"
 

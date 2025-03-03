@@ -14,21 +14,21 @@
 #include "task_tree.h"
 
 #include "../bt/tasks/composites/bt_probability_selector.h"
-#include "../util/limbo_compat.h"
+#include "../compat/editor_scale.h"
+#include "../compat/object.h"
+#include "../compat/resource.h"
 #include "../util/limbo_utility.h"
 #include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
 #include "../bt/tasks/bt_comment.h"
 #include "core/object/script_language.h"
-#include "editor/themes/editor_scale.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/label.h"
 #include "scene/gui/texture_rect.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/script.hpp>

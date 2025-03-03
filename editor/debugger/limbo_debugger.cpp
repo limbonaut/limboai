@@ -12,20 +12,10 @@
 #include "limbo_debugger.h"
 
 #include "../../bt/bt_instance.h"
-#include "../../util/limbo_compat.h"
+#include "../../compat/debugger.h"
+#include "../../compat/object.h"
 #include "../../util/limbo_string_names.h"
 #include "behavior_tree_data.h"
-
-#ifdef LIMBOAI_MODULE
-#include "core/debugger/engine_debugger.h"
-#include "core/io/resource.h"
-#include "core/string/node_path.h"
-#include "scene/main/scene_tree.h"
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/engine_debugger.hpp>
-#endif // LIMBOAI_GDEXTENSION
 
 //**** LimboDebugger
 

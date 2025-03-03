@@ -13,14 +13,12 @@
 #define BT_TASK_H
 
 #include "../../blackboard/blackboard.h"
-#include "../../util/limbo_task_db.h" // needed in every implementation
+#include "../../util/limbo_task_db.h" // needed in every derived class header
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/resource.h"
 #include "core/object/object.h"
-#include "core/object/ref_counted.h"
 #include "core/templates/vector.h"
-#include "core/variant/array.h"
 #include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
 

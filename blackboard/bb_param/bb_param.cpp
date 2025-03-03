@@ -11,14 +11,8 @@
 
 #include "bb_param.h"
 
+#include "../../compat/variant.h"
 #include "../../util/limbo_utility.h"
-
-#ifdef LIMBOAI_MODULE
-#endif // LIMBOAI_MODULE
-
-#ifdef LIMBOAI_GDEXTENSION
-using namespace godot;
-#endif // LIMBOAI_GDEXTENSION
 
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
@@ -87,6 +81,10 @@ Variant BBParam::get_value(Node *p_scene_root, const Ref<Blackboard> &p_blackboa
 		ERR_FAIL_COND_V_MSG(!p_blackboard->has_var(variable), p_default, vformat("BBParam: Blackboard variable \"%s\" doesn't exist.", variable));
 		return p_blackboard->get_var(variable, p_default);
 	}
+}
+
+void BBParam::_assign_default_value() {
+	saved_value = VARIANT_DEFAULT(get_type());
 }
 
 void BBParam::_get_property_list(List<PropertyInfo> *p_list) const {

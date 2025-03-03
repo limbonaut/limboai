@@ -15,18 +15,19 @@
 #define TASK_PALETTE_H
 
 #ifdef LIMBOAI_MODULE
-// TODO: includes
+#include "core/templates/hash_set.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/flow_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
+#include "scene/gui/scroll_container.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
-#include <godot_cpp/classes/flow_container.hpp>
+#include <godot_cpp/classes/h_flow_container.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
 #include <godot_cpp/classes/popup_panel.hpp>
@@ -73,7 +74,7 @@ private:
 		Ref<Texture2D> arrow_right_icon;
 	} theme_cache;
 
-	FlowContainer *tasks_container;
+	HFlowContainer *tasks_container;
 	Button *section_header;
 
 	void _on_task_button_pressed(const String &p_task);

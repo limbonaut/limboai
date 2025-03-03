@@ -11,7 +11,7 @@
 
 #include "bt_probability_selector.h"
 
-#include "../../../util/limbo_compat.h"
+#include "../../../compat/limbo_compat.h"
 
 double BTProbabilitySelector::get_weight(int p_index) const {
 	ERR_FAIL_INDEX_V(p_index, get_child_count(), 0.0);

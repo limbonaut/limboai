@@ -14,27 +14,26 @@
 #include "limbo_debugger_plugin.h"
 
 #include "../../bt/behavior_tree.h"
+#include "../../compat/editor.h"
+#include "../../compat/editor_paths.h"
+#include "../../compat/editor_scale.h"
+#include "../../compat/resource_loader.h"
+#include "../../compat/translation.h"
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
-#include "../../util/limbo_compat.h"
 #include "../../util/limbo_string_names.h"
 #include "../../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_interface.h"
-#include "editor/editor_paths.h"
+#include "core/io/config_file.h"
 #include "editor/filesystem_dock.h"
-#include "editor/themes/editor_scale.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/tab_container.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/config_file.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/editor_paths.hpp>
 #include <godot_cpp/classes/file_system_dock.hpp>
-#include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/tab_container.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
 #endif // LIMBOAI_GDEXTENSION
@@ -158,7 +157,8 @@ void LimboDebuggerTab::_resource_header_pressed() {
 	if (bt_path.is_empty()) {
 		return;
 	}
-	FS_DOCK_SELECT_FILE(bt_path.get_slice("::", 0));
+	FileSystemDock *dock = EditorInterface::get_singleton()->get_file_system_dock();
+	dock->navigate_to_path(bt_path.get_slice("::", 0));
 	Ref<BehaviorTree> bt = RESOURCE_LOAD(bt_path, "BehaviorTree");
 	ERR_FAIL_COND_MSG(!bt.is_valid(), "Failed to load BehaviorTree. Wrong resource path?");
 	EditorInterface::get_singleton()->edit_resource(bt);

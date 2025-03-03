@@ -11,7 +11,7 @@
 
 #include "limbo_state.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
 #endif // LIMBOAI_MODULE

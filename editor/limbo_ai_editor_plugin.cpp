@@ -18,7 +18,17 @@
 #include "../bt/tasks/composites/bt_probability_selector.h"
 #include "../bt/tasks/composites/bt_selector.h"
 #include "../bt/tasks/decorators/bt_subtree.h"
-#include "../util/limbo_compat.h"
+#include "../compat/editor.h"
+#include "../compat/editor_scale.h"
+#include "../compat/editor_settings.h"
+#include "../compat/limbo_compat.h"
+#include "../compat/object.h"
+#include "../compat/project_settings.h"
+#include "../compat/resource.h"
+#include "../compat/resource_loader.h"
+#include "../compat/scene_tree.h"
+#include "../compat/translation.h"
+#include "../compat/variant.h"
 #include "../util/limbo_utility.h"
 #include "../util/limboai_version.h"
 #include "action_banner.h"
@@ -29,20 +39,14 @@
 #include "editor_property_variable_name.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/config/project_settings.h"
-#include "core/error/error_macros.h"
 #include "core/input/input.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
-#include "editor/editor_file_system.h"
-#include "editor/editor_interface.h"
-#include "editor/editor_settings.h"
+#include "editor/editor_node.h"
 #include "editor/filesystem_dock.h"
 #include "editor/gui/editor_bottom_panel.h"
-#include "editor/inspector_dock.h"
 #include "editor/plugins/script_editor_plugin.h"
 #include "editor/project_settings_editor.h"
-#include "editor/themes/editor_scale.h"
 #include "scene/gui/separator.h"
 #endif // LIMBOAI_MODULE
 
@@ -51,23 +55,18 @@
 #include <godot_cpp/classes/config_file.hpp>
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/display_server.hpp>
-#include <godot_cpp/classes/editor_file_system.hpp>
 #include <godot_cpp/classes/editor_inspector.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/editor_settings.hpp>
-#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/file_system_dock.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
-#include <godot_cpp/classes/project_settings.hpp>
 #include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/resource_saver.hpp>
-#include <godot_cpp/classes/scene_tree.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/script_editor.hpp>
 #include <godot_cpp/classes/v_separator.hpp>
+using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 
 namespace {
@@ -210,7 +209,7 @@ void LimboAIEditor::_new_bt() {
 	Ref<BehaviorTree> bt = memnew(BehaviorTree);
 	bt->set_root_task(memnew(BTSelector));
 	bt->set_blackboard_plan(memnew(BlackboardPlan));
-	EDIT_RESOURCE(bt);
+	EditorInterface::get_singleton()->edit_resource(bt);
 }
 
 void LimboAIEditor::_save_bt(const Ref<BehaviorTree> &p_bt, const String &p_path) {
@@ -276,7 +275,7 @@ void LimboAIEditor::_load_bt(const String &p_path) {
 	// 	history.push_back(bt);
 	// }
 
-	EDIT_RESOURCE(bt);
+	EditorInterface::get_singleton()->edit_resource(bt);
 }
 
 void LimboAIEditor::_update_task_tree(const Ref<BehaviorTree> &p_bt, const Ref<BTTask> &p_specific_task) {
@@ -463,7 +462,7 @@ void LimboAIEditor::_extract_subtree(const String &p_path) {
 		undo_redo->add_undo_method(selected->get_parent().ptr(), LW_NAME(add_child_at_index), selected, idx);
 	}
 	_commit_action_with_update(undo_redo);
-	EDIT_RESOURCE(task_tree->get_selected());
+	EditorInterface::get_singleton()->edit_resource(task_tree->get_selected());
 }
 
 void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
@@ -668,7 +667,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 		} break;
 		case ACTION_EDIT_SCRIPT: {
 			ERR_FAIL_COND(task_tree->get_selected().is_null());
-			EDIT_RESOURCE(task_tree->get_selected()->get_script());
+			EditorInterface::get_singleton()->edit_resource(task_tree->get_selected()->get_script());
 		} break;
 		case ACTION_OPEN_DOC: {
 			Ref<BTTask> task = task_tree->get_selected();
@@ -837,7 +836,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 				}
 			}
 			_commit_action_with_update(undo_redo);
-			EDIT_RESOURCE(task_tree->get_selected());
+			EditorInterface::get_singleton()->edit_resource(task_tree->get_selected());
 		} break;
 	}
 }
@@ -983,7 +982,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 }
 
 void LimboAIEditor::_on_tree_task_selected(const Ref<BTTask> &p_task) {
-	EDIT_RESOURCE(p_task);
+	EditorInterface::get_singleton()->edit_resource(p_task);
 }
 
 void LimboAIEditor::_on_tree_task_activated() {
@@ -995,11 +994,11 @@ void LimboAIEditor::_on_tree_task_activated() {
 	} else if (IS_CLASS(selected, BTSubtree)) {
 		Ref<BehaviorTree> subtree = static_cast<Ref<BTSubtree>>(selected)->get_subtree();
 		if (subtree.is_valid()) {
-			EDIT_RESOURCE(subtree);
+			EditorInterface::get_singleton()->edit_resource(subtree);
 		} else {
 			LimboUtility::get_singleton()->open_doc_class(selected->get_class());
 		}
-		EDIT_RESOURCE(subtree);
+		EditorInterface::get_singleton()->edit_resource(subtree);
 	} else {
 		LimboUtility::get_singleton()->open_doc_class(selected->get_class());
 	}
@@ -1010,9 +1009,9 @@ void LimboAIEditor::_on_visibility_changed() {
 		_switch_to_owner_scene_if_builtin(task_tree->get_bt());
 		Ref<BTTask> sel = task_tree->get_selected();
 		if (sel.is_valid()) {
-			EDIT_RESOURCE(sel);
-		} else if (task_tree->get_bt().is_valid() && INSPECTOR_GET_EDITED_OBJECT() != task_tree->get_bt().ptr()) {
-			EDIT_RESOURCE(task_tree->get_bt());
+			EditorInterface::get_singleton()->edit_resource(sel);
+		} else if (task_tree->get_bt().is_valid() && EditorInterface::get_singleton()->get_inspector()->get_edited_object() != task_tree->get_bt().ptr()) {
+			EditorInterface::get_singleton()->edit_resource(task_tree->get_bt());
 		}
 
 		task_palette->refresh();
@@ -1041,13 +1040,13 @@ void LimboAIEditor::_on_save_pressed() {
 void LimboAIEditor::_on_history_back() {
 	ERR_FAIL_COND(history.size() == 0);
 	idx_history = MAX(idx_history - 1, 0);
-	EDIT_RESOURCE(history[idx_history]);
+	EditorInterface::get_singleton()->edit_resource(history[idx_history]);
 }
 
 void LimboAIEditor::_on_history_forward() {
 	ERR_FAIL_COND(history.size() == 0);
 	idx_history = MIN(idx_history + 1, history.size() - 1);
-	EDIT_RESOURCE(history[idx_history]);
+	EditorInterface::get_singleton()->edit_resource(history[idx_history]);
 }
 
 void LimboAIEditor::_on_tasks_dragged(const TypedArray<BTTask> &p_tasks, Ref<BTTask> p_to_task, int p_to_pos) {
@@ -1130,7 +1129,7 @@ void LimboAIEditor::_on_resources_reload(const PackedStringArray &p_resources) {
 		}
 
 		if (!is_visible()) {
-			SET_MAIN_SCREEN_EDITOR("LimboAI");
+			EditorInterface::get_singleton()->set_main_screen_editor("LimboAI");
 		}
 		disk_changed->call_deferred("popup_centered_ratio", 0.5);
 	}
@@ -1155,7 +1154,7 @@ void LimboAIEditor::_on_new_script_pressed() {
 	PackedStringArray user_task_directories = GLOBAL_GET("limbo_ai/behavior_tree/user_task_dirs");
 	ERR_FAIL_INDEX_MSG(0, user_task_directories.size(), "LimboAI: No user task directory set");
 	String default_task_dir = user_task_directories[0];
-	SCRIPT_EDITOR()->open_script_create_dialog("BTAction", default_task_dir.path_join("new_task"));
+	EditorInterface::get_singleton()->get_script_editor()->open_script_create_dialog("BTAction", default_task_dir.path_join("new_task"));
 }
 
 void LimboAIEditor::_task_type_selected(const String &p_class_or_path) {
@@ -1219,7 +1218,7 @@ void LimboAIEditor::_tab_clicked(int p_tab) {
 		return;
 	}
 	ERR_FAIL_INDEX(p_tab, history.size());
-	EDIT_RESOURCE(history[p_tab]);
+	EditorInterface::get_singleton()->edit_resource(history[p_tab]);
 }
 
 void LimboAIEditor::_tab_closed(int p_tab) {
@@ -1238,7 +1237,7 @@ void LimboAIEditor::_tab_closed(int p_tab) {
 	if (idx_history < 0) {
 		_disable_editing();
 	} else {
-		EDIT_RESOURCE(history[idx_history]);
+		EditorInterface::get_singleton()->edit_resource(history[idx_history]);
 		ERR_FAIL_COND(!tab_search_context.has(history[idx_history]));
 		search_info_opened_tab = tab_search_context[history[idx_history]];
 	}
@@ -1346,7 +1345,8 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 			Ref<BehaviorTree> bt = history[idx_history];
 			String path = bt->get_path();
 			if (!path.is_empty()) {
-				FS_DOCK_SELECT_FILE(path.get_slice("::", 0));
+				FileSystemDock *dock = EditorInterface::get_singleton()->get_file_system_dock();
+				dock->navigate_to_path(path.get_slice("::", 0));
 			}
 		} break;
 		case TAB_JUMP_TO_OWNER: {
@@ -1385,7 +1385,7 @@ void LimboAIEditor::_tab_menu_option_selected(int p_id) {
 void LimboAIEditor::_tab_plan_edited(int p_tab) {
 	ERR_FAIL_INDEX(p_tab, history.size());
 	if (history[p_tab]->get_blackboard_plan().is_valid()) {
-		EDIT_RESOURCE(history[p_tab]->get_blackboard_plan());
+		EditorInterface::get_singleton()->edit_resource(history[p_tab]->get_blackboard_plan());
 	}
 }
 
@@ -2004,7 +2004,7 @@ LimboAIEditor::LimboAIEditor() {
 	info_dialog = memnew(AcceptDialog);
 	add_child(info_dialog);
 
-	BASE_CONTROL()->add_child(disk_changed);
+	EditorInterface::get_singleton()->get_base_control()->add_child(disk_changed);
 
 	GLOBAL_DEF(PropertyInfo(Variant::STRING, "limbo_ai/behavior_tree/behavior_tree_default_dir", PROPERTY_HINT_DIR), "res://ai/trees");
 	PackedStringArray user_task_dir_default;
@@ -2119,7 +2119,7 @@ Ref<Texture2D> LimboAIEditorPlugin::_get_plugin_icon() const {
 LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor = memnew(LimboAIEditor());
 	limbo_ai_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	MAIN_SCREEN_CONTROL()->add_child(limbo_ai_editor);
+	EditorInterface::get_singleton()->get_editor_main_screen()->add_child(limbo_ai_editor);
 	limbo_ai_editor->hide();
 	limbo_ai_editor->set_plugin(this);
 }

@@ -13,18 +13,16 @@
 
 #include "tree_search.h"
 
+#include "../compat/editor_scale.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_interface.h"
-#include "editor/themes/editor_scale.h"
 #include "scene/resources/font.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "../util/limbo_compat.h" // for edscale
-#include <godot_cpp/classes/editor_interface.hpp> // for edge scale
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
 #endif // LIMBOAI_GDEXTENSION

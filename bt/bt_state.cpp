@@ -11,7 +11,7 @@
 
 #include "bt_state.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE

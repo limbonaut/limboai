@@ -11,8 +11,13 @@
 
 #include "bt_player.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/limbo_compat.h"
+#include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
@@ -24,7 +29,7 @@ void BTPlayer::_instantiate_bt() {
 	bt_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Initialization failed - needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
-	Node *agent = GET_NODE(this, agent_node);
+	Node *agent = get_node_or_null(agent_node);
 	ERR_FAIL_NULL_MSG(agent, vformat("BTPlayer: Initialization failed - can't get agent with path '%s'.", agent_node));
 	Node *scene_root = _get_scene_root();
 	ERR_FAIL_COND_MSG(scene_root == nullptr,

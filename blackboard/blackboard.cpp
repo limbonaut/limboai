@@ -10,7 +10,7 @@
  */
 
 #include "blackboard.h"
-#include "../util/limbo_compat.h"
+#include "../compat/print.h"
 
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);

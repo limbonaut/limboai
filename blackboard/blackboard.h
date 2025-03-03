@@ -26,6 +26,7 @@
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

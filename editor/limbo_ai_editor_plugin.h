@@ -22,26 +22,23 @@
 #include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/object/object.h"
+#include "core/templates/hash_map.h"
 #include "core/templates/hash_set.h"
-#include "editor/editor_main_screen.h"
-#include "editor/editor_node.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
 #include "editor/plugins/editor_plugin.h"
 #include "scene/gui/box_container.h"
-#include "scene/gui/control.h"
-#include "scene/gui/dialogs.h"
 #include "scene/gui/file_dialog.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/link_button.h"
+#include "scene/gui/menu_button.h"
+#include "scene/gui/panel.h"
 #include "scene/gui/panel_container.h"
-#include "scene/gui/popup.h"
+#include "scene/gui/popup.h" // PopupPanel
 #include "scene/gui/popup_menu.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/tab_bar.h"
 #include "scene/gui/tree.h"
-#include "scene/resources/texture.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -52,10 +49,17 @@
 #include <godot_cpp/classes/file_dialog.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/h_split_container.hpp>
+#include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/link_button.hpp>
 #include <godot_cpp/classes/menu_button.hpp>
 #include <godot_cpp/classes/panel.hpp>
+#include <godot_cpp/classes/panel_container.hpp>
+#include <godot_cpp/classes/popup_menu.hpp>
+#include <godot_cpp/classes/popup_panel.hpp>
 #include <godot_cpp/classes/tab_bar.hpp>
+#include <godot_cpp/classes/tree.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/templates/hash_set.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

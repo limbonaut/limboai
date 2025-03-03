@@ -11,8 +11,9 @@
 
 #include "bt_instance.h"
 
+#include "../compat/object.h"
+#include "../compat/performance.h"
 #include "../editor/debugger/limbo_debugger.h"
-#include "../util/limbo_compat.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
@@ -21,7 +22,6 @@
 #endif
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/performance.hpp>
 #include <godot_cpp/classes/time.hpp>
 #endif

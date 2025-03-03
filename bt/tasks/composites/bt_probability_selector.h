@@ -16,7 +16,7 @@
 #include "../bt_composite.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/typedefs.h"
+#include "core/templates/hash_set.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

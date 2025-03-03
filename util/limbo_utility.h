@@ -12,13 +12,14 @@
 #ifndef LIMBO_UTILITY_H
 #define LIMBO_UTILITY_H
 
-#include "limbo_compat.h"
+#include "../compat/limbo_compat.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/input/shortcut.h"
 #include "core/object/object.h"
-#include "core/variant/variant.h"
+#include "core/templates/hash_map.h"
 #include "scene/resources/texture.h"
+
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

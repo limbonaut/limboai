@@ -46,7 +46,7 @@ private:
 protected:
 	static void _bind_methods();
 
-	_FORCE_INLINE_ void _assign_default_value() { saved_value = VARIANT_DEFAULT(get_type()); }
+	void _assign_default_value();
 
 	void _get_property_list(List<PropertyInfo> *p_list) const;
 

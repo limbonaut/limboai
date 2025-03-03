@@ -11,7 +11,7 @@
 
 #include "bt_random_wait.h"
 
-#include "../../../util/limbo_compat.h"
+#include "../../../compat/limbo_compat.h"
 
 String BTRandomWait::_generate_name() {
 	return vformat("Wait %s to %s sec",

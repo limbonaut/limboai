@@ -15,6 +15,7 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/class_db.h"
 #include "core/object/object.h"
+#include "core/templates/hash_set.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

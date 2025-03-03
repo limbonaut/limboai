@@ -18,9 +18,14 @@
 
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_inspector.h"
+#include "scene/gui/box_container.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/dialogs.h"
 #include "scene/gui/line_edit.h"
+#include "scene/gui/panel_container.h"
+#include "scene/gui/popup_menu.h"
+#include "scene/gui/scroll_container.h"
+#include "scene/resources/style_box_flat.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

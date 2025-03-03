@@ -14,9 +14,9 @@
 #ifndef LIMBO_DEBUGGER_PLUGIN_H
 #define LIMBO_DEBUGGER_PLUGIN_H
 
+#include "../../compat/compat_window_wrapper.h"
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
-#include "../../util/compat_window_wrapper.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"

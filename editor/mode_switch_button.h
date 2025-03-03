@@ -15,9 +15,7 @@
 #define MODE_SWITCH_BUTTON
 
 #ifdef LIMBOAI_MODULE
-#include "core/typedefs.h"
 #include "scene/gui/button.h"
-#include "scene/resources/texture.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

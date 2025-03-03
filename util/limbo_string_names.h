@@ -15,7 +15,6 @@
 #ifdef LIMBOAI_MODULE
 #include "core/string/node_path.h"
 #include "core/string/string_name.h"
-#include "core/typedefs.h"
 #include "modules/register_module_types.h"
 #endif // LIMBOAI_MODULE
 

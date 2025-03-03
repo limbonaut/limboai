@@ -15,7 +15,7 @@
 #include "../blackboard/blackboard.h"
 #include "../blackboard/blackboard_plan.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/object.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
