@@ -15,12 +15,10 @@
 #ifdef LIMBOAI_MODULE
 #include "core/string/node_path.h"
 #include "core/string/string_name.h"
-#include "core/typedefs.h"
 #include "modules/register_module_types.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/variant/string.hpp"
 #include <godot_cpp/variant/node_path.hpp>
 #include <godot_cpp/variant/string_name.hpp>
 using namespace godot;

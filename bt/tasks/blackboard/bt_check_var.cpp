@@ -11,6 +11,16 @@
 
 #include "bt_check_var.h"
 
+#include "../../../util/limbo_string_names.h"
+
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void BTCheckVar::set_variable(const StringName &p_variable) {
 	variable = p_variable;
 	emit_changed();

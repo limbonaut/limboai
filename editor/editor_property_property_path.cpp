@@ -11,7 +11,7 @@
 
 #include "editor_property_property_path.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE

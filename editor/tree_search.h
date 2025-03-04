@@ -30,9 +30,8 @@
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/tree.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
-#endif // LIMBOAI_GDEXTENSION
-
 using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class TreeSearchPanel;
 
@@ -49,10 +48,10 @@ private:
 		}
 	};
 
-	TreeSearchPanel *search_panel;
+	TreeSearchPanel *search_panel = nullptr;
 
 	// For TaskTree: These are updated when the tree is updated through TaskTree::_create_tree.
-	Tree *tree_reference;
+	Tree *tree_reference = nullptr;
 	// Linearized ordering of tree items.
 	Vector<TreeItem *> ordered_tree_items;
 	// Entires that match the search mask.
@@ -133,7 +132,6 @@ class TreeSearchPanel : public HFlowContainer {
 	GDCLASS(TreeSearchPanel, HFlowContainer)
 
 private:
-	Button *toggle_button_filter_highlight;
 	Button *close_button;
 	Button *find_next_button;
 	Button *find_prev_button;

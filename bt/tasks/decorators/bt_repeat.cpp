@@ -11,6 +11,8 @@
 
 #include "bt_repeat.h"
 
+#include "../../../util/limbo_string_names.h"
+
 String BTRepeat::_generate_name() {
 	if (forever) {
 		return LW_NAME(repeat_forever);

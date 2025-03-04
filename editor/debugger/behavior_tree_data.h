@@ -13,7 +13,6 @@
 #define BEHAVIOR_TREE_DATA_H
 
 #include "../../bt/bt_instance.h"
-#include "../../bt/tasks/bt_task.h"
 
 class BehaviorTreeData : public RefCounted {
 	GDCLASS(BehaviorTreeData, RefCounted);

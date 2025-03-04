@@ -13,29 +13,17 @@
 #define BT_TASK_H
 
 #include "../../blackboard/blackboard.h"
-#include "../../util/limbo_compat.h"
-#include "../../util/limbo_string_names.h"
-#include "../../util/limbo_task_db.h"
+#include "../../util/limbo_task_db.h" // needed in every derived class header
 
 #ifdef LIMBOAI_MODULE
-#include "core/config/engine.h"
-#include "core/error/error_macros.h"
 #include "core/io/resource.h"
-#include "core/math/math_funcs.h"
 #include "core/object/object.h"
-#include "core/object/ref_counted.h"
-#include "core/os/memory.h"
-#include "core/string/ustring.h"
 #include "core/templates/vector.h"
-#include "core/typedefs.h"
-#include "core/variant/array.h"
-#include "core/variant/binder_common.h"
-#include "core/variant/dictionary.h"
-#include "scene/resources/texture.h"
+#include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/resource.hpp>
 #include <godot_cpp/core/gdvirtual.gen.inc>
 #include <godot_cpp/core/object.hpp>

@@ -14,6 +14,8 @@
 #include "editor_property_bb_param.h"
 
 #include "../blackboard/bb_param/bb_variant.h"
+#include "../compat/object.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 #include "editor_property_variable_name.h"
 

@@ -14,12 +14,11 @@
 #ifndef LIMBO_DEBUGGER_PLUGIN_H
 #define LIMBO_DEBUGGER_PLUGIN_H
 
+#include "../../compat/compat_window_wrapper.h"
 #include "../../editor/debugger/behavior_tree_data.h"
 #include "../../editor/debugger/behavior_tree_view.h"
-#include "../../util/compat_window_wrapper.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/object/class_db.h"
 #include "core/object/object.h"
 #include "core/typedefs.h"
 #include "editor/gui/editor_spin_slider.h"
@@ -27,6 +26,8 @@
 #include "editor/window_wrapper.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
+#include "scene/gui/label.h"
+#include "scene/gui/line_edit.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/split_container.h"
 #include "scene/gui/texture_rect.h"

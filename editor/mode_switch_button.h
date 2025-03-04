@@ -14,18 +14,12 @@
 #ifndef MODE_SWITCH_BUTTON
 #define MODE_SWITCH_BUTTON
 
-#include "../util/limbo_compat.h"
-
 #ifdef LIMBOAI_MODULE
-#include "core/typedefs.h"
 #include "scene/gui/button.h"
-#include "scene/resources/texture.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
-#include <godot_cpp/templates/vector.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

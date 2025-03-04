@@ -16,8 +16,11 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/string/ustring.h"
-#elif LIMBOAI_GDEXTENSION
+#endif
+
+#ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/variant/string.hpp>
+using namespace godot;
 #endif
 
 inline String GET_LIMBOAI_VERSION() {

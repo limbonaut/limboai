@@ -12,13 +12,11 @@
 #ifndef BT_PROBABILITY_SELECTOR_H
 #define BT_PROBABILITY_SELECTOR_H
 
-#include "../../../util/limbo_compat.h"
-#include "../bt_comment.h"
+#include "../../../util/limbo_string_names.h"
 #include "../bt_composite.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/core_string_names.h"
-#include "core/typedefs.h"
+#include "core/templates/hash_set.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

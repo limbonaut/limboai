@@ -18,22 +18,22 @@
 #include "tree_search.h"
 
 #ifdef LIMBOAI_MODULE
-#include "scene/gui/control.h"
+#include "core/templates/hash_map.h"
 #include "scene/gui/tree.h"
 #include "scene/resources/style_box_flat.h"
 
 #define RECT_CACHE_KEY ObjectID
+
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/control.hpp>
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/style_box_flat.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/tree.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
 
 #define RECT_CACHE_KEY uint64_t
+
 #endif // LIMBOAI_GDEXTENSION
 
 class TaskTree : public Control {

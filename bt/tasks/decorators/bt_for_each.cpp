@@ -14,10 +14,6 @@
 #include "../../../blackboard/blackboard.h"
 #include "../../../util/limbo_utility.h"
 
-#ifdef LIMBOAI_MODULE
-#include "core/error/error_list.h"
-#endif
-
 //**** Setters / Getters
 
 void BTForEach::set_array_var(const StringName &p_value) {

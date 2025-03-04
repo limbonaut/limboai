@@ -11,16 +11,15 @@
 
 #include "limbo_task_db.h"
 
-#include "limbo_compat.h"
+#include "../compat/limbo_compat.h"
+#include "../compat/project_settings.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/config/project_settings.h"
 #include "core/io/dir_access.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/dir_access.hpp>
-#include <godot_cpp/classes/project_settings.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

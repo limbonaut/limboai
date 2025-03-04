@@ -15,10 +15,11 @@
 #ifdef LIMBOAI_MODULE
 #include "scene/gui/dialogs.h"
 #include "scene/gui/item_list.h"
-#elif LIMBOAI_GDEXTENSION
+#endif
+
+#ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/accept_dialog.hpp>
 #include <godot_cpp/classes/item_list.hpp>
-#include <godot_cpp/templates/vector.hpp>
 using namespace godot;
 #endif
 

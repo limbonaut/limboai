@@ -11,11 +11,16 @@
 
 #include "bt_evaluate_expression.h"
 
-#include "../../../util/limbo_compat.h"
+#include "../../../compat/resource.h"
+#include "../../../util/limbo_string_names.h"
 #include "../../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/classes/global_constants.hpp"
+#include <godot_cpp/classes/engine.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 //**** Setters / Getters

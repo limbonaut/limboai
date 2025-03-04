@@ -32,24 +32,20 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 
-#include "../util/limbo_compat.h"
+#include "../compat/editor_scale.h"
+#include "../compat/editor_settings.h"
+#include "../compat/limbo_compat.h"
+#include "../compat/scene_tree.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
-#include "godot_cpp/core/error_macros.hpp"
-#include <godot_cpp/classes/display_server.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
-#include <godot_cpp/classes/editor_settings.hpp>
+
 #include <godot_cpp/classes/engine.hpp>
-#include <godot_cpp/classes/h_box_container.hpp>
-// #include <godot_cpp/classes/input_event.hpp>
 #include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
 #include <godot_cpp/classes/input_event_shortcut.hpp>
-#include <godot_cpp/classes/label.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
-#include <godot_cpp/classes/shortcut.hpp>
 #include <godot_cpp/classes/style_box.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
-#include <godot_cpp/classes/window.hpp>
 
 using namespace godot;
 

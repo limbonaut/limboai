@@ -11,15 +11,15 @@
 
 #include "bt_state.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/debugger/engine_debugger.h"
+#include "core/config/engine.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/engine_debugger.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void BTState::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {

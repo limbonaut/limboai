@@ -17,7 +17,9 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/core/object.hpp"
+#include <godot_cpp/core/defs.hpp>
+#include <godot_cpp/templates/safe_refcount.hpp>
+#include <godot_cpp/variant/variant.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

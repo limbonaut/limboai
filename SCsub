@@ -22,6 +22,7 @@ module_env.add_source_files(env.modules_sources, "bt/tasks/decorators/*.cpp")
 module_env.add_source_files(env.modules_sources, "bt/tasks/misc/*.cpp")
 module_env.add_source_files(env.modules_sources, "bt/tasks/scene/*.cpp")
 module_env.add_source_files(env.modules_sources, "bt/tasks/utility/*.cpp")
+module_env.add_source_files(env.modules_sources, "compat/*.cpp")
 if env.editor_build:
     module_env.add_source_files(env.modules_sources, "editor/*.cpp")
 module_env.add_source_files(env.modules_sources, "editor/debugger/*.cpp")

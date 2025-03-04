@@ -15,16 +15,13 @@
 
 #include "../blackboard/bb_param/bb_param.h"
 #include "../bt/tasks/bt_task.h"
-#include "../util/limbo_compat.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 #include "../util/limbo_utility.h"
 #include "blackboard_plan_editor.h"
 
 #ifdef LIMBOAI_MODULE
 #include "scene/gui/box_container.h"
-#include "scene/gui/button.h"
-#include "scene/gui/line_edit.h"
-#include "scene/gui/popup_menu.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

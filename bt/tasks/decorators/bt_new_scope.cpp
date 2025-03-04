@@ -13,6 +13,14 @@
 
 #include "../../behavior_tree.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void BTNewScope::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	blackboard_plan = p_plan;
 	if (blackboard_plan.is_null()) {

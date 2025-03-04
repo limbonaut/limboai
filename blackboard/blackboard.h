@@ -17,16 +17,16 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 #include "core/object/ref_counted.h"
+#include "core/variant/typed_array.h"
 #include "core/variant/variant.h"
-#include "scene/main/node.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/node.hpp>
 #include <godot_cpp/classes/ref.hpp>
 #include <godot_cpp/classes/ref_counted.hpp>
 #include <godot_cpp/core/object.hpp>
 #include <godot_cpp/templates/hash_map.hpp>
+#include <godot_cpp/variant/typed_array.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
 

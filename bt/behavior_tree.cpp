@@ -14,15 +14,13 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
-#include "core/object/class_db.h"
-#include "core/templates/list.h"
 #include "core/variant/variant.h"
-#endif // ! LIMBOAI_MODULE
+#include "scene/main/node.h"
+#endif
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/core/error_macros.hpp"
-#endif // ! LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif
 
 void BehaviorTree::set_description(const String &p_value) {
 	description = p_value;

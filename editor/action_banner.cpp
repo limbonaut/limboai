@@ -13,17 +13,16 @@
 
 #include "action_banner.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/editor_scale.h"
+#include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/themes/editor_scale.h"
 #include "scene/gui/button.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
-#include <godot_cpp/classes/editor_interface.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void ActionBanner::set_text(const String &p_text) {

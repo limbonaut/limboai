@@ -12,35 +12,29 @@
 #include "limbo_utility.h"
 
 #include "../bt/tasks/bt_task.h"
-#include "../util/limbo_compat.h"
-#include "limboai_version.h"
+#include "../compat/editor.h"
+#include "../compat/editor_settings.h"
+#include "../compat/project_settings.h"
+#include "../compat/resource_loader.h"
+#include "../compat/variant.h"
+#include "../util/limbo_string_names.h"
+#include "limboai_version.gen.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/config/project_settings.h"
-#include "core/error/error_macros.h"
+#include "core/input/input_event.h"
 #include "core/object/script_language.h"
 #include "core/os/os.h"
-#include "core/variant/variant.h"
-#include "scene/resources/texture.h"
 
 #ifdef TOOLS_ENABLED
 #include "editor/editor_node.h"
-#include "editor/editor_settings.h"
 #endif // TOOLS_ENABLED
 
 #endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/classes/input_event_key.hpp"
-#include "godot_cpp/classes/project_settings.hpp"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
+#include <godot_cpp/classes/input_event_key.hpp>
 #include <godot_cpp/classes/os.hpp>
-#include <godot_cpp/classes/resource_loader.hpp>
 #include <godot_cpp/classes/script.hpp>
-#include <godot_cpp/classes/texture2d.hpp>
-#include <godot_cpp/classes/theme.hpp>
-#include <godot_cpp/core/error_macros.hpp>
 #endif // ! LIMBOAI_GDEXTENSION
 
 LimboUtility *LimboUtility::singleton = nullptr;

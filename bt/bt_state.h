@@ -15,7 +15,7 @@
 #include "../hsm/limbo_state.h"
 
 #include "../bt/behavior_tree.h"
-#include "../bt/tasks/bt_task.h"
+#include "../bt/bt_instance.h"
 
 class BTState : public LimboState {
 	GDCLASS(BTState, LimboState);

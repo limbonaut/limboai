@@ -11,34 +11,21 @@
 
 #include "bt_task.h"
 
-#include "../../blackboard/blackboard.h"
+#include "../../compat/object.h"
+#include "../../compat/print.h"
 #include "../../util/limbo_string_names.h"
-#include "../../util/limbo_utility.h"
 #include "../behavior_tree.h"
-#include "bt_comment.h"
 
 #ifdef LIMBOAI_MODULE
-#include "core/error/error_macros.h"
-#include "core/io/resource.h"
-#include "core/object/class_db.h"
-#include "core/object/object.h"
-#include "core/object/ref_counted.h"
+#include "core/config/engine.h"
 #include "core/object/script_language.h"
-#include "core/string/ustring.h"
 #include "core/templates/hash_map.h"
-#include "core/variant/variant.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include "godot_cpp/classes/global_constants.hpp"
-#include "godot_cpp/core/class_db.hpp"
-#include "godot_cpp/variant/dictionary.hpp"
-#include "godot_cpp/variant/string_name.hpp"
-#include "godot_cpp/variant/typed_array.hpp"
-#include "godot_cpp/variant/utility_functions.hpp"
-#include "godot_cpp/variant/variant.hpp"
-#include <godot_cpp/classes/ref.hpp>
+#include <godot_cpp/classes/engine.hpp>
 #include <godot_cpp/classes/script.hpp>
+#include <godot_cpp/templates/hash_map.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void BT::_bind_methods() {
@@ -102,7 +89,7 @@ void BTTask::_set_children(Array p_children) {
 		if (task->data.parent != nullptr && task->data.parent != this) {
 			task = task->clone();
 			if (task.is_null()) {
-				// * BTComment::clone() returns nullptr at runtime - we omit those.
+				// clone() returns nullptr at runtime for disabled tasks like BTComment.
 				num_null += 1;
 				continue;
 			}

@@ -11,7 +11,8 @@
 
 #include "bb_variable.h"
 
-#include "../util/limbo_compat.h"
+#include "../compat/object.h"
+#include "../compat/variant.h"
 
 void BBVariable::unref() {
 	if (data && data->refcount.unref()) {
