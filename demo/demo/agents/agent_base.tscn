@@ -4494,23 +4494,23 @@ region_rect = Rect2(300, 0, 100, 70)
 position = Vector2(0, 52)
 emitting = false
 amount = 16
-process_material = SubResource("ParticleProcessMaterial_f5i1x")
 texture = ExtResource("4_mnb6v")
 lifetime = 0.7
 one_shot = true
 explosiveness = 0.7
 fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_f5i1x")
 
 [node name="Summoned" type="GPUParticles2D" parent="FX"]
 position = Vector2(0, 83)
 emitting = false
 amount = 16
-process_material = SubResource("ParticleProcessMaterial_gmal1")
 texture = ExtResource("4_mnb6v")
 lifetime = 1.4
 one_shot = true
 explosiveness = 0.5
 fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_gmal1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
@@ -4524,6 +4524,6 @@ script = ExtResource("4_qwtrf")
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 callback_mode_method = 1
 libraries = {
-"": SubResource("AnimationLibrary_ws2ti")
+&"": SubResource("AnimationLibrary_ws2ti")
 }
 autoplay = "idle"

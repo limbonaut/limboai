@@ -3103,7 +3103,7 @@ region_rect = Rect2(10, 189, 644, 165)
 [node name="CloudsAnimationPlayer" type="AnimationPlayer" parent="Environment"]
 root_node = NodePath("../..")
 libraries = {
-"": SubResource("AnimationLibrary_an3cu")
+&"": SubResource("AnimationLibrary_an3cu")
 }
 autoplay = "float"
 
