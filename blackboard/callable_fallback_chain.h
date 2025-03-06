@@ -11,8 +11,16 @@
 #ifndef CALLABLE_FALLBACK_CHAIN_H
 #define CALLABLE_FALLBACK_CHAIN_H
 
+#ifdef LIMBOAI_MODULE
 #include "core/templates/list.h"
 #include "core/variant/callable.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/templates/list.hpp>
+#include <godot_cpp/variant/callable.hpp>
+using namespace godot;
+#endif // LIMBOAI_GDEXTENSION
 
 class CallableFallbackChain {
 private:
