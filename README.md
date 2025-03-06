@@ -11,7 +11,7 @@
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
->**🛈 Supported Godot Engine:** **4.3** (v1.2.0+) | **4.2** (v1.1.x releases)
+>**🛈 Supported Godot Engine:**  **4.4** (v1.4.0+)  |  **4.3** (v1.2, v1.3)  |  **4.2** (v1.1)
 
 **LimboAI** is an open-source C++ plugin for **Godot Engine 4** providing a combination of
 **Behavior Trees** and **State Machines**, which can be used together to create complex AI behaviors.
