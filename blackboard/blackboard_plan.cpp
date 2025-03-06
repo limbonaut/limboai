@@ -286,9 +286,15 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 	notify_property_list_changed();
 }
 
-void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_parent_scope_plan_provider) {
-	parent_scope_plan_provider = p_parent_scope_plan_provider;
+void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_provider_callable) {
+	parent_scope_plan_providers.push(p_provider_callable);
 	notify_property_list_changed();
+}
+
+bool BlackboardPlan::is_mapping_enabled() const {
+	const Callable &provider = parent_scope_plan_providers.get_most_recent_valid();
+	Ref<BlackboardPlan> parent_scope = provider.call();
+	return parent_scope.is_valid();
 }
 
 bool BlackboardPlan::has_mapping(const StringName &p_name) const {
