@@ -14,24 +14,17 @@
 void CallableFallbackChain::push(const Callable &p_callable) {
 	ERR_FAIL_COND(p_callable.is_null());
 
-	List<Callable>::Element *found = nullptr;
 	List<Callable>::Element *it = chain.back();
 	while (it) {
 		List<Callable>::Element *cur = it;
 		it = it->prev();
 
-		if (cur->get() == p_callable) {
-			found = cur;
-		} else if (cur->get().is_null()) {
+		if (cur->get().is_null() || cur->get() == p_callable) {
 			cur->erase();
 		}
 	}
 
-	if (found) {
-		found->transfer_to_back(&chain);
-	} else {
-		chain.push_back(p_callable);
-	}
+	chain.push_back(p_callable);
 }
 
 Callable CallableFallbackChain::get_most_recent_valid() const {
