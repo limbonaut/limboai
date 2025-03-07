@@ -11,9 +11,8 @@
 
 #include "limbo_state.h"
 
-#include "../compat/limbo_compat.h"
-
 #ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -21,6 +20,10 @@
 #endif
 
 void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
+	if (blackboard_plan == p_plan) {
+		return;
+	}
+
 	blackboard_plan = p_plan;
 
 	if (Engine::get_singleton()->is_editor_hint() && blackboard_plan.is_valid()) {
