@@ -3,8 +3,8 @@
 major = 1
 minor = 4
 patch = 1
-status = "dev"
-doc_branch = "latest"
+status = ""
+doc_branch = "v1.4.1"
 godot_cpp_ref = "godot-4.4-stable"
 
 # Code that generates version header
