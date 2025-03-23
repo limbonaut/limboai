@@ -224,7 +224,7 @@ void BlackboardPlanEditor::_drag_button_gui_input(const Ref<InputEvent> &p_event
 	}
 
 	float required_distance = 30.0f * EDSCALE;
-	if (ABS(drag_mouse_y_delta) > required_distance) {
+	if (Math::abs(drag_mouse_y_delta) > required_distance) {
 		int drag_dir = drag_mouse_y_delta > 0.0f ? 1 : -1;
 		drag_mouse_y_delta -= required_distance * drag_dir;
 
