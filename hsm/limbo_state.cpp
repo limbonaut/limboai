@@ -235,6 +235,7 @@ void LimboState::_bind_methods() {
 }
 
 LimboState::LimboState() {
+	EVENT_FINISHED = StringName("finished_" + itos(get_instance_id()));
 	agent = nullptr;
 	active = false;
 	blackboard = Ref<Blackboard>(memnew(Blackboard));

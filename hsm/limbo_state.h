@@ -34,6 +34,7 @@ class LimboState : public Node {
 	GDCLASS(LimboState, Node);
 
 private:
+	StringName EVENT_FINISHED;
 	bool active;
 	Ref<BlackboardPlan> blackboard_plan;
 	Node *agent;
@@ -88,7 +89,7 @@ public:
 	void add_event_handler(const StringName &p_event, const Callable &p_handler);
 	bool dispatch(const StringName &p_event, const Variant &p_cargo = Variant());
 
-	_FORCE_INLINE_ StringName event_finished() const { return LW_NAME(EVENT_FINISHED); }
+	_FORCE_INLINE_ StringName event_finished() const { return EVENT_FINISHED; }
 	LimboState *get_root() const;
 	_FORCE_INLINE_ bool is_root() const { return !(get_parent() && IS_CLASS(get_parent(), LimboState)); }
 	_FORCE_INLINE_ bool is_active() const { return active; }
