@@ -72,6 +72,8 @@ protected:
 #endif
 
 public:
+	void restart();
+
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
 	_FORCE_INLINE_ Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
 

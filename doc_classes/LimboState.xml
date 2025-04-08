@@ -103,6 +103,12 @@
 				A chained method for setting the name of this state.
 			</description>
 		</method>
+		<method name="restart">
+			<return type="void" />
+			<description>
+				If it's active, exit and enter again.
+			</description>
+		</method>
 		<method name="set_guard">
 			<return type="void" />
 			<param index="0" name="guard_callable" type="Callable" />
