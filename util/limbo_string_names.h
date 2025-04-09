@@ -83,7 +83,6 @@ public:
 	StringName entered;
 	StringName error_value;
 	StringName EVENT_FAILURE;
-	StringName EVENT_FINISHED;
 	StringName EVENT_SUCCESS;
 	StringName exited;
 	StringName ExternalLink;

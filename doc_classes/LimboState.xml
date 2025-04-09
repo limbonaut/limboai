@@ -114,6 +114,7 @@
 	<members>
 		<member name="EVENT_FINISHED" type="StringName" setter="" getter="event_finished">
 			A commonly used event that indicates that the state has finished its work.
+			This is unique per state.
 		</member>
 		<member name="agent" type="Node" setter="set_agent" getter="get_agent">
 			An agent associated with the state, assigned during initialization.

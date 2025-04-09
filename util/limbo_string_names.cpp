@@ -64,7 +64,6 @@ LimboStringNames::LimboStringNames() {
 	entered = SN("entered");
 	error_value = SN("error_value");
 	EVENT_FAILURE = SN("failure");
-	EVENT_FINISHED = SN("finished");
 	EVENT_SUCCESS = SN("success");
 	exited = SN("exited");
 	ExternalLink = SN("ExternalLink");
