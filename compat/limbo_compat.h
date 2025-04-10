@@ -22,8 +22,6 @@
 
 // *** API abstractions: Module edition
 
-#define RAND_RANGE(m_from, m_to) (Math::random(m_from, m_to))
-#define RANDF() (Math::randf())
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::save(m_res, m_path, m_flags)
 #define FILE_EXISTS(m_path) FileAccess::exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::create(DirAccess::ACCESS_RESOURCES)
@@ -41,8 +39,6 @@
 
 // *** API abstractions: GDExtension edition
 
-#define RAND_RANGE(m_from, m_to) (UtilityFunctions::randf_range(m_from, m_to))
-#define RANDF() (UtilityFunctions::randf())
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::get_singleton()->save(m_res, m_path, m_flags)
 #define FILE_EXISTS(m_path) FileAccess::file_exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::open("res://")
