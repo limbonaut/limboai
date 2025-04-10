@@ -5,7 +5,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: godot-4.3-stable
+        default: godot-4.4-stable
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -24,7 +24,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: godot-4.3-stable
+        default: godot-4.4-stable
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -70,6 +70,20 @@ jobs:
             target: editor
             arch: x86_64
             should-build: true
+
+          - name: 🐧 Linux (arm64, release)
+            runner: ubuntu-22.04
+            platform: linux
+            target: template_release
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
+
+          - name: 🐧 Linux (arm64, debug)
+            runner: ubuntu-22.04
+            platform: linux
+            target: editor
+            arch: arm64
+            should-build: ${{ !inputs.test-build }}
 
           - name: 🪟 Windows (x86_64, release)
             runner: windows-latest
