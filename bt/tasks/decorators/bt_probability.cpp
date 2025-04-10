@@ -11,7 +11,7 @@
 
 #include "bt_probability.h"
 
-#include "../../../compat/limbo_compat.h"
+#include "../../../compat/math.h"
 
 void BTProbability::set_run_chance(float p_value) {
 	run_chance = p_value;
