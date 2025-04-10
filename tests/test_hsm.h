@@ -317,6 +317,13 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK(state_delta->get_root() == hsm);
 		CHECK(state_gamma->get_root() == hsm);
 	}
+	SUBCASE("Test restart()") {
+		REQUIRE(hsm->is_active());
+		REQUIRE(hsm->get_active_state() == state_alpha);
+		hsm->restart();
+		CHECK(alpha_exits->num_callbacks == 1); // * exited
+		CHECK(alpha_entries->num_callbacks == 2); // * re-entered
+	}
 
 	memdelete(agent);
 	memdelete(hsm);

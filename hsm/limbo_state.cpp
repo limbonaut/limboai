@@ -19,6 +19,13 @@
 #include <godot_cpp/classes/engine.hpp>
 #endif
 
+void LimboState::restart() {
+	ERR_FAIL_COND(!active);
+
+	_exit();
+	_enter();
+}
+
 void LimboState::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	if (blackboard_plan == p_plan) {
 		return;
@@ -197,6 +204,7 @@ void LimboState::_notification(int p_what) {
 }
 
 void LimboState::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("restart"), &LimboState::restart);
 	ClassDB::bind_method(D_METHOD("get_root"), &LimboState::get_root);
 	ClassDB::bind_method(D_METHOD("get_agent"), &LimboState::get_agent);
 	ClassDB::bind_method(D_METHOD("set_agent", "agent"), &LimboState::set_agent);
