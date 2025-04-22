@@ -421,6 +421,9 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_LAYERS_AVOIDANCE: {
 			return "LAYERS_AVOIDANCE";
 		}
+		case PROPERTY_HINT_GROUP_ENABLE: {
+			return "GROUP_ENABLE";
+		}
 		case PROPERTY_HINT_MAX: {
 			return "MAX";
 		}
