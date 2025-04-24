@@ -83,7 +83,7 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 		if (p_class_or_script_path.begins_with("res:")) {
 			Ref<Script> s = ResourceLoader::load(p_class_or_script_path, "Script");
 			if (s.is_null()) {
-				return theme->get_icon(SNAME("FileBroken"), SNAME("EditorIcons"));
+				return theme->get_icon(StringName("FileBroken"), StringName("EditorIcons"));
 			}
 
 			EditorData &ed = EditorNode::get_editor_data();
@@ -93,26 +93,26 @@ Ref<Texture2D> LimboUtility::get_task_icon(String p_class_or_script_path) const 
 			}
 
 			StringName base_type = s->get_instance_base_type();
-			if (theme->has_icon(base_type, SNAME("EditorIcons"))) {
-				return theme->get_icon(base_type, SNAME("EditorIcons"));
+			if (theme->has_icon(base_type, StringName("EditorIcons"))) {
+				return theme->get_icon(base_type, StringName("EditorIcons"));
 			}
 		}
 
-		if (theme->has_icon(p_class_or_script_path, SNAME("EditorIcons"))) {
-			return theme->get_icon(p_class_or_script_path, SNAME("EditorIcons"));
+		if (theme->has_icon(p_class_or_script_path, StringName("EditorIcons"))) {
+			return theme->get_icon(p_class_or_script_path, StringName("EditorIcons"));
 		}
 
 		// Use an icon of one of the base classes: look up max 3 parents.
 		StringName class_name = p_class_or_script_path;
 		for (int i = 0; i < 3; i++) {
 			class_name = ClassDB::get_parent_class(class_name);
-			if (theme->has_icon(class_name, SNAME("EditorIcons"))) {
-				return theme->get_icon(class_name, SNAME("EditorIcons"));
+			if (theme->has_icon(class_name, StringName("EditorIcons"))) {
+				return theme->get_icon(class_name, StringName("EditorIcons"));
 			}
 		}
 
 		// Return generic resource icon as a fallback.
-		return theme->get_icon(SNAME("Resource"), SNAME("EditorIcons"));
+		return theme->get_icon(StringName("Resource"), StringName("EditorIcons"));
 	}
 #endif // ! TOOLS_ENABLED && LIMBOAI_MODULE
 

@@ -83,7 +83,7 @@ void TaskTree::_update_item(TreeItem *p_item) {
 		p_item->clear_custom_color(0);
 	} else {
 		p_item->set_custom_font(0, theme_cache.custom_name_font);
-		// p_item->set_custom_color(0, get_theme_color(SNAME("warning_color"), SNAME("Editor")));
+		// p_item->set_custom_color(0, get_theme_color(StringName("warning_color"), StringName("Editor")));
 	}
 	String type_arg;
 	if (task->get_script() != Variant()) {
