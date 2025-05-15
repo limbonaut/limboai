@@ -424,6 +424,9 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_GROUP_ENABLE: {
 			return "GROUP_ENABLE";
 		}
+		case PROPERTY_HINT_INPUT_NAME: {
+			return "INPUT_NAME";
+		}
 		case PROPERTY_HINT_MAX: {
 			return "MAX";
 		}
