@@ -199,6 +199,11 @@ void LimboState::_notification(int p_what) {
 			if (Engine::get_singleton()->is_editor_hint()) {
 				_update_blackboard_plan();
 			}
+
+			set_process(false);
+			set_physics_process(false);
+			set_process_input(false);
+			set_process_unhandled_input(false);
 		} break;
 	}
 }
@@ -249,9 +254,4 @@ LimboState::LimboState() {
 	blackboard = Ref<Blackboard>(memnew(Blackboard));
 
 	guard_callable = Callable();
-
-	set_process(false);
-	set_physics_process(false);
-	set_process_input(false);
-	set_process_unhandled_input(false);
 }
