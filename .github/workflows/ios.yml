@@ -189,7 +189,10 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Vulkan SDK
-        run: sh misc/scripts/install_vulkan_sdk_macos.sh
+        run: |
+          curl -L "https://raw.githubusercontent.com/godotengine/godot/refs/heads/master/misc/scripts/install_vulkan_sdk_macos.sh" \
+            -o /tmp/install-vulkan.sh
+          sh /tmp/install-vulkan.sh
 
       - name: Download templates artifact
         uses: actions/download-artifact@v4
