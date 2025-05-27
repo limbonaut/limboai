@@ -5,7 +5,7 @@ on:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
-        default: 4.4-stable
+        default: 4.4.1-stable
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
