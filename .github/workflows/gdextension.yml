@@ -44,7 +44,7 @@ env:
   SCONSFLAGS: use_mingw=yes dev_build=no
   EM_VERSION: 3.1.45
   EM_CACHE_FOLDER: "emsdk-cache"
-  GODOT_VERSION: 4.4-beta3
+  GODOT_VERSION: 4.4.1-stable
   GODOT_REPO: godotengine/godot-builds
 
 jobs:
