@@ -134,6 +134,7 @@ void BTPlayer::set_active(bool p_active) {
 	set_process(update_mode == UpdateMode::IDLE && active && is_not_editor);
 	set_physics_process(update_mode == UpdateMode::PHYSICS && active && is_not_editor);
 	set_process_input(active && is_not_editor);
+	set_process_unhandled_input(active && is_not_editor);
 }
 
 void BTPlayer::update(double p_delta) {
