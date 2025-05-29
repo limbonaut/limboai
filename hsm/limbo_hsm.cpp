@@ -22,22 +22,6 @@ void LimboHSM::set_active(bool p_active) {
 	}
 
 	active = p_active;
-	switch (update_mode) {
-		case UpdateMode::IDLE: {
-			set_process(p_active);
-			set_physics_process(false);
-		} break;
-		case UpdateMode::PHYSICS: {
-			set_process(false);
-			set_physics_process(p_active);
-		} break;
-		case UpdateMode::MANUAL: {
-			set_process(false);
-			set_physics_process(false);
-		} break;
-	}
-	set_process_input(p_active);
-	set_process_unhandled_input(p_active);
 
 	if (active) {
 		_enter();
@@ -53,15 +37,11 @@ void LimboHSM::change_active_state(LimboState *p_state) {
 
 	if (active_state) {
 		active_state->_exit();
-		active_state->set_process_input(false);
-		active_state->set_process_unhandled_input(false);
 		previous_active = active_state;
 	}
 
 	active_state = p_state;
 	active_state->_enter();
-	active_state->set_process_input(true);
-	active_state->set_process_unhandled_input(true);
 
 	emit_signal(LW_NAME(active_state_changed), active_state, previous_active);
 }
@@ -71,12 +51,19 @@ void LimboHSM::_enter() {
 	ERR_FAIL_COND(active_state != nullptr);
 	ERR_FAIL_COND_MSG(initial_state == nullptr, "LimboHSM: Initial state is not set.");
 
+	set_process(update_mode == UpdateMode::IDLE);
+	set_physics_process(update_mode == UpdateMode::PHYSICS);
+
 	LimboState::_enter();
 	change_active_state(initial_state);
 }
 
 void LimboHSM::_exit() {
 	ERR_FAIL_COND(active_state == nullptr);
+
+	set_process(false);
+	set_physics_process(false);
+
 	active_state->_exit();
 	active_state = nullptr;
 	LimboState::_exit();
@@ -282,6 +269,10 @@ void LimboHSM::_notification(int p_what) {
 				// Typically, this happens when the node is re-entered scene repeatedly (such as with object pooling).
 				set_active(true);
 			}
+		} break;
+		case NOTIFICATION_READY: {
+			set_process(active && update_mode == UpdateMode::IDLE);
+			set_physics_process(active && update_mode == UpdateMode::PHYSICS);
 		} break;
 		case NOTIFICATION_EXIT_TREE: {
 			if (is_root()) {
