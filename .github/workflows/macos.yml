@@ -165,11 +165,9 @@ jobs:
 
       - name: Set up Vulkan SDK
         run: |
-          curl -L "https://sdk.lunarg.com/sdk/download/latest/mac/vulkan-sdk.zip" -o /tmp/vulkan-sdk.zip
-          unzip /tmp/vulkan-sdk.zip -d /tmp
-          /tmp/vulkansdk-macOS-*.app/Contents/MacOS/vulkansdk-macOS-* --accept-licenses --default-answer --confirm-command install
-          rm -Rf /tmp/vulkansdk-macOS-*.app/
-          rm -f /tmp/vulkan-sdk.zip
+          curl -L "https://raw.githubusercontent.com/godotengine/godot/refs/heads/master/misc/scripts/install_vulkan_sdk_macos.sh" \
+            -o /tmp/install-vulkan.sh
+          sh /tmp/install-vulkan.sh
 
       - name: Set up scons cache
         if: inputs.test-build # ! Only cache test/PR builds
