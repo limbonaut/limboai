@@ -33,7 +33,6 @@ private:
 	bool abort_on_failure = false;
 
 	void _select_task();
-#define SNAME(m_arg) ([]() -> const StringName & { static StringName sname = _scs_create(m_arg, true); return sname; })()
 	_FORCE_INLINE_ double _get_weight(int p_index) const { return get_child(p_index)->get_meta(LW_NAME(_weight_), 1.0); }
 	_FORCE_INLINE_ double _get_weight(Ref<BTTask> p_task) const { return p_task->get_meta(LW_NAME(_weight_), 1.0); }
 	_FORCE_INLINE_ void _set_weight(int p_index, double p_weight) {
