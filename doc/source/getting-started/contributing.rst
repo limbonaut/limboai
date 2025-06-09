@@ -37,6 +37,13 @@ for detailed instructions on building the engine.
 **Unit tests** can be compiled using the ``tests=yes`` build option. To execute them,
 run the compiled Godot binary with the ``--test --tc="*[LimboAI]*"`` command-line options.
 
+Building C# Packages
+~~~~~~~~~~~~~~~~~~~~
+
+If you want C# Support for LimboAI when building from source, follow Godot's instructions for building from source with
+C# Support: https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_with_dotnet.html.
+LimboAI's classes will be included in the output from that build process.
+
 Compiling as GDExtension library
 --------------------------------
 
