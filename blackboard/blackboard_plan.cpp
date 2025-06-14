@@ -129,11 +129,11 @@ bool BlackboardPlan::_get(const StringName &p_name, Variant &r_ret) const {
 
 			String shortened_path;
 			if (bound_node) {
-				shortened_path = (String)bound_node->get_name() +
-						":" + (String)binding.get_concatenated_subnames();
+				shortened_path = String(bound_node->get_name()) +
+						":" + String(binding.get_concatenated_subnames());
 			} else {
-				shortened_path = (String)binding.get_name(binding.get_name_count() - 1) +
-						":" + (String)binding.get_concatenated_subnames();
+				shortened_path = String(binding.get_name(binding.get_name_count() - 1)) +
+						":" + String(binding.get_concatenated_subnames());
 			}
 			r_ret = String::utf8("🔗 ") + shortened_path;
 		} else {
