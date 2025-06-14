@@ -148,7 +148,7 @@ void EditorPropertyPropertyPath::_update_property() {
 			text = (String)path;
 		}
 		assign_button->set_text(text);
-		assign_button->set_tooltip_text(path);
+		assign_button->set_tooltip_text(String(path));
 	}
 }
 
