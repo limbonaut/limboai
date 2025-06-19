@@ -39,11 +39,11 @@ inline static BTTask::Status item_get_task_status(TreeItem *p_item) {
 }
 
 inline static String item_get_task_type(TreeItem *p_item) {
-	return ((String)p_item->get_metadata(2)).get_slicec('|', 0);
+	return (String(p_item->get_metadata(2))).get_slicec('|', 0);
 }
 
 inline static String item_get_task_script_path(TreeItem *p_item) {
-	return ((String)p_item->get_metadata(2)).get_slicec('|', 1);
+	return (String(p_item->get_metadata(2))).get_slicec('|', 1);
 }
 
 void BehaviorTreeView::_draw_running_status(Object *p_obj, Rect2 p_rect) {
