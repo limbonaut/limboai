@@ -30,6 +30,14 @@ inline void wire_callbacks(LimboState *p_state, Ref<CallbackCounter> p_entries_c
 	p_state->call_on_exit(callable_mp(p_exits_counter.ptr(), &CallbackCounter::callback));
 }
 
+void _on_enter_dispatch(LimboState *p_state, StringName p_event) {
+	p_state->dispatch(p_event);
+}
+
+void _on_enter_set_initial_state(LimboHSM *p_state, LimboState *p_initial) {
+	p_state->set_initial_state(p_initial);
+}
+
 class TestGuard : public RefCounted {
 	GDCLASS(TestGuard, RefCounted);
 
@@ -184,6 +192,29 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK_FALSE(hsm->is_active()); // * not active
 		CHECK(hsm->get_active_state() == nullptr);
 	}
+	SUBCASE("Test dispatch() inside _enter()") {
+		state_beta->connect("entered",
+				callable_mp_static(_on_enter_dispatch).bind(state_beta, "event_two"));
+		hsm->dispatch("event_one");
+		REQUIRE(hsm->get_active_state() == state_alpha);
+		CHECK(alpha_entries->num_callbacks == 2);
+		CHECK(alpha_updates->num_callbacks == 0);
+		CHECK(alpha_exits->num_callbacks == 1);
+		CHECK(beta_entries->num_callbacks == 1);
+		CHECK(beta_updates->num_callbacks == 0);
+		CHECK(beta_exits->num_callbacks == 1);
+	}
+	SUBCASE("Test setting initial_state on enter") {
+		// Setting initial state on HSM enter should be allowed.
+		nested_hsm->connect("entered",
+				callable_mp_static(_on_enter_set_initial_state).bind(nested_hsm, state_delta));
+		hsm->dispatch("goto_nested");
+		REQUIRE(hsm->get_active_state() == nested_hsm);
+		REQUIRE(nested_hsm->get_active_state() == state_delta);
+		CHECK(delta_entries->num_callbacks == 1);
+		CHECK(delta_updates->num_callbacks == 0);
+		CHECK(delta_exits->num_callbacks == 0);
+	}
 	SUBCASE("Test change_active_state()") {
 		REQUIRE(hsm->is_active());
 		REQUIRE(hsm->get_active_state() == state_alpha);
@@ -323,6 +354,18 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		hsm->restart();
 		CHECK(alpha_exits->num_callbacks == 1); // * exited
 		CHECK(alpha_entries->num_callbacks == 2); // * re-entered
+	}
+	SUBCASE("Test EVENT_FINISHED should be unique") {
+		CHECK(state_alpha->event_finished() != state_beta->event_finished());
+		CHECK(state_alpha->event_finished() != state_gamma->event_finished());
+		CHECK(state_alpha->event_finished() != state_delta->event_finished());
+		CHECK(state_beta->event_finished() != state_gamma->event_finished());
+		CHECK(state_beta->event_finished() != state_delta->event_finished());
+		CHECK(state_gamma->event_finished() != state_delta->event_finished());
+		CHECK(hsm->event_finished() != state_alpha->event_finished());
+		CHECK(hsm->event_finished() != state_beta->event_finished());
+		CHECK(hsm->event_finished() != state_gamma->event_finished());
+		CHECK(hsm->event_finished() != state_delta->event_finished());
 	}
 
 	memdelete(agent);
