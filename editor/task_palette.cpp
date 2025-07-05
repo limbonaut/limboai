@@ -25,7 +25,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/config_file.h"
-#include "editor/editor_help.h"
+#include "editor/doc/editor_help.h"
 #include "editor/editor_node.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/label.h"

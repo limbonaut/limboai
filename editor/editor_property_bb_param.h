@@ -17,7 +17,7 @@
 #include "../compat/forward_decl.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_inspector.h"
+#include "editor/inspector/editor_inspector.h"
 #endif // ! LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

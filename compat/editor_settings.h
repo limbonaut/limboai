@@ -14,7 +14,7 @@
 
 #ifdef LIMBOAI_MODULE
 
-#include "editor/editor_settings.h"
+#include "editor/settings/editor_settings.h"
 
 #define EDITOR_SETTINGS() (EditorSettings::get_singleton())
 
