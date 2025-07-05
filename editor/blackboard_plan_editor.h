@@ -17,7 +17,7 @@
 #include "../blackboard/blackboard_plan.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_inspector.h"
+#include "editor/inspector/editor_inspector.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/check_box.h"
 #include "scene/gui/dialogs.h"
