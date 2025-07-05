@@ -14,7 +14,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include <editor/editor_interface.h>
-#include <editor/editor_paths.h>
+#include <editor/file_system/editor_paths.h>
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

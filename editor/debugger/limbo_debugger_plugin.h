@@ -21,9 +21,9 @@
 #ifdef LIMBOAI_MODULE
 #include "core/object/object.h"
 #include "core/typedefs.h"
+#include "editor/debugger/editor_debugger_plugin.h"
 #include "editor/gui/editor_spin_slider.h"
-#include "editor/plugins/editor_debugger_plugin.h"
-#include "editor/window_wrapper.h"
+#include "editor/gui/window_wrapper.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/item_list.h"
 #include "scene/gui/label.h"

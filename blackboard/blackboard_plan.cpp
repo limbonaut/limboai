@@ -16,7 +16,7 @@
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_inspector.h"
+#include "editor/inspector/editor_inspector.h"
 #include "editor/editor_interface.h"
 #elif LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_inspector.hpp>

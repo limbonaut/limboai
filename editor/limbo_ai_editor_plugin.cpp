@@ -42,11 +42,11 @@
 #include "core/input/input.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
+#include "editor/docks/filesystem_dock.h"
 #include "editor/editor_node.h"
-#include "editor/filesystem_dock.h"
 #include "editor/gui/editor_bottom_panel.h"
-#include "editor/plugins/script_editor_plugin.h"
-#include "editor/project_settings_editor.h"
+#include "editor/script/script_editor_plugin.h"
+#include "editor/settings/project_settings_editor.h"
 #include "scene/gui/separator.h"
 #endif // LIMBOAI_MODULE
 
