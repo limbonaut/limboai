@@ -26,7 +26,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/config_file.h"
-#include "editor/filesystem_dock.h"
+#include "editor/docks/filesystem_dock.h"
 #include "scene/gui/separator.h"
 #include "scene/gui/tab_container.h"
 #endif // LIMBOAI_MODULE

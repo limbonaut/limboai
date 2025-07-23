@@ -17,7 +17,7 @@
 #include "../blackboard/blackboard_plan.h"
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_inspector.h"
+#include "editor/inspector/editor_inspector.h"
 #include "scene/gui/button.h"
 #include "scene/gui/line_edit.h"
 #endif // LIMBOAI_MODULE
