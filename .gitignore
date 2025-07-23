@@ -31,6 +31,8 @@ bin
 *.files
 *.includes
 *.idb
+*.gcno
+*.gcda
 
 # Gprof output
 gmon.out
