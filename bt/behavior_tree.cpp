@@ -86,7 +86,7 @@ Ref<BTInstance> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &
 	Ref<BTTask> new_root = root_task->clone();
 	if (new_root == nullptr) {
 		ERR_FAIL_COND_V_MSG(root_task->is_enabled_in_tree(), nullptr, "BehaviorTree: Instantiation failed - unable to clone root task.");
-		new_root = memnew(BTFail);
+		new_root = Ref(memnew(BTFail));
 		new_root->set_custom_name("Root task disabled");
 	}
 	new_root->initialize(p_agent, p_blackboard, scene_root);
