@@ -20,12 +20,13 @@
 
 namespace TestDisabledRoot {
 
-TEST_CASE("[Modules][LimboAI] BTInstance when root task disabled FAILURE") {
+TEST_CASE("[SceneTree][LimboAI] BTInstance when root task disabled FAILURE") {
 	Ref<BehaviorTree> bt = memnew(BehaviorTree);
 	Ref<BTTestAction> task = memnew(BTTestAction(BTTask::SUCCESS));
 	Node *dummy = memnew(Node);
 
 	SceneTree::get_singleton()->get_root()->add_child(dummy);
+	dummy->set_owner(SceneTree::get_singleton()->get_root());
 	task->set_enabled(false);
 	bt->set_root_task(task);
 	Ref<Blackboard> blackboard = memnew(Blackboard);
