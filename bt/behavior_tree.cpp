@@ -10,6 +10,7 @@
  */
 
 #include "behavior_tree.h"
+#include "tasks/utility/bt_fail.h"
 
 #include "../util/limbo_string_names.h"
 
@@ -82,9 +83,14 @@ Ref<BTInstance> BehaviorTree::instantiate(Node *p_agent, const Ref<Blackboard> &
 	ERR_FAIL_COND_V_MSG(p_blackboard.is_null(), nullptr, "BehaviorTree: Instantiation failed - blackboard can't be null.");
 	Node *scene_root = p_custom_scene_root ? p_custom_scene_root : p_instance_owner->get_owner();
 	ERR_FAIL_NULL_V_MSG(scene_root, nullptr, "BehaviorTree: Instantiation failed - unable to establish scene root. This is likely due to the instance owner not being owned by a scene node and custom_scene_root being null.");
-	Ref<BTTask> root_copy = root_task->clone();
-	root_copy->initialize(p_agent, p_blackboard, scene_root);
-	return BTInstance::create(root_copy, get_path(), p_instance_owner);
+	Ref<BTTask> new_root = root_task->clone();
+	if (new_root.is_null()) {
+		ERR_FAIL_COND_V_MSG(root_task->is_enabled_in_tree(), nullptr, "BehaviorTree: Instantiation failed - unable to clone root task.");
+		new_root = Ref(memnew(BTFail));
+		new_root->set_custom_name("Root task disabled");
+	}
+	new_root->initialize(p_agent, p_blackboard, scene_root);
+	return BTInstance::create(new_root, get_path(), p_instance_owner);
 }
 
 void BehaviorTree::emit_branch_changed(const Ref<BTTask> &p_branch) {
