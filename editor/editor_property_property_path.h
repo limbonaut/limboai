@@ -15,7 +15,7 @@
 #ifdef TOOLS_ENABLED
 
 #ifdef LIMBOAI_MODULE
-#include "editor/editor_inspector.h"
+#include "editor/inspector/editor_inspector.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/menu_button.h"
 #endif // LIMBOAI_MODULE
