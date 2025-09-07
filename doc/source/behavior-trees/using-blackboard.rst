@@ -121,8 +121,9 @@ connect variables between related plans.
 
 .. note::
    Each :ref:`BTState <class_BTState>` creates a new blackboard scope for its
-   BehaviorTree instance. This is why variables defined in the HSM are not automatically
-   accessible inside the BT — mapping is the intended way to connect them.
+   BehaviorTree instance. Because BehaviorTrees are reusable resources that may run
+   in different contexts or on different agents, they do not automatically see
+   variables defined in the HSM. Mapping is the intended way to connect them.
 
 .. note::
    Mapping does not create new variables automatically — the variables must already
