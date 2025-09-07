@@ -42,6 +42,7 @@ public:
 	_FORCE_INLINE_ static LimboStringNames *get_singleton() { return singleton; }
 
 	StringName _generate_name;
+	StringName _initialize_bt;
 	StringName _param_type;
 	StringName _replace_task;
 	StringName _update_task_tree;
@@ -134,6 +135,7 @@ public:
 	StringName pressed;
 	StringName probability_clicked;
 	StringName property_changed;
+	StringName ready;
 	StringName Reload;
 	StringName remove_child;
 	StringName Remove;
