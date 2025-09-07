@@ -138,7 +138,7 @@ Key points about mapping
 * Mapping is explicit: you decide which variables the BT exposes as inputs and outputs.
 * Linkage is bidirectional — there is no distinction between input and output.
 * Mapping does not create new variables automatically — the variables must already
-   exist in both blackboard plans before they can be linked.
+  exist in both blackboard plans before they can be linked.
 
 Inspector workflow
 ~~~~~~~~~~~~~~~~~~
