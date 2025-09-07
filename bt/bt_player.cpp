@@ -11,7 +11,6 @@
 
 #include "bt_player.h"
 
-#include "../compat/limbo_compat.h"
 #include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
 
@@ -25,7 +24,46 @@
 
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
-void BTPlayer::_instantiate_bt() {
+void BTPlayer::_try_initialize() {
+	ERR_FAIL_COND(is_ready() == false); // BTPlayer node should be ready at this point.
+
+	if (bt_instance.is_valid()) {
+		// BTInstance is live (likely user-assigned) - nothing to do.
+		return;
+	}
+
+	if (behavior_tree.is_null()) {
+		return;
+	}
+
+	_initialize_blackboard();
+
+	Node *scene_root = _get_scene_root();
+	ERR_FAIL_NULL_MSG(scene_root, "Failed to detect scene root - can't initialize. Tip: Try setting owner or scene_root_hint.");
+
+	if (scene_root->is_ready()) {
+		_initialize_bt();
+	} else {
+		// Defer initialization until agent's local scene root is ready.
+		// NOTE: Using Callable() to avoid unlikely crashes if BTPlayer is freed before the signal fires.
+		scene_root->connect(LW_NAME(ready), Callable(this, LW_NAME(_initialize_bt)), CONNECT_ONE_SHOT);
+	}
+}
+
+void BTPlayer::_initialize_blackboard() {
+	_update_blackboard_plan();
+
+	if (blackboard.is_null()) {
+		blackboard.instantiate();
+	}
+
+	if (blackboard_plan.is_valid()) {
+		// Don't overwrite existing blackboard values as they may be initialized from code.
+		blackboard_plan->populate_blackboard(blackboard, false, this, _get_scene_root());
+	}
+}
+
+void BTPlayer::_initialize_bt() {
 	bt_instance.unref();
 	ERR_FAIL_COND_MSG(!behavior_tree.is_valid(), "BTPlayer: Initialization failed - needs a valid behavior tree.");
 	ERR_FAIL_COND_MSG(!behavior_tree->get_root_task().is_valid(), "BTPlayer: Initialization failed - behavior tree has no valid root task.");
@@ -51,19 +89,6 @@ void BTPlayer::_update_blackboard_plan() {
 	}
 
 	blackboard_plan->set_base_plan(behavior_tree.is_valid() ? behavior_tree->get_blackboard_plan() : nullptr);
-}
-
-void BTPlayer::_initialize() {
-	if (blackboard.is_null()) {
-		blackboard = Ref<Blackboard>(memnew(Blackboard));
-	}
-	if (blackboard_plan.is_valid()) {
-		// Don't overwrite existing blackboard values as they may be initialized from code.
-		blackboard_plan->populate_blackboard(blackboard, false, this, _get_scene_root());
-	}
-	if (behavior_tree.is_valid()) {
-		_instantiate_bt();
-	}
 }
 
 void BTPlayer::set_bt_instance(const Ref<BTInstance> &p_bt_instance) {
@@ -93,6 +118,10 @@ void BTPlayer::set_scene_root_hint(Node *p_scene_root) {
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
+	if (behavior_tree == p_tree) {
+		return;
+	}
+
 	if (Engine::get_singleton()->is_editor_hint()) {
 		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
 			behavior_tree->disconnect(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
@@ -102,11 +131,12 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		}
 		behavior_tree = p_tree;
 		_update_blackboard_plan();
-	} else {
+	} else { // runtime
 		behavior_tree = p_tree;
-		if (get_owner() && is_inside_tree()) {
-			_update_blackboard_plan();
-			_initialize();
+		bt_instance.unref();
+
+		if (is_ready()) {
+			_try_initialize();
 		}
 	}
 }
@@ -131,6 +161,7 @@ void BTPlayer::set_update_mode(UpdateMode p_mode) {
 void BTPlayer::set_active(bool p_active) {
 	active = p_active;
 	bool is_not_editor = !Engine::get_singleton()->is_editor_hint();
+
 	set_process(update_mode == UpdateMode::IDLE && active && is_not_editor);
 	set_physics_process(update_mode == UpdateMode::PHYSICS && active && is_not_editor);
 	set_process_input(active && is_not_editor);
@@ -181,12 +212,11 @@ void BTPlayer::_notification(int p_notification) {
 			update(time);
 		} break;
 		case NOTIFICATION_READY: {
-			if (!Engine::get_singleton()->is_editor_hint()) {
-				_initialize();
-			} else {
+			if (Engine::get_singleton()->is_editor_hint()) {
 				_update_blackboard_plan();
+			} else { // runtime
+				_try_initialize();
 			}
-			set_active(active);
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 #ifdef DEBUG_ENABLED
@@ -239,6 +269,8 @@ void BTPlayer::_bind_methods() {
 
 	ClassDB::bind_method(D_METHOD("set_scene_root_hint", "scene_root"), &BTPlayer::set_scene_root_hint);
 
+	ClassDB::bind_method(D_METHOD("_initialize_bt"), &BTPlayer::_initialize_bt);
+
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "behavior_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_behavior_tree", "get_behavior_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::NODE_PATH, "agent_node"), "set_agent_node", "get_agent_node");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "update_mode", PROPERTY_HINT_ENUM, "Idle,Physics,Manual"), "set_update_mode", "get_update_mode");
@@ -259,7 +291,7 @@ void BTPlayer::_bind_methods() {
 }
 
 BTPlayer::BTPlayer() {
-	blackboard = Ref<Blackboard>(memnew(Blackboard));
+	blackboard.instantiate();
 	agent_node = LW_NAME(node_pp);
 }
 

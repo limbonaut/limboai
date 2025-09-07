@@ -15,6 +15,7 @@ LimboStringNames *LimboStringNames::singleton = nullptr;
 
 LimboStringNames::LimboStringNames() {
 	_generate_name = StringName("_generate_name");
+	_initialize_bt = StringName("_initialize_bt");
 	_param_type = StringName("_param_type");
 	_replace_task = StringName("_replace_task");
 	_update_task_tree = StringName("_update_task_tree");
@@ -107,6 +108,7 @@ LimboStringNames::LimboStringNames() {
 	pressed = StringName("pressed");
 	probability_clicked = StringName("probability_clicked");
 	property_changed = StringName("property_changed");
+	ready = StringName("ready");
 	Reload = StringName("Reload");
 	Remove = StringName("Remove");
 	remove_child = StringName("remove_child");

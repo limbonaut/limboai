@@ -48,9 +48,10 @@ private:
 
 	Ref<BTInstance> bt_instance;
 
-	void _instantiate_bt();
+	void _try_initialize();
+	void _initialize_blackboard();
+	void _initialize_bt();
 	void _update_blackboard_plan();
-	void _initialize();
 	_FORCE_INLINE_ Node *_get_scene_root() const { return scene_root_hint ? scene_root_hint : get_owner(); }
 
 protected:
