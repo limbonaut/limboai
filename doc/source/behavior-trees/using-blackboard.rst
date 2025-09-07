@@ -111,6 +111,72 @@ Usage example:
         var current_speed: float = speed.get_value(scene_root, blackboard, 0.0)
         ...
 
+Connecting variables in BTs to HSMs: Variable mapping
+-----------------------------------------------------
+
+Each :ref:`BTState <class_BTState>` creates a new blackboard scope for its
+BehaviorTree instance. Because BehaviorTrees are reusable resources that can run
+in different contexts or on different agents, they do not automatically see
+variables defined in the HSM. At runtime, HSM variables are usually accessible
+inside the BT via the parent scope blackboard, but the recommended way to access
+them is through **mapping**.
+
+.. note::
+   To learn more about scopes, see :ref:`Blackboard <class_Blackboard>`.
+
+When both the BehaviorTree and the HSM declare variables in their respective
+:ref:`BlackboardPlan <class_BlackboardPlan>` resources, the editor provides a **Mapping**
+section in the BlackboardPlan inspector. Mapping is the intended and recommended way to
+connect variables between related plans.
+
+Key points about mapping
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Mapping connects two variables so they behave as a single logical variable at runtime.
+* Linked variables are updated immediately in both scopes — they literally share the
+  same state in memory (no polling or copying).
+* Mapping is explicit: you decide which variables the BT exposes as inputs and outputs.
+* Linkage is bidirectional — there is no distinction between input and output.
+* Mapping does not create new variables automatically — the variables must already
+   exist in both blackboard plans before they can be linked.
+
+Inspector workflow
+~~~~~~~~~~~~~~~~~~
+
+1. Define the required variables in each BlackboardPlan (HSM plan and BT plan, for example).
+2. Select the :ref:`BTState <class_BTState>` node in the scene or a :ref:`BTSubtree <class_BTSubtree>`
+   inside a behavior tree.
+3. In the Inspector, select the Blackboard Plan property.
+4. In the BlackboardPlan resource inspector, locate the **Mapping** section.
+5. Create mappings by pairing variables (``BT variable ↔ parent variable``).
+6. On startup the mappings are applied, and the variables are automatically linked
+   for the running instance.
+
+Programmatic alternative: linking variables in code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can also link variables directly in code using :ref:`Blackboard.link_var <class_Blackboard_method_link_var>`:
+
+.. code-block:: gdscript
+
+   # Example: programmatically link a BT blackboard variable to an HSM blackboard variable
+   # Assume `hsm` is a LimboHSM instance and `bt_state` is a BTState instance
+   var hsm_bb := hsm.get_blackboard()
+   var bt_bb := bt_state.get_blackboard()
+
+   # NOTE: variable names do not need to match
+   bt_bb.link_var("target_pos", hsm_bb, "target_pos")
+
+Best practices
+~~~~~~~~~~~~~~
+
+* Declare all BT dependencies in the BT’s BlackboardPlan instead of relying on parent scopes.
+* Use **Mapping** to explicitly declare which variables should be shared with the HSM.
+* Prefer the inspector-based Mapping workflow for clarity and editor support; use
+  ``link_var`` only when runtime or programmatic setup is required.
+* Avoid writing to ``blackboard.get_parent()`` from inside BT tasks unless you have
+  a very specific reason and accept the coupling it introduces.
+
 Advanced topic: Blackboard scopes
 ---------------------------------
 
