@@ -5,7 +5,7 @@ on:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
-        default: 4.4.1-stable
+        default: 4.5-stable
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -111,16 +111,7 @@ jobs:
   merge_templates:
     name: 📦 Merge templates
     if: ${{ always() }}
-    needs:
-      [
-        cache-sha,
-        android-build,
-        ios-build,
-        linux-build,
-        macos-build,
-        windows-build,
-        web-build,
-      ]
+    needs: [cache-sha, android-build, ios-build, linux-build, macos-build, windows-build, web-build]
     uses: ./.github/workflows/merge_templates.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
