@@ -120,6 +120,11 @@ section in the BlackboardPlan inspector. Mapping is the intended and recommended
 connect variables between related plans.
 
 .. note::
+   Each :ref:`BTState <class_BTState>` creates a new blackboard scope for its
+   BehaviorTree instance. This is why variables defined in the HSM are not automatically
+   accessible inside the BT — mapping is the intended way to connect them.
+
+.. note::
    Mapping does not create new variables automatically — the variables must already
    exist in both blackboard plans before they can be linked.
 
