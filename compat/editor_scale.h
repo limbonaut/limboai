@@ -1,5 +1,5 @@
 /**
- * edscale.h
+ * editor_scale.h
  * =============================================================================
  * Copyright (c) 2023-present Serhii Snitsaruk and the LimboAI contributors.
  *
