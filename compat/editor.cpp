@@ -15,7 +15,7 @@
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_main_screen.h"
 #include "editor/editor_node.h"
-#include "editor/plugins/script_editor_plugin.h"
+#include "editor/script/script_editor_plugin.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

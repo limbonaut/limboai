@@ -34,7 +34,7 @@
 #define COMPAT_WINDOW_WRAPPER_H
 
 #ifdef LIMBOAI_MODULE
-#include "editor/window_wrapper.h"
+#include "editor/gui/window_wrapper.h"
 
 #define CompatWindowWrapper WindowWrapper
 #define CompatShortcutBin ShortcutBin

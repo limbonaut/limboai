@@ -142,13 +142,13 @@ void EditorPropertyPropertyPath::_update_property() {
 		Node *selected_node = base_node->get_node_or_null(path);
 		String text;
 		if (selected_node) {
-			text = (String)selected_node->get_name() +
-					":" + (String)path.get_concatenated_subnames();
+			text = String(selected_node->get_name()) +
+					":" + String(path.get_concatenated_subnames());
 		} else {
-			text = (String)path;
+			text = String(path);
 		}
 		assign_button->set_text(text);
-		assign_button->set_tooltip_text(path);
+		assign_button->set_tooltip_text(String(path));
 	}
 }
 
