@@ -147,8 +147,8 @@ LimboStringNames::LimboStringNames() {
 	visibility_changed = StringName("visibility_changed");
 	window_visibility_changed = StringName("window_visibility_changed");
 
-	repeat_forever.append_utf8("Repeat ∞");
-	output_var_prefix.append_utf8("➜");
+	repeat_forever = String::utf8("Repeat ∞");
+	output_var_prefix = String::utf8("➜");
 
 	node_pp = NodePath("..");
 }
