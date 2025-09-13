@@ -11,7 +11,6 @@
 
 #include "bt_player.h"
 
-#include "../compat/limbo_compat.h"
 #include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
 
@@ -93,6 +92,10 @@ void BTPlayer::set_scene_root_hint(Node *p_scene_root) {
 }
 
 void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
+	if (behavior_tree == p_tree) {
+		return;
+	}
+	
 	if (Engine::get_singleton()->is_editor_hint()) {
 		if (behavior_tree.is_valid() && behavior_tree->is_connected(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan))) {
 			behavior_tree->disconnect(LW_NAME(plan_changed), callable_mp(this, &BTPlayer::_update_blackboard_plan));
@@ -103,10 +106,11 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		behavior_tree = p_tree;
 		_update_blackboard_plan();
 	} else {
+		bt_instance.unref();
 		behavior_tree = p_tree;
 		if (get_owner() && is_inside_tree()) {
 			_update_blackboard_plan();
-			_initialize();
+			set_active(active);
 		}
 	}
 }
@@ -131,6 +135,12 @@ void BTPlayer::set_update_mode(UpdateMode p_mode) {
 void BTPlayer::set_active(bool p_active) {
 	active = p_active;
 	bool is_not_editor = !Engine::get_singleton()->is_editor_hint();
+
+	// Initialize lazily on first activation.
+	if (is_not_editor && active && bt_instance.is_null()) {
+		_initialize();
+	}
+
 	set_process(update_mode == UpdateMode::IDLE && active && is_not_editor);
 	set_physics_process(update_mode == UpdateMode::PHYSICS && active && is_not_editor);
 	set_process_input(active && is_not_editor);
@@ -181,9 +191,7 @@ void BTPlayer::_notification(int p_notification) {
 			update(time);
 		} break;
 		case NOTIFICATION_READY: {
-			if (!Engine::get_singleton()->is_editor_hint()) {
-				_initialize();
-			} else {
+			if (Engine::get_singleton()->is_editor_hint()) {
 				_update_blackboard_plan();
 			}
 			set_active(active);
