@@ -11,6 +11,7 @@
 
 #include "bt_player.h"
 
+#include "../compat/node.h"
 #include "../compat/resource.h"
 #include "../util/limbo_string_names.h"
 
@@ -25,7 +26,7 @@
 VARIANT_ENUM_CAST(BTPlayer::UpdateMode);
 
 void BTPlayer::_try_initialize() {
-	ERR_FAIL_COND(is_ready() == false); // BTPlayer node should be ready at this point.
+	ERR_FAIL_COND(IS_NODE_READY(this) == false); // BTPlayer node should be ready at this point.
 
 	if (bt_instance.is_valid()) {
 		// BTInstance is live (likely user-assigned) - nothing to do.
@@ -41,7 +42,7 @@ void BTPlayer::_try_initialize() {
 	Node *scene_root = _get_scene_root();
 	ERR_FAIL_NULL_MSG(scene_root, "Failed to detect scene root - can't initialize. Tip: Try setting owner or scene_root_hint.");
 
-	if (scene_root->is_ready()) {
+	if (IS_NODE_READY(scene_root)) {
 		_initialize_bt();
 	} else {
 		// Defer initialization until agent's local scene root is ready.
@@ -135,7 +136,7 @@ void BTPlayer::set_behavior_tree(const Ref<BehaviorTree> &p_tree) {
 		behavior_tree = p_tree;
 		bt_instance.unref();
 
-		if (is_ready()) {
+		if (IS_NODE_READY(this)) {
 			_try_initialize();
 		}
 	}
