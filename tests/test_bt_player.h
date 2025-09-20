@@ -171,6 +171,32 @@ TEST_CASE("[SceneTree][LimboAI] BTPlayer lifecycle scenarios") {
 		CHECK(bt_player->get_bt_instance().is_valid());
 	}
 
+	SUBCASE("Scenario 5: Activate BTPlayer after NOTIFICATION_READY") {
+		CHECK(bt_player->get_bt_instance().is_null());
+
+		bt_player->set_behavior_tree(bt);
+		CHECK(bt_player->get_bt_instance().is_null());
+
+		bt_player->set_active(false);
+
+		scene_root->add_child(bt_player);
+		bt_player->set_owner(scene_root);
+		CHECK(bt_player->get_bt_instance().is_null());
+
+		// BTPlayer should NOT initialize in NOTIFICATION_READY
+		bt_player->connect("ready",
+				memnew(LambdaCallable([bt_player]() {
+					CHECK(bt_player->get_bt_instance().is_null());
+				})));
+
+		// NOTE: Initialization should happen after first activation.
+		SceneTree::get_singleton()->get_root()->add_child(scene_root);
+		CHECK(bt_player->get_bt_instance().is_null());
+
+		bt_player->set_active(true);
+		CHECK(bt_player->get_bt_instance().is_valid());
+	}
+
 	// Clean up
 	scene_root->queue_free();
 }
