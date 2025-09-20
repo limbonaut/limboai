@@ -398,11 +398,6 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_ONESHOT: {
 			return "ONESHOT";
 		}
-#ifdef LIMBOAI_MODULE
-		case PROPERTY_HINT_NO_NODEPATH: {
-			return "NO_NODEPATH";
-		}
-#endif // ! LIMBOAI_MODULE
 		case PROPERTY_HINT_LOCALE_ID: {
 			return "LOCALE_ID";
 		}
@@ -421,6 +416,10 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_LAYERS_AVOIDANCE: {
 			return "LAYERS_AVOIDANCE";
 		}
+#ifdef LIMBOAI_MODULE
+		case PROPERTY_HINT_NO_NODEPATH: {
+			return "NO_NODEPATH";
+		}
 		case PROPERTY_HINT_GROUP_ENABLE: {
 			return "GROUP_ENABLE";
 		}
@@ -430,6 +429,7 @@ String LimboUtility::get_property_hint_text(PropertyHint p_hint) const {
 		case PROPERTY_HINT_FILE_PATH: {
 			return "FILE_PATH";
 		}
+#endif // ! LIMBOAI_MODULE
 		case PROPERTY_HINT_MAX: {
 			return "MAX";
 		}
