@@ -5,6 +5,7 @@
 	</brief_description>
 	<description>
 		[BTPlayer] node is used to instantiate and play [BehaviorTree] resources at runtime. During initialization, the behavior tree instance is given references to the agent, the [member blackboard], and the current scene root. The agent can be specified by the [member agent_node] property (defaults to the BTPlayer's parent node).
+		The [member behavior_tree] is only initialized when [member active] is [code]true[/code] and the agent's local scene root node is ready. If [BTPlayer] becomes active before the scene root node is ready, initialization is delayed until then. When [member active] is [code]false[/code], initialization is postponed until activation.
 		For an introduction to behavior trees, see [BehaviorTree].
 	</description>
 	<tutorials>
@@ -46,7 +47,7 @@
 	</methods>
 	<members>
 		<member name="active" type="bool" setter="set_active" getter="get_active" default="true">
-			If [code]true[/code], the behavior tree will be executed during update.
+			When [code]true[/code], the behavior tree is executed during updates. [BTPlayer] initializes its [BehaviorTree] instance the first time it becomes active, but only after the agent's local scene root node is ready. If the agent becomes active before the root is ready, initialization is delayed until it is. When [code]false[/code], the behavior tree is not executed and initialization is postponed until activation.
 		</member>
 		<member name="agent_node" type="NodePath" setter="set_agent_node" getter="get_agent_node" default="NodePath(&quot;..&quot;)">
 			Path to the node that will be used as the agent. Setting it after instantiation will have no effect.
