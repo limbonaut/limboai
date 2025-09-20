@@ -29,7 +29,7 @@ void BTPlayer::_try_initialize() {
 	ERR_FAIL_COND(IS_NODE_READY(this) == false); // BTPlayer node should be ready at this point.
 
 	if (bt_instance.is_valid()) {
-		// BTInstance is live (likely user-assigned) - nothing to do.
+		// BTInstance is already initialized - nothing to do.
 		return;
 	}
 
@@ -37,10 +37,8 @@ void BTPlayer::_try_initialize() {
 		return;
 	}
 
-	_initialize_blackboard();
-
 	Node *scene_root = _get_scene_root();
-	ERR_FAIL_NULL_MSG(scene_root, "Failed to detect scene root - can't initialize. Tip: Try setting owner or scene_root_hint.");
+	ERR_FAIL_NULL_MSG(scene_root, "Failed to detect scene root - can't initialize. Tip: Try setting either owner or scene_root_hint.");
 
 	if (IS_NODE_READY(scene_root)) {
 		_initialize_bt();
@@ -161,12 +159,18 @@ void BTPlayer::set_update_mode(UpdateMode p_mode) {
 
 void BTPlayer::set_active(bool p_active) {
 	active = p_active;
-	bool is_not_editor = !Engine::get_singleton()->is_editor_hint();
+	bool is_runtime = !Engine::get_singleton()->is_editor_hint();
 
-	set_process(update_mode == UpdateMode::IDLE && active && is_not_editor);
-	set_physics_process(update_mode == UpdateMode::PHYSICS && active && is_not_editor);
-	set_process_input(active && is_not_editor);
-	set_process_unhandled_input(active && is_not_editor);
+	set_process(update_mode == UpdateMode::IDLE && active && is_runtime);
+	set_physics_process(update_mode == UpdateMode::PHYSICS && active && is_runtime);
+	set_process_input(active && is_runtime);
+	set_process_unhandled_input(active && is_runtime);
+
+	// Automatically initialize the behavior tree on activation
+	// (deferred until both BTPlayer and scene root are ready)
+	if (active && is_runtime && IS_NODE_READY(this)) {
+		_try_initialize();
+	}
 }
 
 void BTPlayer::update(double p_delta) {
@@ -216,7 +220,7 @@ void BTPlayer::_notification(int p_notification) {
 			if (Engine::get_singleton()->is_editor_hint()) {
 				_update_blackboard_plan();
 			} else { // runtime
-				_try_initialize();
+				_initialize_blackboard();
 			}
 			set_active(active);
 		} break;
