@@ -97,7 +97,7 @@ LimboAI can be used as either a C++ module or as a GDExtension shared library. G
 ### Compiling from source
 
 - Download the Godot Engine source code and put this module source into the `modules/limboai` directory.
-- Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html).
+- Consult the Godot Engine documentation for instructions on [how to build from source code](https://docs.godotengine.org/en/stable/engine_details/development/compiling/index.html).
 - If you plan to export a game utilizing the LimboAI module, you'll also need to build export templates.
 - To execute unit tests, compile the engine with `tests=yes` and run it with `--test --tc="*[LimboAI]*"`.
 
