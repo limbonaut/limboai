@@ -38,7 +38,6 @@ Variant _GLOBAL_DEF(const PropertyInfo &p_info, const Variant &p_default, bool p
 	dic_info["class_name"] = p_info.class_name;
 	dic_info["hint"] = p_info.hint;
 	dic_info["hint_string"] = p_info.hint_string;
-	dic_info["usage"] = p_info.usage;
 
 	ProjectSettings::get_singleton()->add_property_info(dic_info);
 	return ret;
