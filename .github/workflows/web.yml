@@ -26,7 +26,7 @@ on:
 env:
   # Note: With `lto=full` VM runs out of ram and the build fails.
   SCONSFLAGS: use_static_cpp=yes debug_symbols=no lto=thin optimize=size verbose=yes warnings=extra
-  EM_VERSION: 3.1.64
+  EM_VERSION: 4.0.11
   EM_CACHE_FOLDER: "emsdk-cache"
   CACHE_LIMIT: 4
 
