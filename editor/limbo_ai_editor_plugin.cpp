@@ -1525,7 +1525,7 @@ void LimboAIEditor::_update_banners() {
 		if (banners->get_child(i)->has_meta(LW_NAME(managed))) {
 			Node *banner = banners->get_child(i);
 			banners->remove_child(banner);
-			memfree(banner);
+			banner->queue_free();
 		}
 	}
 
