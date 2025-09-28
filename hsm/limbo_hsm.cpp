@@ -303,10 +303,10 @@ void LimboHSM::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_PROCESS: {
-			_update(get_process_delta_time());
+			update(get_process_delta_time());
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			_update(get_physics_process_delta_time());
+			update(get_physics_process_delta_time());
 		} break;
 	}
 }
