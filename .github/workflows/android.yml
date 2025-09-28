@@ -158,6 +158,13 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - uses: nttld/setup-ndk@v1
+        if: matrix.opts.platform == 'android'
+        id: setup-ndk
+        with:
+          ndk-version: r28b
+          link-to-sdk: true
+
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
