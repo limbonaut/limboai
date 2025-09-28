@@ -33,7 +33,7 @@ on:
 # Global Settings
 env:
   SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
-  BUILD_IMAGE_VERSION: 4.3-f40
+  BUILD_IMAGE_VERSION: 4.5-f42
   MESA_VERSION: 23.1.9-1
   CACHE_LIMIT: 4
 
