@@ -151,12 +151,6 @@ jobs:
           python -c "import sys; print(sys.version)"
           python -m pip install scons==4.4.0
 
-      - name: Set up .NET SDK 6.0
-        if: matrix.opts.dotnet
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: "6.0.x"
-
       - name: Diagnostics
         run: |
           python --version
