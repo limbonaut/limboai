@@ -52,6 +52,9 @@ private:
 private:
 	struct ThemeCache {
 		Ref<Texture2D> grab_icon;
+		Ref<Texture2D> checked_icon;
+		Ref<Texture2D> unchecked_icon;
+		Ref<Texture2D> indeterminate_icon;
 		Ref<StyleBoxFlat> odd_style;
 		Ref<StyleBoxFlat> even_style;
 		Ref<StyleBoxFlat> header_style;
@@ -82,6 +85,7 @@ private:
 	ScrollContainer *scroll_container;
 	PopupMenu *type_menu;
 	PopupMenu *hint_menu;
+	Button *mass_select_button;
 
 	LineEdit *_get_name_edit(int p_row_index) const;
 
@@ -105,6 +109,7 @@ private:
 
 	void _end_selection();
 	void _update_tools();
+	void _mass_select_pressed();
 
 	void _drag_button_down(Control *p_row);
 	void _drag_button_up();

@@ -233,9 +233,37 @@ void BlackboardPlanEditor::_end_selection() {
 }
 
 void BlackboardPlanEditor::_update_tools() {
+	ERR_FAIL_COND(plan.is_null());
+
 	copy_tool->set_disabled(selected_vars.is_empty());
 	paste_tool->set_disabled(clipboard.is_empty());
 	remove_tool->set_disabled(selected_vars.is_empty());
+
+	if (selected_vars.is_empty()) {
+		mass_select_button->set_button_icon(theme_cache.unchecked_icon);
+	} else if (selected_vars.size() == plan->get_var_count()) {
+		mass_select_button->set_button_icon(theme_cache.checked_icon);
+	} else {
+		mass_select_button->set_button_icon(theme_cache.indeterminate_icon);
+	}
+}
+
+void BlackboardPlanEditor::_mass_select_pressed() {
+	ERR_FAIL_COND(plan.is_null());
+
+	if (selected_vars.size() < plan->get_var_count()) {
+		if (!selected_vars.is_empty()) {
+			selected_vars.clear();
+		}
+		for (int i = 0; i < plan->get_var_count(); i++) {
+			selected_vars.push_back(plan->get_var_by_index(i).first);
+		}
+	} else {
+		selected_vars.clear();
+	}
+
+	_update_tools();
+	_refresh();
 }
 
 void BlackboardPlanEditor::_copy_pressed() {
@@ -418,6 +446,9 @@ void BlackboardPlanEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
 			theme_cache.grab_icon = get_theme_icon(LW_NAME(TripleBar), LW_NAME(EditorIcons));
+			theme_cache.checked_icon = get_theme_icon("GuiChecked", LW_NAME(EditorIcons));
+			theme_cache.unchecked_icon = get_theme_icon("GuiUnchecked", LW_NAME(EditorIcons));
+			theme_cache.indeterminate_icon = get_theme_icon("GuiIndeterminate", LW_NAME(EditorIcons));
 
 			add_var_tool->set_button_icon(get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
 			copy_tool->set_button_icon(get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons)));
@@ -451,6 +482,7 @@ void BlackboardPlanEditor::_notification(int p_what) {
 			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
 			nodepath_prefetching->connect(LW_NAME(toggled), callable_mp(this, &BlackboardPlanEditor::_prefetching_toggled));
+			mass_select_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_mass_select_pressed));
 
 			for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
 				hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
@@ -520,11 +552,12 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 
 		Control *offset = memnew(Control);
 		labels_hbox->add_child(offset);
-		offset->set_custom_minimum_size(Size2(2.0, 0.0) * EDSCALE);
+		offset->set_custom_minimum_size(Size2(0.4, 0.0) * EDSCALE);
 
-		Label *drag_header = memnew(Label);
-		labels_hbox->add_child(drag_header);
-		drag_header->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
+		mass_select_button = memnew(Button);
+		labels_hbox->add_child(mass_select_button);
+		mass_select_button->set_focus_mode(Control::FOCUS_NONE);
+		mass_select_button->set_flat(true);
 
 		Label *name_header = memnew(Label);
 		labels_hbox->add_child(name_header);
