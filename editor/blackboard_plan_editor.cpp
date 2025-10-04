@@ -22,11 +22,13 @@
 #include "editor/editor_interface.h"
 #include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
+#include "scene/gui/separator.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_interface.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
+#include <godot_cpp/classes/h_separator.hpp>
 #include <godot_cpp/classes/input.hpp>
 #include <godot_cpp/classes/input_event_mouse_motion.hpp>
 #include <godot_cpp/classes/label.hpp>
@@ -44,27 +46,65 @@ LineEdit *BlackboardPlanEditor::_get_name_edit(int p_row_index) const {
 void BlackboardPlanEditor::_add_var() {
 	ERR_FAIL_COND(plan.is_null());
 
-	int suffix = 1;
 	StringName var_name = default_var_name == StringName() ? "var" : default_var_name;
-	while (plan->has_var(var_name)) {
-		suffix += 1;
-		var_name = String(default_var_name) + itos(suffix);
-	}
 
 	BBVariable var(default_type, default_hint, default_hint_string);
 	if (default_value.get_type() == default_type) {
 		var.set_value(default_value);
 	}
-	plan->add_var(var_name, var);
+
+	_add_var_unique(var_name, var);
+
 	reset_defaults();
 	_refresh();
 }
 
-void BlackboardPlanEditor::_trash_var(int p_index) {
+void BlackboardPlanEditor::_add_var_unique(const StringName &p_name, const BBVariable &p_var) {
 	ERR_FAIL_COND(plan.is_null());
-	StringName var_name = plan->get_var_by_index(p_index).first;
-	plan->remove_var(var_name);
+	ERR_FAIL_COND(p_name.is_empty());
+
+	StringName var_name = p_name;
+
+	if (plan->has_var(var_name)) {
+		// Get numeric suffix in the variable name if any
+		int suffix;
+		String base_name;
+		String name_str = String(p_name);
+		int i = name_str.length() - 1;
+		while (i >= 0 && name_str[i] >= '0' && name_str[i] <= '9') {
+			i--;
+		}
+		if (i < name_str.length() - 1) {
+			// Extract the number suffix
+			String number_part = name_str.substr(i + 1);
+			suffix = number_part.to_int();
+			base_name = name_str.substr(0, i + 1);
+		} else {
+			suffix = 1;
+			base_name = name_str;
+		}
+
+		do {
+			suffix += 1;
+			var_name = base_name + itos(suffix);
+		} while (plan->has_var(var_name));
+	}
+
+	plan->add_var(var_name, p_var);
 	_refresh();
+}
+
+void BlackboardPlanEditor::_select_var(bool p_selected, int p_index) {
+	ERR_FAIL_COND(plan.is_null());
+
+	StringName var_name = plan->get_var_by_index(p_index).first;
+	if (p_selected) {
+		selected_vars.push_back(var_name);
+	} else {
+		selected_vars.erase(var_name);
+	}
+
+	_update_tools();
 }
 
 void BlackboardPlanEditor::_rename_var(const StringName &p_new_name, int p_index) {
@@ -186,6 +226,79 @@ void BlackboardPlanEditor::_add_var_pressed() {
 	scroll_container->call_deferred(LW_NAME(call_deferred), LW_NAME(set_v_scroll), 888888888);
 }
 
+void BlackboardPlanEditor::_end_selection() {
+	selected_vars.clear();
+	_update_tools();
+	_refresh();
+}
+
+void BlackboardPlanEditor::_update_tools() {
+	ERR_FAIL_COND(plan.is_null());
+
+	copy_tool->set_disabled(selected_vars.is_empty());
+	paste_tool->set_disabled(clipboard.is_empty());
+	remove_tool->set_disabled(selected_vars.is_empty());
+
+	if (selected_vars.is_empty()) {
+		mass_select_button->set_button_icon(theme_cache.unchecked_icon);
+	} else if (selected_vars.size() == plan->get_var_count()) {
+		mass_select_button->set_button_icon(theme_cache.checked_icon);
+	} else {
+		mass_select_button->set_button_icon(theme_cache.indeterminate_icon);
+	}
+}
+
+void BlackboardPlanEditor::_mass_select_pressed() {
+	ERR_FAIL_COND(plan.is_null());
+
+	if (selected_vars.size() < plan->get_var_count()) {
+		if (!selected_vars.is_empty()) {
+			selected_vars.clear();
+		}
+		for (int i = 0; i < plan->get_var_count(); i++) {
+			selected_vars.push_back(plan->get_var_by_index(i).first);
+		}
+	} else {
+		selected_vars.clear();
+	}
+
+	_update_tools();
+	_refresh();
+}
+
+void BlackboardPlanEditor::_copy_pressed() {
+	ERR_FAIL_COND(plan.is_null());
+
+	clipboard.clear();
+
+	for (const StringName &var_name : selected_vars) {
+		BBVariable var = plan->get_var(var_name);
+		clipboard.append({ var_name, var.duplicate() });
+	}
+
+	paste_tool->set_disabled(clipboard.is_empty());
+	_end_selection();
+}
+
+void BlackboardPlanEditor::_paste_pressed() {
+	ERR_FAIL_COND(plan.is_null());
+
+	for (auto var_data : clipboard) {
+		StringName var_name = var_data.first;
+		BBVariable var = var_data.second;
+		_add_var_unique(var_name, var.duplicate());
+	}
+}
+
+void BlackboardPlanEditor::_delete_pressed() {
+	ERR_FAIL_COND(plan.is_null());
+
+	for (const StringName &var_name : selected_vars) {
+		plan->remove_var(var_name);
+	}
+	_end_selection();
+}
+
 void BlackboardPlanEditor::_prefetching_toggled(bool p_toggle_on) {
 	ERR_FAIL_COND(plan.is_null());
 	plan->set_prefetch_nodepath_vars(p_toggle_on);
@@ -245,6 +358,7 @@ void BlackboardPlanEditor::_visibility_changed() {
 		plan->notify_property_list_changed();
 		reset_defaults();
 	}
+	_update_tools();
 }
 
 void BlackboardPlanEditor::_refresh() {
@@ -259,7 +373,7 @@ void BlackboardPlanEditor::_refresh() {
 
 	TypedArray<StringName> names = plan->list_vars();
 	for (int i = 0; i < names.size(); i++) {
-		const String &var_name = names[i];
+		const StringName &var_name = names[i];
 		BBVariable var = plan->get_var(var_name);
 
 		PanelContainer *row_panel = memnew(PanelContainer);
@@ -271,13 +385,12 @@ void BlackboardPlanEditor::_refresh() {
 		row_panel->add_child(props_hbox);
 		props_hbox->set_h_size_flags(Control::SIZE_EXPAND_FILL);
 
-		Button *drag_button = memnew(Button);
-		props_hbox->add_child(drag_button);
-		drag_button->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
-		drag_button->set_button_icon(theme_cache.grab_icon);
-		drag_button->connect(LW_NAME(gui_input), callable_mp(this, &BlackboardPlanEditor::_drag_button_gui_input));
-		drag_button->connect(LW_NAME(button_down), callable_mp(this, &BlackboardPlanEditor::_drag_button_down).bind(row_panel));
-		drag_button->connect(LW_NAME(button_up), callable_mp(this, &BlackboardPlanEditor::_drag_button_up));
+		CheckBox *select_cb = memnew(CheckBox);
+		props_hbox->add_child(select_cb);
+		if (selected_vars.has(var_name)) {
+			select_cb->set_pressed(true);
+		}
+		select_cb->connect(LW_NAME(toggled), callable_mp(this, &BlackboardPlanEditor::_select_var).bind(i));
 
 		LineEdit *name_edit = memnew(LineEdit);
 		props_hbox->add_child(name_edit);
@@ -319,21 +432,28 @@ void BlackboardPlanEditor::_refresh() {
 		hint_string_edit->connect(LW_NAME(text_changed), callable_mp(this, &BlackboardPlanEditor::_change_var_hint_string).bind(i));
 		hint_string_edit->connect(LW_NAME(text_submitted), callable_mp(this, &BlackboardPlanEditor::_refresh).unbind(1));
 
-		Button *trash_button = memnew(Button);
-		props_hbox->add_child(trash_button);
-		trash_button->set_custom_minimum_size(Size2(24.0, 0.0) * EDSCALE);
-		trash_button->set_button_icon(theme_cache.trash_icon);
-		trash_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_trash_var).bind(i));
+		Button *drag_button = memnew(Button);
+		props_hbox->add_child(drag_button);
+		drag_button->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
+		drag_button->set_button_icon(theme_cache.grab_icon);
+		drag_button->connect(LW_NAME(gui_input), callable_mp(this, &BlackboardPlanEditor::_drag_button_gui_input));
+		drag_button->connect(LW_NAME(button_down), callable_mp(this, &BlackboardPlanEditor::_drag_button_down).bind(row_panel));
+		drag_button->connect(LW_NAME(button_up), callable_mp(this, &BlackboardPlanEditor::_drag_button_up));
 	}
 }
 
 void BlackboardPlanEditor::_notification(int p_what) {
 	switch (p_what) {
 		case NOTIFICATION_THEME_CHANGED: {
-			theme_cache.trash_icon = get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons));
 			theme_cache.grab_icon = get_theme_icon(LW_NAME(TripleBar), LW_NAME(EditorIcons));
+			theme_cache.checked_icon = get_theme_icon("GuiChecked", LW_NAME(EditorIcons));
+			theme_cache.unchecked_icon = get_theme_icon("GuiUnchecked", LW_NAME(EditorIcons));
+			theme_cache.indeterminate_icon = get_theme_icon("GuiIndeterminate", LW_NAME(EditorIcons));
 
 			add_var_tool->set_button_icon(get_theme_icon(LW_NAME(Add), LW_NAME(EditorIcons)));
+			copy_tool->set_button_icon(get_theme_icon(LW_NAME(ActionCopy), LW_NAME(EditorIcons)));
+			paste_tool->set_button_icon(get_theme_icon(LW_NAME(ActionPaste), LW_NAME(EditorIcons)));
+			remove_tool->set_button_icon(get_theme_icon(LW_NAME(Remove), LW_NAME(EditorIcons)));
 
 			type_menu->clear();
 			for (int i = 0; i < Variant::VARIANT_MAX; i++) {
@@ -355,10 +475,14 @@ void BlackboardPlanEditor::_notification(int p_what) {
 		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			add_var_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_add_var_pressed));
+			copy_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_copy_pressed));
+			paste_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_paste_pressed));
+			remove_tool->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_delete_pressed));
 			connect(LW_NAME(visibility_changed), callable_mp(this, &BlackboardPlanEditor::_visibility_changed));
 			type_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_type_chosen));
 			hint_menu->connect(LW_NAME(id_pressed), callable_mp(this, &BlackboardPlanEditor::_hint_chosen));
 			nodepath_prefetching->connect(LW_NAME(toggled), callable_mp(this, &BlackboardPlanEditor::_prefetching_toggled));
+			mass_select_button->connect(LW_NAME(pressed), callable_mp(this, &BlackboardPlanEditor::_mass_select_pressed));
 
 			for (int i = 0; i < PropertyHint::PROPERTY_HINT_MAX; i++) {
 				hint_menu->add_item(LimboUtility::get_singleton()->get_property_hint_text(PropertyHint(i)), i);
@@ -391,6 +515,24 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 	add_var_tool->set_focus_mode(Control::FOCUS_NONE);
 	add_var_tool->set_text(TTR("Add variable"));
 
+	HSeparator *sep = memnew(HSeparator);
+	toolbar->add_child(sep);
+
+	copy_tool = memnew(Button);
+	toolbar->add_child(copy_tool);
+	copy_tool->set_focus_mode(Control::FOCUS_NONE);
+	copy_tool->set_text(TTR("Copy"));
+
+	paste_tool = memnew(Button);
+	toolbar->add_child(paste_tool);
+	paste_tool->set_focus_mode(Control::FOCUS_NONE);
+	paste_tool->set_text(TTR("Paste"));
+
+	remove_tool = memnew(Button);
+	toolbar->add_child(remove_tool);
+	remove_tool->set_focus_mode(Control::FOCUS_NONE);
+	remove_tool->set_text(TTR("Remove"));
+
 	nodepath_prefetching = memnew(CheckBox);
 	toolbar->add_child(nodepath_prefetching);
 	nodepath_prefetching->set_text(TTR("NodePath Prefetching"));
@@ -410,11 +552,12 @@ BlackboardPlanEditor::BlackboardPlanEditor() {
 
 		Control *offset = memnew(Control);
 		labels_hbox->add_child(offset);
-		offset->set_custom_minimum_size(Size2(2.0, 0.0) * EDSCALE);
+		offset->set_custom_minimum_size(Size2(0.4, 0.0) * EDSCALE);
 
-		Label *drag_header = memnew(Label);
-		labels_hbox->add_child(drag_header);
-		drag_header->set_custom_minimum_size(Size2(28.0, 28.0) * EDSCALE);
+		mass_select_button = memnew(Button);
+		labels_hbox->add_child(mass_select_button);
+		mass_select_button->set_focus_mode(Control::FOCUS_NONE);
+		mass_select_button->set_flat(true);
 
 		Label *name_header = memnew(Label);
 		labels_hbox->add_child(name_header);

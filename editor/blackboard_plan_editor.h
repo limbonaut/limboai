@@ -51,8 +51,10 @@ private:
 
 private:
 	struct ThemeCache {
-		Ref<Texture2D> trash_icon;
 		Ref<Texture2D> grab_icon;
+		Ref<Texture2D> checked_icon;
+		Ref<Texture2D> unchecked_icon;
+		Ref<Texture2D> indeterminate_icon;
 		Ref<StyleBoxFlat> odd_style;
 		Ref<StyleBoxFlat> even_style;
 		Ref<StyleBoxFlat> header_style;
@@ -70,18 +72,26 @@ private:
 	String default_hint_string;
 	Variant default_value;
 
+	Vector<StringName> selected_vars;
+	Vector<Pair<StringName, BBVariable>> clipboard;
+
 	VBoxContainer *rows_vbox;
 	Button *add_var_tool;
+	Button *copy_tool;
+	Button *paste_tool;
+	Button *remove_tool;
 	CheckBox *nodepath_prefetching;
 	PanelContainer *header_row;
 	ScrollContainer *scroll_container;
 	PopupMenu *type_menu;
 	PopupMenu *hint_menu;
+	Button *mass_select_button;
 
 	LineEdit *_get_name_edit(int p_row_index) const;
 
 	void _add_var();
-	void _trash_var(int p_index);
+	void _add_var_unique(const StringName &p_name, const BBVariable &p_var);
+	void _select_var(bool p_selected, int p_index);
 	void _rename_var(const StringName &p_new_name, int p_index);
 	void _change_var_type(Variant::Type p_new_type, int p_index);
 	void _change_var_hint(PropertyHint p_new_hint, int p_index);
@@ -90,8 +100,16 @@ private:
 	void _show_button_popup(Button *p_button, PopupMenu *p_popup, int p_index);
 	void _type_chosen(int id);
 	void _hint_chosen(int id);
+
 	void _add_var_pressed();
+	void _copy_pressed();
+	void _paste_pressed();
+	void _delete_pressed();
 	void _prefetching_toggled(bool p_toggle_on);
+
+	void _end_selection();
+	void _update_tools();
+	void _mass_select_pressed();
 
 	void _drag_button_down(Control *p_row);
 	void _drag_button_up();
