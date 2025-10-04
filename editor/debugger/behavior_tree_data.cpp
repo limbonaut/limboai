@@ -84,6 +84,8 @@ Ref<BehaviorTreeData> BehaviorTreeData::deserialize(const Array &p_array) {
 }
 
 Ref<BehaviorTreeData> BehaviorTreeData::create_from_bt_instance(const Ref<BTInstance> &p_bt_instance) {
+	ERR_FAIL_COND_V_MSG(p_bt_instance.is_null(), nullptr, "Can't create BehaviorTreeData - BTInstance is null.");
+
 	Ref<BehaviorTreeData> data = memnew(BehaviorTreeData);
 
 	data->bt_instance_id = p_bt_instance->get_instance_id();
