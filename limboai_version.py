@@ -1,10 +1,10 @@
 # Edit the following variables to change version info
 
 major = 1
-minor = 4
-patch = 1
+minor = 5
+patch = 0
 status = ""
-doc_branch = "v1.4.1"
+doc_branch = "v1.5.0"
 godot_cpp_ref = "godot-4.4-stable"
 
 # Code that generates version header
