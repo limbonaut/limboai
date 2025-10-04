@@ -346,7 +346,7 @@ jobs:
           cp {README,LICENSE,LOGO_LICENSE}.md out/addons/limboai/
           cp -R demo/demo/ out/demo/
           cp demo/LICENSE_ASSETS.md out/demo/
-          rm -f out/addons/limboai/bin/*.{exp,lib,pdb}
+          rm -f out/addons/limboai/bin/*.{exp,lib,pdb,a}
           echo "${LIMBOAI_VERSION}" > out/addons/limboai/version.txt
           echo "---"
           ls -R out/

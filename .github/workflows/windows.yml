@@ -276,8 +276,9 @@ jobs:
         env:
           OUTDIR: ${{ startsWith(matrix.opts.target, 'template') && 'out/templates' || 'out/' }}
         run: |
-          rm -f bin/*.{exp,lib,pdb}
+          rm -f bin/*.{exp,lib,pdb,a}
           mkdir -p ${{env.OUTDIR}}
+          rm -rf bin/obj/
           mv bin/* ${{env.OUTDIR}}
           ls -R out/
 

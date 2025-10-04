@@ -256,6 +256,7 @@ jobs:
           OUTDIR: ${{ startsWith(matrix.opts.target, 'template') && 'out/templates' || 'out/' }}
         run: |
           chmod +x ./bin/godot.*
+          rm -rf bin/obj/
           mkdir -p ${{env.OUTDIR}}
           mv bin/* ${{env.OUTDIR}}
           ls -R out/
