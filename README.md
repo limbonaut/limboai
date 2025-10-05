@@ -4,14 +4,18 @@
 
 # LimboAI - Behavior Trees & State Machines for Godot 4
 
+<!--
 [![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
+-->
 [![🔎 Unit Tests](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
 [![Documentation Status](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
 [![GitHub License](https://img.shields.io/github/license/limbonaut/limboai)](https://github.com/limbonaut/limboai/blob/master/LICENSE.md)
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
->**🛈 Supported Godot Engine:**  **4.4** (v1.4.0+)  |  **4.3** (v1.2, v1.3)  |  **4.2** (v1.1)
+>**Supported Godot Engine:**  **4.4 - 4.5**
+> *(see below for older versions)*
+
 
 **LimboAI** is an open-source C++ plugin for **Godot Engine 4** providing a combination of
 **Behavior Trees** and **State Machines**, which can be used together to create complex AI behaviors.
@@ -30,13 +34,14 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 ![Charger from Demo](doc/images/demo_charger.gif)
 
->**🛈 Demo project** lives in the `demo` folder and is available separately in [**Releases**](https://github.com/limbonaut/limboai/releases).
+> [!NOTE]
+> **Demo project** lives in the `demo` folder, and is available separately in [**Releases**](https://github.com/limbonaut/limboai/releases).
 > Run `demo/scenes/showcase.tscn` to get started.
 > It also includes a tutorial that introduces behavior trees through illustrative examples.
 
 ### Videos
 
-> **🛈** YouTube videos produced by various creators
+> YouTube videos produced by various creators
 
 <a href="https://www.youtube.com/watch?v=cGqO7SVKqkM"><img src="https://img.youtube.com/vi/cGqO7SVKqkM/0.jpg" width=272></a>
 <a href="https://www.youtube.com/watch?v=E_FIy2dTkNc"><img src="https://img.youtube.com/vi/E_FIy2dTkNc/0.jpg" width=272></a>
@@ -44,7 +49,15 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 <a href="https://www.youtube.com/watch?v=vZHzMO90IwQ"><img src="https://img.youtube.com/vi/vZHzMO90IwQ/0.jpg" width=272></a>
 <a href="https://www.youtube.com/watch?v=gAk3xl5fBsM"><img src="https://img.youtube.com/vi/gAk3xl5fBsM/0.jpg" width=272></a>
 <a href="https://www.youtube.com/watch?v=aP0Aacdxmno"><img src="https://img.youtube.com/vi/aP0Aacdxmno/0.jpg" width=272></a>
-<!-- <a href="https://www.youtube.com/watch?v=NWaMArUg7mY"><img src="https://img.youtube.com/vi/NWaMArUg7mY/0.jpg" width=272></a> -->
+
+## Supported Godot versions
+
+| Plugin Version           | GDExtension/AssetLib   | Module    |
+|--------------------------|------------------------|-----------|
+| `1.5.x` releases         | Godot 4.4 or later     | Godot 4.5 |
+| `1.4.x` releases         | Godot 4.4 or later     | Godot 4.4 |
+| `1.2.0`-`1.3.x` releases | Godot 4.3 or later     | Godot 4.3 |
+| `1.1.x` releases         | Godot 4.2 or later     | Godot 4.2 |
 
 ## Features
 
@@ -73,7 +86,7 @@ Behavior Trees are powerful hierarchical structures used to model and control th
     - [Event-based](https://limboai.readthedocs.io/en/stable/hierarchical-state-machines/create-hsm.html#events-and-transitions): Transitions are associated with events and are triggered by the state machine when the relevant event is dispatched, allowing for better decoupling of transitions from state logic.
     - Combine state machines with behavior trees using `BTState` for advanced reactive AI.
     - Delegation Option: Using the vanilla `LimboState`, [delegate the implementation](https://limboai.readthedocs.io/en/stable/hierarchical-state-machines/create-hsm.html#single-file-state-machine-setup) to your callback functions, making it perfect for rapid prototyping and game jams.
-    - 🛈 Note: State machine setup and initialization require code; there is no GUI editor.
+    - Note: State machine setup and initialization require code; there is no GUI editor.
 
 - **Tested:** Behavior tree tasks and HSM are covered by unit tests.
 
