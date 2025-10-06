@@ -89,7 +89,6 @@ LimboState *LimboParallelState::get_leaf_state() const {
 	return const_cast<LimboParallelState *>(this);
 }
 
-
 bool LimboParallelState::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event == StringName(), false);
 
