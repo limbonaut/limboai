@@ -289,7 +289,7 @@ void BlackboardPlan::set_base_plan(const Ref<BlackboardPlan> &p_base) {
 }
 
 void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_provider_callable) {
-	parent_scope_plan_providers.push(p_provider_callable);
+	parent_scope_plan_provider = p_provider_callable;
 	notify_property_list_changed();
 }
 
