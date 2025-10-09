@@ -14,7 +14,6 @@
 
 #include "bb_variable.h"
 #include "blackboard.h"
-#include "callable_fallback_chain.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/io/resource.h"
@@ -41,10 +40,8 @@ private:
 	// Mapping between variables in this plan and their parent scope names.
 	// Used for linking variables to their parent scope counterparts upon Blackboard creation/population.
 	HashMap<StringName, StringName> parent_scope_mapping;
-	// A chain of callables that return parent scope plans (Ref<BlackboardPlan>).
-	// If a callable is not valid, the next one in the chain is tried.
-	// When at least one callable in a chain is valid, it enables variable mapping in the inspector.
-	CallableFallbackChain parent_scope_plan_providers;
+	// Fetcher function for the parent scope plan. Function should return a Ref<BlackboardPlan>.
+	Callable parent_scope_plan_provider;
 
 	// Bindings to properties in the scene to which this plan belongs.
 	HashMap<StringName, NodePath> property_bindings;
@@ -74,9 +71,8 @@ public:
 	Ref<BlackboardPlan> get_base_plan() const { return base; }
 
 	void set_parent_scope_plan_provider(const Callable &p_parent_scope_plan_provider);
-	Callable get_parent_scope_plan_provider() const { return parent_scope_plan_providers.get_most_recent_valid(); }
+	Callable get_parent_scope_plan_provider() const { return parent_scope_plan_provider; }
 
-	bool is_mapping_enabled() const;
 	bool has_mapping(const StringName &p_name) const;
 
 	bool has_property_binding(const StringName &p_name) const { return property_bindings.has(p_name); }
