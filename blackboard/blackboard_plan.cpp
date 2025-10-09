@@ -227,19 +227,17 @@ void BlackboardPlan::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 
 	// * Mapping
-	if (is_mapping_enabled()) {
-		p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
-		for (const Pair<StringName, BBVariable> &p : var_list) {
-			if (_is_var_private(p.first, p.second)) {
-				continue;
-			}
-			if (unlikely(has_property_binding(p.first))) {
-				p_list->push_back(PropertyInfo(Variant::STRING, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
-			} else {
-				// Serialize only non-empty mappings.
-				PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
-				p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
-			}
+	p_list->push_back(PropertyInfo(Variant::NIL, "Mapping", PROPERTY_HINT_NONE, "mapping/", PROPERTY_USAGE_GROUP));
+	for (const Pair<StringName, BBVariable> &p : var_list) {
+		if (_is_var_private(p.first, p.second)) {
+			continue;
+		}
+		if (unlikely(has_property_binding(p.first))) {
+			p_list->push_back(PropertyInfo(Variant::STRING, "mapping/" + p.first, PROPERTY_HINT_NONE, "", PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+		} else {
+			// Serialize only non-empty mappings.
+			PropertyUsageFlags usage = has_mapping(p.first) ? PROPERTY_USAGE_DEFAULT : PROPERTY_USAGE_EDITOR;
+			p_list->push_back(PropertyInfo(Variant::STRING_NAME, "mapping/" + p.first, PROPERTY_HINT_NONE, "", usage));
 		}
 	}
 
@@ -295,14 +293,10 @@ void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_provider_c
 	notify_property_list_changed();
 }
 
-bool BlackboardPlan::is_mapping_enabled() const {
-	const Callable &provider = parent_scope_plan_providers.get_most_recent_valid();
-	Ref<BlackboardPlan> parent_scope = provider.call();
-	return parent_scope.is_valid();
-}
-
 bool BlackboardPlan::has_mapping(const StringName &p_name) const {
-	return is_mapping_enabled() && parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
+	// During export/runtime, a parent provider may not be set,
+	// but we still need to persist and use stored mappings
+	return parent_scope_mapping.has(p_name) && parent_scope_mapping[p_name] != StringName();
 }
 
 void BlackboardPlan::set_property_binding(const StringName &p_name, const NodePath &p_path) {
