@@ -150,6 +150,34 @@ This allows you to combine the power of behavior trees with the structure and co
 Behavior trees are excellent for defining complex, hierarchical behaviors,
 while state machines are great for managing the flow and transitions between different behaviors.
 
+Once the :ref:`LimboHSM<class_LimboHSM>` has been created, a :ref:`BTState<class_BTState>` can be created for a given :ref:`LimboHSM<class_BehaviorTree>`:
+
+.. code:: gdscript
+
+    extends CharacterBody2D
+
+    var hsm: LimboHSM
+
+    @export var behavior_tree: BehaviorTree
+
+
+    func _ready():
+        hsm = LimboHSM.new()
+        add_child(hsm)
+
+        var bt_state := BTState().new()
+        bt_state.named("Supplied BT")
+
+        # Set the behavior tree, or use a load("res://ai/trees/...") call
+        bt_state.behavior_tree = behavior_tree
+        bt_state.set_scene_root_hint(self)
+
+        hsm.add_child(bt_state)
+        hsm.initial_state = bt_state
+
+        hsm.initialize(self)
+        hsm.set_active(true)
+
 
 Single-file state machine setup
 -------------------------------
