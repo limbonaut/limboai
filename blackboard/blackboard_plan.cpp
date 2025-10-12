@@ -296,8 +296,19 @@ void BlackboardPlan::set_parent_scope_plan_provider(const Callable &p_provider_c
 }
 
 bool BlackboardPlan::is_mapping_enabled() const {
+	if (!parent_scope_mapping.is_empty()) {
+		// Ensure serialization doesn't break if scope provider is unavailable;
+		// otherwise, we risk data loss.
+		return true;
+	}
+
 	const Callable &provider = parent_scope_plan_providers.get_most_recent_valid();
 	Ref<BlackboardPlan> parent_scope = provider.call();
+
+	// The Mapping section in the Inspector is displayed only when a valid parent scope exists.
+	// A parent scope provider must be configured on the blackboard plan at editor-time
+	// for the Mapping functionality to be available.
+	// This is typically done in a `plan` property setter.
 	return parent_scope.is_valid();
 }
 
