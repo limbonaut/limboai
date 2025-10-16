@@ -25,7 +25,24 @@ Returns the status of the subtree's execution.
 
 Subtree blackboard variables can be mapped to the main tree blackboard plan variables. Check out mapping section in the inspector.
 
-Note: BTSubTree is designed as a simpler loader, and does not support updating :ref:`subtree<class_BTSubtree_property_subtree>` at runtime. A custom subtree decorator is better suited and `somewhat trivial <https://github.com/limbonaut/limboai/issues/94#issuecomment-2068833610>`__ to implement.
+Note: BTSubTree is designed as a simpler loader, and does not support updating :ref:`subtree<class_BTSubtree_property_subtree>` at runtime. A custom subtree decorator is better suited:
+
+.. code:: gdscript
+
+   extends BTDecorator
+   ## MyCustomBranch
+   
+   func _setup() -> void:
+       var bt: BehaviorTree = load("res://...")
+       var my_branch: BTTask = bt.get_root_task().clone()
+       my_branch.initialize(agent, blackboard)
+       add_child(my_branch)
+   
+   func _tick(delta) -> Status:
+       var child: BTTask = get_child(0)
+       return child.execute(delta)
+
+This allows for the :ref:`BehaviorTree<class_BTDecorator>` to load a specific behavior tree from a variable in the blackboard, or from some other location, and use that new behavior tree at runtime.
 
 .. rst-class:: classref-reftable-group
 
