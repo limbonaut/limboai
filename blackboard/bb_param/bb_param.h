@@ -61,7 +61,7 @@ public:
 	StringName get_variable() const { return variable; }
 
 #ifdef LIMBOAI_MODULE
-	virtual String to_string() override;
+	virtual String _to_string() override;
 #elif LIMBOAI_GDEXTENSION
 	virtual String _to_string();
 #endif
