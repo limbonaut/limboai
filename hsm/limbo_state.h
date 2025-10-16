@@ -29,6 +29,7 @@
 #endif // LIMBOAI_GDEXTENSION
 
 class LimboHSM;
+class LimboParallelState;
 
 class LimboState : public Node {
 	GDCLASS(LimboState, Node);
@@ -46,6 +47,7 @@ private:
 
 protected:
 	friend LimboHSM;
+	friend LimboParallelState;
 
 	static void _bind_methods();
 
