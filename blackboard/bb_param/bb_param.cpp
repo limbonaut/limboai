@@ -44,7 +44,7 @@ void BBParam::set_variable(const StringName &p_variable) {
 }
 
 #ifdef LIMBOAI_MODULE
-String BBParam::to_string() {
+String BBParam::_to_string() {
 #elif LIMBOAI_GDEXTENSION
 String BBParam::_to_string() {
 #endif
