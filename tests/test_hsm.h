@@ -21,6 +21,7 @@
 #include "core/object/ref_counted.h"
 #include "core/os/memory.h"
 #include "core/variant/variant.h"
+#include "scene/main/scene_tree.h"
 
 namespace TestHSM {
 
@@ -38,6 +39,30 @@ void _on_enter_set_initial_state(LimboHSM *p_state, LimboState *p_initial) {
 	p_state->set_initial_state(p_initial);
 }
 
+// Helper function to simulate scene tree idle process notifications
+// Recursively sends NOTIFICATION_PROCESS to nodes that have process mode enabled
+void _simulate_scene_tree_idle_process(Node *p_node) {
+	if (p_node->is_processing()) {
+		p_node->notification(Node::NOTIFICATION_PROCESS);
+	}
+	for (int i = 0; i < p_node->get_child_count(); i++) {
+		Node *child = p_node->get_child(i);
+		_simulate_scene_tree_idle_process(child);
+	}
+}
+
+// Helper function to simulate scene tree physics process notifications
+// Recursively sends NOTIFICATION_PHYSICS_PROCESS to nodes that have physics process mode enabled
+void _simulate_scene_tree_physics_process(Node *p_node) {
+	if (p_node->is_physics_processing()) {
+		p_node->notification(Node::NOTIFICATION_PHYSICS_PROCESS);
+	}
+	for (int i = 0; i < p_node->get_child_count(); i++) {
+		Node *child = p_node->get_child(i);
+		_simulate_scene_tree_physics_process(child);
+	}
+}
+
 class TestGuard : public RefCounted {
 	GDCLASS(TestGuard, RefCounted);
 
@@ -47,9 +72,9 @@ public:
 };
 
 TEST_CASE("[Modules][LimboAI] HSM") {
-	Node *agent = memnew(Node);
-	LimboHSM *hsm = memnew(LimboHSM);
-
+	Ref<CallbackCounter> hsm_entries = memnew(CallbackCounter);
+	Ref<CallbackCounter> hsm_exits = memnew(CallbackCounter);
+	Ref<CallbackCounter> hsm_updates = memnew(CallbackCounter);
 	Ref<CallbackCounter> alpha_entries = memnew(CallbackCounter);
 	Ref<CallbackCounter> alpha_exits = memnew(CallbackCounter);
 	Ref<CallbackCounter> alpha_updates = memnew(CallbackCounter);
@@ -65,6 +90,11 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 	Ref<CallbackCounter> delta_entries = memnew(CallbackCounter);
 	Ref<CallbackCounter> delta_exits = memnew(CallbackCounter);
 	Ref<CallbackCounter> delta_updates = memnew(CallbackCounter);
+
+	Node *agent = memnew(Node);
+	LimboHSM *hsm = memnew(LimboHSM);
+	wire_callbacks(hsm, hsm_entries, hsm_updates, hsm_exits);
+	agent->add_child(hsm);
 
 	LimboState *state_alpha = memnew(LimboState);
 	wire_callbacks(state_alpha, alpha_entries, alpha_updates, alpha_exits);
@@ -367,9 +397,65 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK(hsm->event_finished() != state_gamma->event_finished());
 		CHECK(hsm->event_finished() != state_delta->event_finished());
 	}
+	SUBCASE("Test multi-level nested HSM state update is called only once on automatic update") {
+		// This test verifies that in a multi-level nested HSM structure, each state's update
+		// method is called exactly once per process frame, preventing duplicate updates.
+
+		hsm->set_update_mode(LimboHSM::UpdateMode::PHYSICS);
+
+		hsm->dispatch("goto_nested");
+		REQUIRE(hsm->get_active_state() == nested_hsm);
+		REQUIRE(nested_hsm->get_active_state() == state_gamma); // Default initial state in nested HSM
+
+		// Verify initial state: no updates have been called yet
+		int baseline_hsm_updates = hsm_updates->num_callbacks;
+		int baseline_nested_updates = nested_updates->num_callbacks;
+		int baseline_gamma_updates = gamma_updates->num_callbacks;
+
+		CHECK(baseline_hsm_updates == 0);
+		CHECK(baseline_nested_updates == 0);
+		CHECK(baseline_gamma_updates == 0);
+
+		// Test 1: Physics process should trigger updates in PHYSICS mode
+		_simulate_scene_tree_physics_process(hsm);
+		CHECK(hsm_updates->num_callbacks == baseline_hsm_updates + 1); // Root HSM updated once
+		CHECK(nested_updates->num_callbacks == baseline_nested_updates + 1); // Nested HSM updated once
+		CHECK(gamma_updates->num_callbacks == baseline_gamma_updates + 1); // Active leaf state updated once
+
+		// Test 2: Idle process should NOT trigger updates in PHYSICS mode
+		_simulate_scene_tree_idle_process(hsm);
+		CHECK(hsm_updates->num_callbacks == baseline_hsm_updates + 1); // No additional updates
+		CHECK(nested_updates->num_callbacks == baseline_nested_updates + 1); // No additional updates
+		CHECK(gamma_updates->num_callbacks == baseline_gamma_updates + 1); // No additional updates
+
+		// Test 3: Verify consistent single-update behavior on subsequent physics frames
+		int before_second_frame_hsm = hsm_updates->num_callbacks;
+		int before_second_frame_nested = nested_updates->num_callbacks;
+		int before_second_frame_gamma = gamma_updates->num_callbacks;
+
+		_simulate_scene_tree_physics_process(hsm);
+
+		CHECK(hsm_updates->num_callbacks == before_second_frame_hsm + 1); // Root HSM updated once more
+		CHECK(nested_updates->num_callbacks == before_second_frame_nested + 1); // Nested HSM updated once more
+		CHECK(gamma_updates->num_callbacks == before_second_frame_gamma + 1); // Gamma state updated once more
+
+		// Test 4: Verify behavior after state transition within nested HSM
+		state_gamma->dispatch("goto_delta");
+		REQUIRE(nested_hsm->get_active_state() == state_delta);
+
+		int before_transition_frame_nested = nested_updates->num_callbacks;
+		int before_transition_frame_gamma = gamma_updates->num_callbacks;
+		int before_transition_frame_delta = delta_updates->num_callbacks;
+
+		_simulate_scene_tree_physics_process(hsm);
+
+		// After transition: only the new active state (delta) and its parents should update
+		CHECK(nested_updates->num_callbacks == before_transition_frame_nested + 1); // Nested HSM continues to update
+		CHECK(delta_updates->num_callbacks == before_transition_frame_delta + 1); // New active state updates
+		CHECK(gamma_updates->num_callbacks == before_transition_frame_gamma); // Old inactive state no longer updates
+	}
 
 	memdelete(agent);
-	memdelete(hsm);
 }
 
 } //namespace TestHSM
