@@ -17,7 +17,7 @@
 #ifdef LIMBOAI_MODULE
 #include "editor/editor_data.h"
 #include "editor/editor_interface.h"
-#include "servers/display_server.h"
+#include "servers/display/display_server.h"
 #endif
 
 #ifdef LIMBOAI_GDEXTENSION
