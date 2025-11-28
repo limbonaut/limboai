@@ -77,14 +77,13 @@ Control *TaskButton::_do_make_tooltip() const {
 	if (desc.is_empty()) {
 		desc = "[i]" + TTR("No description.") + "[/i]";
 	}
-	EditorHelpBitTooltip::show_tooltip(const_cast<TaskButton *>(this), help_symbol, desc);
+	return EditorHelpBitTooltip::make_tooltip(const_cast<TaskButton *>(this), help_symbol, desc);
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 	// TODO: When we figure out how to retrieve documentation in GDEXTENSION, should add a tooltip control here.
+	return memnew(Control); // Make the standard tooltip invisible
 #endif // LIMBOAI_GDEXTENSION
-
-	return memnew(Control); // Make the standard tooltip invisible.
 }
 
 #ifdef LIMBOAI_MODULE
