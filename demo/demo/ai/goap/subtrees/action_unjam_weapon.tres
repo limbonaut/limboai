@@ -1,0 +1,11 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_unjam_weapon.gd" id="1_unjam"]
+
+[sub_resource type="BTAction" id="BTAction_unjam"]
+script = ExtResource("1_unjam")
+unjam_time = 0.8
+
+[resource]
+description = "GOAP Action: Unjam weapon"
+root_task = SubResource("BTAction_unjam")

@@ -11,7 +11,8 @@ preconditions = {
 "target_in_sight": true,
 "target_visible": true,
 "under_threat": false,
-"in_cover": false
+"in_cover": false,
+"weapon_jammed": false
 }
 effects = {
 "target_dead": true

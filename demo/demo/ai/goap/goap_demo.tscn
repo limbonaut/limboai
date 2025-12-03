@@ -248,9 +248,47 @@ text = "Loading..."
 [node name="Separator3" type="HSeparator" parent="UI/Panel/VBox"]
 layout_mode = 2
 
+[node name="Separator4" type="HSeparator" parent="UI/Panel/VBox"]
+layout_mode = 2
+
+[node name="ScarcityToggle" type="CheckButton" parent="UI/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Scarcity Mode"
+
 [node name="RestartButton" type="Button" parent="UI/Panel/VBox"]
 layout_mode = 2
 theme_override_fonts/font = ExtResource("10_font")
 text = "Restart Demo"
 
+[node name="PlanChainPanel" type="PanelContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 10.0
+offset_right = -10.0
+offset_bottom = 400.0
+grow_horizontal = 0
+
+[node name="VBox" type="VBoxContainer" parent="UI/PlanChainPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="UI/PlanChainPanel/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 16
+text = "Current Plan"
+
+[node name="PlanChainLabel" type="RichTextLabel" parent="UI/PlanChainPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+custom_minimum_size = Vector2(290, 300)
+bbcode_enabled = true
+text = "Plan: Loading..."
+fit_content = true
+scroll_active = false
+
 [connection signal="pressed" from="UI/Panel/VBox/RestartButton" to="." method="_on_restart_pressed"]
+[connection signal="toggled" from="UI/Panel/VBox/ScarcityToggle" to="." method="_on_scarcity_toggled"]

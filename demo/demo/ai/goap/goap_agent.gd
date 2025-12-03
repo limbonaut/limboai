@@ -40,7 +40,11 @@ var max_ammo := 10
 var health := 100
 var max_health := 100
 var in_cover := false
+var weapon_jammed := false
 var _current_goal_type: String = "kill"  # "kill", "avoid", or "health"
+
+# Weapon jam chance (15% by default)
+@export var jam_chance := 0.15
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var root: Node2D = $Root
@@ -62,8 +66,8 @@ func _ready() -> void:
 	# Connect to enemy attack signal for immediate threat response
 	if target and target.has_signal("attack_started"):
 		target.attack_started.connect(_on_threat_detected)
-	# Initial sync
-	call_deferred("_initial_sync")
+	# Initial sync - must run before first _physics_process
+	_initial_sync()
 
 
 func _initial_sync() -> void:
@@ -74,6 +78,8 @@ func _initial_sync() -> void:
 		bb.set_var(&"enemy_attacking", false)
 		bb.set_var(&"in_cover", false)
 		bb.set_var(&"near_cover", false)
+		bb.set_var(&"weapon_jammed", false)
+		bb.set_var(&"low_health", false)
 	_update_blackboard()
 	health_changed.emit(health, max_health)
 	ammo_changed.emit(ammo_count)
@@ -185,6 +191,7 @@ func _update_blackboard() -> void:
 	bb.set_var(&"target_dead", target_dead)
 	bb.set_var(&"enemy_attacking", enemy_attacking)
 	bb.set_var(&"under_threat", under_threat)
+	bb.set_var(&"weapon_jammed", weapon_jammed)
 	bb.set_var(&"target", target)
 	bb.set_var(&"weapon_pickup", weapon_pickup)
 	bb.set_var(&"ammo_pickup", ammo_pickup)
@@ -202,12 +209,28 @@ func _update_blackboard() -> void:
 
 # Combat methods
 func use_ammo() -> bool:
+	# Can't use ammo if weapon is jammed
+	if weapon_jammed:
+		print("GOAP: Can't fire - weapon jammed!")
+		return false
+
 	if ammo_count > 0:
+		# Check for random jam
+		if randf() < jam_chance:
+			weapon_jammed = true
+			print("GOAP: WEAPON JAMMED! Need to unjam before firing.")
+			return false
+
 		ammo_count -= 1
 		ammo_changed.emit(ammo_count)
 		print("GOAP: Used ammo, remaining: %d" % ammo_count)
 		return true
 	return false
+
+
+func unjam_weapon() -> void:
+	weapon_jammed = false
+	print("GOAP: Weapon unjammed!")
 
 
 func add_ammo(amount: int) -> void:

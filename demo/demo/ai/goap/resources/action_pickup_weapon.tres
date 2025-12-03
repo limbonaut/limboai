@@ -6,10 +6,9 @@
 action_name = "PickUpWeapon"
 base_cost = 1
 preconditions = {
-"near_weapon_pickup": true
+"weapon_available": true
 }
 effects = {
-"has_weapon": true,
-"near_weapon_pickup": false
+"has_weapon": true
 }
 execution_tree = ExtResource("1_tree")

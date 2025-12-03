@@ -11,6 +11,8 @@ preconditions = {
 "under_threat": false
 }
 effects = {
-"target_in_range": true
+"target_in_range": true,
+"target_in_sight": true,
+"target_visible": true
 }
 execution_tree = ExtResource("1_tree")
