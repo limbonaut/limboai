@@ -28,6 +28,12 @@ func _tick(delta: float) -> Status:
 	if not is_instance_valid(target_node):
 		return FAILURE
 
+	# Can't shoot while in cover - abort the action
+	var is_in_cover: bool = blackboard.get_var(&"in_cover", false)
+	if is_in_cover:
+		print("GOAP: Can't shoot while in cover!")
+		return FAILURE
+
 	# Wait for cooldown
 	if _cooldown_timer > 0.0:
 		_cooldown_timer -= delta

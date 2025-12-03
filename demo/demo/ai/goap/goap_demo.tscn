@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://goap_demo_scene"]
+[gd_scene load_steps=20 format=3 uid="uid://goap_demo_scene"]
 
 [ext_resource type="Script" path="res://demo/ai/goap/goap_demo.gd" id="1_demo"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="goal_kill"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://demo/ai/goap/pickup.gd" id="9_pickup"]
 [ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="10_font"]
 [ext_resource type="PackedScene" uid="uid://cover_object_scene" path="res://demo/ai/goap/cover_object.tscn" id="11_cover"]
+[ext_resource type="Texture2D" uid="uid://brbchk46y81x4" path="res://demo/assets/fireball.png" id="12_fireball"]
 
 [sub_resource type="Animation" id="Animation_idle"]
 resource_name = "idle"
@@ -74,6 +75,7 @@ position = Vector2(1100, 400)
 position = Vector2(400, 200)
 script = ExtResource("9_pickup")
 pickup_type = "weapon"
+respawn_time = 0.0
 
 [node name="Sprite2D" type="Sprite2D" parent="WeaponPickup"]
 scale = Vector2(2, 2)
@@ -123,9 +125,11 @@ avoid_node_path = NodePath("../CoverObject")
 avoid_distance = 250.0
 
 [node name="Sprite2D" type="Sprite2D" parent="HealthPickup"]
-modulate = Color(0.2, 1.0, 0.3, 1)
-scale = Vector2(1.5, 1.5)
-texture = ExtResource("5_shadow")
+modulate = Color(0.3, 1.0, 0.4, 1)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("12_fireball")
+hframes = 3
+frame = 1
 
 [node name="Label" type="Label" parent="HealthPickup"]
 offset_left = -40.0
