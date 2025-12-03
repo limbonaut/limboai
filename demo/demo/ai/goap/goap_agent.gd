@@ -40,7 +40,7 @@ var max_ammo := 10
 var health := 100
 var max_health := 100
 var in_cover := false
-var _current_goal_type: String = "kill"  # "kill" or "avoid"
+var _current_goal_type: String = "kill"  # "kill", "avoid", or "health"
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var root: Node2D = $Root
