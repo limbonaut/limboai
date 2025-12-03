@@ -73,9 +73,12 @@ colors = PackedColorArray(1, 0.2, 0.2, 0.8, 1, 0.2, 0.2, 0)
 
 [node name="GOAPEnemy" type="CharacterBody2D" groups=["player"]]
 script = ExtResource("1_enemy")
-attack_interval = 10.0
-telegraph_duration = 2.5
+attack_interval = 8.0
+telegraph_duration = 3.5
 attack_damage = 25
+min_telegraph = 1.2
+max_telegraph = 3.5
+pierce_chance = 0.25
 
 [node name="Root" type="Node2D" parent="."]
 

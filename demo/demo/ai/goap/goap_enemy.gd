@@ -7,14 +7,20 @@ signal attack_fired    # Emitted when actual attack happens
 signal attack_ended    # Emitted when attack cycle ends
 
 @export var attack_interval := 8.0  # Seconds between attacks
-@export var telegraph_duration := 2.5  # Warning time before attack
-@export var attack_damage := 25
+@export var telegraph_duration := 3.5  # Warning time before attack (increased for AI reaction time)
+@export var pierce_damage := 50  # Damage when target NOT in cover
+@export var pierce_cover_damage := 25  # Damage when target IS in cover
+
+# Variable telegraph settings - creates natural damage opportunities
+@export var min_telegraph := 1.2  # Sometimes too fast to reach cover
+@export var max_telegraph := 3.5  # Easy to reach cover
 
 var is_telegraphing := false
 var is_attacking := false
 var attack_timer := 0.0
 var telegraph_timer := 0.0
 var target_agent: Node2D = null
+var current_telegraph_duration := 3.5  # Actual duration for current attack
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var root: Node2D = $Root
@@ -40,14 +46,21 @@ func _process(delta: float) -> void:
 
 func _start_telegraph() -> void:
 	is_telegraphing = true
-	telegraph_timer = telegraph_duration
 
-	# Show visual warning
+	# Randomize telegraph duration for this attack
+	current_telegraph_duration = randf_range(min_telegraph, max_telegraph)
+	telegraph_timer = current_telegraph_duration
+
+	# Show visual warning - all attacks are pierce attacks now
 	if telegraph_indicator:
 		telegraph_indicator.visible = true
 		_animate_telegraph()
+		var label = telegraph_indicator.get_node_or_null("Label")
+		if label:
+			label.text = "! PIERCE !"
+			label.modulate = Color(1.0, 0.5, 0.0)  # Orange for pierce
 
-	print("ENEMY: Preparing to attack! (%.1fs warning)" % telegraph_duration)
+	print("ENEMY: Preparing PIERCE attack! (%.1fs warning)" % current_telegraph_duration)
 	attack_started.emit()
 
 
@@ -66,19 +79,24 @@ func _fire_attack() -> void:
 	if telegraph_indicator:
 		telegraph_indicator.visible = false
 
-	print("ENEMY: Firing attack!")
+	print("ENEMY: Firing PIERCE attack!")
 	attack_fired.emit()
 
-	# Deal damage to target if not in cover
+	# All attacks are pierce attacks - deal variable damage based on cover
 	if target_agent and is_instance_valid(target_agent):
-		if target_agent.has_method("is_in_cover") and target_agent.is_in_cover():
-			print("ENEMY: Target is in cover - attack blocked!")
+		var target_in_cover := false
+		if target_agent.has_method("is_in_cover"):
+			target_in_cover = target_agent.is_in_cover()
 		elif target_agent.get("in_cover") == true:
-			print("ENEMY: Target is in cover - attack blocked!")
-		else:
-			if target_agent.has_method("take_damage"):
-				target_agent.take_damage(attack_damage)
-				print("ENEMY: Hit target for %d damage!" % attack_damage)
+			target_in_cover = true
+
+		if target_agent.has_method("take_damage"):
+			var damage := pierce_cover_damage if target_in_cover else pierce_damage
+			target_agent.take_damage(damage)
+			if target_in_cover:
+				print("ENEMY: Target in cover - reduced damage! Hit for %d damage!" % damage)
+			else:
+				print("ENEMY: Hit target for %d damage!" % damage)
 
 	# Reset attack cycle
 	attack_timer = attack_interval

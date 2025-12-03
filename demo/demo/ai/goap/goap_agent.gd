@@ -19,6 +19,11 @@ const COVER_RANGE := 100.0  # Distance to be considered "at cover"
 @export_node_path("Node2D") var health_pickup_path: NodePath
 @export_node_path("Node2D") var cover_object_path: NodePath
 
+# GOAP Goals for dynamic switching
+@export var goal_kill_target: Resource  # GOAPGoal
+@export var goal_avoid_damage: Resource  # GOAPGoal
+@export var goal_regain_health: Resource  # GOAPGoal
+
 var target: Node2D
 var weapon_pickup: Node2D
 var ammo_pickup: Node2D
@@ -35,6 +40,7 @@ var max_ammo := 10
 var health := 100
 var max_health := 100
 var in_cover := false
+var _current_goal_type: String = "kill"  # "kill" or "avoid"
 
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var root: Node2D = $Root
@@ -53,6 +59,9 @@ func _ready() -> void:
 		health_pickup = get_node(health_pickup_path) as Node2D
 	if not cover_object_path.is_empty():
 		cover_object = get_node(cover_object_path) as Node2D
+	# Connect to enemy attack signal for immediate threat response
+	if target and target.has_signal("attack_started"):
+		target.attack_started.connect(_on_threat_detected)
 	# Initial sync
 	call_deferred("_initial_sync")
 
@@ -150,6 +159,10 @@ func _update_blackboard() -> void:
 	# Being in cover protects from damage but the threat exists until attack fires
 	var under_threat := enemy_attacking
 
+	# Track state changes BEFORE updating blackboard (for goal switching)
+	var prev_under_threat = bb.get_var(&"under_threat", false)
+	var prev_low_health = bb.get_var(&"low_health", false)
+
 	# Sync to blackboard
 	bb.set_var(&"has_weapon", has_weapon)
 	bb.set_var(&"has_ammo", has_ammo)
@@ -170,11 +183,6 @@ func _update_blackboard() -> void:
 	bb.set_var(&"ammo_available", ammo_available)
 	bb.set_var(&"health_available", health_available)
 	bb.set_var(&"target_dead", target_dead)
-	# Track state changes for debugging
-	var prev_under_threat = bb.get_var(&"under_threat", false)
-	if under_threat != prev_under_threat:
-		print("GOAP STATE: under_threat changed from %s to %s" % [prev_under_threat, under_threat])
-
 	bb.set_var(&"enemy_attacking", enemy_attacking)
 	bb.set_var(&"under_threat", under_threat)
 	bb.set_var(&"target", target)
@@ -182,6 +190,14 @@ func _update_blackboard() -> void:
 	bb.set_var(&"ammo_pickup", ammo_pickup)
 	bb.set_var(&"health_pickup", health_pickup)
 	bb.set_var(&"cover_object", cover_object)
+
+	# Check for state changes and trigger goal re-evaluation
+	if under_threat != prev_under_threat:
+		print("GOAP STATE: under_threat changed from %s to %s" % [prev_under_threat, under_threat])
+	if low_health != prev_low_health:
+		print("GOAP STATE: low_health changed from %s to %s" % [prev_low_health, low_health])
+	if under_threat != prev_under_threat or low_health != prev_low_health:
+		_evaluate_goal(under_threat, low_health)
 
 
 # Combat methods
@@ -201,11 +217,22 @@ func add_ammo(amount: int) -> void:
 
 
 func take_damage(amount: int) -> void:
+	var was_low_health := health < 50
 	health = maxi(0, health - amount)
 	health_changed.emit(health, max_health)
 	print("GOAP: Took %d damage, health: %d" % [amount, health])
 	if health <= 0:
 		print("GOAP: Agent died!")
+	# Check if we just became low health - trigger goal evaluation
+	var is_low_health := health < 50
+	if is_low_health and not was_low_health:
+		# Get current threat state from blackboard
+		var bb := bt_player.get_blackboard()
+		var is_threatened := false
+		if bb:
+			is_threatened = bb.get_var(&"under_threat", false)
+		print("GOAP STATE: low_health changed from false to true (via damage, under_threat=%s)" % is_threatened)
+		_evaluate_goal(is_threatened, true)
 
 
 func heal(amount: int) -> void:
@@ -267,3 +294,70 @@ func get_cover_position() -> Vector2:
 
 	# Fallback: just use cover object position
 	return cover_object.global_position
+
+
+## Called when enemy starts attacking - triggers immediate replan for cover-seeking
+func _on_threat_detected() -> void:
+	print("GOAP: Threat detected! Goal switching handled by _update_blackboard.")
+
+
+## Evaluates which goal should be active based on current state
+## Priority: AvoidDamage (under threat) > RegainHealth (low health) > KillTarget (default)
+func _evaluate_goal(is_threatened: bool, is_low_health: bool) -> void:
+	if not bt_player:
+		return
+
+	var bt_instance = bt_player.get_bt_instance()
+	if not bt_instance:
+		return
+
+	var root_task = bt_instance.get_root_task()
+	if not root_task:
+		return
+
+	# Find the BTRunGOAPPlan task
+	var goap_task = _find_goap_task(root_task)
+	if not goap_task:
+		return
+
+	# Determine desired goal based on priority
+	var new_goal_type: String
+	var new_goal: Resource
+	if is_threatened:
+		new_goal_type = "avoid"
+		new_goal = goal_avoid_damage
+	elif is_low_health:
+		new_goal_type = "health"
+		new_goal = goal_regain_health
+	else:
+		new_goal_type = "kill"
+		new_goal = goal_kill_target
+
+	if new_goal_type == _current_goal_type:
+		return  # No change needed
+
+	if not new_goal:
+		push_warning("GOAP: Goal resource not set for type: " + new_goal_type)
+		return
+
+	print("GOAP: Switching goal to %s" % new_goal.goal_name)
+	goap_task.set_goal(new_goal)
+	goap_task.interrupt()  # Force replan with new goal
+	_current_goal_type = new_goal_type
+
+
+## Recursively finds the BTRunGOAPPlan task in the behavior tree
+func _find_goap_task(task) -> Variant:
+	# Check if this task is BTRunGOAPPlan
+	if task.get_class() == "BTRunGOAPPlan":
+		return task
+
+	# Check children
+	var child_count = task.get_child_count()
+	for i in range(child_count):
+		var child = task.get_child(i)
+		var result = _find_goap_task(child)
+		if result:
+			return result
+
+	return null

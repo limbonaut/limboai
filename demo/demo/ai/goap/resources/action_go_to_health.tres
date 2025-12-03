@@ -4,8 +4,10 @@
 
 [resource]
 action_name = "GoToHealth"
-base_cost = 2
+base_cost = 1
 preconditions = {
+"health_available": true,
+"under_threat": false
 }
 effects = {
 "near_health_pickup": true

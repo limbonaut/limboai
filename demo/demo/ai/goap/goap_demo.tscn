@@ -1,6 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://goap_demo_scene"]
+[gd_scene load_steps=19 format=3 uid="uid://goap_demo_scene"]
 
 [ext_resource type="Script" path="res://demo/ai/goap/goap_demo.gd" id="1_demo"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="goal_kill"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_avoid_damage.tres" id="goal_avoid"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_regain_health.tres" id="goal_health"]
 [ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="2_arena"]
 [ext_resource type="PackedScene" path="res://demo/ai/goap/goap_enemy.tscn" id="3_enemy"]
 [ext_resource type="Texture2D" uid="uid://b0dphfqekxq16" path="res://demo/assets/agent_bobby.png" id="4_agent_tex"]
@@ -89,6 +92,11 @@ horizontal_alignment = 1
 position = Vector2(800, 550)
 script = ExtResource("9_pickup")
 pickup_type = "ammo"
+random_respawn = true
+respawn_area_min = Vector2(150, 150)
+respawn_area_max = Vector2(1200, 600)
+avoid_node_path = NodePath("../CoverObject")
+avoid_distance = 250.0
 
 [node name="Sprite2D" type="Sprite2D" parent="AmmoPickup"]
 modulate = Color(1, 0.8, 0.2, 1)
@@ -108,6 +116,11 @@ horizontal_alignment = 1
 position = Vector2(200, 550)
 script = ExtResource("9_pickup")
 pickup_type = "health"
+random_respawn = true
+respawn_area_min = Vector2(150, 150)
+respawn_area_max = Vector2(1200, 600)
+avoid_node_path = NodePath("../CoverObject")
+avoid_distance = 250.0
 
 [node name="Sprite2D" type="Sprite2D" parent="HealthPickup"]
 modulate = Color(0.2, 1.0, 0.3, 1)
@@ -134,6 +147,9 @@ weapon_pickup_path = NodePath("../WeaponPickup")
 ammo_pickup_path = NodePath("../AmmoPickup")
 health_pickup_path = NodePath("../HealthPickup")
 cover_object_path = NodePath("../CoverObject")
+goal_kill_target = ExtResource("goal_kill")
+goal_avoid_damage = ExtResource("goal_avoid")
+goal_regain_health = ExtResource("goal_health")
 
 [node name="Root" type="Node2D" parent="GOAPAgent"]
 
@@ -162,6 +178,26 @@ behavior_tree = ExtResource("7_tree")
 blackboard_plan = SubResource("BlackboardPlan_1")
 
 [node name="UI" type="CanvasLayer" parent="."]
+
+[node name="GoalDisplay" type="Label" parent="UI"]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 30.0
+offset_right = 300.0
+offset_bottom = 100.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0.6, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 48
+text = "Goal: KillTarget"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Panel" type="PanelContainer" parent="UI"]
 offset_right = 280.0

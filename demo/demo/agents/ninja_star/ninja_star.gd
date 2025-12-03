@@ -13,9 +13,15 @@ extends Node2D
 const SPEED := 800.0
 const DEAD_SPEED := 400.0
 
+## Direction vector for projectile movement (normalized)
+@export var direction: Vector2 = Vector2.RIGHT
+
+## Legacy float direction for backwards compatibility
 @export var dir: float = 1.0
 
 var _is_dead: bool = false
+var _spin_tween: Tween
+var _arc_tween: Tween
 
 @onready var ninja_star: Sprite2D = $Root/NinjaStar
 @onready var death: GPUParticles2D = $Death
@@ -24,30 +30,56 @@ var _is_dead: bool = false
 
 
 func _ready() -> void:
-	var tween := create_tween().set_loops()
-	tween.tween_property(ninja_star, ^"rotation", TAU * signf(dir), 1.0).as_relative()
+	add_to_group("projectiles")
 
-	var tween2 := create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween2.tween_property(ninja_star, "position:y", -10.0, 0.5).as_relative().set_ease(Tween.EASE_OUT)
-	tween2.tween_property(ninja_star, "position:y", 0.0, 1.0)
-	tween2.tween_callback(_die)
+	# If direction wasn't set but dir was, use legacy horizontal movement
+	if direction == Vector2.RIGHT and dir != 1.0:
+		direction = Vector2.RIGHT * dir
+
+	_spin_tween = create_tween().set_loops()
+	_spin_tween.tween_property(ninja_star, ^"rotation", TAU * signf(direction.x), 1.0).as_relative()
+
+	# Rotate the sprite to face the movement direction
+	root.rotation = direction.angle()
+
+	_arc_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_arc_tween.tween_property(ninja_star, "position:y", -10.0, 0.5).as_relative().set_ease(Tween.EASE_OUT)
+	_arc_tween.tween_property(ninja_star, "position:y", 0.0, 1.0)
+	_arc_tween.tween_callback(_die)
 
 
 func _physics_process(delta: float) -> void:
 	var speed: float = SPEED if not _is_dead else DEAD_SPEED
-	position += Vector2.RIGHT * speed * dir * delta
+	position += direction * speed * delta
 
 
-func _die() -> void:
+func _die(skip_particles: bool = false) -> void:
 	if _is_dead:
 		return
 	_is_dead = true
+
+	# Kill tweens to prevent resource leaks
+	if _spin_tween and _spin_tween.is_valid():
+		_spin_tween.kill()
+	if _arc_tween and _arc_tween.is_valid():
+		_arc_tween.kill()
+
 	root.hide()
 	collision_shape_2d.set_deferred(&"disabled", true)
+	if skip_particles:
+		queue_free()
+		return
+
+	# Use timer instead of await to avoid coroutine accumulation
 	death.emitting = true
-	await death.finished
-	queue_free()
+	get_tree().create_timer(death.lifetime).timeout.connect(queue_free)
+	#await death.finished
+	#queue_free()
+
+
+func _on_screen_exited() -> void:
+	_die(true)  # Skip particles for off-screen cleanup
 
 
 func _on_hitbox_area_entered(_area: Area2D) -> void:
-	_die()
+	_die()  # Show particles on hit

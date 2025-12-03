@@ -19,8 +19,8 @@
 [sub_resource type="BTRunGOAPPlan" id="BTRunGOAPPlan_1"]
 goal = ExtResource("1_goal")
 available_actions = [ExtResource("2_go_weapon"), ExtResource("3_pickup"), ExtResource("4_go_ammo"), ExtResource("5_load"), ExtResource("6_approach"), ExtResource("7_shoot"), ExtResource("8_get_in_range"), ExtResource("9_melee"), ExtResource("10_go_cover"), ExtResource("11_take_cover"), ExtResource("12_leave_cover"), ExtResource("13_go_health"), ExtResource("14_heal"), ExtResource("15_wait_cover")]
-replan_cooldown = 0.2
-replan_debounce = 0.15
+replan_cooldown = 0.1
+replan_debounce = 0.05
 max_iterations = 300
 
 [resource]
