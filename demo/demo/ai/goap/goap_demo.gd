@@ -2,6 +2,9 @@
 ## Manages the GOAP demonstration scene with plan visualization
 extends Node2D
 
+const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
+const GOAPUtilsClass = preload("res://demo/ai/goap/goap_utils.gd")
+
 @onready var plan_label: Label = %PlanLabel
 @onready var goal_display: Label = %GoalDisplay
 @onready var plan_chain_label: RichTextLabel = %PlanChainLabel
@@ -88,38 +91,29 @@ func _update_plan_display() -> void:
 	lines.append("--- COMBAT ---")
 	lines.append("Health: %d/%d" % [goap_agent.health, goap_agent.max_health])
 	lines.append("Ammo: %d/%d" % [goap_agent.ammo_count, goap_agent.max_ammo])
-	lines.append("has_weapon: %s" % _bool_str(bb.get_var(&"has_weapon", false)))
-	lines.append("weapon_loaded: %s" % _bool_str(bb.get_var(&"weapon_loaded", false)))
+	lines.append("has_weapon: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"has_weapon", false)))
+	lines.append("weapon_loaded: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"weapon_loaded", false)))
 
 	# Tactical status
 	lines.append("")
 	lines.append("--- TACTICAL ---")
-	lines.append("in_cover: %s" % _bool_str(bb.get_var(&"in_cover", false)))
-	lines.append("under_threat: %s" % _bool_str(bb.get_var(&"under_threat", false)))
-	lines.append("low_health: %s" % _bool_str(bb.get_var(&"low_health", false)))
+	lines.append("in_cover: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"in_cover", false)))
+	lines.append("under_threat: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"under_threat", false)))
+	lines.append("low_health: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"low_health", false)))
 
 	# Proximity status
 	lines.append("")
 	lines.append("--- PROXIMITY ---")
-	lines.append("target_in_sight: %s" % _bool_str(bb.get_var(&"target_in_sight", false)))
-	lines.append("target_in_range: %s" % _bool_str(bb.get_var(&"target_in_range", false)))
-	lines.append("near_cover: %s" % _bool_str(bb.get_var(&"near_cover", false)))
-	lines.append("near_health: %s" % _bool_str(bb.get_var(&"near_health_pickup", false)))
+	lines.append("target_in_sight: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"target_in_sight", false)))
+	lines.append("target_in_range: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"target_in_range", false)))
+	lines.append("near_cover: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"near_cover", false)))
+	lines.append("near_health: %s" % GOAPUtilsClass.bool_str(bb.get_var(&"near_health_pickup", false)))
 
 	plan_label.text = "\n".join(lines)
 
 
 func _get_current_goal_name(bt_player: BTPlayer) -> String:
-	var bt_instance = bt_player.get_bt_instance()
-	if not bt_instance:
-		return "(no instance)"
-
-	var root_task = bt_instance.get_root_task()
-	if not root_task:
-		return "(no root task)"
-
-	# Find BTRunGOAPPlan task - it's likely a child of root
-	var goap_task = _find_goap_task(root_task)
+	var goap_task = GOAPUtilsClass.find_goap_task_from_player(bt_player)
 	if not goap_task:
 		return "(no GOAP task)"
 
@@ -131,26 +125,6 @@ func _get_current_goal_name(bt_player: BTPlayer) -> String:
 		return "(planning...)"
 
 	return "(unknown)"
-
-
-func _find_goap_task(task) -> Variant:
-	# Check if this task is BTRunGOAPPlan
-	if task.get_class() == "BTRunGOAPPlan":
-		return task
-
-	# Check children
-	var child_count = task.get_child_count()
-	for i in range(child_count):
-		var child = task.get_child(i)
-		var result = _find_goap_task(child)
-		if result:
-			return result
-
-	return null
-
-
-func _bool_str(value: bool) -> String:
-	return "YES" if value else "no"
 
 
 func _on_restart_pressed() -> void:
@@ -165,7 +139,7 @@ func _update_plan_chain_display() -> void:
 		plan_chain_label.text = "[color=gray]No BTPlayer[/color]"
 		return
 
-	var goap_task = _find_goap_task_from_player(bt_player)
+	var goap_task = GOAPUtilsClass.find_goap_task_from_player(bt_player)
 	if not goap_task:
 		plan_chain_label.text = "[color=gray]No GOAP task found[/color]"
 		return
@@ -205,7 +179,6 @@ func _update_plan_chain_display() -> void:
 	for i in range(plan.size()):
 		var action = plan[i]
 		var action_name: String = action.action_name
-		var prefix = "  "
 		if i < current_idx:
 			# Completed action - green with checkmark
 			lines.append("[color=#4a4]✓ %s[/color]" % action_name)
@@ -222,27 +195,16 @@ func _update_plan_chain_display() -> void:
 	plan_chain_label.text = "\n".join(lines)
 
 
-## Helper to find GOAP task from BTPlayer
-func _find_goap_task_from_player(bt_player: BTPlayer) -> Variant:
-	var bt_instance = bt_player.get_bt_instance()
-	if not bt_instance:
-		return null
-	var root_task = bt_instance.get_root_task()
-	if not root_task:
-		return null
-	return _find_goap_task(root_task)
-
-
 ## Scarcity mode toggle handler
 func _on_scarcity_toggled(enabled: bool) -> void:
 	if enabled:
-		goap_agent.max_ammo = 3
-		goap_agent.ammo_count = mini(goap_agent.ammo_count, 3)
-		ammo_pickup.respawn_time = 12.0
-		health_pickup.respawn_time = 15.0
-		print("GOAP Demo: Scarcity mode ON - ammo limited to 3")
+		goap_agent.max_ammo = GOAPConfigClass.SCARCITY_MAX_AMMO
+		goap_agent.ammo_count = mini(goap_agent.ammo_count, GOAPConfigClass.SCARCITY_MAX_AMMO)
+		ammo_pickup.respawn_time = GOAPConfigClass.SCARCITY_AMMO_RESPAWN
+		health_pickup.respawn_time = GOAPConfigClass.SCARCITY_HEALTH_RESPAWN
+		print("GOAP Demo: Scarcity mode ON - ammo limited to %d" % GOAPConfigClass.SCARCITY_MAX_AMMO)
 	else:
-		goap_agent.max_ammo = 10
-		ammo_pickup.respawn_time = 5.0
-		health_pickup.respawn_time = 8.0
+		goap_agent.max_ammo = GOAPConfigClass.DEFAULT_MAX_AMMO
+		ammo_pickup.respawn_time = GOAPConfigClass.NORMAL_AMMO_RESPAWN
+		health_pickup.respawn_time = GOAPConfigClass.NORMAL_HEALTH_RESPAWN
 		print("GOAP Demo: Scarcity mode OFF - normal resources")

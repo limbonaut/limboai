@@ -1,6 +1,10 @@
 [gd_scene load_steps=20 format=3 uid="uid://goap_demo_scene"]
 
 [ext_resource type="Script" path="res://demo/ai/goap/goap_demo.gd" id="1_demo"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/combat_component.gd" id="combat_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/movement_component.gd" id="movement_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/world_state_manager.gd" id="world_state_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/goal_evaluator.gd" id="goal_eval_comp"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="goal_kill"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_avoid_damage.tres" id="goal_avoid"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_regain_health.tres" id="goal_health"]
@@ -180,6 +184,18 @@ autoplay = "idle"
 [node name="BTPlayer" type="BTPlayer" parent="GOAPAgent"]
 behavior_tree = ExtResource("7_tree")
 blackboard_plan = SubResource("BlackboardPlan_1")
+
+[node name="CombatComponent" type="Node" parent="GOAPAgent"]
+script = ExtResource("combat_comp")
+
+[node name="MovementComponent" type="Node" parent="GOAPAgent"]
+script = ExtResource("movement_comp")
+
+[node name="WorldStateManager" type="Node" parent="GOAPAgent"]
+script = ExtResource("world_state_comp")
+
+[node name="GoalEvaluator" type="Node" parent="GOAPAgent"]
+script = ExtResource("goal_eval_comp")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
