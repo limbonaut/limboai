@@ -1,0 +1,9 @@
+[gd_resource type="GOAPGoal" format=3]
+
+[resource]
+goal_name = "StaySafe"
+priority = 15
+target_state = {
+"in_cover": true,
+"is_healthy": true
+}

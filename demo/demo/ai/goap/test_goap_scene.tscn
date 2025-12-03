@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/test_goap.gd" id="1_test"]
+
+[node name="GOAPTestRunner" type="Node"]
+script = ExtResource("1_test")

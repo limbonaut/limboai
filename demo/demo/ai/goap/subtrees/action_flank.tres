@@ -1,0 +1,23 @@
+[gd_resource type="BehaviorTree" load_steps=5 format=3]
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_1"]
+text = "GOAP: Flanking target!"
+
+[sub_resource type="BTWait" id="BTWait_1"]
+duration = 0.8
+
+[sub_resource type="BTSetVar" id="BTSetVar_1"]
+variable = "target_visible"
+value = true
+
+[sub_resource type="BTSetVar" id="BTSetVar_2"]
+variable = "target_in_cover"
+value = false
+
+[sub_resource type="BTSequence" id="BTSequence_1"]
+custom_name = "Flank"
+children = [SubResource("BTConsolePrint_1"), SubResource("BTWait_1"), SubResource("BTSetVar_1"), SubResource("BTSetVar_2")]
+
+[resource]
+description = "GOAP Action: Flank to get angle on covered target"
+root_task = SubResource("BTSequence_1")

@@ -1,0 +1,10 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_wait_in_cover.gd" id="1_wait"]
+
+[sub_resource type="BTAction" id="BTAction_wait"]
+script = ExtResource("1_wait")
+
+[resource]
+description = "GOAP Action: Wait in cover until threat passes"
+root_task = SubResource("BTAction_wait")

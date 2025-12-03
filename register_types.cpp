@@ -95,6 +95,11 @@
 #include "bt/tasks/utility/bt_random_wait.h"
 #include "bt/tasks/utility/bt_wait.h"
 #include "bt/tasks/utility/bt_wait_ticks.h"
+#include "bt/tasks/goap/bt_run_goap_plan.h"
+#include "goap/goap_action.h"
+#include "goap/goap_goal.h"
+#include "goap/goap_planner.h"
+#include "goap/goap_world_state.h"
 #include "editor/action_banner.h"
 #include "editor/blackboard_plan_editor.h"
 #include "editor/debugger/behavior_tree_data.h"
@@ -201,6 +206,13 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		LIMBO_REGISTER_TASK(BTCheckAgentProperty);
 		LIMBO_REGISTER_TASK(BTCheckTrigger);
 		LIMBO_REGISTER_TASK(BTCheckVar);
+
+		// GOAP classes
+		GDREGISTER_CLASS(GOAPWorldState);
+		GDREGISTER_CLASS(GOAPAction);
+		GDREGISTER_CLASS(GOAPGoal);
+		GDREGISTER_CLASS(GOAPPlanner);
+		LIMBO_REGISTER_TASK(BTRunGOAPPlan);
 
 		GDREGISTER_ABSTRACT_CLASS(BBParam);
 		GDREGISTER_CLASS(BBAabb);

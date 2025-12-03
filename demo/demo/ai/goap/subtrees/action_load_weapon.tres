@@ -1,0 +1,12 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_load_ammo.gd" id="1_load"]
+
+[sub_resource type="BTAction" id="BTAction_load"]
+script = ExtResource("1_load")
+pickup_var = &"ammo_pickup"
+ammo_amount = 10
+
+[resource]
+description = "GOAP Action: Load weapon with ammo"
+root_task = SubResource("BTAction_load")

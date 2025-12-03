@@ -1,0 +1,8 @@
+[gd_resource type="GOAPGoal" format=3]
+
+[resource]
+goal_name = "KillTarget"
+priority = 10
+target_state = {
+"target_dead": true
+}

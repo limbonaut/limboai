@@ -1,0 +1,12 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_melee.gd" id="1_melee"]
+
+[sub_resource type="BTAction" id="BTAction_melee"]
+script = ExtResource("1_melee")
+target_var = &"target"
+damage = 35
+
+[resource]
+description = "GOAP Action: Melee attack the target"
+root_task = SubResource("BTAction_melee")

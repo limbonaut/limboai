@@ -1,0 +1,216 @@
+[gd_scene load_steps=16 format=3 uid="uid://goap_demo_scene"]
+
+[ext_resource type="Script" path="res://demo/ai/goap/goap_demo.gd" id="1_demo"]
+[ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="2_arena"]
+[ext_resource type="PackedScene" path="res://demo/ai/goap/goap_enemy.tscn" id="3_enemy"]
+[ext_resource type="Texture2D" uid="uid://b0dphfqekxq16" path="res://demo/assets/agent_bobby.png" id="4_agent_tex"]
+[ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="5_shadow"]
+[ext_resource type="Texture2D" uid="uid://2uyxh7sy8qny" path="res://demo/assets/weapon_ninja_star.png" id="6_weapon"]
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/goap_demo_tree.tres" id="7_tree"]
+[ext_resource type="Script" path="res://demo/ai/goap/goap_agent.gd" id="8_agent"]
+[ext_resource type="Script" path="res://demo/ai/goap/pickup.gd" id="9_pickup"]
+[ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="10_font"]
+[ext_resource type="PackedScene" uid="uid://cover_object_scene" path="res://demo/ai/goap/cover_object.tscn" id="11_cover"]
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -40), Vector2(0, -45), Vector2(0, -40)]
+}
+
+[sub_resource type="Animation" id="Animation_walk"]
+resource_name = "walk"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -40), Vector2(0, -48), Vector2(0, -40), Vector2(0, -48), Vector2(0, -40)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+&"idle": SubResource("Animation_idle"),
+&"walk": SubResource("Animation_walk")
+}
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_1"]
+
+[node name="GOAPDemo" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_demo")
+
+[node name="Arena" parent="." instance=ExtResource("2_arena")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(700, 350)
+zoom = Vector2(0.7, 0.7)
+
+[node name="Target" parent="." instance=ExtResource("3_enemy")]
+position = Vector2(1100, 400)
+
+[node name="WeaponPickup" type="Node2D" parent="."]
+position = Vector2(400, 200)
+script = ExtResource("9_pickup")
+pickup_type = "weapon"
+
+[node name="Sprite2D" type="Sprite2D" parent="WeaponPickup"]
+scale = Vector2(2, 2)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="WeaponPickup"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "WEAPON"
+horizontal_alignment = 1
+
+[node name="AmmoPickup" type="Node2D" parent="."]
+position = Vector2(800, 550)
+script = ExtResource("9_pickup")
+pickup_type = "ammo"
+
+[node name="Sprite2D" type="Sprite2D" parent="AmmoPickup"]
+modulate = Color(1, 0.8, 0.2, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="AmmoPickup"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "AMMO"
+horizontal_alignment = 1
+
+[node name="HealthPickup" type="Node2D" parent="."]
+position = Vector2(200, 550)
+script = ExtResource("9_pickup")
+pickup_type = "health"
+
+[node name="Sprite2D" type="Sprite2D" parent="HealthPickup"]
+modulate = Color(0.2, 1.0, 0.3, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("5_shadow")
+
+[node name="Label" type="Label" parent="HealthPickup"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "HEALTH"
+horizontal_alignment = 1
+
+[node name="CoverObject" parent="." instance=ExtResource("11_cover")]
+position = Vector2(700, 350)
+
+[node name="GOAPAgent" type="CharacterBody2D" parent="."]
+position = Vector2(300, 450)
+script = ExtResource("8_agent")
+target_path = NodePath("../Target")
+weapon_pickup_path = NodePath("../WeaponPickup")
+ammo_pickup_path = NodePath("../AmmoPickup")
+health_pickup_path = NodePath("../HealthPickup")
+cover_object_path = NodePath("../CoverObject")
+
+[node name="Root" type="Node2D" parent="GOAPAgent"]
+
+[node name="Rig" type="Node2D" parent="GOAPAgent/Root"]
+
+[node name="Shadow" type="Sprite2D" parent="GOAPAgent/Root/Rig"]
+modulate = Color(0, 0, 0, 0.3)
+position = Vector2(0, 5)
+scale = Vector2(0.8, 0.4)
+texture = ExtResource("5_shadow")
+
+[node name="Body" type="Sprite2D" parent="GOAPAgent/Root/Rig"]
+position = Vector2(0, -40)
+texture = ExtResource("4_agent_tex")
+region_enabled = true
+region_rect = Rect2(0, 0, 128, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="GOAPAgent"]
+libraries = {
+&"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+
+[node name="BTPlayer" type="BTPlayer" parent="GOAPAgent"]
+behavior_tree = ExtResource("7_tree")
+blackboard_plan = SubResource("BlackboardPlan_1")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+offset_right = 280.0
+offset_bottom = 720.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 273.0
+offset_bottom = 713.0
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="UI/Panel/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 24
+text = "GOAP Demo"
+
+[node name="Separator1" type="HSeparator" parent="UI/Panel/VBox"]
+layout_mode = 2
+
+[node name="Instructions" type="Label" parent="UI/Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Watch the NPC use GOAP:
+The AI plans its own actions
+to achieve the goal!"
+
+[node name="Separator2" type="HSeparator" parent="UI/Panel/VBox"]
+layout_mode = 2
+
+[node name="StateLabel" type="Label" parent="UI/Panel/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 16
+text = "World State:"
+
+[node name="PlanLabel" type="Label" parent="UI/Panel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "Loading..."
+
+[node name="Separator3" type="HSeparator" parent="UI/Panel/VBox"]
+layout_mode = 2
+
+[node name="RestartButton" type="Button" parent="UI/Panel/VBox"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("10_font")
+text = "Restart Demo"
+
+[connection signal="pressed" from="UI/Panel/VBox/RestartButton" to="." method="_on_restart_pressed"]

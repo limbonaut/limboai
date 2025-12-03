@@ -1,0 +1,19 @@
+[gd_resource type="BehaviorTree" load_steps=4 format=3]
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_1"]
+text = "GOAP: MELEE ATTACK!"
+
+[sub_resource type="BTWait" id="BTWait_1"]
+duration = 0.5
+
+[sub_resource type="BTSetVar" id="BTSetVar_1"]
+variable = "target_dead"
+value = true
+
+[sub_resource type="BTSequence" id="BTSequence_1"]
+custom_name = "MeleeAttack"
+children = [SubResource("BTConsolePrint_1"), SubResource("BTWait_1"), SubResource("BTSetVar_1")]
+
+[resource]
+description = "GOAP Action: Melee attack the target"
+root_task = SubResource("BTSequence_1")

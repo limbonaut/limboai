@@ -117,8 +117,10 @@ sources += Glob("compat/*.cpp")
 sources += Glob("editor/debugger/*.cpp")
 sources += Glob("editor/*.cpp")
 sources += Glob("gdextension/*.cpp")
+sources += Glob("goap/*.cpp")
 sources += Glob("hsm/*.cpp")
 sources += Glob("util/*.cpp")
+sources += Glob("bt/tasks/goap/*.cpp")
 
 # Generate documentation header.
 if env["target"] in ["editor", "template_debug"]:

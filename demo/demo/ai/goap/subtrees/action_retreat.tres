@@ -1,0 +1,27 @@
+[gd_resource type="BehaviorTree" load_steps=6 format=3]
+
+[sub_resource type="BTConsolePrint" id="BTConsolePrint_1"]
+text = "GOAP: RETREATING!"
+
+[sub_resource type="BTWait" id="BTWait_1"]
+duration = 0.5
+
+[sub_resource type="BTSetVar" id="BTSetVar_1"]
+variable = "in_cover"
+value = true
+
+[sub_resource type="BTSetVar" id="BTSetVar_2"]
+variable = "near_cover"
+value = true
+
+[sub_resource type="BTSetVar" id="BTSetVar_3"]
+variable = "target_in_range"
+value = false
+
+[sub_resource type="BTSequence" id="BTSequence_1"]
+custom_name = "Retreat"
+children = [SubResource("BTConsolePrint_1"), SubResource("BTWait_1"), SubResource("BTSetVar_1"), SubResource("BTSetVar_2"), SubResource("BTSetVar_3")]
+
+[resource]
+description = "GOAP Action: Retreat to cover when health is low"
+root_task = SubResource("BTSequence_1")

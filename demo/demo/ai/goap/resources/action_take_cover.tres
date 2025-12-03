@@ -1,0 +1,14 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_take_cover.tres" id="1_tree"]
+
+[resource]
+action_name = "TakeCover"
+base_cost = 1
+preconditions = {
+"near_cover": true
+}
+effects = {
+"in_cover": true
+}
+execution_tree = ExtResource("1_tree")

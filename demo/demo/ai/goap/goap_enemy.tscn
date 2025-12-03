@@ -1,0 +1,143 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/goap_enemy.gd" id="1_enemy"]
+[ext_resource type="Texture2D" uid="uid://cltutcxjx8jnl" path="res://demo/assets/dummy.png" id="2_dummy"]
+[ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="3_shadow"]
+[ext_resource type="Script" uid="uid://dq5h6yydckjc1" path="res://demo/agents/scripts/hurtbox.gd" id="4_hurtbox"]
+[ext_resource type="Script" uid="uid://5byn62y1oa76" path="res://demo/agents/scripts/health.gd" id="5_health"]
+
+[sub_resource type="Animation" id="Animation_reset"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_hurt"]
+resource_name = "hurt"
+length = 0.25
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Stick:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, -0.273996]
+}
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Stick/Body:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.3, 0.6, 0.9, 1.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [-0.0523599, 0.0, 0.0523599, 0.0, -0.0523599]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"hurt": SubResource("Animation_hurt"),
+&"idle": SubResource("Animation_idle")
+}
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
+size = Vector2(80, 35)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_telegraph"]
+radius = 600.0
+
+[sub_resource type="Gradient" id="Gradient_telegraph"]
+colors = PackedColorArray(1, 0.2, 0.2, 0.8, 1, 0.2, 0.2, 0)
+
+[node name="GOAPEnemy" type="CharacterBody2D" groups=["player"]]
+script = ExtResource("1_enemy")
+attack_interval = 10.0
+telegraph_duration = 2.5
+attack_damage = 25
+
+[node name="Root" type="Node2D" parent="."]
+
+[node name="Rig" type="Node2D" parent="Root"]
+
+[node name="Shadow" type="Sprite2D" parent="Root/Rig"]
+modulate = Color(1, 1, 1, 0.290196)
+texture = ExtResource("3_shadow")
+
+[node name="Stick" type="Sprite2D" parent="Root/Rig"]
+position = Vector2(0, -1)
+texture = ExtResource("2_dummy")
+offset = Vector2(-1, -28)
+region_enabled = true
+region_rect = Rect2(100.613, 0, 22.3875, 64.0292)
+
+[node name="Body" type="Sprite2D" parent="Root/Rig/Stick"]
+position = Vector2(0, -49)
+texture = ExtResource("2_dummy")
+offset = Vector2(-1, -56)
+region_enabled = true
+region_rect = Rect2(0, 0, 99.6683, 136)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+next/hurt = &"idle"
+blend_times = [&"idle", &"hurt", 0.05, &"hurt", &"idle", 0.3]
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("4_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+shape = SubResource("RectangleShape2D_1")
+debug_color = Color(0.466325, 0.590206, 0.107862, 0.42)
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("5_health")
+max_health = 1e+07
+
+[node name="TelegraphIndicator" type="Node2D" parent="."]
+visible = false
+position = Vector2(0, -80)
+
+[node name="WarningSprite" type="Sprite2D" parent="TelegraphIndicator"]
+modulate = Color(1, 0.3, 0.3, 1)
+scale = Vector2(3, 3)
+texture = ExtResource("3_shadow")
+
+[node name="Label" type="Label" parent="TelegraphIndicator"]
+offset_left = -60.0
+offset_top = -50.0
+offset_right = 60.0
+offset_bottom = -20.0
+theme_override_font_sizes/font_size = 20
+text = "! ATTACK !"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="damaged" from="Health" to="." method="_on_health_damaged"]

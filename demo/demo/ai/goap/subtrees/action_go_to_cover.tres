@@ -1,0 +1,13 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_move_to.gd" id="1_moveto"]
+
+[sub_resource type="BTAction" id="BTAction_moveto"]
+script = ExtResource("1_moveto")
+target_var = &"cover_object"
+tolerance = 30.0
+speed = 300.0
+
+[resource]
+description = "GOAP Action: Move to cover position"
+root_task = SubResource("BTAction_moveto")
