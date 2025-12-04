@@ -26,7 +26,16 @@ func move(p_velocity: Vector2) -> void:
 		return
 	agent.velocity = lerp(agent.velocity, p_velocity, velocity_lerp)
 	agent.move_and_slide()
+	_clamp_to_arena()
 	update_facing()
+
+
+## Keeps the agent within arena bounds
+func _clamp_to_arena() -> void:
+	if not agent:
+		return
+	agent.global_position.x = clampf(agent.global_position.x, GOAPConfigClass.ARENA_MIN.x, GOAPConfigClass.ARENA_MAX.x)
+	agent.global_position.y = clampf(agent.global_position.y, GOAPConfigClass.ARENA_MIN.y, GOAPConfigClass.ARENA_MAX.y)
 
 
 ## Moves toward a target position at move_speed

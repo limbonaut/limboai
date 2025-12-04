@@ -1,6 +1,7 @@
 ## World State Manager
 ## Manages GOAP world state synchronization to blackboard
 ## Emits signals when key facts change for goal evaluation
+## Supports agent-vs-agent combat with dynamic threat detection
 class_name WorldStateManager
 extends Node
 
@@ -18,7 +19,10 @@ var target: Node2D
 var weapon_pickup: Node2D
 var ammo_pickup: Node2D
 var health_pickup: Node2D
-var cover_object: Node2D
+
+# Multiple cover objects support
+var cover_objects: Array[Node2D] = []
+var current_cover: Node2D  # Best cover against current target
 
 # Cached previous states for change detection
 var _prev_under_threat := false
@@ -76,13 +80,8 @@ func _compute_facts() -> Dictionary:
 	var low_health: bool = health < GOAPConfigClass.LOW_HEALTH_THRESHOLD
 	var is_healthy: bool = health >= GOAPConfigClass.HEALTHY_THRESHOLD
 
-	# Enemy attack state
-	var enemy_attacking := false
-	if target and is_instance_valid(target):
-		if target.has_method("is_preparing_attack"):
-			enemy_attacking = target.is_preparing_attack()
-
-	var under_threat := enemy_attacking
+	# Threat detection - works for both static enemies and GOAP agents
+	var under_threat := _compute_threat_state()
 
 	# Core agent facts
 	facts["has_weapon"] = has_weapon
@@ -94,8 +93,8 @@ func _compute_facts() -> Dictionary:
 	facts["is_healthy"] = is_healthy
 	facts["in_cover"] = in_cover
 	facts["weapon_jammed"] = weapon_jammed
-	facts["enemy_attacking"] = enemy_attacking
 	facts["under_threat"] = under_threat
+	facts["enemy_attacking"] = under_threat  # Alias for compatibility
 
 	# Merge proximity facts
 	for key in proximity:
@@ -110,9 +109,79 @@ func _compute_facts() -> Dictionary:
 	facts["weapon_pickup"] = weapon_pickup
 	facts["ammo_pickup"] = ammo_pickup
 	facts["health_pickup"] = health_pickup
-	facts["cover_object"] = cover_object
+	facts["cover_object"] = current_cover  # Best cover against target
 
 	return facts
+
+
+## Computes threat state using distance-based detection
+## Works for both static enemies (telegraph) and GOAP agents (weapon ready + range)
+## IMPORTANT: Being in cover negates threat - this allows agents to re-engage
+## Health affects threat perception - high health agents are more aggressive
+func _compute_threat_state() -> bool:
+	if not target or not is_instance_valid(target):
+		return false
+
+	# If we're in cover, we don't feel threatened (cover protects us)
+	# This allows agents to switch back to offensive goals after taking cover
+	var in_cover: bool = agent.in_cover if "in_cover" in agent else false
+	if in_cover:
+		return false
+
+	# High health agents are more aggressive - they don't feel threatened easily
+	var health: int = agent.health if "health" in agent else 100
+	var max_health: int = agent.max_health if "max_health" in agent else 100
+	var health_ratio := float(health) / float(max_health)
+
+	# If health is above 70%, agent is confident and doesn't feel threatened
+	if health_ratio > 0.7:
+		return false
+
+	# Check for legacy telegraph-based enemies
+	if target.has_method("is_preparing_attack"):
+		if target.is_preparing_attack():
+			return true
+
+	# Distance-based threat detection for GOAP agents
+	# Threatened if: target has weapon loaded, is in range, and has LoS
+	if _is_goap_agent(target):
+		var dist := agent.global_position.distance_to(target.global_position)
+		var in_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
+
+		if in_threat_range:
+			# Check if target has weapon ready
+			var target_has_weapon: bool = target.has_weapon if "has_weapon" in target else false
+			var target_ammo: int = target.ammo_count if "ammo_count" in target else 0
+			var target_jammed: bool = target.weapon_jammed if "weapon_jammed" in target else false
+			var target_weapon_ready := target_has_weapon and target_ammo > 0 and not target_jammed
+
+			# Check if target has LoS to us
+			var target_has_los := _target_has_los_to_us()
+
+			return target_weapon_ready and target_has_los
+
+	return false
+
+
+## Checks if a node is a GOAP agent (has the expected properties)
+func _is_goap_agent(node: Node2D) -> bool:
+	return "has_weapon" in node and "ammo_count" in node and "health" in node
+
+
+## Checks if the target has line of sight to this agent
+func _target_has_los_to_us() -> bool:
+	if not target or not is_instance_valid(target):
+		return false
+
+	var space_state := agent.get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(
+		target.global_position,
+		agent.global_position,
+		GOAPConfigClass.LOS_COLLISION_LAYER
+	)
+	var result := space_state.intersect_ray(query)
+
+	return result.is_empty()
 
 
 func _compute_proximity_facts() -> Dictionary:
@@ -143,10 +212,13 @@ func _compute_proximity_facts() -> Dictionary:
 		if health_available:
 			near_health_pickup = agent_pos.distance_to(health_pickup.global_position) < GOAPConfigClass.PICKUP_RANGE
 
-	# Cover
+	# Find best cover against current target
+	_update_best_cover()
+
+	# Cover proximity (to best cover)
 	var near_cover := false
-	if cover_object and is_instance_valid(cover_object):
-		near_cover = agent_pos.distance_to(cover_object.global_position) < GOAPConfigClass.COVER_RANGE
+	if current_cover and is_instance_valid(current_cover):
+		near_cover = agent_pos.distance_to(current_cover.global_position) < GOAPConfigClass.COVER_RANGE
 
 	facts["near_weapon_pickup"] = near_weapon_pickup
 	facts["weapon_available"] = weapon_available
@@ -159,6 +231,96 @@ func _compute_proximity_facts() -> Dictionary:
 	return facts
 
 
+## Finds the best cover object that blocks LoS from the target
+func _update_best_cover() -> void:
+	if cover_objects.is_empty():
+		current_cover = null
+		return
+
+	if not target or not is_instance_valid(target):
+		# No target - use nearest cover
+		current_cover = _find_nearest_cover()
+		return
+
+	var best_cover: Node2D = null
+	var best_score := -INF
+
+	for cover in cover_objects:
+		if not is_instance_valid(cover):
+			continue
+
+		var score := _evaluate_cover(cover)
+		if score > best_score:
+			best_score = score
+			best_cover = cover
+
+	current_cover = best_cover
+
+
+## Evaluates how good a cover object is against the current target
+## Higher score = better cover
+func _evaluate_cover(cover: Node2D) -> float:
+	var agent_pos := agent.global_position
+	var cover_pos := cover.global_position
+
+	# Base score: prefer closer covers
+	var dist_to_cover := agent_pos.distance_to(cover_pos)
+	var dist_score := 1000.0 - dist_to_cover  # Closer = higher score
+
+	# Bonus: cover that blocks LoS from target
+	if target and is_instance_valid(target):
+		var cover_position := _get_cover_position_for(cover)
+		if _position_blocks_los_from_target(cover_position, cover):
+			dist_score += 500.0  # Big bonus for actual cover
+
+	return dist_score
+
+
+## Gets the position an agent should move to for cover behind this object
+func _get_cover_position_for(cover: Node2D) -> Vector2:
+	if cover.has_method("get_cover_position_against") and target:
+		return cover.get_cover_position_against(target.global_position)
+	return cover.global_position
+
+
+## Checks if a position is protected from target's LoS by a cover object
+func _position_blocks_los_from_target(pos: Vector2, cover: Node2D) -> bool:
+	if not target or not is_instance_valid(target):
+		return false
+
+	var space_state := agent.get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(
+		target.global_position,
+		pos,
+		GOAPConfigClass.LOS_COLLISION_LAYER
+	)
+	var result := space_state.intersect_ray(query)
+
+	# Check if the ray hit the cover object
+	if not result.is_empty():
+		var hit_collider = result.get("collider")
+		if hit_collider == cover or (cover.has_node("StaticBody2D") and hit_collider == cover.get_node("StaticBody2D")):
+			return true
+
+	return false
+
+
+## Finds the nearest cover object
+func _find_nearest_cover() -> Node2D:
+	var nearest: Node2D = null
+	var nearest_dist := INF
+
+	for cover in cover_objects:
+		if not is_instance_valid(cover):
+			continue
+		var dist := agent.global_position.distance_to(cover.global_position)
+		if dist < nearest_dist:
+			nearest_dist = dist
+			nearest = cover
+
+	return nearest
+
+
 func _compute_target_facts() -> Dictionary:
 	var facts := {}
 
@@ -166,6 +328,7 @@ func _compute_target_facts() -> Dictionary:
 	var target_in_sight := false
 	var target_visible := false
 	var target_dead := false
+	var target_in_cover := false
 
 	if target == null or not is_instance_valid(target):
 		target_dead = true
@@ -175,16 +338,24 @@ func _compute_target_facts() -> Dictionary:
 		target_in_sight = dist < GOAPConfigClass.SHOOTING_RANGE
 		target_visible = _has_los_to_target()
 
-		# Check if target is dead
+		# Check if target is in cover (for GOAP agents)
+		if "in_cover" in target:
+			target_in_cover = target.in_cover
+
+		# Check if target is dead - works for both enemy types and GOAP agents
 		if target.has_node("Health"):
 			var health_node = target.get_node("Health")
 			if health_node.has_method("get_current"):
 				target_dead = health_node.get_current() <= 0
+		elif "health" in target:
+			# GOAP agent - check health property directly
+			target_dead = target.health <= 0
 
 	facts["target_in_range"] = target_in_range
 	facts["target_in_sight"] = target_in_sight
 	facts["target_visible"] = target_visible
 	facts["target_dead"] = target_dead
+	facts["target_in_cover"] = target_in_cover
 
 	return facts
 
@@ -219,3 +390,11 @@ func _get_blackboard() -> Blackboard:
 ## Force immediate state sync (useful after agent state changes)
 func force_sync() -> void:
 	_sync_world_state()
+
+
+## Sets the cover objects array (called by parent agent)
+func set_cover_objects(covers: Array) -> void:
+	cover_objects.clear()
+	for cover in covers:
+		if cover is Node2D:
+			cover_objects.append(cover)

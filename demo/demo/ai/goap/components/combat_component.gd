@@ -113,3 +113,8 @@ func is_healthy() -> bool:
 ## Returns true if weapon is loaded and ready to fire
 func is_weapon_ready() -> bool:
 	return has_weapon and _ammo_count > 0 and not weapon_jammed_state
+
+
+## Forces a health changed emission (used when external systems modify health)
+func _emit_health_changed() -> void:
+	health_changed.emit(_health, max_health)

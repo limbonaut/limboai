@@ -29,6 +29,16 @@ func _ready() -> void:
 func _area_entered(hurtbox: Hurtbox) -> void:
 	if hurtbox.owner == owner:
 		return
+	# Check if this hitbox belongs to a projectile with a shooter
+	var projectile_owner = owner
+	if projectile_owner:
+		var shooter = projectile_owner.get(&"shooter") if projectile_owner.has_method(&"get") else null
+		if shooter == null and "shooter" in projectile_owner:
+			shooter = projectile_owner.shooter
+		if shooter and is_instance_valid(shooter):
+			if hurtbox.owner == shooter:
+				print("Hitbox: Ignoring damage to shooter %s" % shooter.name)
+				return  # Don't damage the shooter
 	hurtbox.take_damage(damage, get_knockback(), self)
 
 

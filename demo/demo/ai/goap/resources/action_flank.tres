@@ -1,0 +1,19 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_flank.tres" id="1_tree"]
+
+[resource]
+action_name = "FlankTarget"
+base_cost = 5
+preconditions = {
+"has_weapon": true,
+"weapon_loaded": true,
+"target_in_cover": true
+}
+effects = {
+"target_in_range": true,
+"target_in_sight": true,
+"target_visible": true,
+"target_in_cover": false
+}
+execution_tree = ExtResource("1_tree")

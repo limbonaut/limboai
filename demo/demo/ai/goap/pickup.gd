@@ -7,6 +7,7 @@ extends Node2D
 @export var bob_height: float = 8.0
 @export var respawn_time: float = 5.0  # Time in seconds before respawning (0 = no respawn)
 @export var random_respawn: bool = false  # If true, respawn at random location
+@export var random_initial_spawn: bool = false  # If true, start at random location
 @export var respawn_area_min: Vector2 = Vector2(200, 200)  # Min bounds for random respawn
 @export var respawn_area_max: Vector2 = Vector2(900, 600)  # Max bounds for random respawn
 @export var avoid_node_path: NodePath  # Node to avoid when respawning (e.g., cover)
@@ -21,7 +22,15 @@ var _is_collected: bool = false
 
 
 func _ready() -> void:
-	_initial_y = position.y
+	# Randomize initial position if enabled
+	if random_initial_spawn:
+		var new_pos := _get_valid_respawn_position()
+		position = new_pos
+		_initial_y = new_pos.y
+		print("PICKUP: %s spawned at random location (%.0f, %.0f)" % [pickup_type, new_pos.x, new_pos.y])
+	else:
+		_initial_y = position.y
+
 	if label:
 		label.text = pickup_type.capitalize()
 

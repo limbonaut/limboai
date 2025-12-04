@@ -1,0 +1,438 @@
+[gd_scene load_steps=23 format=3 uid="uid://goap_duel_demo_scene"]
+
+[ext_resource type="Script" path="res://demo/ai/goap/goap_duel_demo.gd" id="1_demo"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/combat_component.gd" id="combat_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/movement_component.gd" id="movement_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/world_state_manager.gd" id="world_state_comp"]
+[ext_resource type="Script" path="res://demo/ai/goap/components/goal_evaluator.gd" id="goal_eval_comp"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="goal_kill"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_avoid_damage.tres" id="goal_avoid"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_regain_health.tres" id="goal_health"]
+[ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="2_arena"]
+[ext_resource type="Texture2D" path="res://demo/assets/agent_bobby.png" id="4_agent_tex"]
+[ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="5_shadow"]
+[ext_resource type="Texture2D" uid="uid://2uyxh7sy8qny" path="res://demo/assets/weapon_ninja_star.png" id="6_weapon"]
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/goap_demo_tree.tres" id="7_tree"]
+[ext_resource type="Script" path="res://demo/ai/goap/goap_agent.gd" id="8_agent"]
+[ext_resource type="Script" path="res://demo/ai/goap/pickup.gd" id="9_pickup"]
+[ext_resource type="FontFile" uid="uid://d25vkmce7mhlt" path="res://demo/assets/fonts/knewave_regular.ttf" id="10_font"]
+[ext_resource type="PackedScene" uid="uid://cover_object_scene" path="res://demo/ai/goap/cover_object.tscn" id="11_cover"]
+[ext_resource type="Texture2D" path="res://demo/assets/fireball.png" id="12_fireball"]
+[ext_resource type="Script" uid="uid://dq5h6yydckjc1" path="res://demo/agents/scripts/hurtbox.gd" id="13_hurtbox"]
+[ext_resource type="Script" uid="uid://d2ymkjpg5tsr3" path="res://demo/agents/scripts/health.gd" id="14_health"]
+
+[sub_resource type="Animation" id="Animation_idle"]
+resource_name = "idle"
+length = 0.8
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -40), Vector2(0, -45), Vector2(0, -40)]
+}
+
+[sub_resource type="Animation" id="Animation_walk"]
+resource_name = "walk"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Root/Rig/Body:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -40), Vector2(0, -48), Vector2(0, -40), Vector2(0, -48), Vector2(0, -40)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1"]
+_data = {
+&"idle": SubResource("Animation_idle"),
+&"walk": SubResource("Animation_walk")
+}
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_Red"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_Blue"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_Hurtbox"]
+radius = 40.0
+
+[node name="GOAPDuelDemo" type="Node2D"]
+y_sort_enabled = true
+script = ExtResource("1_demo")
+
+[node name="Arena" parent="." instance=ExtResource("2_arena")]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(700, 350)
+zoom = Vector2(0.7, 0.7)
+
+[node name="CoverLeft" parent="." instance=ExtResource("11_cover")]
+position = Vector2(300, 450)
+
+[node name="CoverCenter" parent="." instance=ExtResource("11_cover")]
+position = Vector2(700, 250)
+
+[node name="CoverRight" parent="." instance=ExtResource("11_cover")]
+position = Vector2(1100, 450)
+
+[node name="WeaponPickupRed" type="Node2D" parent="."]
+position = Vector2(250, 200)
+script = ExtResource("9_pickup")
+pickup_type = "weapon"
+respawn_time = 0.0
+random_initial_spawn = true
+respawn_area_min = Vector2(150, 200)
+respawn_area_max = Vector2(500, 550)
+avoid_node_path = NodePath("../CoverLeft")
+avoid_distance = 100.0
+
+[node name="Sprite2D" type="Sprite2D" parent="WeaponPickupRed"]
+modulate = Color(1, 0.5, 0.5, 1)
+scale = Vector2(2, 2)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="WeaponPickupRed"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 12
+text = "RED WEAPON"
+horizontal_alignment = 1
+
+[node name="WeaponPickupBlue" type="Node2D" parent="."]
+position = Vector2(1150, 200)
+script = ExtResource("9_pickup")
+pickup_type = "weapon"
+respawn_time = 0.0
+random_initial_spawn = true
+respawn_area_min = Vector2(900, 200)
+respawn_area_max = Vector2(1250, 550)
+avoid_node_path = NodePath("../CoverRight")
+avoid_distance = 100.0
+
+[node name="Sprite2D" type="Sprite2D" parent="WeaponPickupBlue"]
+modulate = Color(0.5, 0.7, 1, 1)
+scale = Vector2(2, 2)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="WeaponPickupBlue"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 12
+text = "BLUE WEAPON"
+horizontal_alignment = 1
+
+[node name="AmmoPickup" type="Node2D" parent="."]
+position = Vector2(700, 550)
+script = ExtResource("9_pickup")
+pickup_type = "ammo"
+random_respawn = true
+random_initial_spawn = true
+respawn_area_min = Vector2(200, 200)
+respawn_area_max = Vector2(1200, 550)
+avoid_node_path = NodePath("../CoverCenter")
+avoid_distance = 150.0
+
+[node name="Sprite2D" type="Sprite2D" parent="AmmoPickup"]
+modulate = Color(1, 0.8, 0.2, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="AmmoPickup"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "AMMO"
+horizontal_alignment = 1
+
+[node name="HealthPickup" type="Node2D" parent="."]
+position = Vector2(700, 200)
+script = ExtResource("9_pickup")
+pickup_type = "health"
+random_respawn = true
+random_initial_spawn = true
+respawn_area_min = Vector2(200, 200)
+respawn_area_max = Vector2(1200, 550)
+avoid_node_path = NodePath("../CoverCenter")
+avoid_distance = 150.0
+
+[node name="Sprite2D" type="Sprite2D" parent="HealthPickup"]
+modulate = Color(0.3, 1.0, 0.4, 1)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("12_fireball")
+hframes = 3
+frame = 1
+
+[node name="Label" type="Label" parent="HealthPickup"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "HEALTH"
+horizontal_alignment = 1
+
+[node name="AgentRed" type="CharacterBody2D" parent="."]
+position = Vector2(200, 400)
+script = ExtResource("8_agent")
+agent_name = "Red"
+goal_kill_target = ExtResource("goal_kill")
+goal_avoid_damage = ExtResource("goal_avoid")
+goal_regain_health = ExtResource("goal_health")
+
+[node name="Root" type="Node2D" parent="AgentRed"]
+
+[node name="Rig" type="Node2D" parent="AgentRed/Root"]
+
+[node name="Shadow" type="Sprite2D" parent="AgentRed/Root/Rig"]
+modulate = Color(0, 0, 0, 0.3)
+position = Vector2(0, 5)
+scale = Vector2(0.8, 0.4)
+texture = ExtResource("5_shadow")
+
+[node name="Body" type="Sprite2D" parent="AgentRed/Root/Rig"]
+modulate = Color(1, 0.6, 0.6, 1)
+position = Vector2(0, -40)
+texture = ExtResource("4_agent_tex")
+region_enabled = true
+region_rect = Rect2(0, 0, 128, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AgentRed"]
+libraries = {
+&"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+
+[node name="BTPlayer" type="BTPlayer" parent="AgentRed"]
+behavior_tree = ExtResource("7_tree")
+blackboard_plan = SubResource("BlackboardPlan_Red")
+
+[node name="CombatComponent" type="Node" parent="AgentRed"]
+script = ExtResource("combat_comp")
+
+[node name="MovementComponent" type="Node" parent="AgentRed"]
+script = ExtResource("movement_comp")
+
+[node name="WorldStateManager" type="Node" parent="AgentRed"]
+script = ExtResource("world_state_comp")
+
+[node name="GoalEvaluator" type="Node" parent="AgentRed"]
+script = ExtResource("goal_eval_comp")
+
+[node name="Health" type="Node" parent="AgentRed" node_paths=PackedStringArray("character")]
+script = ExtResource("14_health")
+character = NodePath("..")
+max_health = 100
+
+[node name="Hurtbox" type="Area2D" parent="AgentRed" node_paths=PackedStringArray("health")]
+position = Vector2(0, -40)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("13_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AgentRed/Hurtbox"]
+shape = SubResource("CircleShape2D_Hurtbox")
+
+[node name="AgentBlue" type="CharacterBody2D" parent="."]
+position = Vector2(1200, 400)
+script = ExtResource("8_agent")
+agent_name = "Blue"
+goal_kill_target = ExtResource("goal_kill")
+goal_avoid_damage = ExtResource("goal_avoid")
+goal_regain_health = ExtResource("goal_health")
+
+[node name="Root" type="Node2D" parent="AgentBlue"]
+scale = Vector2(-1, 1)
+
+[node name="Rig" type="Node2D" parent="AgentBlue/Root"]
+
+[node name="Shadow" type="Sprite2D" parent="AgentBlue/Root/Rig"]
+modulate = Color(0, 0, 0, 0.3)
+position = Vector2(0, 5)
+scale = Vector2(0.8, 0.4)
+texture = ExtResource("5_shadow")
+
+[node name="Body" type="Sprite2D" parent="AgentBlue/Root/Rig"]
+modulate = Color(0.6, 0.7, 1, 1)
+position = Vector2(0, -40)
+texture = ExtResource("4_agent_tex")
+region_enabled = true
+region_rect = Rect2(0, 0, 128, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AgentBlue"]
+libraries = {
+&"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+
+[node name="BTPlayer" type="BTPlayer" parent="AgentBlue"]
+behavior_tree = ExtResource("7_tree")
+blackboard_plan = SubResource("BlackboardPlan_Blue")
+
+[node name="CombatComponent" type="Node" parent="AgentBlue"]
+script = ExtResource("combat_comp")
+
+[node name="MovementComponent" type="Node" parent="AgentBlue"]
+script = ExtResource("movement_comp")
+
+[node name="WorldStateManager" type="Node" parent="AgentBlue"]
+script = ExtResource("world_state_comp")
+
+[node name="GoalEvaluator" type="Node" parent="AgentBlue"]
+script = ExtResource("goal_eval_comp")
+
+[node name="Health" type="Node" parent="AgentBlue" node_paths=PackedStringArray("character")]
+script = ExtResource("14_health")
+character = NodePath("..")
+max_health = 100
+
+[node name="Hurtbox" type="Area2D" parent="AgentBlue" node_paths=PackedStringArray("health")]
+position = Vector2(0, -40)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("13_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AgentBlue/Hurtbox"]
+shape = SubResource("CircleShape2D_Hurtbox")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="WinnerLabel" type="Label" parent="UI"]
+unique_name_in_owner = true
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 250.0
+offset_right = 200.0
+offset_bottom = 350.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 1, 0.6, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 4
+theme_override_constants/shadow_offset_y = 4
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 72
+text = "RED WINS!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Title" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 70.0
+grow_horizontal = 2
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 36
+text = "GOAP DUEL"
+horizontal_alignment = 1
+
+[node name="RedPanel" type="PanelContainer" parent="UI"]
+offset_right = 200.0
+offset_bottom = 200.0
+
+[node name="VBox" type="VBoxContainer" parent="UI/RedPanel"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 193.0
+offset_bottom = 193.0
+
+[node name="RedTitle" type="Label" parent="UI/RedPanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 24
+text = "RED AGENT"
+
+[node name="RedHealthLabel" type="Label" parent="UI/RedPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "HP: 100/100"
+
+[node name="HSeparator" type="HSeparator" parent="UI/RedPanel/VBox"]
+layout_mode = 2
+
+[node name="RedStatusLabel" type="Label" parent="UI/RedPanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Goal: KillTarget
+Action: None"
+
+[node name="BluePanel" type="PanelContainer" parent="UI"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_bottom = 200.0
+grow_horizontal = 0
+
+[node name="VBox" type="VBoxContainer" parent="UI/BluePanel"]
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 193.0
+offset_bottom = 193.0
+
+[node name="BlueTitle" type="Label" parent="UI/BluePanel/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.6, 1, 1)
+theme_override_fonts/font = ExtResource("10_font")
+theme_override_font_sizes/font_size = 24
+text = "BLUE AGENT"
+
+[node name="BlueHealthLabel" type="Label" parent="UI/BluePanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "HP: 100/100"
+
+[node name="HSeparator" type="HSeparator" parent="UI/BluePanel/VBox"]
+layout_mode = 2
+
+[node name="BlueStatusLabel" type="Label" parent="UI/BluePanel/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Goal: KillTarget
+Action: None"
+
+[node name="RestartButton" type="Button" parent="UI"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -75.0
+offset_top = -60.0
+offset_right = 75.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_fonts/font = ExtResource("10_font")
+text = "Restart"
+
+[connection signal="pressed" from="UI/RestartButton" to="." method="_on_restart_pressed"]

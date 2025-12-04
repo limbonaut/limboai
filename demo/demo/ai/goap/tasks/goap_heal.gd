@@ -18,6 +18,11 @@ func _tick(_delta: float) -> Status:
 	if not is_instance_valid(pickup_node):
 		return FAILURE
 
+	# Check if pickup is still available (prevents double collection)
+	if pickup_node.has_method("is_available") and not pickup_node.is_available():
+		print("GOAP: Health pickup already collected!")
+		return FAILURE
+
 	# Heal the agent
 	if agent.has_method("heal"):
 		agent.heal(heal_amount)

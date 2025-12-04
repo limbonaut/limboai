@@ -12,6 +12,7 @@ extends Node2D
 
 const SPEED := 800.0
 const DEAD_SPEED := 400.0
+const COVER_COLLISION_LAYER := 16  # Layer for cover objects
 
 ## Direction vector for projectile movement (normalized)
 @export var direction: Vector2 = Vector2.RIGHT
@@ -19,9 +20,13 @@ const DEAD_SPEED := 400.0
 ## Legacy float direction for backwards compatibility
 @export var dir: float = 1.0
 
+## The node that fired this projectile (to prevent self-damage)
+var shooter: Node = null
+
 var _is_dead: bool = false
 var _spin_tween: Tween
 var _arc_tween: Tween
+var _raycast: RayCast2D
 
 @onready var ninja_star: Sprite2D = $Root/NinjaStar
 @onready var death: GPUParticles2D = $Death
@@ -31,6 +36,19 @@ var _arc_tween: Tween
 
 func _ready() -> void:
 	add_to_group("projectiles")
+
+	# Disable hitbox initially to prevent self-damage, enable after short delay
+	collision_shape_2d.disabled = true
+	get_tree().create_timer(0.05).timeout.connect(func():
+		if is_instance_valid(collision_shape_2d):
+			collision_shape_2d.disabled = false
+	)
+
+	# Create raycast for cover detection
+	_raycast = RayCast2D.new()
+	_raycast.collision_mask = COVER_COLLISION_LAYER
+	_raycast.target_position = direction * 50  # Look ahead
+	add_child(_raycast)
 
 	# If direction wasn't set but dir was, use legacy horizontal movement
 	if direction == Vector2.RIGHT and dir != 1.0:
@@ -51,6 +69,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var speed: float = SPEED if not _is_dead else DEAD_SPEED
 	position += direction * speed * delta
+
+	# Check if we hit cover
+	if _raycast and _raycast.is_colliding():
+		print("Projectile blocked by cover!")
+		_die()
 
 
 func _die(skip_particles: bool = false) -> void:

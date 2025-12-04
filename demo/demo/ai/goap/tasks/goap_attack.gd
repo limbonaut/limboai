@@ -59,10 +59,13 @@ func _tick(delta: float) -> Status:
 		else:
 			root.scale.x = -1.0
 
-	# Spawn ninja star at agent's position, traveling at an angle toward target
+	# Spawn ninja star offset from agent to avoid self-collision
 	var star = NINJA_STAR_SCENE.instantiate()
-	star.global_position = agent.global_position
+	# Offset 60 pixels in direction of target to clear shooter's hurtbox
+	var spawn_offset := dir_to_target * 60.0
+	star.global_position = agent.global_position + spawn_offset + Vector2(0, -40)  # Also offset Y to match body height
 	star.direction = dir_to_target
+	star.shooter = agent  # Set shooter to prevent self-damage
 	agent.get_parent().add_child(star)
 
 	print("GOAP: Threw ninja star!")

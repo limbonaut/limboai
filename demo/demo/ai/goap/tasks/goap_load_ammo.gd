@@ -20,6 +20,12 @@ func _generate_name() -> String:
 func _tick(_delta: float) -> Status:
 	var pickup_node: Node2D = blackboard.get_var(pickup_var)
 
+	# Check if pickup is still available (prevents double collection)
+	if is_instance_valid(pickup_node):
+		if pickup_node.has_method("is_available") and not pickup_node.is_available():
+			print("GOAP: Ammo pickup already collected!")
+			return FAILURE
+
 	# Add ammo to the agent
 	if agent.has_method("add_ammo"):
 		agent.add_ammo(ammo_amount)
