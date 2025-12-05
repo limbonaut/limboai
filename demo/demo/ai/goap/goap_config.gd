@@ -13,8 +13,14 @@ const COVER_RANGE := 100.0        # Distance to be considered "at cover"
 const ARENA_MIN := Vector2(100.0, 150.0)
 const ARENA_MAX := Vector2(1300.0, 600.0)
 
-# Movement
+# Movement - weapon-specific speeds (ranged faster for kiting)
 const MOVE_SPEED := 300.0
+const RANGED_MOVE_SPEED := 350.0
+const MELEE_MOVE_SPEED := 280.0
+
+# Melee attack balance
+const MELEE_SWING_COOLDOWN := 0.8     # Time between melee swings
+const MELEE_SWING_SLOW_FACTOR := 0.3  # Speed multiplier during swing (30% speed)
 
 # Health thresholds
 const LOW_HEALTH_THRESHOLD := 50
@@ -23,7 +29,7 @@ const HEALTHY_THRESHOLD := 80
 # Resource defaults
 const DEFAULT_MAX_AMMO := 10
 const DEFAULT_MAX_HEALTH := 100
-const DEFAULT_JAM_CHANCE := 0.15
+const DEFAULT_JAM_CHANCE := 0.0  # Disabled
 
 # Scarcity mode settings
 const SCARCITY_MAX_AMMO := 3

@@ -9,6 +9,9 @@ preconditions = {
 "weapon_available": true
 }
 effects = {
-"has_weapon": true
+"has_weapon": true,
+"has_melee_weapon": true,
+"has_ranged_weapon": true,
+"weapon_loaded": true
 }
 execution_tree = ExtResource("1_tree")

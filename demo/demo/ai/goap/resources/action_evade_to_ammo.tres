@@ -1,0 +1,20 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_evade_to_ammo.tres" id="1_tree"]
+
+[resource]
+action_name = "EvadeToAmmo"
+base_cost = 1
+preconditions = {
+"has_ranged_weapon": true,
+"has_ammo": false,
+"melee_threat": true,
+"ammo_available": true
+}
+effects = {
+"near_ammo": true,
+"has_ammo": true,
+"weapon_loaded": true,
+"target_too_close": false
+}
+execution_tree = ExtResource("1_tree")

@@ -181,6 +181,7 @@ func _connect_signals() -> void:
 		combat.health_changed.connect(_on_combat_health_changed)
 		combat.ammo_changed.connect(_on_combat_ammo_changed)
 		combat.died.connect(_on_combat_died)
+		combat.weapon_equipped.connect(_on_combat_weapon_equipped)
 
 	# Connect world state signals for goal evaluation
 	if world_state:
@@ -458,6 +459,14 @@ func _on_combat_ammo_changed(current: int) -> void:
 func _on_combat_died() -> void:
 	print("%s: DIED!" % agent_name)
 	died.emit()
+
+
+func _on_combat_weapon_equipped(_weapon_type: int) -> void:
+	# Trigger immediate replan when weapon is equipped
+	# This ensures agent plans with knowledge of actual weapon type
+	print("%s: Weapon equipped, triggering replan" % agent_name)
+	if goal_evaluator:
+		goal_evaluator.force_replan()
 
 
 # Health node signal handlers (for hurtbox damage from projectiles)

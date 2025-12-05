@@ -1,0 +1,14 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_evade_to_ammo.gd" id="1_evade"]
+
+[sub_resource type="BTAction" id="BTAction_evade"]
+script = ExtResource("1_evade")
+target_var = &"target"
+ammo_pickup_var = &"ammo_pickup"
+tolerance = 80.0
+danger_distance = 200.0
+
+[resource]
+description = "GOAP Action: Evade to ammo - path toward ammo while evading melee"
+root_task = SubResource("BTAction_evade")

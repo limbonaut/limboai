@@ -9,8 +9,7 @@ action_name = "LoadWeapon"
 base_cost = 1
 preconditions = {
 "has_weapon": true,
-"near_ammo": true,
-"under_threat": false
+"near_ammo": true
 }
 effects = {
 "weapon_loaded": true

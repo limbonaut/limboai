@@ -1,0 +1,18 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_kite_attack.tres" id="1_tree"]
+
+[resource]
+action_name = "KiteAttack"
+base_cost = 1
+preconditions = {
+"has_ranged_weapon": true,
+"has_ammo": true,
+"melee_threat": true,
+"target_in_sight": true
+}
+effects = {
+"target_too_close": false,
+"target_dead": true
+}
+execution_tree = ExtResource("1_tree")

@@ -5,11 +5,12 @@ extends BTAction
 ## Strafes backward while facing the target.
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
+const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
 
 ## Blackboard variable storing the target node
 @export var target_var := &"target"
 
-## Retreat speed (backwards strafe)
+## Fallback retreat speed (uses combat component speed when available)
 @export var retreat_speed := 250.0
 
 ## Safe distance from target
@@ -34,11 +35,18 @@ func _tick(delta: float) -> Status:
 		print("GOAP: Retreat - safe distance achieved!")
 		return SUCCESS
 
+	# Get speed from combat component (ranged is faster for kiting)
+	var speed := retreat_speed
+	if agent.has_node("CombatComponent"):
+		var combat = agent.get_node("CombatComponent")
+		if combat.has_method("get_move_speed"):
+			speed = combat.get_move_speed()
+
 	# Move away from target (opposite direction)
 	var retreat_dir: Vector2 = -dir_to_target
 
 	# Check arena bounds and adjust if needed
-	var next_pos: Vector2 = agent.global_position + retreat_dir * retreat_speed * delta
+	var next_pos: Vector2 = agent.global_position + retreat_dir * speed * delta
 	if next_pos.x < GOAPConfigClass.ARENA_MIN.x or next_pos.x > GOAPConfigClass.ARENA_MAX.x:
 		# Can't retreat further horizontally, try diagonal
 		retreat_dir.x = 0.0
@@ -53,7 +61,7 @@ func _tick(delta: float) -> Status:
 		print("GOAP: Retreat - cornered, can't retreat further!")
 		return SUCCESS
 
-	agent.velocity = retreat_dir * retreat_speed
+	agent.velocity = retreat_dir * speed
 
 	# Keep facing the target while retreating
 	if agent.has_node("Root"):

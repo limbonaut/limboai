@@ -1,0 +1,13 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_kite_attack.gd" id="1_kite"]
+
+[sub_resource type="BTAction" id="BTAction_kite"]
+script = ExtResource("1_kite")
+target_var = &"target"
+damage = 35
+shot_cooldown = 0.3
+
+[resource]
+description = "GOAP Action: Kite attack - shoot while backing away"
+root_task = SubResource("BTAction_kite")

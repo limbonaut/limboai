@@ -137,3 +137,14 @@ func get_current_goal() -> Resource:
 		"evade":
 			return goal_evade_melee
 	return null
+
+
+## Forces an immediate replan without changing the goal
+## Used when world state changes significantly (e.g., weapon pickup)
+func force_replan() -> void:
+	if not _goap_task:
+		_goap_task = GOAPUtilsClass.find_goap_task_from_player(bt_player)
+
+	if _goap_task:
+		_goap_task.interrupt()
+		print("GOAP GoalEvaluator: Forced replan")

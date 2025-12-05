@@ -66,9 +66,16 @@ func _tick(delta: float) -> Status:
 		agent.velocity = Vector2.ZERO
 		return SUCCESS
 
+	# Get speed from combat component (uses default if no weapon yet)
+	var move_speed := speed
+	if agent.has_node("CombatComponent"):
+		var combat = agent.get_node("CombatComponent")
+		if combat.has_method("get_move_speed"):
+			move_speed = combat.get_move_speed()
+
 	# Move towards target
 	var direction: Vector2 = (target_pos - agent.global_position).normalized()
-	agent.velocity = direction * speed
+	agent.velocity = direction * move_speed
 
 	# Update facing
 	if agent.has_node("Root"):

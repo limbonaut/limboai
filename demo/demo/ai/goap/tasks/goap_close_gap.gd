@@ -1,16 +1,13 @@
 @tool
 extends BTAction
-## Sprints toward target to close the distance for melee combat.
+## Moves toward target to close the distance for melee combat.
 ## Used by melee weapon agents to get in range.
-## Faster than normal movement to show urgency.
+## Uses weapon-based speed from CombatComponent.
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 
 ## Blackboard variable storing the target node
 @export var target_var := &"target"
-
-## Sprint speed (faster than normal move speed)
-@export var sprint_speed := 450.0
 
 ## Distance at which we consider "close enough"
 @export var close_distance := 100.0
@@ -34,8 +31,15 @@ func _tick(delta: float) -> Status:
 		print("GOAP: CloseGap - in melee range!")
 		return SUCCESS
 
-	# Sprint toward target
-	agent.velocity = dir_to_target * sprint_speed
+	# Get speed from combat component (weapon-based)
+	var speed := GOAPConfigClass.MELEE_MOVE_SPEED
+	if agent.has_node("CombatComponent"):
+		var combat = agent.get_node("CombatComponent")
+		if combat.has_method("get_move_speed"):
+			speed = combat.get_move_speed()
+
+	# Move toward target
+	agent.velocity = dir_to_target * speed
 
 	# Update agent facing
 	if agent.has_node("Root"):

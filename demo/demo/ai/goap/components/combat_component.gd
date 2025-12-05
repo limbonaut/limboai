@@ -13,6 +13,7 @@ signal ammo_changed(current: int)
 signal weapon_jammed
 signal weapon_unjammed
 signal suppression_changed(is_suppressed: bool)
+signal weapon_equipped(weapon_type: int)
 signal died
 
 @export var max_health: int = GOAPConfigClass.DEFAULT_MAX_HEALTH
@@ -20,7 +21,15 @@ signal died
 @export var jam_chance: float = GOAPConfigClass.DEFAULT_JAM_CHANCE
 
 ## Current weapon type equipped by the agent
-var weapon_type: WeaponType = WeaponType.NONE
+var weapon_type: WeaponType = WeaponType.NONE:
+	get:
+		return weapon_type
+	set(value):
+		var old_type := weapon_type
+		weapon_type = value
+		if old_type != value and value != WeaponType.NONE:
+			weapon_equipped.emit(value)
+			print("GOAP Combat: Weapon equipped - %s" % WeaponType.keys()[value])
 
 ## Preferred combat mode - what weapon type agent prefers (set by demo)
 var preferred_mode: CombatMode = CombatMode.RANGED
@@ -150,6 +159,17 @@ func is_ranged() -> bool:
 ## Returns true if shot should hit based on accuracy modifier
 func should_hit() -> bool:
 	return randf() < accuracy_modifier
+
+
+## Returns movement speed based on weapon type (ranged is faster for kiting)
+func get_move_speed() -> float:
+	match weapon_type:
+		WeaponType.RANGED:
+			return GOAPConfigClass.RANGED_MOVE_SPEED
+		WeaponType.MELEE:
+			return GOAPConfigClass.MELEE_MOVE_SPEED
+		_:
+			return GOAPConfigClass.MOVE_SPEED
 
 
 ## Apply suppression effect to the agent
