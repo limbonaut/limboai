@@ -16,7 +16,9 @@ signal target_killed
 
 # World references (set by parent)
 var target: Node2D
-var weapon_pickup: Node2D
+var weapon_pickup: Node2D  # Legacy - kept for compatibility
+var melee_weapon_pickup: Node2D  # Melee weapon pickup location
+var ranged_weapon_pickup: Node2D  # Ranged weapon pickup location
 var ammo_pickup: Node2D
 var health_pickup: Node2D
 
@@ -30,16 +32,62 @@ var enemies: Array[Node2D] = []
 # Cached previous states for change detection
 var _prev_under_threat := false
 var _prev_low_health := false
+var _prev_in_cover := false
+
+# Engagement window - suppress threat detection briefly after leaving cover
+# This allows the agent to actually fight instead of immediately retreating
+const ENGAGEMENT_WINDOW := 2.0
+var _engagement_timer := 0.0
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Update engagement timer
+	if _engagement_timer > 0.0:
+		_engagement_timer -= delta
+
 	_sync_world_state()
 
+
+var _debug_frames := 0
 
 func _sync_world_state() -> void:
 	var bb := _get_blackboard()
 	if not bb or not agent:
 		return
+
+	# Debug output for first few frames to track initialization
+	_debug_frames += 1
+	if _debug_frames <= 3 or _debug_frames == 10:
+		print("GOAP WorldState [%s] frame %d: target=%s, melee_pickup=%s, ranged_pickup=%s" % [
+			agent.name if agent else "?",
+			_debug_frames,
+			target.name if target else "null",
+			melee_weapon_pickup.name if melee_weapon_pickup else "null",
+			ranged_weapon_pickup.name if ranged_weapon_pickup else "null"
+		])
+
+	# Print key GOAP facts at frame 10 to debug planning
+	if _debug_frames == 10:
+		var facts := _compute_facts()
+		print("GOAP Facts [%s]: has_weapon=%s, melee_avail=%s, ranged_avail=%s, target_dead=%s, in_cover=%s, under_threat=%s, target_in_range=%s, target_visible=%s" % [
+			agent.name,
+			facts.get("has_weapon", "?"),
+			facts.get("melee_weapon_available", "?"),
+			facts.get("ranged_weapon_available", "?"),
+			facts.get("target_dead", "?"),
+			facts.get("in_cover", "?"),
+			facts.get("under_threat", "?"),
+			facts.get("target_in_range", "?"),
+			facts.get("target_visible", "?")
+		])
+
+	# Track cover state changes for engagement window
+	var current_in_cover: bool = agent.in_cover if "in_cover" in agent else false
+	if _prev_in_cover and not current_in_cover:
+		# Just left cover - start engagement window
+		_engagement_timer = ENGAGEMENT_WINDOW
+		print("GOAP: Engagement window started (%.1fs)" % ENGAGEMENT_WINDOW)
+	_prev_in_cover = current_in_cover
 
 	# Compute all facts
 	var facts := _compute_facts()
@@ -79,9 +127,32 @@ func _compute_facts() -> Dictionary:
 
 	# Derive states
 	var has_ammo := ammo_count > 0
-	var weapon_loaded := has_weapon and has_ammo
 	var low_health: bool = health < GOAPConfigClass.LOW_HEALTH_THRESHOLD
 	var is_healthy: bool = health >= GOAPConfigClass.HEALTHY_THRESHOLD
+
+	# Weapon type from combat component
+	var has_melee_weapon := false
+	var has_ranged_weapon := false
+	var is_suppressed := false
+	if agent.has_node("CombatComponent"):
+		var combat = agent.get_node("CombatComponent")
+		if combat.has_method("is_melee"):
+			has_melee_weapon = combat.is_melee()
+		if combat.has_method("is_ranged"):
+			has_ranged_weapon = combat.is_ranged()
+		if "is_suppressed" in combat:
+			is_suppressed = combat.is_suppressed
+
+	# Weapon loaded state: ranged needs ammo, melee is always "loaded"
+	var weapon_loaded := (has_weapon and has_ammo) or has_melee_weapon
+
+	# Distance-based facts for weapon type behavior
+	var target_too_close := false  # Ranged wants to retreat
+	var target_too_far := false    # Melee wants to close
+	if target and is_instance_valid(target):
+		var dist := agent.global_position.distance_to(target.global_position)
+		target_too_close = dist < GOAPConfigClass.TOO_CLOSE_THRESHOLD
+		target_too_far = dist > GOAPConfigClass.TOO_FAR_THRESHOLD
 
 	# Threat detection - works for both static enemies and GOAP agents
 	var under_threat := _compute_threat_state()
@@ -98,6 +169,13 @@ func _compute_facts() -> Dictionary:
 	facts["weapon_jammed"] = weapon_jammed
 	facts["under_threat"] = under_threat
 	facts["enemy_attacking"] = under_threat  # Alias for compatibility
+
+	# Weapon type facts
+	facts["has_melee_weapon"] = has_melee_weapon
+	facts["has_ranged_weapon"] = has_ranged_weapon
+	facts["is_suppressed"] = is_suppressed
+	facts["target_too_close"] = target_too_close
+	facts["target_too_far"] = target_too_far
 
 	# Merge proximity facts
 	for key in proximity:
@@ -131,13 +209,9 @@ func _compute_threat_state() -> bool:
 	if in_cover:
 		return false
 
-	# High health agents are more aggressive - they don't feel threatened easily
-	var health: int = agent.health if "health" in agent else 100
-	var max_health: int = agent.max_health if "max_health" in agent else 100
-	var health_ratio := float(health) / float(max_health)
-
-	# If health is above 70%, agent is confident and doesn't feel threatened
-	if health_ratio > 0.7:
+	# Engagement window: suppress threat detection briefly after leaving cover
+	# This allows the agent to actually fight instead of immediately retreating
+	if _engagement_timer > 0.0:
 		return false
 
 	# Check for legacy telegraph-based enemies
@@ -146,22 +220,67 @@ func _compute_threat_state() -> bool:
 			return true
 
 	# Distance-based threat detection for GOAP agents
-	# Threatened if: target has weapon loaded, is in range, and has LoS
+	# Threatened by ranged: target has weapon loaded, is in shooting range, and has LoS
+	# Threatened by melee: target has melee weapon and is close (within TOO_CLOSE_THRESHOLD)
 	if _is_goap_agent(target):
 		var dist := agent.global_position.distance_to(target.global_position)
-		var in_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
+		var target_has_weapon: bool = target.has_weapon if "has_weapon" in target else false
 
-		if in_threat_range:
-			# Check if target has weapon ready
-			var target_has_weapon: bool = target.has_weapon if "has_weapon" in target else false
+		if not target_has_weapon:
+			return false
+
+		# Check if target has melee weapon - melee is a threat when close
+		var target_has_melee := false
+		if target.has_node("CombatComponent"):
+			var target_combat = target.get_node("CombatComponent")
+			if target_combat.has_method("is_melee"):
+				target_has_melee = target_combat.is_melee()
+
+		# Melee threat: close range, has melee weapon
+		# Always feel threatened by close melee - no health confidence check
+		if target_has_melee:
+			var in_melee_threat_range := dist < GOAPConfigClass.TOO_CLOSE_THRESHOLD
+			if in_melee_threat_range:
+				return true
+
+			# Extended threat range for ranged agents without ammo
+			# A ranged agent with no ammo is defenseless against melee - feel threatened at shooting range
+			var agent_has_ranged := false
+			if agent.has_node("CombatComponent"):
+				var agent_combat = agent.get_node("CombatComponent")
+				if agent_combat.has_method("is_ranged"):
+					agent_has_ranged = agent_combat.is_ranged()
+
+			if agent_has_ranged:
+				var agent_ammo: int = agent.ammo_count if "ammo_count" in agent else 0
+				var agent_jammed: bool = agent.weapon_jammed if "weapon_jammed" in agent else false
+				var agent_cant_shoot := agent_ammo <= 0 or agent_jammed
+
+				if agent_cant_shoot:
+					# Defenseless ranged agent - feel threatened by melee at shooting range
+					var in_extended_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
+					if in_extended_threat_range:
+						return true
+
+		# Ranged threat: has loaded weapon, in shooting range, has LoS
+		# High health agents are more confident against ranged
+		var health: int = agent.health if "health" in agent else 100
+		var max_health: int = agent.max_health if "max_health" in agent else 100
+		var health_ratio := float(health) / float(max_health)
+
+		# Only feel threatened by ranged if health is below 70%
+		if health_ratio > 0.7:
+			return false
+
+		var in_shooting_range := dist < GOAPConfigClass.SHOOTING_RANGE
+		if in_shooting_range:
 			var target_ammo: int = target.ammo_count if "ammo_count" in target else 0
 			var target_jammed: bool = target.weapon_jammed if "weapon_jammed" in target else false
-			var target_weapon_ready := target_has_weapon and target_ammo > 0 and not target_jammed
+			var target_weapon_ready := target_ammo > 0 and not target_jammed
 
-			# Check if target has LoS to us
-			var target_has_los := _target_has_los_to_us()
-
-			return target_weapon_ready and target_has_los
+			if target_weapon_ready:
+				var target_has_los := _target_has_los_to_us()
+				return target_has_los
 
 	return false
 
@@ -191,13 +310,27 @@ func _compute_proximity_facts() -> Dictionary:
 	var facts := {}
 	var agent_pos: Vector2 = agent.global_position
 
-	# Weapon pickup
+	# Weapon pickup (legacy - for backwards compatibility)
 	var near_weapon_pickup := false
 	var weapon_available := false
 	if weapon_pickup and is_instance_valid(weapon_pickup):
 		weapon_available = _is_pickup_available(weapon_pickup)
 		if weapon_available:
 			near_weapon_pickup = agent_pos.distance_to(weapon_pickup.global_position) < GOAPConfigClass.PICKUP_RANGE
+
+	# Melee weapon pickup
+	var melee_weapon_available := false
+	if melee_weapon_pickup and is_instance_valid(melee_weapon_pickup):
+		melee_weapon_available = _is_pickup_available(melee_weapon_pickup)
+
+	# Ranged weapon pickup
+	var ranged_weapon_available := false
+	if ranged_weapon_pickup and is_instance_valid(ranged_weapon_pickup):
+		ranged_weapon_available = _is_pickup_available(ranged_weapon_pickup)
+
+	# Unified weapon_available - true if ANY weapon pickup is available
+	# This allows the planner to use a single PickUpWeapon action
+	var any_weapon_available := melee_weapon_available or ranged_weapon_available or weapon_available
 
 	# Ammo pickup
 	var near_ammo := false
@@ -224,12 +357,18 @@ func _compute_proximity_facts() -> Dictionary:
 		near_cover = agent_pos.distance_to(current_cover.global_position) < GOAPConfigClass.COVER_RANGE
 
 	facts["near_weapon_pickup"] = near_weapon_pickup
-	facts["weapon_available"] = weapon_available
+	facts["weapon_available"] = any_weapon_available  # Use unified weapon_available
+	facts["melee_weapon_available"] = melee_weapon_available
+	facts["ranged_weapon_available"] = ranged_weapon_available
 	facts["near_ammo"] = near_ammo
 	facts["ammo_available"] = ammo_available
 	facts["near_health_pickup"] = near_health_pickup
 	facts["health_available"] = health_available
 	facts["near_cover"] = near_cover
+
+	# Weapon pickup references for behavior trees
+	facts["melee_weapon_pickup"] = melee_weapon_pickup
+	facts["ranged_weapon_pickup"] = ranged_weapon_pickup
 
 	return facts
 
@@ -374,8 +513,13 @@ func _has_los_to_target() -> bool:
 		return false
 
 	var space_state := agent.get_world_2d().direct_space_state
+	# Check from projectile spawn position (matches goap_attack.gd spawn offset)
+	# Projectiles spawn 60 pixels toward target + 40 pixels up
+	var dir_to_target := (target.global_position - agent.global_position).normalized()
+	var spawn_offset := dir_to_target * 60.0
+	var from_pos := agent.global_position + spawn_offset + Vector2(0, -40)
 	var query := PhysicsRayQueryParameters2D.create(
-		agent.global_position,
+		from_pos,
 		target.global_position,
 		GOAPConfigClass.LOS_COLLISION_LAYER
 	)

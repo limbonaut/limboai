@@ -1,0 +1,14 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_get_los.gd" id="1_getlos"]
+
+[sub_resource type="BTAction" id="BTAction_getlos"]
+script = ExtResource("1_getlos")
+target_var = &"target"
+tolerance = 30.0
+speed = 280.0
+search_distance = 150.0
+
+[resource]
+description = "GOAP Action: Reposition to get line of sight to target"
+root_task = SubResource("BTAction_getlos")

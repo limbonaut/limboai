@@ -8,7 +8,8 @@ base_cost = 3
 preconditions = {
 "has_weapon": true,
 "weapon_loaded": true,
-"under_threat": false
+"under_threat": false,
+"in_cover": false
 }
 effects = {
 "target_in_range": true,

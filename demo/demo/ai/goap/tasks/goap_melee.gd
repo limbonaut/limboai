@@ -28,6 +28,10 @@ func _tick(_delta: float) -> Status:
 		else:
 			root.scale.x = -1.0
 
+	# Play melee swing animation
+	if agent.has_method("play_melee_swing"):
+		agent.play_melee_swing()
+
 	# Deal damage to target
 	if target_node.has_node("Health"):
 		var health = target_node.get_node("Health")

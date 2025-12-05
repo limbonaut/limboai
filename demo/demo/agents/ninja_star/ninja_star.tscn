@@ -58,7 +58,7 @@ update_scale = false
 
 [node name="Hitbox" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 4
+collision_mask = 20
 script = ExtResource("2_iem02")
 damage = 15.0
 

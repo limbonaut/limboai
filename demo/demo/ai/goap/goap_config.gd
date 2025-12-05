@@ -34,3 +34,15 @@ const NORMAL_HEALTH_RESPAWN := 8.0
 
 # Physics layers
 const LOS_COLLISION_LAYER := 16
+
+# Weapon type combat distances
+const RETREAT_DISTANCE := 300.0        # Ranged wants to be this far away
+const CLOSE_GAP_THRESHOLD := 150.0     # Melee wants to be within this distance
+const TOO_CLOSE_THRESHOLD := 200.0     # Ranged feels threatened within this distance
+const TOO_FAR_THRESHOLD := 150.0       # Melee needs to close if farther than this
+
+# Suppression
+const SUPPRESSION_DURATION := 1.5      # Duration in seconds
+
+# Accuracy
+const COVER_ACCURACY_PENALTY := 0.5    # 50% accuracy when shooting from cover

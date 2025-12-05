@@ -6,7 +6,8 @@
 action_name = "LeaveCover"
 base_cost = 1
 preconditions = {
-"in_cover": true
+"in_cover": true,
+"is_suppressed": false
 }
 effects = {
 "in_cover": false,

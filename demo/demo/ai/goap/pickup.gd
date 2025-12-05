@@ -3,6 +3,8 @@
 extends Node2D
 
 @export var pickup_type: String = "weapon"  # "weapon", "ammo", or "health"
+## For weapon pickups: "ranged" or "melee"
+@export var weapon_type: String = "ranged"
 @export var bob_speed: float = 2.0
 @export var bob_height: float = 8.0
 @export var respawn_time: float = 5.0  # Time in seconds before respawning (0 = no respawn)
@@ -31,8 +33,32 @@ func _ready() -> void:
 	else:
 		_initial_y = position.y
 
+	# Update visual based on weapon type
+	_update_weapon_visual()
+
 	if label:
 		label.text = pickup_type.capitalize()
+
+
+## Updates the sprite visual based on weapon type
+func _update_weapon_visual() -> void:
+	if pickup_type != "weapon" or not sprite:
+		return
+
+	if weapon_type == "melee":
+		# Show sword-like shape: rotate and stretch sprite
+		sprite.rotation_degrees = 45.0
+		sprite.scale = Vector2(3.0, 1.0)  # Elongated
+		sprite.modulate.g = 0.3  # More reddish/orange tint for melee
+		sprite.modulate.b = 0.1
+		if label:
+			label.text = "MELEE"
+	else:
+		# Ranged keeps default ninja star look
+		sprite.rotation_degrees = 0.0
+		sprite.scale = Vector2(2.0, 2.0)
+		if label:
+			label.text = "RANGED"
 
 
 func _process(delta: float) -> void:

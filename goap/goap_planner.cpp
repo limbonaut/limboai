@@ -13,13 +13,24 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/os/os.h"
+#include "core/string/print_string.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/os.hpp>
 #include <godot_cpp/classes/time.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 using namespace godot;
 #endif // LIMBOAI_GDEXTENSION
+
+// Debug flag - set to true to enable planner tracing
+#define GOAP_PLANNER_DEBUG true
+
+#ifdef LIMBOAI_MODULE
+#define GOAP_DEBUG_PRINT(msg) if (GOAP_PLANNER_DEBUG) print_line(msg)
+#else
+#define GOAP_DEBUG_PRINT(msg) if (GOAP_PLANNER_DEBUG) UtilityFunctions::print(msg)
+#endif
 
 TypedArray<GOAPAction> GOAPPlanner::_reconstruct_plan(const Vector<PlannerNode> &p_closed_list, int p_goal_index) const {
 	TypedArray<GOAPAction> plan;
@@ -67,14 +78,61 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 	ERR_FAIL_COND_V(p_current_state.is_null(), TypedArray<GOAPAction>());
 	ERR_FAIL_COND_V(p_goal_state.is_null(), TypedArray<GOAPAction>());
 
+	// Debug: Print goal state
+	GOAP_DEBUG_PRINT("=== GOAP PLANNER START ===");
+	{
+		TypedArray<StringName> goal_facts = p_goal_state->get_fact_names();
+		String goal_str = "Goal state facts: ";
+		for (int i = 0; i < goal_facts.size(); i++) {
+			StringName fact = goal_facts[i];
+			goal_str += String(fact) + "=" + String(p_goal_state->get_fact(fact)) + " ";
+		}
+		GOAP_DEBUG_PRINT(goal_str);
+
+		TypedArray<StringName> current_facts = p_current_state->get_fact_names();
+		String current_str = "Current state facts: ";
+		for (int i = 0; i < current_facts.size(); i++) {
+			StringName fact = current_facts[i];
+			current_str += String(fact) + "=" + String(p_current_state->get_fact(fact)) + " ";
+		}
+		GOAP_DEBUG_PRINT(current_str);
+	}
+
 	// Check if goal is already satisfied
 	if (p_current_state->satisfies(p_goal_state)) {
+		GOAP_DEBUG_PRINT("Goal already satisfied - returning empty plan");
 		return TypedArray<GOAPAction>(); // Empty plan - goal already achieved
 	}
 
 	// No actions available
 	if (p_available_actions.is_empty()) {
+		GOAP_DEBUG_PRINT("No actions available!");
 		return TypedArray<GOAPAction>();
+	}
+
+	// Debug: List available actions
+	GOAP_DEBUG_PRINT("Available actions (" + itos(p_available_actions.size()) + "):");
+	for (int i = 0; i < p_available_actions.size(); i++) {
+		Ref<GOAPAction> action = p_available_actions[i];
+		if (action.is_valid()) {
+			Dictionary effects = action->get_effects();
+			Dictionary preconditions = action->get_preconditions();
+			String action_str = "  " + String(action->get_action_name());
+			action_str += " precond={";
+			Array pkeys = preconditions.keys();
+			for (int j = 0; j < pkeys.size(); j++) {
+				if (j > 0) action_str += ", ";
+				action_str += String(pkeys[j]) + ":" + String(preconditions[pkeys[j]]);
+			}
+			action_str += "} effects={";
+			Array ekeys = effects.keys();
+			for (int j = 0; j < ekeys.size(); j++) {
+				if (j > 0) action_str += ", ";
+				action_str += String(ekeys[j]) + ":" + String(effects[ekeys[j]]);
+			}
+			action_str += "}";
+			GOAP_DEBUG_PRINT(action_str);
+		}
 	}
 
 	// A* search using backward chaining
@@ -100,6 +158,8 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 	open_list.push_back(start_node);
 	uint32_t start_hash = start_node.state->compute_hash();
 	open_hash[start_hash].push_back(0);
+
+	GOAP_DEBUG_PRINT("Starting A* backward search...");
 
 	while (!open_list.is_empty() && last_iterations < max_iterations) {
 		last_iterations++;
@@ -143,7 +203,38 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 		closed_hash[current_hash].push_back(current_closed_index);
 
 		// Check if we've reached the current state (goal of backward search)
+		GOAP_DEBUG_PRINT("Iteration " + itos(last_iterations) + ": checking if current state satisfies node...");
+		{
+			// Show what facts this node requires
+			TypedArray<StringName> node_facts = current.state->get_fact_names();
+			String node_str = "  Node requires: ";
+			for (int i = 0; i < node_facts.size(); i++) {
+				StringName fact = node_facts[i];
+				node_str += String(fact) + "=" + String(current.state->get_fact(fact)) + " ";
+			}
+			GOAP_DEBUG_PRINT(node_str);
+
+			// Check each fact
+			bool all_satisfied = true;
+			for (int i = 0; i < node_facts.size(); i++) {
+				StringName fact = node_facts[i];
+				Variant required = current.state->get_fact(fact);
+				Variant actual = p_current_state->get_fact(fact);
+				bool has_it = p_current_state->has_fact(fact);
+				String check = "  Checking " + String(fact) + ": required=" + String(required) + " actual=" + String(actual) + " has=" + (has_it ? "true" : "false");
+				if (has_it && actual == required) {
+					check += " MATCH";
+				} else {
+					check += " FAIL";
+					all_satisfied = false;
+				}
+				GOAP_DEBUG_PRINT(check);
+			}
+			GOAP_DEBUG_PRINT("  All satisfied: " + String(all_satisfied ? "YES" : "NO"));
+		}
+
 		if (p_current_state->satisfies(current.state)) {
+			GOAP_DEBUG_PRINT("SUCCESS! Current state satisfies node - plan found!");
 			// Found a plan! Reconstruct and return it
 #ifdef LIMBOAI_MODULE
 			uint64_t end_time = OS::get_singleton()->get_ticks_usec();
@@ -156,6 +247,7 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 
 		// Expand node: try each action that could lead to current state
 		// In backward search, we look for actions whose EFFECTS satisfy some of our required preconditions
+		GOAP_DEBUG_PRINT("Expanding node - checking which actions are useful...");
 		for (int i = 0; i < p_available_actions.size(); i++) {
 			Ref<GOAPAction> action = p_available_actions[i];
 			if (action.is_null()) {
@@ -168,11 +260,15 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 			Array effect_keys = effects.keys();
 			bool action_useful = false;
 
+			String action_name = String(action->get_action_name());
 			for (int j = 0; j < effect_keys.size(); j++) {
-				StringName effect_fact = effect_keys[j];
-				if (current.state->has_fact(effect_fact)) {
-					Variant effect_value = effects[effect_fact];
+				Variant key = effect_keys[j];
+				StringName effect_fact = key;
+				bool has_fact = current.state->has_fact(effect_fact);
+				if (has_fact) {
+					Variant effect_value = effects[key]; // Use original key for Dictionary lookup
 					Variant required_value = current.state->get_fact(effect_fact);
+					GOAP_DEBUG_PRINT("  Action " + action_name + ": effect " + String(effect_fact) + "=" + String(effect_value) + " vs required=" + String(required_value) + " match=" + String(effect_value == required_value ? "YES" : "NO"));
 					if (effect_value == required_value) {
 						action_useful = true;
 						break;
@@ -183,6 +279,7 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 			if (!action_useful) {
 				continue;
 			}
+			GOAP_DEBUG_PRINT("  -> Action " + action_name + " IS USEFUL!");
 
 			// Create the predecessor state (state before this action was applied)
 			// Remove the effects and add the preconditions
@@ -198,8 +295,9 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 			Dictionary preconditions = action->get_preconditions();
 			Array precondition_keys = preconditions.keys();
 			for (int j = 0; j < precondition_keys.size(); j++) {
-				StringName precondition_fact = precondition_keys[j];
-				predecessor_state->set_fact(precondition_fact, preconditions[precondition_fact]);
+				Variant key = precondition_keys[j];
+				StringName precondition_fact = key;
+				predecessor_state->set_fact(precondition_fact, preconditions[key]); // Use original key for Dictionary lookup
 			}
 
 			// Check if this state is already in closed list using hash lookup (O(1) average)
@@ -262,6 +360,11 @@ TypedArray<GOAPAction> GOAPPlanner::plan_to_state(
 	}
 
 	// No plan found
+	GOAP_DEBUG_PRINT("=== NO PLAN FOUND ===");
+	GOAP_DEBUG_PRINT("Iterations: " + itos(last_iterations) + "/" + itos(max_iterations));
+	GOAP_DEBUG_PRINT("Open list empty: " + String(open_list.is_empty() ? "YES" : "NO"));
+	GOAP_DEBUG_PRINT("Closed list size: " + itos(closed_list.size()));
+
 #ifdef LIMBOAI_MODULE
 	uint64_t end_time = OS::get_singleton()->get_ticks_usec();
 #else

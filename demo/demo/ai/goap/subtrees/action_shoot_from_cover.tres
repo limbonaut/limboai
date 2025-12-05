@@ -1,0 +1,11 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_shoot_from_cover.gd" id="1_shoot_cover"]
+
+[sub_resource type="BTAction" id="BTAction_shoot_cover"]
+script = ExtResource("1_shoot_cover")
+target_var = &"target"
+
+[resource]
+description = "GOAP Action: Shoot from cover (peeking)"
+root_task = SubResource("BTAction_shoot_cover")

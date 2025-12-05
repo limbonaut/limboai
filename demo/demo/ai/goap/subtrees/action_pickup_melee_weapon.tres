@@ -1,21 +1,22 @@
 [gd_resource type="BehaviorTree" load_steps=5 format=3]
 
-[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_go_to_preferred_weapon.gd" id="1_goto"]
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_move_to.gd" id="1_moveto"]
 [ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_pickup.gd" id="2_pickup"]
 
-[sub_resource type="BTAction" id="BTAction_goto"]
-script = ExtResource("1_goto")
+[sub_resource type="BTAction" id="BTAction_moveto"]
+script = ExtResource("1_moveto")
+target_var = &"melee_weapon_pickup"
 tolerance = 80.0
 speed = 300.0
 
 [sub_resource type="BTAction" id="BTAction_pickup"]
 script = ExtResource("2_pickup")
-pickup_var = &"weapon_pickup"
+pickup_var = &"melee_weapon_pickup"
 result_var = &"has_weapon"
 
 [sub_resource type="BTSequence" id="BTSequence_1"]
-children = [SubResource("BTAction_goto"), SubResource("BTAction_pickup")]
+children = [SubResource("BTAction_moveto"), SubResource("BTAction_pickup")]
 
 [resource]
-description = "GOAP Action: Move to preferred weapon and pick it up"
+description = "GOAP Action: Move to melee weapon and pick it up"
 root_task = SubResource("BTSequence_1")

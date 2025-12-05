@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" path="res://demo/ai/goap/cover_object.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_shadow"]
-[ext_resource type="Texture2D" path="res://demo/assets/env_plants.png" id="3_plants"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(90, 100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blocker"]
+size = Vector2(130, 70)
 
 [node name="CoverObject" type="StaticBody2D"]
 collision_layer = 17
@@ -15,16 +17,46 @@ script = ExtResource("1_script")
 [node name="Shadow" type="Sprite2D" parent="."]
 modulate = Color(0, 0, 0, 0.3)
 position = Vector2(0, 15)
-scale = Vector2(0.8, 0.35)
+scale = Vector2(1.2, 0.4)
 texture = ExtResource("2_shadow")
 
-[node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, -70)
-scale = Vector2(1.0, 1.0)
-texture = ExtResource("3_plants")
-region_enabled = true
-region_rect = Rect2(510, 0, 150, 180)
+[node name="Barrier" type="ColorRect" parent="."]
+offset_left = -65.0
+offset_top = -70.0
+offset_right = 65.0
+offset_bottom = 0.0
+color = Color(0.45, 0.32, 0.2, 1)
+
+[node name="BarrierTop" type="ColorRect" parent="."]
+offset_left = -70.0
+offset_top = -80.0
+offset_right = 70.0
+offset_bottom = -70.0
+color = Color(0.55, 0.4, 0.25, 1)
+
+[node name="BarrierHighlight" type="ColorRect" parent="."]
+offset_left = -60.0
+offset_top = -65.0
+offset_right = -50.0
+offset_bottom = -10.0
+color = Color(0.55, 0.4, 0.28, 1)
+
+[node name="BarrierShadow" type="ColorRect" parent="."]
+offset_left = 50.0
+offset_top = -65.0
+offset_right = 60.0
+offset_bottom = -10.0
+color = Color(0.35, 0.24, 0.15, 1)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -50)
 shape = SubResource("RectangleShape2D_1")
+disabled = true
+
+[node name="ProjectileBlocker" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ProjectileBlocker"]
+position = Vector2(0, -35)
+shape = SubResource("RectangleShape2D_blocker")

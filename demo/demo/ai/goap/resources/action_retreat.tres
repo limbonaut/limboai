@@ -1,0 +1,17 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_retreat_ranged.tres" id="1_tree"]
+
+[resource]
+action_name = "RetreatRanged"
+base_cost = 2
+preconditions = {
+"has_ranged_weapon": true,
+"target_too_close": true,
+"in_cover": false
+}
+effects = {
+"target_too_close": false,
+"target_in_sight": true
+}
+execution_tree = ExtResource("1_tree")

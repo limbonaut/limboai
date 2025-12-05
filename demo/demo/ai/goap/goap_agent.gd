@@ -15,6 +15,14 @@ signal health_changed(current: int, max_health: int)
 signal ammo_changed(current: int)
 signal died
 
+# Dodge impulse state
+var _dodge_velocity := Vector2.ZERO
+var _dodge_timer := 0.0
+const DODGE_SPEED := 400.0
+const DODGE_DURATION := 0.2
+const DODGE_COOLDOWN := 0.5
+var _dodge_cooldown_timer := 0.0
+
 # Agent identification
 @export var agent_name: String = "Agent"
 @export var team: int = 0  # 0 = Red team, 1 = Blue team
@@ -62,6 +70,9 @@ var cover_object: Node2D:
 @onready var world_state = $WorldStateManager
 @onready var goal_evaluator = $GoalEvaluator
 
+# Weapon sprite (shown when weapon equipped)
+var weapon_sprite: Sprite2D
+
 # Proxy properties for backward compatibility with action tasks
 var has_weapon: bool:
 	get: return combat.has_weapon if combat else false
@@ -105,9 +116,17 @@ var jam_chance: float:
 
 func _ready() -> void:
 	_resolve_node_paths()
+	_find_weapon_sprite()
 	_setup_components()
 	_connect_signals()
 	_initial_sync()
+
+
+## Finds the weapon sprite node in the rig (if it exists)
+func _find_weapon_sprite() -> void:
+	if root and root.has_node("Rig/WeaponSprite"):
+		weapon_sprite = root.get_node("Rig/WeaponSprite")
+		weapon_sprite.visible = false  # Hidden until weapon is picked up
 
 
 func _resolve_node_paths() -> void:
@@ -190,7 +209,19 @@ func _initial_sync() -> void:
 	ammo_changed.emit(ammo_count)
 
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
+	# Update dodge cooldown
+	if _dodge_cooldown_timer > 0.0:
+		_dodge_cooldown_timer -= delta
+
+	# Apply dodge impulse if active
+	if _dodge_timer > 0.0:
+		_dodge_timer -= delta
+		velocity = _dodge_velocity * (_dodge_timer / DODGE_DURATION)  # Ease out
+	# Lock movement while in cover (crouching)
+	elif in_cover:
+		velocity = Vector2.ZERO
+
 	move_and_slide()
 	# Keep agent inside arena bounds
 	global_position.x = clampf(global_position.x, GOAPConfigClass.ARENA_MIN.x, GOAPConfigClass.ARENA_MAX.x)
@@ -404,6 +435,8 @@ func _on_health_node_damaged(amount: float, _knockback: Vector2) -> void:
 	# Forward damage to combat component
 	print("%s: HIT by projectile for %.0f damage!" % [agent_name, amount])
 	take_damage(int(amount))
+	# Trigger dodge reaction if not on cooldown
+	_trigger_dodge_reaction()
 
 
 func _on_health_node_death() -> void:
@@ -413,3 +446,76 @@ func _on_health_node_death() -> void:
 		combat.health = 0
 		combat._emit_health_changed()
 	died.emit()
+
+
+## Triggers a dodge reaction when hit - moves perpendicular to attacker
+func _trigger_dodge_reaction() -> void:
+	# Skip if on cooldown or in cover
+	if _dodge_cooldown_timer > 0.0 or in_cover:
+		return
+
+	# Calculate dodge direction (perpendicular to attacker)
+	var dodge_dir := Vector2.ZERO
+	if target and is_instance_valid(target):
+		var to_attacker := (target.global_position - global_position).normalized()
+		# Choose random perpendicular direction
+		if randf() > 0.5:
+			dodge_dir = Vector2(-to_attacker.y, to_attacker.x)
+		else:
+			dodge_dir = Vector2(to_attacker.y, -to_attacker.x)
+	else:
+		# Random direction if no target
+		dodge_dir = Vector2(randf_range(-1, 1), randf_range(-1, 1)).normalized()
+
+	# Check bounds and reverse if needed
+	var next_pos := global_position + dodge_dir * DODGE_SPEED * DODGE_DURATION
+	if next_pos.x < GOAPConfigClass.ARENA_MIN.x or next_pos.x > GOAPConfigClass.ARENA_MAX.x:
+		dodge_dir.x *= -1
+	if next_pos.y < GOAPConfigClass.ARENA_MIN.y or next_pos.y > GOAPConfigClass.ARENA_MAX.y:
+		dodge_dir.y *= -1
+
+	# Apply dodge
+	_dodge_velocity = dodge_dir * DODGE_SPEED
+	_dodge_timer = DODGE_DURATION
+	_dodge_cooldown_timer = DODGE_COOLDOWN
+	print("%s: Dodge!" % agent_name)
+
+
+## Updates the weapon sprite visual based on weapon type
+func update_weapon_visual() -> void:
+	if not weapon_sprite:
+		return
+
+	if not combat or not combat.has_weapon:
+		weapon_sprite.visible = false
+		return
+
+	weapon_sprite.visible = true
+
+	# Adjust visual based on weapon type
+	if combat.is_melee():
+		# Melee weapon: longer, sword-like shape
+		weapon_sprite.rotation_degrees = 45.0
+		weapon_sprite.scale = Vector2(3.0, 0.8)  # Elongated
+		weapon_sprite.modulate = Color(1.0, 0.7, 0.3, 1.0)  # Orange/bronze tint
+		weapon_sprite.position = Vector2(35, -50)  # Higher up like a sword
+	else:
+		# Ranged weapon: ninja star shape
+		weapon_sprite.rotation_degrees = 0.0
+		weapon_sprite.scale = Vector2(1.5, 1.5)
+		weapon_sprite.modulate = Color(1.0, 1.0, 1.0, 1.0)  # White/silver
+		weapon_sprite.position = Vector2(40, -40)
+
+
+## Plays a melee swing animation using tween
+func play_melee_swing() -> void:
+	if not weapon_sprite or not weapon_sprite.visible:
+		return
+
+	# Animate swing: quick rotation forward then back
+	var start_rotation: float = weapon_sprite.rotation_degrees
+	var swing_rotation: float = start_rotation - 90.0  # Swing downward
+
+	var tween := create_tween()
+	tween.tween_property(weapon_sprite, "rotation_degrees", swing_rotation, 0.1)
+	tween.tween_property(weapon_sprite, "rotation_degrees", start_rotation, 0.15)

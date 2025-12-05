@@ -1,0 +1,13 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_close_gap.gd" id="1_close_gap"]
+
+[sub_resource type="BTAction" id="BTAction_close_gap"]
+script = ExtResource("1_close_gap")
+target_var = &"target"
+sprint_speed = 450.0
+close_distance = 100.0
+
+[resource]
+description = "GOAP Action: Sprint toward target (melee)"
+root_task = SubResource("BTAction_close_gap")

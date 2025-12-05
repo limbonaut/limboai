@@ -45,7 +45,7 @@ public:
 	void erase_fact(const StringName &p_name);
 	void clear();
 
-	void set_state(const Dictionary &p_state) { state = p_state; }
+	void set_state(const Dictionary &p_state);
 	Dictionary get_state() const { return state; }
 
 	TypedArray<StringName> get_fact_names() const;

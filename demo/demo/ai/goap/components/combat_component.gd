@@ -5,15 +5,32 @@ extends Node
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 
+enum WeaponType { NONE, MELEE, RANGED }
+enum CombatMode { MELEE, RANGED }
+
 signal health_changed(current: int, max_health: int)
 signal ammo_changed(current: int)
 signal weapon_jammed
 signal weapon_unjammed
+signal suppression_changed(is_suppressed: bool)
 signal died
 
 @export var max_health: int = GOAPConfigClass.DEFAULT_MAX_HEALTH
 @export var max_ammo: int = GOAPConfigClass.DEFAULT_MAX_AMMO
 @export var jam_chance: float = GOAPConfigClass.DEFAULT_JAM_CHANCE
+
+## Current weapon type equipped by the agent
+var weapon_type: WeaponType = WeaponType.NONE
+
+## Preferred combat mode - what weapon type agent prefers (set by demo)
+var preferred_mode: CombatMode = CombatMode.RANGED
+
+## Accuracy modifier (1.0 = perfect, 0.5 = 50% hit chance)
+var accuracy_modifier: float = 1.0
+
+## Suppression state - when suppressed, agent can't leave cover
+var is_suppressed: bool = false
+var _suppression_timer: float = 0.0
 
 var health: int:
 	get:
@@ -118,3 +135,38 @@ func is_weapon_ready() -> bool:
 ## Forces a health changed emission (used when external systems modify health)
 func _emit_health_changed() -> void:
 	health_changed.emit(_health, max_health)
+
+
+## Returns true if wielding a melee weapon
+func is_melee() -> bool:
+	return weapon_type == WeaponType.MELEE
+
+
+## Returns true if wielding a ranged weapon
+func is_ranged() -> bool:
+	return weapon_type == WeaponType.RANGED
+
+
+## Returns true if shot should hit based on accuracy modifier
+func should_hit() -> bool:
+	return randf() < accuracy_modifier
+
+
+## Apply suppression effect to the agent
+func apply_suppression() -> void:
+	var was_suppressed := is_suppressed
+	is_suppressed = true
+	_suppression_timer = GOAPConfigClass.SUPPRESSION_DURATION
+	if not was_suppressed:
+		suppression_changed.emit(true)
+		print("GOAP Combat: SUPPRESSED! Can't leave cover for %.1fs" % _suppression_timer)
+
+
+## Called every frame to update suppression timer
+func _process(delta: float) -> void:
+	if _suppression_timer > 0.0:
+		_suppression_timer -= delta
+		if _suppression_timer <= 0.0:
+			is_suppressed = false
+			suppression_changed.emit(false)
+			print("GOAP Combat: Suppression ended")

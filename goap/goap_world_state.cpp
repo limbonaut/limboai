@@ -60,6 +60,16 @@ void GOAPWorldState::clear() {
 	state.clear();
 }
 
+void GOAPWorldState::set_state(const Dictionary &p_state) {
+	state.clear();
+	Array keys = p_state.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		Variant original_key = keys[i];
+		StringName key = original_key; // Convert String to StringName
+		state[key] = p_state[original_key];
+	}
+}
+
 TypedArray<StringName> GOAPWorldState::get_fact_names() const {
 	return state.keys();
 }
@@ -79,11 +89,12 @@ bool GOAPWorldState::satisfies(const Ref<GOAPWorldState> &p_goal) const {
 
 	Array goal_keys = p_goal->state.keys();
 	for (int i = 0; i < goal_keys.size(); i++) {
-		StringName key = goal_keys[i];
+		Variant original_key = goal_keys[i];
+		StringName key = original_key;
 		if (!state.has(key)) {
 			return false;
 		}
-		if (!_values_match(state[key], p_goal->state[key])) {
+		if (!_values_match(state[key], p_goal->state[original_key])) { // Use original key for goal lookup
 			return false;
 		}
 	}
@@ -96,8 +107,9 @@ int GOAPWorldState::distance_to(const Ref<GOAPWorldState> &p_goal) const {
 	int distance = 0;
 	Array goal_keys = p_goal->state.keys();
 	for (int i = 0; i < goal_keys.size(); i++) {
-		StringName key = goal_keys[i];
-		Variant goal_value = p_goal->state[key];
+		Variant original_key = goal_keys[i];
+		StringName key = original_key;
+		Variant goal_value = p_goal->state[original_key]; // Use original key for goal lookup
 		Variant current_value = state.has(key) ? state[key] : Variant();
 
 		if (!_values_match(current_value, goal_value)) {
@@ -118,8 +130,9 @@ Ref<GOAPWorldState> GOAPWorldState::apply_effects(const Dictionary &p_effects) c
 	Ref<GOAPWorldState> new_state = duplicate();
 	Array effect_keys = p_effects.keys();
 	for (int i = 0; i < effect_keys.size(); i++) {
-		StringName key = effect_keys[i];
-		new_state->state[key] = p_effects[key];
+		Variant original_key = effect_keys[i];
+		StringName key = original_key;
+		new_state->state[key] = p_effects[original_key]; // Use original key for effects lookup
 	}
 	return new_state;
 }

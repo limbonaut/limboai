@@ -1,12 +1,11 @@
-[gd_resource type="BehaviorTree" load_steps=18 format=3]
+[gd_resource type="BehaviorTree" load_steps=21 format=3]
 
 [ext_resource type="GOAPGoal" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="1_goal"]
-[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_go_to_weapon.tres" id="2_go_weapon"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_pickup_weapon.tres" id="3_pickup"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_go_to_ammo.tres" id="4_go_ammo"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_load_weapon.tres" id="5_load"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_approach_target.tres" id="6_approach"]
-[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_shoot.tres" id="7_shoot"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_attack.tres" id="7_attack"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_go_to_cover.tres" id="10_go_cover"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_take_cover.tres" id="11_take_cover"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_leave_cover.tres" id="12_leave_cover"]
@@ -15,10 +14,14 @@
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_wait_in_cover.tres" id="15_wait_cover"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_unjam_weapon.tres" id="16_unjam"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_flank.tres" id="17_flank"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_get_los.tres" id="18_get_los"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_shoot_from_cover.tres" id="19_shoot_cover"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_close_gap.tres" id="20_close_gap"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_retreat.tres" id="21_retreat"]
 
 [sub_resource type="BTRunGOAPPlan" id="BTRunGOAPPlan_1"]
 goal = ExtResource("1_goal")
-available_actions = [ExtResource("2_go_weapon"), ExtResource("3_pickup"), ExtResource("4_go_ammo"), ExtResource("5_load"), ExtResource("6_approach"), ExtResource("7_shoot"), ExtResource("10_go_cover"), ExtResource("11_take_cover"), ExtResource("12_leave_cover"), ExtResource("13_go_health"), ExtResource("14_heal"), ExtResource("15_wait_cover"), ExtResource("16_unjam"), ExtResource("17_flank")]
+available_actions = [ExtResource("3_pickup"), ExtResource("4_go_ammo"), ExtResource("5_load"), ExtResource("6_approach"), ExtResource("7_attack"), ExtResource("10_go_cover"), ExtResource("11_take_cover"), ExtResource("12_leave_cover"), ExtResource("13_go_health"), ExtResource("14_heal"), ExtResource("15_wait_cover"), ExtResource("16_unjam"), ExtResource("17_flank"), ExtResource("18_get_los"), ExtResource("19_shoot_cover"), ExtResource("20_close_gap"), ExtResource("21_retreat")]
 replan_cooldown = 0.1
 replan_debounce = 0.05
 max_iterations = 300

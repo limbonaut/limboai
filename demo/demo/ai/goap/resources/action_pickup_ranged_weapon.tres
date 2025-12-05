@@ -1,0 +1,17 @@
+[gd_resource type="GOAPAction" load_steps=3 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_pickup_ranged_weapon.tres" id="1_tree"]
+[ext_resource type="Script" path="res://demo/ai/goap/actions/action_pickup_ranged_weapon.gd" id="2_script"]
+
+[resource]
+script = ExtResource("2_script")
+action_name = "PickUpRangedWeapon"
+base_cost = 1
+preconditions = {
+"ranged_weapon_available": true
+}
+effects = {
+"has_weapon": true,
+"has_ranged_weapon": true
+}
+execution_tree = ExtResource("1_tree")

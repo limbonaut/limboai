@@ -2,6 +2,9 @@
 extends BTAction
 ## Picks up an item and sets a blackboard variable.
 ## Returns SUCCESS after picking up.
+## For weapon pickups, also sets weapon_type on the CombatComponent.
+
+const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
 
 ## Blackboard variable storing the pickup node
 @export var pickup_var := &"weapon_pickup"
@@ -22,6 +25,24 @@ func _generate_name() -> String:
 
 func _tick(_delta: float) -> Status:
 	var pickup_node: Node2D = blackboard.get_var(pickup_var)
+
+	# For weapon pickups, set weapon type on combat component
+	if is_instance_valid(pickup_node) and "weapon_type" in pickup_node:
+		if agent.has_node("CombatComponent"):
+			var combat: CombatComponentClass = agent.get_node("CombatComponent")
+			match pickup_node.weapon_type:
+				"melee":
+					combat.weapon_type = CombatComponentClass.WeaponType.MELEE
+					print("GOAP: Equipped MELEE weapon")
+				"ranged":
+					combat.weapon_type = CombatComponentClass.WeaponType.RANGED
+					print("GOAP: Equipped RANGED weapon")
+				_:
+					combat.weapon_type = CombatComponentClass.WeaponType.RANGED
+					print("GOAP: Equipped default RANGED weapon")
+			# Update weapon visual on agent
+			if agent.has_method("update_weapon_visual"):
+				agent.update_weapon_visual()
 
 	# Collect the pickup (hides it and starts respawn timer)
 	if is_instance_valid(pickup_node):

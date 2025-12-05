@@ -5,7 +5,9 @@
 [resource]
 action_name = "GoToWeapon"
 base_cost = 3
-preconditions = {}
+preconditions = {
+"in_cover": false
+}
 effects = {
 "near_weapon_pickup": true
 }

@@ -16,8 +16,9 @@ bool GOAPAction::is_valid(const Ref<GOAPWorldState> &p_state) const {
 
 	Array precondition_keys = preconditions.keys();
 	for (int i = 0; i < precondition_keys.size(); i++) {
-		StringName key = precondition_keys[i];
-		Variant required_value = preconditions[key];
+		Variant original_key = precondition_keys[i];
+		StringName key = original_key; // Convert to StringName for world state lookup
+		Variant required_value = preconditions[original_key]; // Use original key for Dictionary lookup
 		Variant current_value = p_state->get_fact(key, Variant());
 
 		// Type mismatch = not valid
@@ -87,7 +88,12 @@ TypedArray<StringName> GOAPAction::get_relevant_facts() const {
 }
 
 bool GOAPAction::produces_fact(const StringName &p_fact_name) const {
-	return effects.has(p_fact_name);
+	// Check both StringName and String keys since .tres files store as String
+	if (effects.has(p_fact_name)) {
+		return true;
+	}
+	// Also check as String in case Dictionary has String keys
+	return effects.has(String(p_fact_name));
 }
 
 void GOAPAction::_bind_methods() {

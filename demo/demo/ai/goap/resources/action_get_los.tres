@@ -1,0 +1,15 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_get_los.tres" id="1_tree"]
+
+[resource]
+action_name = "GetLineOfSight"
+base_cost = 3
+preconditions = {
+"target_visible": false,
+"in_cover": false
+}
+effects = {
+"target_visible": true
+}
+execution_tree = ExtResource("1_tree")

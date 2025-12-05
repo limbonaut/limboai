@@ -1,0 +1,13 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_retreat.gd" id="1_retreat"]
+
+[sub_resource type="BTAction" id="BTAction_retreat"]
+script = ExtResource("1_retreat")
+target_var = &"target"
+retreat_speed = 250.0
+safe_distance = 300.0
+
+[resource]
+description = "GOAP Action: Retreat from target (ranged weapon)"
+root_task = SubResource("BTAction_retreat")

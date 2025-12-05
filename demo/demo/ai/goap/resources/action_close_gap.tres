@@ -1,0 +1,16 @@
+[gd_resource type="GOAPAction" load_steps=2 format=3]
+
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_close_gap.tres" id="1_tree"]
+
+[resource]
+action_name = "CloseGap"
+base_cost = 1
+preconditions = {
+"has_melee_weapon": true,
+"in_cover": false
+}
+effects = {
+"target_too_far": false,
+"target_in_range": true
+}
+execution_tree = ExtResource("1_tree")

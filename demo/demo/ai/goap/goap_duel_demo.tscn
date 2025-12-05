@@ -83,13 +83,10 @@ position = Vector2(700, 350)
 zoom = Vector2(0.7, 0.7)
 
 [node name="CoverLeft" parent="." instance=ExtResource("11_cover")]
-position = Vector2(300, 450)
-
-[node name="CoverCenter" parent="." instance=ExtResource("11_cover")]
-position = Vector2(700, 250)
+position = Vector2(350, 500)
 
 [node name="CoverRight" parent="." instance=ExtResource("11_cover")]
-position = Vector2(1100, 450)
+position = Vector2(1050, 500)
 
 [node name="WeaponPickupRed" type="Node2D" parent="."]
 position = Vector2(250, 200)
@@ -220,6 +217,13 @@ texture = ExtResource("4_agent_tex")
 region_enabled = true
 region_rect = Rect2(0, 0, 128, 128)
 
+[node name="WeaponSprite" type="Sprite2D" parent="AgentRed/Root/Rig"]
+visible = false
+position = Vector2(40, -40)
+rotation = 0.785398
+scale = Vector2(2.5, 0.8)
+texture = ExtResource("6_weapon")
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="AgentRed"]
 libraries = {
 &"": SubResource("AnimationLibrary_1")
@@ -288,6 +292,13 @@ position = Vector2(0, -40)
 texture = ExtResource("4_agent_tex")
 region_enabled = true
 region_rect = Rect2(0, 0, 128, 128)
+
+[node name="WeaponSprite" type="Sprite2D" parent="AgentBlue/Root/Rig"]
+visible = false
+position = Vector2(40, -40)
+rotation = 0.785398
+scale = Vector2(2.5, 0.8)
+texture = ExtResource("6_weapon")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="AgentBlue"]
 libraries = {

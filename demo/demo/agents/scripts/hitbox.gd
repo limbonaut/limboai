@@ -26,7 +26,11 @@ func _ready() -> void:
 	area_entered.connect(_area_entered)
 
 
-func _area_entered(hurtbox: Hurtbox) -> void:
+func _area_entered(area: Area2D) -> void:
+	# Only process Hurtbox areas, ignore other Area2D (like ProjectileBlocker)
+	if not area is Hurtbox:
+		return
+	var hurtbox: Hurtbox = area
 	if hurtbox.owner == owner:
 		return
 	# Check if this hitbox belongs to a projectile with a shooter
