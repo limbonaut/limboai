@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://goap_duel_demo_scene"]
+[gd_scene load_steps=25 format=3 uid="uid://goap_duel_demo_scene"]
 
 [ext_resource type="Script" path="res://demo/ai/goap/goap_duel_demo.gd" id="1_demo"]
 [ext_resource type="Script" path="res://demo/ai/goap/components/combat_component.gd" id="combat_comp"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="goal_kill"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_avoid_damage.tres" id="goal_avoid"]
 [ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_regain_health.tres" id="goal_health"]
+[ext_resource type="Resource" path="res://demo/ai/goap/resources/goal_evade_melee.tres" id="goal_evade"]
 [ext_resource type="PackedScene" uid="uid://bsig1usigbbuy" path="res://demo/scenes/base/arena.tscn" id="2_arena"]
 [ext_resource type="Texture2D" path="res://demo/assets/agent_bobby.png" id="4_agent_tex"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="5_shadow"]
@@ -199,6 +200,7 @@ agent_name = "Red"
 goal_kill_target = ExtResource("goal_kill")
 goal_avoid_damage = ExtResource("goal_avoid")
 goal_regain_health = ExtResource("goal_health")
+goal_evade_melee = ExtResource("goal_evade")
 
 [node name="Root" type="Node2D" parent="AgentRed"]
 
@@ -274,6 +276,7 @@ agent_name = "Blue"
 goal_kill_target = ExtResource("goal_kill")
 goal_avoid_damage = ExtResource("goal_avoid")
 goal_regain_health = ExtResource("goal_health")
+goal_evade_melee = ExtResource("goal_evade")
 
 [node name="Root" type="Node2D" parent="AgentBlue"]
 scale = Vector2(-1, 1)

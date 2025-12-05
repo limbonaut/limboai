@@ -48,8 +48,9 @@ var cover_objects: Array[Node2D] = []
 
 # GOAP Goals for dynamic switching
 @export var goal_kill_target: Resource  # GOAPGoal
-@export var goal_avoid_damage: Resource  # GOAPGoal
+@export var goal_avoid_damage: Resource  # GOAPGoal (for ranged threats - seek cover)
 @export var goal_regain_health: Resource  # GOAPGoal
+@export var goal_evade_melee: Resource  # GOAPGoal (for melee threats - maintain distance)
 
 # Cover state (managed by actions)
 var in_cover := false
@@ -167,6 +168,7 @@ func _setup_components() -> void:
 		goal_evaluator.goal_kill_target = goal_kill_target
 		goal_evaluator.goal_avoid_damage = goal_avoid_damage
 		goal_evaluator.goal_regain_health = goal_regain_health
+		goal_evaluator.goal_evade_melee = goal_evade_melee
 
 
 func _connect_signals() -> void:
@@ -184,6 +186,9 @@ func _connect_signals() -> void:
 	if world_state:
 		world_state.threat_changed.connect(_on_threat_state_changed)
 		world_state.health_state_changed.connect(_on_health_state_changed)
+		# Connect new threat type signals for weapon-aware tactical decisions
+		world_state.melee_threat_changed.connect(_on_melee_threat_changed)
+		world_state.ranged_threat_changed.connect(_on_ranged_threat_changed)
 
 	# Connect Health node signals (for hurtbox damage detection)
 	if has_node("Health"):
@@ -201,6 +206,11 @@ func _initial_sync() -> void:
 		bb.set_var(&"near_cover", false)
 		bb.set_var(&"weapon_jammed", false)
 		bb.set_var(&"low_health", false)
+		# Threat type variables for weapon-aware tactical decisions
+		bb.set_var(&"melee_threat", false)
+		bb.set_var(&"ranged_threat", false)
+		bb.set_var(&"enemy_has_melee_weapon", false)
+		bb.set_var(&"enemy_has_ranged_weapon", false)
 
 	if world_state:
 		world_state.force_sync()
@@ -415,6 +425,26 @@ func _on_health_state_changed(is_low_health: bool) -> void:
 		is_threatened = bb.get_var(&"under_threat", false)
 	if goal_evaluator:
 		goal_evaluator.evaluate(is_threatened, is_low_health)
+
+
+func _on_melee_threat_changed(is_melee_threat: bool) -> void:
+	if goal_evaluator:
+		goal_evaluator.set_melee_threat(is_melee_threat)
+		# Trigger re-evaluation with current threat/health state
+		var bb: Blackboard = bt_player.get_blackboard()
+		var is_threatened: bool = bool(bb.get_var(&"under_threat", false)) if bb else false
+		var is_low: bool = combat.is_low_health() if combat else false
+		goal_evaluator.evaluate(is_threatened, is_low)
+
+
+func _on_ranged_threat_changed(is_ranged_threat: bool) -> void:
+	if goal_evaluator:
+		goal_evaluator.set_ranged_threat(is_ranged_threat)
+		# Trigger re-evaluation with current threat/health state
+		var bb: Blackboard = bt_player.get_blackboard()
+		var is_threatened: bool = bool(bb.get_var(&"under_threat", false)) if bb else false
+		var is_low: bool = combat.is_low_health() if combat else false
+		goal_evaluator.evaluate(is_threatened, is_low)
 
 
 func _on_combat_health_changed(current: int, max_hp: int) -> void:

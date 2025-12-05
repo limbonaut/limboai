@@ -1,7 +1,7 @@
 @tool
 extends BTAction
-## Moves to the appropriate weapon pickup based on agent's preferred combat mode.
-## Checks CombatComponent.preferred_mode and goes to melee or ranged pickup.
+## Moves to the NEAREST available weapon pickup.
+## Agents grab whatever weapon is closest, then adapt tactics after pickup.
 ## Stores the chosen pickup in weapon_pickup blackboard variable for the pickup task.
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
@@ -15,42 +15,37 @@ const CombatComponentClass = preload("res://demo/ai/goap/components/combat_compo
 
 
 func _generate_name() -> String:
-	return "GOAPGoToPreferredWeapon"
+	return "GOAPGoToNearestWeapon"
 
 
 func _enter() -> void:
-	# Determine which weapon to go to based on preferred mode
-	var combat: CombatComponentClass = null
-	if agent.has_node("CombatComponent"):
-		combat = agent.get_node("CombatComponent")
-
-	var preferred_mode := CombatComponentClass.CombatMode.RANGED
-	if combat:
-		preferred_mode = combat.preferred_mode
-
-	# Get the appropriate weapon pickup from blackboard
+	# Get both weapon pickups from blackboard
 	var melee_pickup: Node2D = blackboard.get_var(&"melee_weapon_pickup")
 	var ranged_pickup: Node2D = blackboard.get_var(&"ranged_weapon_pickup")
 
 	var target_pickup: Node2D = null
+	var melee_available := is_instance_valid(melee_pickup) and _is_pickup_available(melee_pickup)
+	var ranged_available := is_instance_valid(ranged_pickup) and _is_pickup_available(ranged_pickup)
 
-	# Check if preferred weapon is available, otherwise use whatever is available
-	if preferred_mode == CombatComponentClass.CombatMode.MELEE:
-		if is_instance_valid(melee_pickup) and _is_pickup_available(melee_pickup):
+	# Pick the NEAREST available weapon
+	if melee_available and ranged_available:
+		var dist_to_melee: float = agent.global_position.distance_to(melee_pickup.global_position)
+		var dist_to_ranged: float = agent.global_position.distance_to(ranged_pickup.global_position)
+		if dist_to_melee <= dist_to_ranged:
 			target_pickup = melee_pickup
-		elif is_instance_valid(ranged_pickup) and _is_pickup_available(ranged_pickup):
-			target_pickup = ranged_pickup  # Fallback to ranged
-	else:  # RANGED
-		if is_instance_valid(ranged_pickup) and _is_pickup_available(ranged_pickup):
+		else:
 			target_pickup = ranged_pickup
-		elif is_instance_valid(melee_pickup) and _is_pickup_available(melee_pickup):
-			target_pickup = melee_pickup  # Fallback to melee
+	elif melee_available:
+		target_pickup = melee_pickup
+	elif ranged_available:
+		target_pickup = ranged_pickup
 
 	# Store in weapon_pickup for the pickup task to use
 	blackboard.set_var(&"weapon_pickup", target_pickup)
 
 	if target_pickup:
-		print("GOAP ACTION: GoTo %s (preferred: %s)" % [target_pickup.name, "MELEE" if preferred_mode == CombatComponentClass.CombatMode.MELEE else "RANGED"])
+		var weapon_type := "MELEE" if target_pickup == melee_pickup else "RANGED"
+		print("GOAP ACTION: GoTo %s (nearest: %s)" % [target_pickup.name, weapon_type])
 
 
 func _tick(delta: float) -> Status:

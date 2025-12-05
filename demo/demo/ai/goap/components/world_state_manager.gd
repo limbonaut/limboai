@@ -10,6 +10,8 @@ const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 signal threat_changed(is_threatened: bool)
 signal health_state_changed(is_low_health: bool)
 signal target_killed
+signal melee_threat_changed(is_melee_threat: bool)
+signal ranged_threat_changed(is_ranged_threat: bool)
 
 @export var bt_player: BTPlayer
 @export var agent: CharacterBody2D
@@ -33,6 +35,8 @@ var enemies: Array[Node2D] = []
 var _prev_under_threat := false
 var _prev_low_health := false
 var _prev_in_cover := false
+var _prev_melee_threat := false
+var _prev_ranged_threat := false
 
 # Engagement window - suppress threat detection briefly after leaving cover
 # This allows the agent to actually fight instead of immediately retreating
@@ -69,16 +73,21 @@ func _sync_world_state() -> void:
 	# Print key GOAP facts at frame 10 to debug planning
 	if _debug_frames == 10:
 		var facts := _compute_facts()
-		print("GOAP Facts [%s]: has_weapon=%s, melee_avail=%s, ranged_avail=%s, target_dead=%s, in_cover=%s, under_threat=%s, target_in_range=%s, target_visible=%s" % [
+		print("GOAP Facts [%s]: has_weapon=%s, melee_avail=%s, ranged_avail=%s, target_dead=%s, in_cover=%s" % [
 			agent.name,
 			facts.get("has_weapon", "?"),
 			facts.get("melee_weapon_available", "?"),
 			facts.get("ranged_weapon_available", "?"),
 			facts.get("target_dead", "?"),
-			facts.get("in_cover", "?"),
+			facts.get("in_cover", "?")
+		])
+		print("GOAP Threats [%s]: under_threat=%s, melee_threat=%s, ranged_threat=%s, enemy_melee=%s, enemy_ranged=%s" % [
+			agent.name,
 			facts.get("under_threat", "?"),
-			facts.get("target_in_range", "?"),
-			facts.get("target_visible", "?")
+			facts.get("melee_threat", "?"),
+			facts.get("ranged_threat", "?"),
+			facts.get("enemy_has_melee_weapon", "?"),
+			facts.get("enemy_has_ranged_weapon", "?")
 		])
 
 	# Track cover state changes for engagement window
@@ -95,6 +104,8 @@ func _sync_world_state() -> void:
 	# Detect state changes BEFORE updating blackboard
 	var under_threat: bool = facts.get("under_threat", false)
 	var low_health: bool = facts.get("low_health", false)
+	var melee_threat: bool = facts.get("melee_threat", false)
+	var ranged_threat: bool = facts.get("ranged_threat", false)
 
 	# Sync all facts to blackboard
 	for fact_name in facts:
@@ -108,6 +119,14 @@ func _sync_world_state() -> void:
 	if low_health != _prev_low_health:
 		_prev_low_health = low_health
 		health_state_changed.emit(low_health)
+
+	if melee_threat != _prev_melee_threat:
+		_prev_melee_threat = melee_threat
+		melee_threat_changed.emit(melee_threat)
+
+	if ranged_threat != _prev_ranged_threat:
+		_prev_ranged_threat = ranged_threat
+		ranged_threat_changed.emit(ranged_threat)
 
 
 func _compute_facts() -> Dictionary:
@@ -154,8 +173,22 @@ func _compute_facts() -> Dictionary:
 		target_too_close = dist < GOAPConfigClass.TOO_CLOSE_THRESHOLD
 		target_too_far = dist > GOAPConfigClass.TOO_FAR_THRESHOLD
 
+	# Enemy weapon detection - what is our opponent armed with?
+	var enemy_has_melee_weapon := false
+	var enemy_has_ranged_weapon := false
+	if target and is_instance_valid(target) and target.has_node("CombatComponent"):
+		var target_combat = target.get_node("CombatComponent")
+		if target_combat.has_method("is_melee"):
+			enemy_has_melee_weapon = target_combat.is_melee()
+		if target_combat.has_method("is_ranged"):
+			enemy_has_ranged_weapon = target_combat.is_ranged()
+
 	# Threat detection - works for both static enemies and GOAP agents
-	var under_threat := _compute_threat_state()
+	# Now returns detailed info: { melee_threat, ranged_threat, under_threat }
+	var threat_state := _compute_threat_state()
+	var under_threat: bool = threat_state.get("under_threat", false)
+	var melee_threat: bool = threat_state.get("melee_threat", false)
+	var ranged_threat: bool = threat_state.get("ranged_threat", false)
 
 	# Core agent facts
 	facts["has_weapon"] = has_weapon
@@ -169,6 +202,8 @@ func _compute_facts() -> Dictionary:
 	facts["weapon_jammed"] = weapon_jammed
 	facts["under_threat"] = under_threat
 	facts["enemy_attacking"] = under_threat  # Alias for compatibility
+	facts["melee_threat"] = melee_threat
+	facts["ranged_threat"] = ranged_threat
 
 	# Weapon type facts
 	facts["has_melee_weapon"] = has_melee_weapon
@@ -176,6 +211,10 @@ func _compute_facts() -> Dictionary:
 	facts["is_suppressed"] = is_suppressed
 	facts["target_too_close"] = target_too_close
 	facts["target_too_far"] = target_too_far
+
+	# Enemy weapon facts - what the opponent has
+	facts["enemy_has_melee_weapon"] = enemy_has_melee_weapon
+	facts["enemy_has_ranged_weapon"] = enemy_has_ranged_weapon
 
 	# Merge proximity facts
 	for key in proximity:
@@ -195,94 +234,107 @@ func _compute_facts() -> Dictionary:
 	return facts
 
 
-## Computes threat state using distance-based detection
-## Works for both static enemies (telegraph) and GOAP agents (weapon ready + range)
-## IMPORTANT: Being in cover negates threat - this allows agents to re-engage
-## Health affects threat perception - high health agents are more aggressive
-func _compute_threat_state() -> bool:
-	if not target or not is_instance_valid(target):
-		return false
+## Computes detailed threat state - melee and ranged threats separately
+## Returns a dictionary with { melee_threat, ranged_threat, under_threat }
+## This allows tactical decisions based on what KIND of threat we're facing
+func _compute_threat_state() -> Dictionary:
+	var result := {
+		"melee_threat": false,
+		"ranged_threat": false,
+		"under_threat": false
+	}
 
-	# If we're in cover, we don't feel threatened (cover protects us)
-	# This allows agents to switch back to offensive goals after taking cover
+	if not target or not is_instance_valid(target):
+		return result
+
+	# If we're in cover, ranged threat is negated but melee threat remains
+	# Cover protects from projectiles, not from someone walking up and stabbing you
 	var in_cover: bool = agent.in_cover if "in_cover" in agent else false
-	if in_cover:
-		return false
 
 	# Engagement window: suppress threat detection briefly after leaving cover
 	# This allows the agent to actually fight instead of immediately retreating
 	if _engagement_timer > 0.0:
-		return false
+		return result
 
 	# Check for legacy telegraph-based enemies
 	if target.has_method("is_preparing_attack"):
 		if target.is_preparing_attack():
-			return true
+			result["ranged_threat"] = true
+			result["under_threat"] = true
+			return result
 
 	# Distance-based threat detection for GOAP agents
-	# Threatened by ranged: target has weapon loaded, is in shooting range, and has LoS
-	# Threatened by melee: target has melee weapon and is close (within TOO_CLOSE_THRESHOLD)
 	if _is_goap_agent(target):
 		var dist := agent.global_position.distance_to(target.global_position)
 		var target_has_weapon: bool = target.has_weapon if "has_weapon" in target else false
 
 		if not target_has_weapon:
-			return false
+			return result
 
-		# Check if target has melee weapon - melee is a threat when close
+		# Get target weapon type
 		var target_has_melee := false
+		var target_has_ranged := false
 		if target.has_node("CombatComponent"):
 			var target_combat = target.get_node("CombatComponent")
 			if target_combat.has_method("is_melee"):
 				target_has_melee = target_combat.is_melee()
+			if target_combat.has_method("is_ranged"):
+				target_has_ranged = target_combat.is_ranged()
 
-		# Melee threat: close range, has melee weapon
-		# Always feel threatened by close melee - no health confidence check
+		# --- MELEE THREAT ---
+		# Melee is a threat when enemy is close AND has melee weapon
+		# Cover does NOT protect against melee
 		if target_has_melee:
 			var in_melee_threat_range := dist < GOAPConfigClass.TOO_CLOSE_THRESHOLD
 			if in_melee_threat_range:
-				return true
+				result["melee_threat"] = true
+				result["under_threat"] = true
 
 			# Extended threat range for ranged agents without ammo
-			# A ranged agent with no ammo is defenseless against melee - feel threatened at shooting range
-			var agent_has_ranged := false
-			if agent.has_node("CombatComponent"):
-				var agent_combat = agent.get_node("CombatComponent")
-				if agent_combat.has_method("is_ranged"):
-					agent_has_ranged = agent_combat.is_ranged()
+			# A defenseless ranged agent should feel melee threat from farther away
+			if not result["melee_threat"]:
+				var agent_has_ranged := false
+				if agent.has_node("CombatComponent"):
+					var agent_combat = agent.get_node("CombatComponent")
+					if agent_combat.has_method("is_ranged"):
+						agent_has_ranged = agent_combat.is_ranged()
 
-			if agent_has_ranged:
-				var agent_ammo: int = agent.ammo_count if "ammo_count" in agent else 0
-				var agent_jammed: bool = agent.weapon_jammed if "weapon_jammed" in agent else false
-				var agent_cant_shoot := agent_ammo <= 0 or agent_jammed
+				if agent_has_ranged:
+					var agent_ammo: int = agent.ammo_count if "ammo_count" in agent else 0
+					var agent_jammed: bool = agent.weapon_jammed if "weapon_jammed" in agent else false
+					var agent_cant_shoot := agent_ammo <= 0 or agent_jammed
 
-				if agent_cant_shoot:
-					# Defenseless ranged agent - feel threatened by melee at shooting range
-					var in_extended_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
-					if in_extended_threat_range:
-						return true
+					if agent_cant_shoot:
+						# Defenseless ranged agent - melee is scary even from mid-range
+						var in_extended_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
+						if in_extended_threat_range:
+							result["melee_threat"] = true
+							result["under_threat"] = true
 
-		# Ranged threat: has loaded weapon, in shooting range, has LoS
-		# High health agents are more confident against ranged
-		var health: int = agent.health if "health" in agent else 100
-		var max_health: int = agent.max_health if "max_health" in agent else 100
-		var health_ratio := float(health) / float(max_health)
+		# --- RANGED THREAT ---
+		# Ranged is a threat when enemy has loaded ranged weapon, is in range, and has LoS
+		# Being in cover NEGATES ranged threat (cover works!)
+		if target_has_ranged and not in_cover:
+			# High health agents are more confident against ranged fire
+			var health: int = agent.health if "health" in agent else 100
+			var max_health: int = agent.max_health if "max_health" in agent else 100
+			var health_ratio := float(health) / float(max_health)
 
-		# Only feel threatened by ranged if health is below 70%
-		if health_ratio > 0.7:
-			return false
+			# Only feel threatened by ranged if health is below 70%
+			if health_ratio <= 0.7:
+				var in_shooting_range := dist < GOAPConfigClass.SHOOTING_RANGE
+				if in_shooting_range:
+					var target_ammo: int = target.ammo_count if "ammo_count" in target else 0
+					var target_jammed: bool = target.weapon_jammed if "weapon_jammed" in target else false
+					var target_weapon_ready := target_ammo > 0 and not target_jammed
 
-		var in_shooting_range := dist < GOAPConfigClass.SHOOTING_RANGE
-		if in_shooting_range:
-			var target_ammo: int = target.ammo_count if "ammo_count" in target else 0
-			var target_jammed: bool = target.weapon_jammed if "weapon_jammed" in target else false
-			var target_weapon_ready := target_ammo > 0 and not target_jammed
+					if target_weapon_ready:
+						var target_has_los := _target_has_los_to_us()
+						if target_has_los:
+							result["ranged_threat"] = true
+							result["under_threat"] = true
 
-			if target_weapon_ready:
-				var target_has_los := _target_has_los_to_us()
-				return target_has_los
-
-	return false
+	return result
 
 
 ## Checks if a node is a GOAP agent (has the expected properties)

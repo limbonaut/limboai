@@ -1,0 +1,8 @@
+[gd_resource type="GOAPGoal" format=3]
+
+[resource]
+goal_name = "EvadeMelee"
+priority = 30
+target_state = {
+"target_too_close": false
+}
