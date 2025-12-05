@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://goap_duel_demo_scene"]
+[gd_scene load_steps=25 format=3 uid="uid://goap_team_demo_scene"]
 
 [ext_resource type="Script" path="res://demo/ai/goap/goap_duel_demo.gd" id="1_demo"]
 [ext_resource type="Script" path="res://demo/ai/goap/components/combat_component.gd" id="combat_comp"]
@@ -63,16 +63,16 @@ _data = {
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_Red"]
 
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_Red2"]
+
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_Blue"]
+
+[sub_resource type="BlackboardPlan" id="BlackboardPlan_Blue2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_Hurtbox"]
 radius = 40.0
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_Body"]
-radius = 25.0
-height = 60.0
-
-[node name="GOAPDuelDemo" type="Node2D"]
+[node name="GOAPTeamDemo" type="Node2D"]
 y_sort_enabled = true
 script = ExtResource("1_demo")
 
@@ -82,24 +82,30 @@ script = ExtResource("1_demo")
 position = Vector2(700, 350)
 zoom = Vector2(0.7, 0.7)
 
-[node name="CoverLeft" parent="." instance=ExtResource("11_cover")]
-position = Vector2(300, 450)
+[node name="CoverTopLeft" parent="." instance=ExtResource("11_cover")]
+position = Vector2(350, 250)
+
+[node name="CoverTopRight" parent="." instance=ExtResource("11_cover")]
+position = Vector2(1050, 250)
+
+[node name="CoverBottomLeft" parent="." instance=ExtResource("11_cover")]
+position = Vector2(350, 500)
+
+[node name="CoverBottomRight" parent="." instance=ExtResource("11_cover")]
+position = Vector2(1050, 500)
 
 [node name="CoverCenter" parent="." instance=ExtResource("11_cover")]
-position = Vector2(700, 250)
-
-[node name="CoverRight" parent="." instance=ExtResource("11_cover")]
-position = Vector2(1100, 450)
+position = Vector2(700, 375)
 
 [node name="WeaponPickupRed" type="Node2D" parent="."]
-position = Vector2(250, 200)
+position = Vector2(200, 300)
 script = ExtResource("9_pickup")
 pickup_type = "weapon"
 respawn_time = 0.0
 random_initial_spawn = true
 respawn_area_min = Vector2(150, 200)
-respawn_area_max = Vector2(500, 550)
-avoid_node_path = NodePath("../CoverLeft")
+respawn_area_max = Vector2(400, 550)
+avoid_node_path = NodePath("../CoverTopLeft")
 avoid_distance = 100.0
 
 [node name="Sprite2D" type="Sprite2D" parent="WeaponPickupRed"]
@@ -117,14 +123,14 @@ text = "RED WEAPON"
 horizontal_alignment = 1
 
 [node name="WeaponPickupBlue" type="Node2D" parent="."]
-position = Vector2(1150, 200)
+position = Vector2(1200, 300)
 script = ExtResource("9_pickup")
 pickup_type = "weapon"
 respawn_time = 0.0
 random_initial_spawn = true
-respawn_area_min = Vector2(900, 200)
+respawn_area_min = Vector2(1000, 200)
 respawn_area_max = Vector2(1250, 550)
-avoid_node_path = NodePath("../CoverRight")
+avoid_node_path = NodePath("../CoverTopRight")
 avoid_distance = 100.0
 
 [node name="Sprite2D" type="Sprite2D" parent="WeaponPickupBlue"]
@@ -142,15 +148,15 @@ text = "BLUE WEAPON"
 horizontal_alignment = 1
 
 [node name="AmmoPickup" type="Node2D" parent="."]
-position = Vector2(700, 550)
+position = Vector2(550, 250)
 script = ExtResource("9_pickup")
 pickup_type = "ammo"
 random_respawn = true
 random_initial_spawn = true
-respawn_area_min = Vector2(200, 200)
-respawn_area_max = Vector2(1200, 550)
+respawn_area_min = Vector2(300, 200)
+respawn_area_max = Vector2(600, 400)
 avoid_node_path = NodePath("../CoverCenter")
-avoid_distance = 150.0
+avoid_distance = 120.0
 
 [node name="Sprite2D" type="Sprite2D" parent="AmmoPickup"]
 modulate = Color(1, 0.8, 0.2, 1)
@@ -166,16 +172,41 @@ theme_override_font_sizes/font_size = 14
 text = "AMMO"
 horizontal_alignment = 1
 
+[node name="AmmoPickup2" type="Node2D" parent="."]
+position = Vector2(850, 500)
+script = ExtResource("9_pickup")
+pickup_type = "ammo"
+random_respawn = true
+random_initial_spawn = true
+respawn_area_min = Vector2(800, 350)
+respawn_area_max = Vector2(1100, 550)
+avoid_node_path = NodePath("../CoverCenter")
+avoid_distance = 120.0
+
+[node name="Sprite2D" type="Sprite2D" parent="AmmoPickup2"]
+modulate = Color(1, 0.8, 0.2, 1)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("6_weapon")
+
+[node name="Label" type="Label" parent="AmmoPickup2"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "AMMO"
+horizontal_alignment = 1
+
 [node name="HealthPickup" type="Node2D" parent="."]
-position = Vector2(700, 200)
+position = Vector2(450, 500)
 script = ExtResource("9_pickup")
 pickup_type = "health"
 random_respawn = true
 random_initial_spawn = true
-respawn_area_min = Vector2(200, 200)
-respawn_area_max = Vector2(1200, 550)
-avoid_node_path = NodePath("../CoverCenter")
-avoid_distance = 150.0
+respawn_area_min = Vector2(300, 400)
+respawn_area_max = Vector2(600, 550)
+avoid_node_path = NodePath("../CoverBottomLeft")
+avoid_distance = 120.0
 
 [node name="Sprite2D" type="Sprite2D" parent="HealthPickup"]
 modulate = Color(0.3, 1.0, 0.4, 1)
@@ -193,12 +224,37 @@ theme_override_font_sizes/font_size = 14
 text = "HEALTH"
 horizontal_alignment = 1
 
+[node name="HealthPickup2" type="Node2D" parent="."]
+position = Vector2(950, 250)
+script = ExtResource("9_pickup")
+pickup_type = "health"
+random_respawn = true
+random_initial_spawn = true
+respawn_area_min = Vector2(800, 200)
+respawn_area_max = Vector2(1100, 400)
+avoid_node_path = NodePath("../CoverTopRight")
+avoid_distance = 120.0
+
+[node name="Sprite2D" type="Sprite2D" parent="HealthPickup2"]
+modulate = Color(0.3, 1.0, 0.4, 1)
+scale = Vector2(0.8, 0.8)
+texture = ExtResource("12_fireball")
+hframes = 3
+frame = 1
+
+[node name="Label" type="Label" parent="HealthPickup2"]
+offset_left = -40.0
+offset_top = 30.0
+offset_right = 40.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 14
+text = "HEALTH"
+horizontal_alignment = 1
+
 [node name="AgentRed" type="CharacterBody2D" parent="."]
-position = Vector2(200, 400)
-collision_layer = 1
-collision_mask = 1
+position = Vector2(150, 300)
 script = ExtResource("8_agent")
-agent_name = "Red"
+agent_name = "Red1"
 goal_kill_target = ExtResource("goal_kill")
 goal_avoid_damage = ExtResource("goal_avoid")
 goal_regain_health = ExtResource("goal_health")
@@ -214,7 +270,7 @@ scale = Vector2(0.8, 0.4)
 texture = ExtResource("5_shadow")
 
 [node name="Body" type="Sprite2D" parent="AgentRed/Root/Rig"]
-modulate = Color(1, 0.6, 0.6, 1)
+modulate = Color(1, 0.5, 0.5, 1)
 position = Vector2(0, -40)
 texture = ExtResource("4_agent_tex")
 region_enabled = true
@@ -257,16 +313,72 @@ health = NodePath("../Health")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AgentRed/Hurtbox"]
 shape = SubResource("CircleShape2D_Hurtbox")
 
-[node name="BodyCollision" type="CollisionShape2D" parent="AgentRed"]
-position = Vector2(0, -30)
-shape = SubResource("CapsuleShape2D_Body")
+[node name="AgentRed2" type="CharacterBody2D" parent="."]
+position = Vector2(150, 500)
+script = ExtResource("8_agent")
+agent_name = "Red2"
+goal_kill_target = ExtResource("goal_kill")
+goal_avoid_damage = ExtResource("goal_avoid")
+goal_regain_health = ExtResource("goal_health")
+
+[node name="Root" type="Node2D" parent="AgentRed2"]
+
+[node name="Rig" type="Node2D" parent="AgentRed2/Root"]
+
+[node name="Shadow" type="Sprite2D" parent="AgentRed2/Root/Rig"]
+modulate = Color(0, 0, 0, 0.3)
+position = Vector2(0, 5)
+scale = Vector2(0.8, 0.4)
+texture = ExtResource("5_shadow")
+
+[node name="Body" type="Sprite2D" parent="AgentRed2/Root/Rig"]
+modulate = Color(1, 0.3, 0.3, 1)
+position = Vector2(0, -40)
+texture = ExtResource("4_agent_tex")
+region_enabled = true
+region_rect = Rect2(0, 0, 128, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AgentRed2"]
+libraries = {
+&"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+
+[node name="BTPlayer" type="BTPlayer" parent="AgentRed2"]
+behavior_tree = ExtResource("7_tree")
+blackboard_plan = SubResource("BlackboardPlan_Red2")
+
+[node name="CombatComponent" type="Node" parent="AgentRed2"]
+script = ExtResource("combat_comp")
+
+[node name="MovementComponent" type="Node" parent="AgentRed2"]
+script = ExtResource("movement_comp")
+
+[node name="WorldStateManager" type="Node" parent="AgentRed2"]
+script = ExtResource("world_state_comp")
+
+[node name="GoalEvaluator" type="Node" parent="AgentRed2"]
+script = ExtResource("goal_eval_comp")
+
+[node name="Health" type="Node" parent="AgentRed2" node_paths=PackedStringArray("character")]
+script = ExtResource("14_health")
+character = NodePath("..")
+max_health = 100
+
+[node name="Hurtbox" type="Area2D" parent="AgentRed2" node_paths=PackedStringArray("health")]
+position = Vector2(0, -40)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("13_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AgentRed2/Hurtbox"]
+shape = SubResource("CircleShape2D_Hurtbox")
 
 [node name="AgentBlue" type="CharacterBody2D" parent="."]
-position = Vector2(1200, 400)
-collision_layer = 1
-collision_mask = 1
+position = Vector2(1250, 300)
 script = ExtResource("8_agent")
-agent_name = "Blue"
+agent_name = "Blue1"
 goal_kill_target = ExtResource("goal_kill")
 goal_avoid_damage = ExtResource("goal_avoid")
 goal_regain_health = ExtResource("goal_health")
@@ -283,7 +395,7 @@ scale = Vector2(0.8, 0.4)
 texture = ExtResource("5_shadow")
 
 [node name="Body" type="Sprite2D" parent="AgentBlue/Root/Rig"]
-modulate = Color(0.6, 0.7, 1, 1)
+modulate = Color(0.5, 0.6, 1, 1)
 position = Vector2(0, -40)
 texture = ExtResource("4_agent_tex")
 region_enabled = true
@@ -326,9 +438,68 @@ health = NodePath("../Health")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AgentBlue/Hurtbox"]
 shape = SubResource("CircleShape2D_Hurtbox")
 
-[node name="BodyCollision" type="CollisionShape2D" parent="AgentBlue"]
-position = Vector2(0, -30)
-shape = SubResource("CapsuleShape2D_Body")
+[node name="AgentBlue2" type="CharacterBody2D" parent="."]
+position = Vector2(1250, 500)
+script = ExtResource("8_agent")
+agent_name = "Blue2"
+goal_kill_target = ExtResource("goal_kill")
+goal_avoid_damage = ExtResource("goal_avoid")
+goal_regain_health = ExtResource("goal_health")
+
+[node name="Root" type="Node2D" parent="AgentBlue2"]
+scale = Vector2(-1, 1)
+
+[node name="Rig" type="Node2D" parent="AgentBlue2/Root"]
+
+[node name="Shadow" type="Sprite2D" parent="AgentBlue2/Root/Rig"]
+modulate = Color(0, 0, 0, 0.3)
+position = Vector2(0, 5)
+scale = Vector2(0.8, 0.4)
+texture = ExtResource("5_shadow")
+
+[node name="Body" type="Sprite2D" parent="AgentBlue2/Root/Rig"]
+modulate = Color(0.3, 0.5, 1, 1)
+position = Vector2(0, -40)
+texture = ExtResource("4_agent_tex")
+region_enabled = true
+region_rect = Rect2(0, 0, 128, 128)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="AgentBlue2"]
+libraries = {
+&"": SubResource("AnimationLibrary_1")
+}
+autoplay = "idle"
+
+[node name="BTPlayer" type="BTPlayer" parent="AgentBlue2"]
+behavior_tree = ExtResource("7_tree")
+blackboard_plan = SubResource("BlackboardPlan_Blue2")
+
+[node name="CombatComponent" type="Node" parent="AgentBlue2"]
+script = ExtResource("combat_comp")
+
+[node name="MovementComponent" type="Node" parent="AgentBlue2"]
+script = ExtResource("movement_comp")
+
+[node name="WorldStateManager" type="Node" parent="AgentBlue2"]
+script = ExtResource("world_state_comp")
+
+[node name="GoalEvaluator" type="Node" parent="AgentBlue2"]
+script = ExtResource("goal_eval_comp")
+
+[node name="Health" type="Node" parent="AgentBlue2" node_paths=PackedStringArray("character")]
+script = ExtResource("14_health")
+character = NodePath("..")
+max_health = 100
+
+[node name="Hurtbox" type="Area2D" parent="AgentBlue2" node_paths=PackedStringArray("health")]
+position = Vector2(0, -40)
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("13_hurtbox")
+health = NodePath("../Health")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AgentBlue2/Hurtbox"]
+shape = SubResource("CircleShape2D_Hurtbox")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -347,8 +518,8 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
 theme_override_constants/shadow_offset_x = 4
 theme_override_constants/shadow_offset_y = 4
 theme_override_fonts/font = ExtResource("10_font")
-theme_override_font_sizes/font_size = 72
-text = "RED WINS!"
+theme_override_font_sizes/font_size = 64
+text = "RED TEAM WINS!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -363,7 +534,7 @@ offset_bottom = 70.0
 grow_horizontal = 2
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_font_sizes/font_size = 36
-text = "GOAP DUEL"
+text = "GOAP 2v2 TEAM BATTLE"
 horizontal_alignment = 1
 
 [node name="RedPanel" type="PanelContainer" parent="UI"]
@@ -381,13 +552,13 @@ layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.4, 0.4, 1)
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_font_sizes/font_size = 24
-text = "RED AGENT"
+text = "RED TEAM"
 
 [node name="RedHealthLabel" type="Label" parent="UI/RedPanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "HP: 100/100"
+text = "HP: 200/200"
 
 [node name="HSeparator" type="HSeparator" parent="UI/RedPanel/VBox"]
 layout_mode = 2
@@ -397,7 +568,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Goal: KillTarget
-Action: None"
+Action: None (2 alive)"
 
 [node name="BluePanel" type="PanelContainer" parent="UI"]
 anchors_preset = 1
@@ -418,13 +589,13 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.4, 0.6, 1, 1)
 theme_override_fonts/font = ExtResource("10_font")
 theme_override_font_sizes/font_size = 24
-text = "BLUE AGENT"
+text = "BLUE TEAM"
 
 [node name="BlueHealthLabel" type="Label" parent="UI/BluePanel/VBox"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "HP: 100/100"
+text = "HP: 200/200"
 
 [node name="HSeparator" type="HSeparator" parent="UI/BluePanel/VBox"]
 layout_mode = 2
@@ -434,7 +605,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Goal: KillTarget
-Action: None"
+Action: None (2 alive)"
 
 [node name="RestartButton" type="Button" parent="UI"]
 anchors_preset = 7

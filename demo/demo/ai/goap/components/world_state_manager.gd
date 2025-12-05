@@ -24,6 +24,9 @@ var health_pickup: Node2D
 var cover_objects: Array[Node2D] = []
 var current_cover: Node2D  # Best cover against current target
 
+# Multiple enemies for team battles
+var enemies: Array[Node2D] = []
+
 # Cached previous states for change detection
 var _prev_under_threat := false
 var _prev_low_health := false

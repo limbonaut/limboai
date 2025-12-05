@@ -1,7 +1,7 @@
 ## GOAP Demo Agent
 ## A tactical agent that uses GOAP to plan and execute decisions
 ## Delegates responsibilities to child components for cleaner architecture
-## Supports agent-vs-agent combat with multiple cover objects
+## Supports agent-vs-agent combat with multiple cover objects and team battles
 extends CharacterBody2D
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
@@ -17,15 +17,26 @@ signal died
 
 # Agent identification
 @export var agent_name: String = "Agent"
+@export var team: int = 0  # 0 = Red team, 1 = Blue team
 
-# World objects (set via inspector or found at runtime)
-@export var target: Node2D
-@export var weapon_pickup: Node2D
-@export var ammo_pickup: Node2D
-@export var health_pickup: Node2D
+# World objects (set via inspector paths, resolved at runtime)
+@export_node_path("Node2D") var target_path: NodePath
+@export_node_path("Node2D") var weapon_pickup_path: NodePath
+@export_node_path("Node2D") var ammo_pickup_path: NodePath
+@export_node_path("Node2D") var health_pickup_path: NodePath
+@export_node_path("Node2D") var cover_object_path: NodePath  # Single cover for basic demos
+
+# Resolved node references
+var target: Node2D
+var weapon_pickup: Node2D
+var ammo_pickup: Node2D
+var health_pickup: Node2D
+
+# Multiple enemies support for team battles
+var enemies: Array[Node2D] = []
 
 # Multiple cover objects support
-@export var cover_objects: Array[Node2D] = []
+var cover_objects: Array[Node2D] = []
 
 # GOAP Goals for dynamic switching
 @export var goal_kill_target: Resource  # GOAPGoal
@@ -93,9 +104,26 @@ var jam_chance: float:
 
 
 func _ready() -> void:
+	_resolve_node_paths()
 	_setup_components()
 	_connect_signals()
 	_initial_sync()
+
+
+func _resolve_node_paths() -> void:
+	# Resolve exported NodePaths to actual node references
+	if target_path:
+		target = get_node_or_null(target_path)
+	if weapon_pickup_path:
+		weapon_pickup = get_node_or_null(weapon_pickup_path)
+	if ammo_pickup_path:
+		ammo_pickup = get_node_or_null(ammo_pickup_path)
+	if health_pickup_path:
+		health_pickup = get_node_or_null(health_pickup_path)
+	if cover_object_path:
+		var cover = get_node_or_null(cover_object_path)
+		if cover:
+			cover_objects.append(cover)
 
 
 func _setup_components() -> void:
@@ -167,6 +195,8 @@ func _physics_process(_delta: float) -> void:
 	# Keep agent inside arena bounds
 	global_position.x = clampf(global_position.x, GOAPConfigClass.ARENA_MIN.x, GOAPConfigClass.ARENA_MAX.x)
 	global_position.y = clampf(global_position.y, GOAPConfigClass.ARENA_MIN.y, GOAPConfigClass.ARENA_MAX.y)
+	# Update target to closest enemy (for team battles)
+	_update_team_targeting()
 
 
 # Combat API (delegates to component)
@@ -296,6 +326,44 @@ func set_cover_objects_array(covers: Array) -> void:
 			cover_objects.append(cover)
 	if world_state:
 		world_state.set_cover_objects(cover_objects)
+
+
+## Sets all enemy agents for team battles
+func set_enemies(enemy_list: Array) -> void:
+	enemies.clear()
+	for enemy in enemy_list:
+		if enemy is Node2D and enemy != self:
+			enemies.append(enemy)
+	if world_state:
+		world_state.enemies = enemies
+	# Set initial target to closest enemy
+	_update_target_to_closest_enemy()
+
+
+## Updates target to the closest living enemy
+func _update_target_to_closest_enemy() -> void:
+	var closest: Node2D = null
+	var closest_dist := INF
+
+	for enemy in enemies:
+		if not is_instance_valid(enemy):
+			continue
+		# Check if enemy is still alive
+		if "health" in enemy and enemy.health <= 0:
+			continue
+		var dist := global_position.distance_to(enemy.global_position)
+		if dist < closest_dist:
+			closest_dist = dist
+			closest = enemy
+
+	if closest and closest != target:
+		set_target(closest)
+
+
+## Called every physics frame to update target selection
+func _update_team_targeting() -> void:
+	if enemies.size() > 0:
+		_update_target_to_closest_enemy()
 
 
 # Signal handlers

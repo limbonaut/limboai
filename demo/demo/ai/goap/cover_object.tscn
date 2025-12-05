@@ -2,36 +2,29 @@
 
 [ext_resource type="Script" path="res://demo/ai/goap/cover_object.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_shadow"]
-[ext_resource type="Texture2D" uid="uid://bwxfgcdvpxf26" path="res://demo/assets/env_gong.png" id="3_gong"]
+[ext_resource type="Texture2D" path="res://demo/assets/env_plants.png" id="3_plants"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
-size = Vector2(80, 100)
+size = Vector2(90, 100)
 
 [node name="CoverObject" type="StaticBody2D"]
-collision_layer = 16
+collision_layer = 17
 collision_mask = 0
 script = ExtResource("1_script")
 
 [node name="Shadow" type="Sprite2D" parent="."]
 modulate = Color(0, 0, 0, 0.3)
-position = Vector2(0, 10)
-scale = Vector2(0.8, 0.4)
+position = Vector2(0, 15)
+scale = Vector2(0.8, 0.35)
 texture = ExtResource("2_shadow")
 
 [node name="Sprite" type="Sprite2D" parent="."]
-position = Vector2(0, -50)
+position = Vector2(0, -70)
 scale = Vector2(1.0, 1.0)
-texture = ExtResource("3_gong")
+texture = ExtResource("3_plants")
+region_enabled = true
+region_rect = Rect2(510, 0, 150, 180)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -50)
 shape = SubResource("RectangleShape2D_1")
-
-[node name="Label" type="Label" parent="."]
-offset_left = -30.0
-offset_top = 20.0
-offset_right = 30.0
-offset_bottom = 43.0
-theme_override_font_sizes/font_size = 14
-text = "COVER"
-horizontal_alignment = 1

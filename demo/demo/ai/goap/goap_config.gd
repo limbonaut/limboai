@@ -5,7 +5,7 @@ extends RefCounted
 
 # Combat ranges
 const ATTACK_RANGE := 150.0       # Melee attack range
-const SHOOTING_RANGE := 500.0     # Ranged weapon range
+const SHOOTING_RANGE := 800.0     # Ranged weapon range
 const PICKUP_RANGE := 80.0        # Distance to collect pickups
 const COVER_RANGE := 100.0        # Distance to be considered "at cover"
 
