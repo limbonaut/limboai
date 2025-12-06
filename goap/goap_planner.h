@@ -52,7 +52,22 @@ private:
 		int h_cost = 0;         // Heuristic cost to goal
 		int f_cost() const { return g_cost + h_cost; }
 		int parent_index = -1;  // Index of parent node in closed list
+		uint32_t state_hash = 0; // Cached hash for quick comparison
+		bool in_closed = false;  // For lazy deletion from open list
 	};
+
+	// Min-heap entry: stores node index and f_cost for priority ordering
+	struct HeapEntry {
+		int node_index;
+		int f_cost;
+		bool operator>(const HeapEntry &other) const { return f_cost > other.f_cost; }
+	};
+
+	// Binary min-heap operations for O(log n) priority queue
+	static void _heap_push(Vector<HeapEntry> &heap, HeapEntry entry);
+	static HeapEntry _heap_pop(Vector<HeapEntry> &heap);
+	static void _heap_sift_up(Vector<HeapEntry> &heap, int index);
+	static void _heap_sift_down(Vector<HeapEntry> &heap, int index);
 
 	// Helper to reconstruct plan from closed list
 	TypedArray<GOAPAction> _reconstruct_plan(const Vector<PlannerNode> &p_closed_list, int p_goal_index) const;

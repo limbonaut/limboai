@@ -89,7 +89,6 @@ func _tick(delta: float) -> Status:
 		if distance_to_threat < danger_distance:
 			# Very close - still evade but maintain some ammo progress
 			move_dir = (away_from_threat * (1.0 - ammo_weight * 0.5) + dir_to_ammo * ammo_weight * 0.5).normalized()
-			print("GOAP: EvadeToAmmo - EVADING! (ammo_weight=%.2f)" % ammo_weight)
 		else:
 			# Safer distance - prioritize ammo more
 			move_dir = (away_from_threat * (1.0 - ammo_weight) + dir_to_ammo * ammo_weight).normalized()

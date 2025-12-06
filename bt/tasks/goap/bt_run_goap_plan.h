@@ -41,6 +41,7 @@ private:
 	Ref<BehaviorTree> fallback_tree;
 	float replan_cooldown = 0.2f;        // Minimum time between replans (throttle)
 	float replan_debounce = 0.1f;        // Wait for world state to stabilize before replanning
+	float max_plan_duration = 3.0f;      // Force replan after this many seconds (0 = disabled)
 	int max_iterations = 1000;
 
 	// Runtime state
@@ -51,6 +52,7 @@ private:
 	bool interrupt_requested = false;
 	double time_since_last_replan = 0.0;
 	double time_since_facts_changed = 0.0; // Debounce timer: time since world state last changed
+	double time_in_current_plan = 0.0;     // How long we've been executing current plan
 	bool replan_pending = false;           // True if waiting for debounce before replanning
 	bool plan_active = false;
 
@@ -119,6 +121,12 @@ public:
 		emit_changed();
 	}
 	int get_max_iterations() const { return max_iterations; }
+
+	void set_max_plan_duration(float p_duration) {
+		max_plan_duration = p_duration;
+		emit_changed();
+	}
+	float get_max_plan_duration() const { return max_plan_duration; }
 
 	// Force a replan on next tick
 	void interrupt();

@@ -9,9 +9,9 @@ const SHOOTING_RANGE := 800.0     # Ranged weapon range
 const PICKUP_RANGE := 80.0        # Distance to collect pickups
 const COVER_RANGE := 100.0        # Distance to be considered "at cover"
 
-# Arena bounds (keeps agents inside playable area)
-const ARENA_MIN := Vector2(100.0, 150.0)
-const ARENA_MAX := Vector2(1300.0, 600.0)
+# Arena bounds (keeps agents inside playable area - matches 1920x1080 with margins)
+const ARENA_MIN := Vector2(80.0, 80.0)
+const ARENA_MAX := Vector2(1840.0, 1000.0)
 
 # Movement - weapon-specific speeds (ranged faster for kiting)
 const MOVE_SPEED := 300.0

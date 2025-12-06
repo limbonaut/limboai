@@ -29,14 +29,18 @@ var _dodge_cooldown_timer := 0.0
 
 # World objects (set via inspector paths, resolved at runtime)
 @export_node_path("Node2D") var target_path: NodePath
-@export_node_path("Node2D") var weapon_pickup_path: NodePath
+@export_node_path("Node2D") var weapon_pickup_path: NodePath  # Legacy - for backwards compatibility
+@export_node_path("Node2D") var melee_weapon_pickup_path: NodePath  # Melee weapon pickup
+@export_node_path("Node2D") var ranged_weapon_pickup_path: NodePath  # Ranged weapon pickup
 @export_node_path("Node2D") var ammo_pickup_path: NodePath
 @export_node_path("Node2D") var health_pickup_path: NodePath
 @export_node_path("Node2D") var cover_object_path: NodePath  # Single cover for basic demos
 
 # Resolved node references
 var target: Node2D
-var weapon_pickup: Node2D
+var weapon_pickup: Node2D  # Legacy
+var melee_weapon_pickup: Node2D
+var ranged_weapon_pickup: Node2D
 var ammo_pickup: Node2D
 var health_pickup: Node2D
 
@@ -136,6 +140,22 @@ func _resolve_node_paths() -> void:
 		target = get_node_or_null(target_path)
 	if weapon_pickup_path:
 		weapon_pickup = get_node_or_null(weapon_pickup_path)
+	if melee_weapon_pickup_path:
+		melee_weapon_pickup = get_node_or_null(melee_weapon_pickup_path)
+	if ranged_weapon_pickup_path:
+		ranged_weapon_pickup = get_node_or_null(ranged_weapon_pickup_path)
+	# Legacy fallback: if no specific pickups but legacy weapon_pickup exists
+	# and it has a weapon_type property, use it for that type
+	if weapon_pickup and not melee_weapon_pickup and not ranged_weapon_pickup:
+		if "weapon_type" in weapon_pickup:
+			match weapon_pickup.weapon_type:
+				"melee":
+					melee_weapon_pickup = weapon_pickup
+				"ranged":
+					ranged_weapon_pickup = weapon_pickup
+		else:
+			# Default legacy behavior: treat as ranged
+			ranged_weapon_pickup = weapon_pickup
 	if ammo_pickup_path:
 		ammo_pickup = get_node_or_null(ammo_pickup_path)
 	if health_pickup_path:
@@ -153,6 +173,8 @@ func _setup_components() -> void:
 		world_state.agent = self
 		world_state.target = target
 		world_state.weapon_pickup = weapon_pickup
+		world_state.melee_weapon_pickup = melee_weapon_pickup
+		world_state.ranged_weapon_pickup = ranged_weapon_pickup
 		world_state.ammo_pickup = ammo_pickup
 		world_state.health_pickup = health_pickup
 		world_state.set_cover_objects(cover_objects)

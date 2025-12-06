@@ -1,9 +1,11 @@
-[gd_resource type="GOAPAction" load_steps=2 format=3]
+[gd_resource type="GOAPAction" load_steps=3 format=3]
 
 [ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_pickup_weapon.tres" id="1_tree"]
+[ext_resource type="Script" path="res://demo/ai/goap/actions/action_pickup_weapon_deprecated.gd" id="2_script"]
 
 [resource]
-action_name = "PickUpWeapon"
+script = ExtResource("2_script")
+action_name = "PickUpWeapon_DEPRECATED"
 base_cost = 1
 preconditions = {
 "weapon_available": true

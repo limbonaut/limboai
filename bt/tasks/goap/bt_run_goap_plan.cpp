@@ -44,6 +44,7 @@ void BTRunGOAPPlan::_enter() {
 	interrupt_requested = false;
 	time_since_last_replan = replan_cooldown; // Allow immediate planning
 	time_since_facts_changed = replan_debounce; // Allow immediate planning
+	time_in_current_plan = 0.0;
 	replan_pending = false;
 	plan_active = false;
 	executing_fallback = false;
@@ -139,6 +140,11 @@ bool BTRunGOAPPlan::_should_replan() {
 		return true;
 	}
 
+	// Check if plan has been running too long (periodic replan)
+	if (max_plan_duration > 0.0f && time_in_current_plan >= max_plan_duration) {
+		return true;
+	}
+
 	// Check if any relevant fact has changed
 	Ref<Blackboard> bb = get_blackboard();
 	if (bb.is_null()) {
@@ -208,6 +214,9 @@ BTRunGOAPPlan::Status BTRunGOAPPlan::_tick(double p_delta) {
 	// Update timers
 	time_since_last_replan += p_delta;
 	time_since_facts_changed += p_delta;
+	if (plan_active) {
+		time_in_current_plan += p_delta;
+	}
 
 	// If executing fallback, continue with it
 	if (executing_fallback) {
@@ -252,6 +261,7 @@ BTRunGOAPPlan::Status BTRunGOAPPlan::_tick(double p_delta) {
 		current_action_index = 0;
 		interrupt_requested = false;
 		time_since_last_replan = 0.0;
+		time_in_current_plan = 0.0;
 		replan_pending = false; // Clear debounce pending state
 
 		if (current_plan.is_empty()) {
@@ -360,6 +370,9 @@ void BTRunGOAPPlan::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_max_iterations", "max"), &BTRunGOAPPlan::set_max_iterations);
 	ClassDB::bind_method(D_METHOD("get_max_iterations"), &BTRunGOAPPlan::get_max_iterations);
 
+	ClassDB::bind_method(D_METHOD("set_max_plan_duration", "duration"), &BTRunGOAPPlan::set_max_plan_duration);
+	ClassDB::bind_method(D_METHOD("get_max_plan_duration"), &BTRunGOAPPlan::get_max_plan_duration);
+
 	ClassDB::bind_method(D_METHOD("interrupt"), &BTRunGOAPPlan::interrupt);
 	ClassDB::bind_method(D_METHOD("get_current_plan"), &BTRunGOAPPlan::get_current_plan);
 	ClassDB::bind_method(D_METHOD("get_current_action_index"), &BTRunGOAPPlan::get_current_action_index);
@@ -370,5 +383,6 @@ void BTRunGOAPPlan::_bind_methods() {
 	ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "fallback_tree", PROPERTY_HINT_RESOURCE_TYPE, "BehaviorTree"), "set_fallback_tree", "get_fallback_tree");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "replan_cooldown", PROPERTY_HINT_RANGE, "0.0,5.0,0.05"), "set_replan_cooldown", "get_replan_cooldown");
 	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "replan_debounce", PROPERTY_HINT_RANGE, "0.0,1.0,0.01"), "set_replan_debounce", "get_replan_debounce");
+	ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "max_plan_duration", PROPERTY_HINT_RANGE, "0.0,30.0,0.5"), "set_max_plan_duration", "get_max_plan_duration");
 	ADD_PROPERTY(PropertyInfo(Variant::INT, "max_iterations", PROPERTY_HINT_RANGE, "10,10000,10"), "set_max_iterations", "get_max_iterations");
 }

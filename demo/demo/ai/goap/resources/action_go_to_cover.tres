@@ -8,10 +8,8 @@ script = ExtResource("2_script")
 action_name = "GoToCover"
 base_cost = 1
 preconditions = {
-"under_threat": true
 }
 effects = {
-"near_cover": true,
-"in_cover": true
+"near_cover": true
 }
 execution_tree = ExtResource("1_tree")
