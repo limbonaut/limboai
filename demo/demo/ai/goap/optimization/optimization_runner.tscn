@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgoap_optimizer"]
+
+[ext_resource type="Script" path="res://demo/ai/goap/optimization/optimization_runner.gd" id="1_runner"]
+
+[node name="OptimizationRunner" type="Node2D"]
+script = ExtResource("1_runner")
+population_size = 12
+max_generations = 30
+elite_count = 3
+mutation_rate = 0.15
+time_scale = 6.0
+battles_per_matchup = 2
+output_dir = "user://goap_optimization/"
+auto_save_interval = 5

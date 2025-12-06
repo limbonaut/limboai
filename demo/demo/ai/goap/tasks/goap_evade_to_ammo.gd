@@ -6,6 +6,7 @@ extends BTAction
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
+const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 
 ## Blackboard variable storing the target (enemy)
 @export var target_var := &"target"
@@ -99,14 +100,21 @@ func _tick(delta: float) -> Status:
 		# No threat - face movement direction
 		_update_facing(dir_to_ammo)
 
-	# Check arena bounds and adjust if needed
-	var next_pos: Vector2 = agent.global_position + move_dir * speed * delta
-	if next_pos.x < GOAPConfigClass.ARENA_MIN.x or next_pos.x > GOAPConfigClass.ARENA_MAX.x:
-		move_dir.x *= -1
-		move_dir = move_dir.normalized()
-	if next_pos.y < GOAPConfigClass.ARENA_MIN.y or next_pos.y > GOAPConfigClass.ARENA_MAX.y:
-		move_dir.y *= -1
-		move_dir = move_dir.normalized()
+	# Check arena bounds and use smart edge handling
+	var pos: Vector2 = agent.global_position
+	var next_pos: Vector2 = pos + move_dir * speed * delta
+	if not ArenaUtilityClass.is_position_in_bounds(next_pos, 20.0):
+		# Use smart escape direction that considers walls and threat
+		var threat_dir := Vector2.ZERO
+		if is_instance_valid(target_node):
+			threat_dir = (target_node.global_position - pos).normalized()
+		move_dir = ArenaUtilityClass.calculate_escape_direction(pos, threat_dir)
+
+		# Still try to bias toward ammo if possible
+		var adjusted_dir: Vector2 = (move_dir * 0.6 + dir_to_ammo * 0.4).normalized()
+		var test_pos: Vector2 = pos + adjusted_dir * speed * delta
+		if ArenaUtilityClass.is_position_in_bounds(test_pos, 20.0):
+			move_dir = adjusted_dir
 
 	# Apply movement
 	agent.velocity = move_dir * speed

@@ -6,6 +6,7 @@ class_name WorldStateManager
 extends Node
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
+const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 
 signal threat_changed(is_threatened: bool)
 signal health_state_changed(is_low_health: bool)
@@ -43,11 +44,26 @@ var _prev_ranged_threat := false
 const ENGAGEMENT_WINDOW := 2.0
 var _engagement_timer := 0.0
 
+# Combat tracking for new optimization parameters
+var _time_in_combat := 0.0
+var _combat_active := false
+var _last_health := 100
+var _recent_damage_timer := 0.0
+const RECENT_DAMAGE_WINDOW := 0.5  # Time window to consider damage "recent"
+
 
 func _physics_process(delta: float) -> void:
 	# Update engagement timer
 	if _engagement_timer > 0.0:
 		_engagement_timer -= delta
+
+	# Update recent damage timer
+	if _recent_damage_timer > 0.0:
+		_recent_damage_timer -= delta
+
+	# Track combat time
+	if _combat_active:
+		_time_in_combat += delta
 
 	_sync_world_state()
 
@@ -190,6 +206,38 @@ func _compute_facts() -> Dictionary:
 	var melee_threat: bool = threat_state.get("melee_threat", false)
 	var ranged_threat: bool = threat_state.get("ranged_threat", false)
 
+	# === NEW OPTIMIZATION PARAMETERS ===
+	# Health ratio (0.0-1.0) for gradual cost scaling
+	var health_ratio: float = float(health) / float(max_health) if max_health > 0 else 1.0
+
+	# Ammo efficiency (0.0-1.0) for scarcity awareness
+	var max_ammo: int = agent.max_ammo if "max_ammo" in agent else GOAPConfigClass.DEFAULT_MAX_AMMO
+	var ammo_efficiency: float = float(ammo_count) / float(max_ammo) if max_ammo > 0 else 0.0
+
+	# Track recent damage
+	if health < _last_health:
+		_recent_damage_timer = RECENT_DAMAGE_WINDOW
+	_last_health = health
+	var recent_damage: bool = _recent_damage_timer > 0.0
+
+	# Track combat state (combat starts when we have a weapon and target is alive)
+	var target_alive: bool = target != null and is_instance_valid(target)
+	if "health" in target if target else false:
+		target_alive = target.health > 0 if target else false
+	var should_be_in_combat: bool = has_weapon and target_alive
+	if should_be_in_combat and not _combat_active:
+		_combat_active = true
+		_time_in_combat = 0.0
+	elif not should_be_in_combat:
+		_combat_active = false
+
+	# Target health ratio
+	var target_health_ratio: float = 1.0
+	if target and is_instance_valid(target) and "health" in target and "max_health" in target:
+		var t_health: int = target.health
+		var t_max: int = target.max_health
+		target_health_ratio = float(t_health) / float(t_max) if t_max > 0 else 1.0
+
 	# Core agent facts
 	facts["has_weapon"] = has_weapon
 	facts["has_ammo"] = has_ammo
@@ -204,6 +252,13 @@ func _compute_facts() -> Dictionary:
 	facts["enemy_attacking"] = under_threat  # Alias for compatibility
 	facts["melee_threat"] = melee_threat
 	facts["ranged_threat"] = ranged_threat
+
+	# New optimization facts
+	facts["health_ratio"] = health_ratio
+	facts["ammo_efficiency"] = ammo_efficiency
+	facts["time_in_combat"] = _time_in_combat
+	facts["recent_damage"] = recent_damage
+	facts["target_health_ratio"] = target_health_ratio
 
 	# Weapon type facts
 	facts["has_melee_weapon"] = has_melee_weapon
@@ -223,6 +278,11 @@ func _compute_facts() -> Dictionary:
 	# Merge target facts
 	for key in target_facts:
 		facts[key] = target_facts[key]
+
+	# Edge awareness facts - helps agents understand positioning near arena boundaries
+	var edge_facts := _compute_edge_awareness_facts()
+	for key in edge_facts:
+		facts[key] = edge_facts[key]
 
 	# Object references for action tasks
 	facts["target"] = target
@@ -597,3 +657,55 @@ func set_cover_objects(covers: Array) -> void:
 	for cover in covers:
 		if cover is Node2D:
 			cover_objects.append(cover)
+
+
+## Computes edge awareness facts for tactical positioning
+## Helps agents understand when they're near arena boundaries
+func _compute_edge_awareness_facts() -> Dictionary:
+	var facts := {}
+	var pos := agent.global_position
+
+	# Use ArenaUtility for wall detection
+	var wall_flags := ArenaUtilityClass.get_wall_flags(pos, GOAPConfigClass.EDGE_WARNING_DISTANCE)
+	var danger_flags := ArenaUtilityClass.get_wall_flags(pos, GOAPConfigClass.EDGE_DANGER_DISTANCE)
+
+	# Basic edge awareness
+	var near_edge := wall_flags != ArenaUtilityClass.WallFlags.NONE
+	var at_edge := danger_flags != ArenaUtilityClass.WallFlags.NONE
+	var cornered := ArenaUtilityClass.is_in_corner(pos, GOAPConfigClass.EDGE_DANGER_DISTANCE)
+
+	# Specific wall directions (useful for knowing which way to move)
+	var near_left_wall := (wall_flags & ArenaUtilityClass.WallFlags.LEFT) != 0
+	var near_right_wall := (wall_flags & ArenaUtilityClass.WallFlags.RIGHT) != 0
+	var near_top_wall := (wall_flags & ArenaUtilityClass.WallFlags.TOP) != 0
+	var near_bottom_wall := (wall_flags & ArenaUtilityClass.WallFlags.BOTTOM) != 0
+
+	# Calculate distance to nearest edge (useful for gradual cost scaling)
+	var dist_to_left := pos.x - GOAPConfigClass.ARENA_MIN.x
+	var dist_to_right := GOAPConfigClass.ARENA_MAX.x - pos.x
+	var dist_to_top := pos.y - GOAPConfigClass.ARENA_MIN.y
+	var dist_to_bottom := GOAPConfigClass.ARENA_MAX.y - pos.y
+	var min_edge_distance := minf(minf(dist_to_left, dist_to_right), minf(dist_to_top, dist_to_bottom))
+
+	# Direction to arena center (normalized)
+	var arena_center := ArenaUtilityClass.get_arena_center()
+	var dir_to_center := (arena_center - pos).normalized()
+
+	# Escape route when cornered or at edge
+	var escape_direction := Vector2.ZERO
+	if near_edge and target and is_instance_valid(target):
+		var threat_dir := (target.global_position - pos).normalized()
+		escape_direction = ArenaUtilityClass.calculate_escape_direction(pos, threat_dir)
+
+	facts["near_edge"] = near_edge
+	facts["at_edge"] = at_edge
+	facts["cornered"] = cornered
+	facts["near_left_wall"] = near_left_wall
+	facts["near_right_wall"] = near_right_wall
+	facts["near_top_wall"] = near_top_wall
+	facts["near_bottom_wall"] = near_bottom_wall
+	facts["min_edge_distance"] = min_edge_distance
+	facts["dir_to_center"] = dir_to_center
+	facts["escape_direction"] = escape_direction
+
+	return facts

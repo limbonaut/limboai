@@ -6,6 +6,7 @@ extends BTAction
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
+const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 
 ## Blackboard variable storing the target node
 @export var target_var := &"target"
@@ -56,17 +57,8 @@ func _tick(delta: float) -> Status:
 	# Get movement speed (ranged is faster)
 	var speed: float = combat.get_move_speed()
 
-	# Move backward (away from target)
-	var retreat_dir: Vector2 = -dir_to_target
-
-	# Check arena bounds and adjust if needed
-	var next_pos: Vector2 = agent.global_position + retreat_dir * speed * delta
-	if next_pos.x < GOAPConfigClass.ARENA_MIN.x or next_pos.x > GOAPConfigClass.ARENA_MAX.x:
-		retreat_dir.x = 0.0
-		retreat_dir = retreat_dir.normalized() if retreat_dir.length() > 0 else Vector2.UP
-	if next_pos.y < GOAPConfigClass.ARENA_MIN.y or next_pos.y > GOAPConfigClass.ARENA_MAX.y:
-		retreat_dir.y = 0.0
-		retreat_dir = retreat_dir.normalized() if retreat_dir.length() > 0 else Vector2.RIGHT
+	# Calculate smart retreat direction using edge awareness
+	var retreat_dir := _calculate_smart_kite_direction(dir_to_target, delta, speed)
 
 	# Apply retreat movement
 	if retreat_dir.length() > 0.1:
@@ -126,3 +118,53 @@ func _update_facing(dir_to_target: Vector2) -> void:
 			root.scale.x = 1.0
 		else:
 			root.scale.x = -1.0
+
+
+## Calculates smart kite direction considering arena edges
+## When near an edge, prefers strafing along the wall toward center rather than backing into corner
+func _calculate_smart_kite_direction(dir_to_target: Vector2, _delta: float, _speed: float) -> Vector2:
+	var pos: Vector2 = agent.global_position
+
+	# Check if we're near arena edges using ArenaUtility
+	var near_edge: bool = blackboard.get_var(&"near_edge", false)
+	var cornered: bool = blackboard.get_var(&"cornered", false)
+	var escape_direction: Vector2 = blackboard.get_var(&"escape_direction", Vector2.ZERO)
+
+	# If cornered or near edge, use the pre-calculated escape direction
+	if cornered and escape_direction != Vector2.ZERO:
+		return escape_direction
+
+	# Default retreat direction (away from target)
+	var retreat_dir := -dir_to_target
+
+	# If near edge but not cornered, blend retreat with strafe toward center
+	if near_edge:
+		# Get direction to arena center
+		var arena_center: Vector2 = ArenaUtilityClass.get_arena_center()
+		var dir_to_center: Vector2 = (arena_center - pos).normalized()
+
+		# Calculate perpendicular strafe directions
+		var strafe_left := Vector2(-dir_to_target.y, dir_to_target.x)
+		var strafe_right := Vector2(dir_to_target.y, -dir_to_target.x)
+
+		# Choose strafe direction that moves toward center
+		var best_strafe: Vector2
+		if strafe_left.dot(dir_to_center) > strafe_right.dot(dir_to_center):
+			best_strafe = strafe_left
+		else:
+			best_strafe = strafe_right
+
+		# Blend retreat with strafe (more strafe when near edge)
+		var edge_distance: float = blackboard.get_var(&"min_edge_distance", 200.0)
+		var edge_factor := 1.0 - clampf(edge_distance / GOAPConfigClass.EDGE_WARNING_DISTANCE, 0.0, 1.0)
+
+		# edge_factor: 0 = far from edge (pure retreat), 1 = at edge (mostly strafe)
+		retreat_dir = (retreat_dir * (1.0 - edge_factor * 0.7) + best_strafe * edge_factor * 0.7).normalized()
+
+	# Final safety clamp to arena bounds
+	var next_pos: Vector2 = pos + retreat_dir * 50.0  # Test 50 units ahead
+	if not ArenaUtilityClass.is_position_in_bounds(next_pos, 20.0):
+		# Use ArenaUtility's smart escape which handles corners and walls
+		retreat_dir = ArenaUtilityClass.calculate_escape_direction(pos, dir_to_target)
+
+	return retreat_dir

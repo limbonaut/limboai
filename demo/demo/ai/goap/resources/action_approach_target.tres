@@ -1,8 +1,10 @@
-[gd_resource type="GOAPAction" load_steps=2 format=3]
+[gd_resource type="GOAPAction" load_steps=3 format=3]
 
-[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_approach_target.tres" id="1_tree"]
+[ext_resource type="Script" path="res://demo/ai/goap/resources/action_approach_target.gd" id="1_script"]
+[ext_resource type="BehaviorTree" path="res://demo/ai/goap/subtrees/action_approach_target.tres" id="2_tree"]
 
 [resource]
+script = ExtResource("1_script")
 action_name = "ApproachTarget"
 base_cost = 3
 preconditions = {
@@ -16,4 +18,4 @@ effects = {
 "target_in_sight": true,
 "target_visible": true
 }
-execution_tree = ExtResource("1_tree")
+execution_tree = ExtResource("2_tree")

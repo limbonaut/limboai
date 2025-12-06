@@ -13,6 +13,7 @@ class_name GoalEvaluator
 extends Node
 
 const GOAPUtilsClass = preload("res://demo/ai/goap/goap_utils.gd")
+const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 
 signal goal_changed(new_goal: Resource, goal_type: String)
 
@@ -34,11 +35,11 @@ var agent: Node2D
 var _melee_threat := false
 var _ranged_threat := false
 
-# Hysteresis settings to prevent goal thrashing
-const GOAL_SWITCH_COOLDOWN := 0.5        # Minimum time between any goal switches
-const DEFENSIVE_GOAL_COMMITMENT := 1.0   # Minimum time to commit to defensive goals
-const ATTACK_GOAL_COMMITMENT := 0.3      # Shorter commitment for attack goal
-const DEFENSIVE_TIMEOUT := 4.0           # Max time in defensive mode before forcing attack
+# Hysteresis settings to prevent goal thrashing (using optimized config values)
+var GOAL_SWITCH_COOLDOWN: float        # Minimum time between any goal switches
+var DEFENSIVE_GOAL_COMMITMENT: float   # Minimum time to commit to defensive goals
+var ATTACK_GOAL_COMMITMENT: float      # Shorter commitment for attack goal
+var DEFENSIVE_TIMEOUT: float           # Max time in defensive mode before forcing attack
 
 var _time_since_last_switch := 0.0
 var _time_in_current_goal := 0.0
@@ -51,6 +52,12 @@ var _opponent_behavior_changed := false
 
 
 func _ready() -> void:
+	# Initialize hysteresis settings from optimized config
+	GOAL_SWITCH_COOLDOWN = GOAPConfigClass.GOAL_SWITCH_COOLDOWN
+	DEFENSIVE_GOAL_COMMITMENT = GOAPConfigClass.DEFENSIVE_GOAL_COMMITMENT
+	ATTACK_GOAL_COMMITMENT = GOAPConfigClass.ATTACK_GOAL_COMMITMENT
+	DEFENSIVE_TIMEOUT = GOAPConfigClass.DEFENSIVE_TIMEOUT
+
 	# Defer finding GOAP task until BT is initialized
 	call_deferred("_find_and_cache_goap_task")
 	# Get agent reference

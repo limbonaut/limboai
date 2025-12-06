@@ -11,6 +11,7 @@ extends BTAction
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
+const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 
 ## Blackboard variable storing the target node
 @export var target_var := &"target"
@@ -30,9 +31,18 @@ const CombatComponentClass = preload("res://demo/ai/goap/components/combat_compo
 ## How much to weight circling vs retreating (0 = pure retreat, 1 = pure strafe)
 @export var circle_weight := 0.6
 
+# Escape state for corner handling
+var _escape_direction: Vector2 = Vector2.ZERO
+var _escape_timer: float = 0.0
+
 
 func _generate_name() -> String:
 	return "GOAPRetreat  target: %s" % LimboUtility.decorate_var(target_var)
+
+
+func _enter() -> void:
+	_escape_direction = Vector2.ZERO
+	_escape_timer = 0.0
 
 
 func _tick(delta: float) -> Status:
@@ -56,18 +66,14 @@ func _tick(delta: float) -> Status:
 		if combat.has_method("get_move_speed"):
 			speed = combat.get_move_speed()
 
-	# Calculate movement direction based on threat distance
-	var move_dir: Vector2
-
-	if distance < danger_distance:
-		# DANGER ZONE: Pure retreat - just get away!
-		move_dir = -dir_to_target
+	# Decrement escape timer
+	if _escape_timer > 0.0:
+		_escape_timer -= delta
 	else:
-		# SAFE ENOUGH TO CIRCLE: Strafe around threat toward resources
-		move_dir = _calculate_circle_direction(dir_to_target, distance)
+		_escape_direction = Vector2.ZERO
 
-	# Apply arena bounds
-	move_dir = _apply_bounds(move_dir, speed * delta)
+	# Calculate movement direction with smart corner/wall handling
+	var move_dir: Vector2 = _calculate_smart_retreat(dir_to_target, distance, delta)
 
 	# If we can't move anywhere useful, just stop
 	if move_dir.length() < 0.1:
@@ -154,24 +160,32 @@ func _choose_strafe_toward_resource(strafe_left: Vector2, strafe_right: Vector2)
 		return strafe_right
 
 
-## Applies arena boundary constraints to movement direction
-func _apply_bounds(move_dir: Vector2, step_size: float) -> Vector2:
-	var next_pos: Vector2 = agent.global_position + move_dir * step_size
-	var adjusted: Vector2 = move_dir
+## Calculates retreat direction with smart corner/wall handling
+## Uses ArenaUtility to detect corners and calculate escape routes
+func _calculate_smart_retreat(dir_to_target: Vector2, distance: float, _delta: float) -> Vector2:
+	var position: Vector2 = agent.global_position
 
-	# Bounce off horizontal bounds
-	if next_pos.x < GOAPConfigClass.ARENA_MIN.x:
-		adjusted.x = absf(adjusted.x)  # Force positive (move right)
-	elif next_pos.x > GOAPConfigClass.ARENA_MAX.x:
-		adjusted.x = -absf(adjusted.x)  # Force negative (move left)
+	# Check if we're in a corner - use cached escape direction or calculate new one
+	if ArenaUtilityClass.is_in_corner(position):
+		if _escape_direction == Vector2.ZERO or _escape_timer <= 0.0:
+			_escape_direction = ArenaUtilityClass.calculate_escape_direction(position, dir_to_target)
+			_escape_timer = ArenaUtilityClass.ESCAPE_DURATION
+			print("GOAP Retreat: Corner detected! Escaping %s" % _escape_direction)
+		return _escape_direction
 
-	# Bounce off vertical bounds
-	if next_pos.y < GOAPConfigClass.ARENA_MIN.y:
-		adjusted.y = absf(adjusted.y)  # Force positive (move down)
-	elif next_pos.y > GOAPConfigClass.ARENA_MAX.y:
-		adjusted.y = -absf(adjusted.y)  # Force negative (move up)
+	# Check if we're near a wall (but not cornered)
+	var wall_flags := ArenaUtilityClass.get_wall_flags(position)
+	if wall_flags != ArenaUtilityClass.WallFlags.NONE:
+		# Use ArenaUtility's smart escape which slides along walls
+		return ArenaUtilityClass.calculate_escape_direction(position, dir_to_target)
 
-	return adjusted.normalized() if adjusted.length() > 0.1 else Vector2.ZERO
+	# Not near walls - use standard retreat/circle logic
+	if distance < danger_distance:
+		# DANGER ZONE: Pure retreat - just get away!
+		return -dir_to_target
+	else:
+		# SAFE ENOUGH TO CIRCLE: Strafe around threat toward resources
+		return _calculate_circle_direction(dir_to_target, distance)
 
 
 ## Updates agent facing direction to always face the threat
