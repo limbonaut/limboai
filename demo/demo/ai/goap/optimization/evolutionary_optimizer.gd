@@ -41,10 +41,14 @@ signal status_update(message: String)
 ## State
 var population: Array = []  # Array of WeightGenome resources
 var current_generation := 0
-var best_genome: Resource = null  # WeightGenome resource
-var best_fitness := -INF
+var best_genome: Resource = null  # WeightGenome resource - now tracks current gen's best
+var best_fitness := -INF  # Only used for display, not for selection
 var fitness_history: Array[float] = []
 var is_running := false
+
+# Track the historical best for comparison purposes only
+var _historical_best_fitness := -INF
+var _historical_best_generation := 0
 
 ## Components
 var _battle_simulator = null
@@ -67,6 +71,8 @@ func start_optimization() -> void:
 	is_running = true
 	current_generation = 0
 	best_fitness = -INF
+	_historical_best_fitness = -INF
+	_historical_best_generation = 0
 	fitness_history.clear()
 
 	status_update.emit("Initializing population...")
@@ -113,12 +119,22 @@ func _run_evolution() -> void:
 		# Sort by fitness (descending)
 		population.sort_custom(func(a, b): return a.fitness > b.fitness)
 
-		# Track best
-		if population[0].fitness > best_fitness:
-			best_fitness = population[0].fitness
-			best_genome = population[0].duplicate_genome()
-			status_update.emit("New best genome! Fitness: %.1f (W:%d L:%d)" % [
-				best_fitness, best_genome.wins, best_genome.losses])
+		# Always use current generation's winner as best genome
+		# This is the correct approach because fitness is only meaningful within a generation
+		# A genome that beats evolved opponents is better than one that dominated weak early opponents
+		best_genome = population[0].duplicate_genome()
+		best_fitness = population[0].fitness
+
+		# Track historical best for informational purposes only
+		if population[0].fitness > _historical_best_fitness:
+			_historical_best_fitness = population[0].fitness
+			_historical_best_generation = current_generation + 1
+			status_update.emit("New historical high fitness: %.1f in gen %d (W:%d L:%d)" % [
+				_historical_best_fitness, _historical_best_generation,
+				population[0].wins, population[0].losses])
+
+		status_update.emit("Gen %d winner: Fitness=%.1f (W:%d L:%d)" % [
+			current_generation + 1, best_fitness, best_genome.wins, best_genome.losses])
 
 		# Record fitness history
 		var avg_fitness := _calculate_average_fitness()
@@ -244,7 +260,8 @@ func _check_convergence() -> bool:
 ## Prints a summary of the current generation
 func _print_generation_summary() -> void:
 	print("\n=== Generation %d Summary ===" % (current_generation + 1))
-	print("Best fitness: %.1f" % population[0].fitness)
+	print("Gen %d Best: %.1f (this gen's winner will be used)" % [current_generation + 1, population[0].fitness])
+	print("Historical high: %.1f (gen %d) - for reference only" % [_historical_best_fitness, _historical_best_generation])
 	print("Avg fitness: %.1f" % _calculate_average_fitness())
 	print("Top 3 genomes:")
 	for i in range(mini(3, population.size())):
@@ -354,7 +371,9 @@ func get_progress() -> Dictionary:
 	return {
 		"generation": current_generation,
 		"max_generations": max_generations,
-		"best_fitness": best_fitness,
+		"best_fitness": best_fitness,  # Current gen's best
+		"historical_best_fitness": _historical_best_fitness,
+		"historical_best_generation": _historical_best_generation,
 		"is_running": is_running,
 		"population_size": population.size()
 	}

@@ -1,0 +1,13 @@
+[gd_resource type="BehaviorTree" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://demo/ai/goap/tasks/goap_pickup.gd" id="1_pickup"]
+
+[sub_resource type="BTAction" id="BTAction_pickup"]
+script = ExtResource("1_pickup")
+pickup_var = &"speed_boost_pickup"
+result_var = &"has_speed_boost"
+animation = &"pickup"
+
+[resource]
+description = "GOAP Action: Pick up speed boost"
+root_task = SubResource("BTAction_pickup")

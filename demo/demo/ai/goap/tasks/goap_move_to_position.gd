@@ -82,12 +82,14 @@ func _update_facing(dir: Vector2) -> void:
 	# Try to access root node for facing
 	if agent.has_node("Root"):
 		var root: Node2D = agent.get_node("Root")
+		var scale_magnitude := absf(root.scale.x)
 		if dir.x > 0.1 and root.scale.x < 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		elif dir.x < -0.1 and root.scale.x > 0:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
 	elif "root" in agent and agent.root:
+		var scale_magnitude := absf(agent.root.scale.x)
 		if dir.x > 0.1 and agent.root.scale.x < 0:
-			agent.root.scale.x = 1.0
+			agent.root.scale.x = scale_magnitude
 		elif dir.x < -0.1 and agent.root.scale.x > 0:
-			agent.root.scale.x = -1.0
+			agent.root.scale.x = -scale_magnitude

@@ -216,8 +216,125 @@ static func get_weight(agent: Node, weight_name: String, default_value: Variant)
 		"melee_move_speed":
 			return genome.melee_move_speed
 
+		# Position Evaluation - Base Weights
+		"pos_weight_threat_distance":
+			return genome.pos_weight_threat_distance
+		"pos_weight_ammo_proximity":
+			return genome.pos_weight_ammo_proximity
+		"pos_weight_health_proximity":
+			return genome.pos_weight_health_proximity
+		"pos_weight_cover_proximity":
+			return genome.pos_weight_cover_proximity
+		"pos_weight_center_proximity":
+			return genome.pos_weight_center_proximity
+		"pos_weight_strafe_preference":
+			return genome.pos_weight_strafe_preference
+		"pos_weight_los_to_target":
+			return genome.pos_weight_los_to_target
+		"pos_weight_speed_boost":
+			return genome.pos_weight_speed_boost
+
+		# Position Evaluation - Urgency
+		"pos_ammo_urgency_scale":
+			return genome.pos_ammo_urgency_scale
+		"pos_health_urgency_scale":
+			return genome.pos_health_urgency_scale
+		"pos_low_ammo_threshold":
+			return genome.pos_low_ammo_threshold
+		"pos_low_health_threshold":
+			return genome.pos_low_health_threshold
+
+		# Position Evaluation - Movement
+		"pos_step_distance":
+			return genome.pos_step_distance
+		"pos_wall_avoidance":
+			return genome.pos_wall_avoidance
+		"pos_safe_distance":
+			return genome.pos_safe_distance
+		"pos_danger_distance":
+			return genome.pos_danger_distance
+
+		# Position Evaluation - Mode Multipliers
+		"pos_retreat_threat_mult":
+			return genome.pos_retreat_threat_mult
+		"pos_kite_strafe_mult":
+			return genome.pos_kite_strafe_mult
+		"pos_approach_speed_mult":
+			return genome.pos_approach_speed_mult
+
+		# Weapon-Type Multipliers - Ranged
+		"ranged_threat_distance_mult":
+			return genome.ranged_threat_distance_mult
+		"ranged_ammo_proximity_mult":
+			return genome.ranged_ammo_proximity_mult
+		"ranged_health_proximity_mult":
+			return genome.ranged_health_proximity_mult
+		"ranged_cover_proximity_mult":
+			return genome.ranged_cover_proximity_mult
+		"ranged_center_proximity_mult":
+			return genome.ranged_center_proximity_mult
+		"ranged_strafe_preference_mult":
+			return genome.ranged_strafe_preference_mult
+		"ranged_safe_distance_mult":
+			return genome.ranged_safe_distance_mult
+		"ranged_danger_distance_mult":
+			return genome.ranged_danger_distance_mult
+
+		# Weapon-Type Multipliers - Melee
+		"melee_threat_distance_mult":
+			return genome.melee_threat_distance_mult
+		"melee_ammo_proximity_mult":
+			return genome.melee_ammo_proximity_mult
+		"melee_health_proximity_mult":
+			return genome.melee_health_proximity_mult
+		"melee_cover_proximity_mult":
+			return genome.melee_cover_proximity_mult
+		"melee_center_proximity_mult":
+			return genome.melee_center_proximity_mult
+		"melee_strafe_preference_mult":
+			return genome.melee_strafe_preference_mult
+		"melee_safe_distance_mult":
+			return genome.melee_safe_distance_mult
+		"melee_danger_distance_mult":
+			return genome.melee_danger_distance_mult
+
 	# Unknown weight, return default
 	return default_value
+
+
+## Gets weapon-specific position evaluation weights for an agent
+## This applies the weapon-type multipliers to base weights
+static func get_weapon_adjusted_weight(agent: Node, base_weight_name: String, is_ranged: bool, default_value: float) -> float:
+	var genome := get_genome_for_agent(agent)
+	if not genome:
+		return default_value
+
+	var base_weight: float = get_weight(agent, base_weight_name, default_value)
+
+	# Map base weights to their weapon-type multipliers
+	var mult_name := ""
+	match base_weight_name:
+		"pos_weight_threat_distance":
+			mult_name = "ranged_threat_distance_mult" if is_ranged else "melee_threat_distance_mult"
+		"pos_weight_ammo_proximity":
+			mult_name = "ranged_ammo_proximity_mult" if is_ranged else "melee_ammo_proximity_mult"
+		"pos_weight_health_proximity":
+			mult_name = "ranged_health_proximity_mult" if is_ranged else "melee_health_proximity_mult"
+		"pos_weight_cover_proximity":
+			mult_name = "ranged_cover_proximity_mult" if is_ranged else "melee_cover_proximity_mult"
+		"pos_weight_center_proximity":
+			mult_name = "ranged_center_proximity_mult" if is_ranged else "melee_center_proximity_mult"
+		"pos_weight_strafe_preference":
+			mult_name = "ranged_strafe_preference_mult" if is_ranged else "melee_strafe_preference_mult"
+		"pos_safe_distance":
+			mult_name = "ranged_safe_distance_mult" if is_ranged else "melee_safe_distance_mult"
+		"pos_danger_distance":
+			mult_name = "ranged_danger_distance_mult" if is_ranged else "melee_danger_distance_mult"
+		_:
+			return base_weight
+
+	var multiplier: float = get_weight(agent, mult_name, 1.0)
+	return base_weight * multiplier
 
 
 ## Applies a genome to an agent and all its components
@@ -243,6 +360,11 @@ static func apply_to_agent(agent: Node, genome: Resource) -> void:
 	if movement:
 		_apply_to_movement(movement, genome)
 
+	# Apply position evaluation weights
+	var position_evaluator := agent.get_node_or_null("PositionEvaluator")
+	if position_evaluator:
+		_apply_to_position_evaluator(position_evaluator, genome)
+
 
 static func _apply_to_goal_evaluator(evaluator: Node, genome: Resource) -> void:
 	evaluator.set_meta("goal_switch_cooldown", genome.goal_switch_cooldown)
@@ -262,6 +384,55 @@ static func _apply_to_world_state(world_state: Node, genome: Resource) -> void:
 static func _apply_to_movement(movement: Node, genome: Resource) -> void:
 	movement.set_meta("ranged_move_speed", genome.ranged_move_speed)
 	movement.set_meta("melee_move_speed", genome.melee_move_speed)
+
+
+static func _apply_to_position_evaluator(evaluator: Node, genome: Resource) -> void:
+	# Base weights
+	evaluator.weight_threat_distance = genome.pos_weight_threat_distance
+	evaluator.weight_ammo_proximity = genome.pos_weight_ammo_proximity
+	evaluator.weight_health_proximity = genome.pos_weight_health_proximity
+	evaluator.weight_cover_proximity = genome.pos_weight_cover_proximity
+	evaluator.weight_center_proximity = genome.pos_weight_center_proximity
+	evaluator.weight_strafe_preference = genome.pos_weight_strafe_preference
+	evaluator.weight_los_to_target = genome.pos_weight_los_to_target
+	evaluator.weight_speed_boost_proximity = genome.pos_weight_speed_boost
+
+	# Urgency scaling
+	evaluator.ammo_urgency_scale = genome.pos_ammo_urgency_scale
+	evaluator.health_urgency_scale = genome.pos_health_urgency_scale
+	evaluator.low_ammo_threshold = genome.pos_low_ammo_threshold
+	evaluator.low_health_threshold = genome.pos_low_health_threshold
+
+	# Movement parameters
+	evaluator.step_distance = genome.pos_step_distance
+	evaluator.wall_avoidance = genome.pos_wall_avoidance
+	evaluator.safe_distance = genome.pos_safe_distance
+	evaluator.danger_distance = genome.pos_danger_distance
+
+	# Mode multipliers
+	evaluator.retreat_threat_mult = genome.pos_retreat_threat_mult
+	evaluator.kite_strafe_mult = genome.pos_kite_strafe_mult
+	evaluator.approach_speed_mult = genome.pos_approach_speed_mult
+
+	# Weapon-type multipliers - Ranged
+	evaluator.ranged_threat_distance_mult = genome.ranged_threat_distance_mult
+	evaluator.ranged_ammo_proximity_mult = genome.ranged_ammo_proximity_mult
+	evaluator.ranged_health_proximity_mult = genome.ranged_health_proximity_mult
+	evaluator.ranged_cover_proximity_mult = genome.ranged_cover_proximity_mult
+	evaluator.ranged_center_proximity_mult = genome.ranged_center_proximity_mult
+	evaluator.ranged_strafe_preference_mult = genome.ranged_strafe_preference_mult
+	evaluator.ranged_safe_distance_mult = genome.ranged_safe_distance_mult
+	evaluator.ranged_danger_distance_mult = genome.ranged_danger_distance_mult
+
+	# Weapon-type multipliers - Melee
+	evaluator.melee_threat_distance_mult = genome.melee_threat_distance_mult
+	evaluator.melee_ammo_proximity_mult = genome.melee_ammo_proximity_mult
+	evaluator.melee_health_proximity_mult = genome.melee_health_proximity_mult
+	evaluator.melee_cover_proximity_mult = genome.melee_cover_proximity_mult
+	evaluator.melee_center_proximity_mult = genome.melee_center_proximity_mult
+	evaluator.melee_strafe_preference_mult = genome.melee_strafe_preference_mult
+	evaluator.melee_safe_distance_mult = genome.melee_safe_distance_mult
+	evaluator.melee_danger_distance_mult = genome.melee_danger_distance_mult
 
 
 ## Exports a genome to GDScript code that can be pasted into goap_config.gd
@@ -375,6 +546,53 @@ static func export_to_gdscript(genome: Resource) -> String:
 	lines.append("# Movement Speeds")
 	lines.append("const RANGED_MOVE_SPEED := %.1f" % genome.ranged_move_speed)
 	lines.append("const MELEE_MOVE_SPEED := %.1f" % genome.melee_move_speed)
+	lines.append("")
+	lines.append("# Weapon-Type Multipliers - Ranged")
+	lines.append("const RANGED_THREAT_DISTANCE_MULT := %.2f" % genome.ranged_threat_distance_mult)
+	lines.append("const RANGED_AMMO_PROXIMITY_MULT := %.2f" % genome.ranged_ammo_proximity_mult)
+	lines.append("const RANGED_HEALTH_PROXIMITY_MULT := %.2f" % genome.ranged_health_proximity_mult)
+	lines.append("const RANGED_COVER_PROXIMITY_MULT := %.2f" % genome.ranged_cover_proximity_mult)
+	lines.append("const RANGED_CENTER_PROXIMITY_MULT := %.2f" % genome.ranged_center_proximity_mult)
+	lines.append("const RANGED_STRAFE_PREFERENCE_MULT := %.2f" % genome.ranged_strafe_preference_mult)
+	lines.append("const RANGED_SAFE_DISTANCE_MULT := %.2f" % genome.ranged_safe_distance_mult)
+	lines.append("const RANGED_DANGER_DISTANCE_MULT := %.2f" % genome.ranged_danger_distance_mult)
+	lines.append("")
+	lines.append("# Weapon-Type Multipliers - Melee")
+	lines.append("const MELEE_THREAT_DISTANCE_MULT := %.2f" % genome.melee_threat_distance_mult)
+	lines.append("const MELEE_AMMO_PROXIMITY_MULT := %.2f" % genome.melee_ammo_proximity_mult)
+	lines.append("const MELEE_HEALTH_PROXIMITY_MULT := %.2f" % genome.melee_health_proximity_mult)
+	lines.append("const MELEE_COVER_PROXIMITY_MULT := %.2f" % genome.melee_cover_proximity_mult)
+	lines.append("const MELEE_CENTER_PROXIMITY_MULT := %.2f" % genome.melee_center_proximity_mult)
+	lines.append("const MELEE_STRAFE_PREFERENCE_MULT := %.2f" % genome.melee_strafe_preference_mult)
+	lines.append("const MELEE_SAFE_DISTANCE_MULT := %.2f" % genome.melee_safe_distance_mult)
+	lines.append("const MELEE_DANGER_DISTANCE_MULT := %.2f" % genome.melee_danger_distance_mult)
+	lines.append("")
+	lines.append("# Position Evaluation - Base Weights")
+	lines.append("const POS_WEIGHT_THREAT_DISTANCE := %.2f" % genome.pos_weight_threat_distance)
+	lines.append("const POS_WEIGHT_AMMO_PROXIMITY := %.2f" % genome.pos_weight_ammo_proximity)
+	lines.append("const POS_WEIGHT_HEALTH_PROXIMITY := %.2f" % genome.pos_weight_health_proximity)
+	lines.append("const POS_WEIGHT_COVER_PROXIMITY := %.2f" % genome.pos_weight_cover_proximity)
+	lines.append("const POS_WEIGHT_CENTER_PROXIMITY := %.2f" % genome.pos_weight_center_proximity)
+	lines.append("const POS_WEIGHT_STRAFE_PREFERENCE := %.2f" % genome.pos_weight_strafe_preference)
+	lines.append("const POS_WEIGHT_LOS_TO_TARGET := %.2f" % genome.pos_weight_los_to_target)
+	lines.append("const POS_WEIGHT_SPEED_BOOST := %.2f" % genome.pos_weight_speed_boost)
+	lines.append("")
+	lines.append("# Position Evaluation - Urgency Scaling")
+	lines.append("const POS_AMMO_URGENCY_SCALE := %.2f" % genome.pos_ammo_urgency_scale)
+	lines.append("const POS_HEALTH_URGENCY_SCALE := %.2f" % genome.pos_health_urgency_scale)
+	lines.append("const POS_LOW_AMMO_THRESHOLD := %.2f" % genome.pos_low_ammo_threshold)
+	lines.append("const POS_LOW_HEALTH_THRESHOLD := %.2f" % genome.pos_low_health_threshold)
+	lines.append("")
+	lines.append("# Position Evaluation - Movement Parameters")
+	lines.append("const POS_STEP_DISTANCE := %.1f" % genome.pos_step_distance)
+	lines.append("const POS_WALL_AVOIDANCE := %.2f" % genome.pos_wall_avoidance)
+	lines.append("const POS_SAFE_DISTANCE := %.1f" % genome.pos_safe_distance)
+	lines.append("const POS_DANGER_DISTANCE := %.1f" % genome.pos_danger_distance)
+	lines.append("")
+	lines.append("# Position Evaluation - Mode Multipliers")
+	lines.append("const POS_RETREAT_THREAT_MULT := %.2f" % genome.pos_retreat_threat_mult)
+	lines.append("const POS_KITE_STRAFE_MULT := %.2f" % genome.pos_kite_strafe_mult)
+	lines.append("const POS_APPROACH_SPEED_MULT := %.2f" % genome.pos_approach_speed_mult)
 
 	return "\n".join(lines)
 

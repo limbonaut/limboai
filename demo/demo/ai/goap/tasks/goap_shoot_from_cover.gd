@@ -59,10 +59,11 @@ func _tick(delta: float) -> Status:
 	# Update agent facing
 	if agent.has_node("Root"):
 		var root: Node2D = agent.get_node("Root")
+		var scale_magnitude := absf(root.scale.x)
 		if dir_to_target.x > 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		else:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
 
 	# Apply suppression to target (always - even if we miss)
 	_apply_suppression_to_target(target_node)

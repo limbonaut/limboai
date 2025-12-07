@@ -2,7 +2,7 @@
 ## Supports respawning after being collected
 extends Node2D
 
-@export var pickup_type: String = "weapon"  # "weapon", "ammo", or "health"
+@export var pickup_type: String = "weapon"  # "weapon", "ammo", "health", or "speed_boost"
 ## For weapon pickups: "ranged" or "melee"
 @export var weapon_type: String = "ranged"
 @export var bob_speed: float = 2.0
@@ -40,9 +40,25 @@ func _ready() -> void:
 		label.text = pickup_type.capitalize()
 
 
-## Updates the sprite visual based on weapon type
+## Updates the sprite visual based on pickup/weapon type
 func _update_weapon_visual() -> void:
-	if pickup_type != "weapon" or not sprite:
+	if not sprite:
+		return
+
+	# Handle speed boost pickup appearance
+	if pickup_type == "speed_boost":
+		# Load wind/tornado icon for speed boost
+		var speed_texture := load("res://demo/assets/rpg_icons/S_Wind01.png") as Texture2D
+		if speed_texture:
+			sprite.texture = speed_texture
+		sprite.rotation_degrees = 0.0
+		sprite.scale = Vector2(2.0, 2.0)
+		sprite.modulate = Color(0.4, 0.9, 1.0, 1.0)  # Cyan tint for speed
+		if label:
+			label.text = "SPEED"
+		return
+
+	if pickup_type != "weapon":
 		return
 
 	if weapon_type == "melee":

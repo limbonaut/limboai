@@ -1,12 +1,13 @@
 @tool
 extends BTAction
 ## Evade To Ammo: Moves toward ammo pickup while evading melee threats.
-## Blends evasion and goal-directed movement for ranged agents without ammo.
+## Uses PositionEvaluator for smart pathing that balances ammo seeking with threat avoidance.
 ## If melee gets too close, prioritizes evasion over ammo path.
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
 const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
+const PositionEvaluatorClass = preload("res://demo/ai/goap/components/position_evaluator.gd")
 
 ## Blackboard variable storing the target (enemy)
 @export var target_var := &"target"
@@ -19,6 +20,9 @@ const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 
 ## Distance at which we prioritize evasion over ammo path
 @export var danger_distance := 200.0
+
+## Cached base weights for reset
+var _base_weights: Dictionary = {}
 
 
 func _generate_name() -> String:
@@ -64,57 +68,54 @@ func _tick(delta: float) -> Status:
 		if combat.has_method("get_move_speed"):
 			speed = combat.get_move_speed()
 
-	# Calculate base direction to ammo
+	# Get direction to ammo for fallback and facing
 	var dir_to_ammo: Vector2 = (ammo_pos - agent.global_position).normalized()
 	var move_dir: Vector2 = dir_to_ammo
 
-	# If there's a threat, use smart pathing that considers ammo direction
+	# Try to use PositionEvaluator for smart movement
+	var evaluator: Node = _get_evaluator()
+	if evaluator:
+		# Build context from blackboard
+		var context := PositionEvaluatorClass.build_context_from_blackboard(blackboard, agent)
+
+		# Set weapon type for weapon-aware positioning (evade to ammo = ranged)
+		evaluator.set_weapon_type(true)
+
+		# Store and apply evade-to-ammo weights
+		_store_base_weights(evaluator)
+		_apply_evade_ammo_weights(evaluator)
+
+		# Get best position
+		var best_pos: Vector2 = evaluator.get_best_position(agent.global_position, context)
+
+		# Restore weights
+		_restore_base_weights(evaluator)
+
+		# Calculate direction to best position
+		move_dir = (best_pos - agent.global_position).normalized()
+	else:
+		# Fallback: original manual calculation
+		if is_instance_valid(target_node):
+			var dir_to_threat: Vector2 = (target_node.global_position - agent.global_position).normalized()
+			var distance_to_threat: float = agent.global_position.distance_to(target_node.global_position)
+			var away_from_threat: Vector2 = -dir_to_threat
+
+			var ammo_safety: float = dir_to_ammo.dot(away_from_threat)
+			var safety_factor: float = (ammo_safety + 1.0) / 2.0
+			var proximity_factor: float = clampf(1.0 - (distance_to_ammo / 400.0), 0.2, 1.0)
+			var ammo_weight: float = clampf(safety_factor * 0.6 + proximity_factor * 0.4, 0.3, 0.8)
+
+			if distance_to_threat < danger_distance:
+				move_dir = (away_from_threat * (1.0 - ammo_weight * 0.5) + dir_to_ammo * ammo_weight * 0.5).normalized()
+			else:
+				move_dir = (away_from_threat * (1.0 - ammo_weight) + dir_to_ammo * ammo_weight).normalized()
+
+	# Update facing - look at threat if present, otherwise look at ammo
 	if is_instance_valid(target_node):
 		var dir_to_threat: Vector2 = (target_node.global_position - agent.global_position).normalized()
-		var distance_to_threat: float = agent.global_position.distance_to(target_node.global_position)
-		var away_from_threat: Vector2 = -dir_to_threat
-
-		# Check if ammo is in a "safe" direction (not toward the threat)
-		# Dot product: 1.0 = same direction, -1.0 = opposite direction
-		var ammo_safety: float = dir_to_ammo.dot(away_from_threat)
-		# Convert from [-1, 1] to [0, 1] - higher = safer direction
-		var safety_factor: float = (ammo_safety + 1.0) / 2.0
-
-		# Weight ammo more heavily when:
-		# 1. Ammo is in a safe direction (away from threat)
-		# 2. We're close to the ammo
-		# 3. We have speed advantage (ranged is faster)
-		var proximity_factor: float = clampf(1.0 - (distance_to_ammo / 400.0), 0.2, 1.0)
-		var ammo_weight: float = clampf(safety_factor * 0.6 + proximity_factor * 0.4, 0.3, 0.8)
-
-		if distance_to_threat < danger_distance:
-			# Very close - still evade but maintain some ammo progress
-			move_dir = (away_from_threat * (1.0 - ammo_weight * 0.5) + dir_to_ammo * ammo_weight * 0.5).normalized()
-		else:
-			# Safer distance - prioritize ammo more
-			move_dir = (away_from_threat * (1.0 - ammo_weight) + dir_to_ammo * ammo_weight).normalized()
-
-		# Update facing to look at threat
 		_update_facing(dir_to_threat)
 	else:
-		# No threat - face movement direction
 		_update_facing(dir_to_ammo)
-
-	# Check arena bounds and use smart edge handling
-	var pos: Vector2 = agent.global_position
-	var next_pos: Vector2 = pos + move_dir * speed * delta
-	if not ArenaUtilityClass.is_position_in_bounds(next_pos, 20.0):
-		# Use smart escape direction that considers walls and threat
-		var threat_dir := Vector2.ZERO
-		if is_instance_valid(target_node):
-			threat_dir = (target_node.global_position - pos).normalized()
-		move_dir = ArenaUtilityClass.calculate_escape_direction(pos, threat_dir)
-
-		# Still try to bias toward ammo if possible
-		var adjusted_dir: Vector2 = (move_dir * 0.6 + dir_to_ammo * 0.4).normalized()
-		var test_pos: Vector2 = pos + adjusted_dir * speed * delta
-		if ArenaUtilityClass.is_position_in_bounds(test_pos, 20.0):
-			move_dir = adjusted_dir
 
 	# Apply movement
 	agent.velocity = move_dir * speed
@@ -130,7 +131,68 @@ func _tick(delta: float) -> Status:
 func _update_facing(dir: Vector2) -> void:
 	if agent.has_node("Root"):
 		var root: Node2D = agent.get_node("Root")
+		var scale_magnitude := absf(root.scale.x)
 		if dir.x > 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		else:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
+
+
+func _get_evaluator() -> Node:
+	if agent.has_node("PositionEvaluator"):
+		return agent.get_node("PositionEvaluator")
+	return null
+
+
+func _store_base_weights(evaluator: Node) -> void:
+	_base_weights = {
+		"threat": evaluator.weight_threat_distance,
+		"ammo": evaluator.weight_ammo_proximity,
+		"health": evaluator.weight_health_proximity,
+		"cover": evaluator.weight_cover_proximity,
+		"center": evaluator.weight_center_proximity,
+		"strafe": evaluator.weight_strafe_preference,
+		"speed_boost": evaluator.weight_speed_boost_proximity,
+	}
+
+
+func _restore_base_weights(evaluator: Node) -> void:
+	if _base_weights.is_empty():
+		return
+	evaluator.weight_threat_distance = _base_weights.get("threat", 1.0)
+	evaluator.weight_ammo_proximity = _base_weights.get("ammo", 0.5)
+	evaluator.weight_health_proximity = _base_weights.get("health", 0.3)
+	evaluator.weight_cover_proximity = _base_weights.get("cover", 0.4)
+	evaluator.weight_center_proximity = _base_weights.get("center", 0.2)
+	evaluator.weight_strafe_preference = _base_weights.get("strafe", 0.6)
+	evaluator.weight_speed_boost_proximity = _base_weights.get("speed_boost", 0.2)
+
+
+func _apply_evade_ammo_weights(evaluator: Node) -> void:
+	# Evade-to-ammo mode: balance ammo seeking with threat avoidance
+	# Key insight: we need to path AROUND the threat, not through it!
+
+	var target_node: Node2D = blackboard.get_var(target_var)
+	var distance_to_threat: float = 999.0
+	if is_instance_valid(target_node):
+		distance_to_threat = agent.global_position.distance_to(target_node.global_position)
+
+	# Scale weights based on how close the melee threat is
+	if distance_to_threat < evaluator.danger_distance:
+		# DANGER: Threat is close - prioritize evasion over ammo!
+		evaluator.weight_threat_distance *= 3.5  # Strong evasion
+		evaluator.weight_ammo_proximity *= 1.5   # Reduced ammo priority
+		evaluator.weight_strafe_preference *= 2.0  # Heavy strafe to circle around
+		evaluator.weight_center_proximity *= 2.0  # Stay in center for escape routes
+	elif distance_to_threat < evaluator.safe_distance:
+		# CAUTION: Threat approaching - balance evasion with ammo seeking
+		evaluator.weight_threat_distance *= 2.5  # Good evasion
+		evaluator.weight_ammo_proximity *= 2.5   # Moderate ammo pull
+		evaluator.weight_strafe_preference *= 1.8  # Strafe around threat
+		evaluator.weight_center_proximity *= 1.5  # Prefer center
+	else:
+		# SAFE: Can focus on ammo - threat is far
+		evaluator.weight_ammo_proximity *= 4.0   # Strong ammo pull
+		evaluator.weight_threat_distance *= 1.5  # Keep aware of threat
+		evaluator.weight_strafe_preference *= 1.2  # Some strafe for safety
+		evaluator.weight_center_proximity *= 1.2  # Slight center preference

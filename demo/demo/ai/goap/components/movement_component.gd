@@ -56,10 +56,11 @@ func stop() -> void:
 func update_facing() -> void:
 	if not agent or not root:
 		return
+	var scale_magnitude := absf(root.scale.x)
 	if agent.velocity.x > 10 and root.scale.x < 0:
-		root.scale.x = 1.0
+		root.scale.x = scale_magnitude
 	elif agent.velocity.x < -10 and root.scale.x > 0:
-		root.scale.x = -1.0
+		root.scale.x = -scale_magnitude
 
 
 ## Returns current facing direction (1 = right, -1 = left)
@@ -74,7 +75,8 @@ func face_toward(target_pos: Vector2) -> void:
 	if not agent or not root:
 		return
 	var dir := target_pos.x - agent.global_position.x
+	var scale_magnitude := absf(root.scale.x)
 	if dir > 0:
-		root.scale.x = 1.0
+		root.scale.x = scale_magnitude
 	elif dir < 0:
-		root.scale.x = -1.0
+		root.scale.x = -scale_magnitude

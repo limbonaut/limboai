@@ -9,6 +9,8 @@
 ## - Hysteresis to prevent goal thrashing
 ## - Opponent behavior observation - reacts to enemy state changes
 ## - Defensive timeout - returns to attack if stuck defending too long
+## - Periodic replanning to prevent stuck states
+## - No-plan detection with fallback to KillTarget
 class_name GoalEvaluator
 extends Node
 
@@ -22,6 +24,7 @@ signal goal_changed(new_goal: Resource, goal_type: String)
 @export var goal_avoid_damage: Resource  # GOAPGoal - seek cover (for ranged threats)
 @export var goal_regain_health: Resource # GOAPGoal - find health
 @export var goal_evade_melee: Resource   # GOAPGoal - maintain distance (for melee threats)
+@export var goal_get_speed_boost: Resource # GOAPGoal - opportunistically get speed boost
 
 var current_goal_type: String = "kill"
 
@@ -50,6 +53,14 @@ var _opponent_last_has_weapon := false
 var _opponent_last_health := 100
 var _opponent_behavior_changed := false
 
+# Periodic replanning
+const REPLAN_INTERVAL := 2.0  # Force replan every N seconds to prevent stuck states
+const NO_PLAN_CHECK_INTERVAL := 0.3  # How often to check plan status (not every frame!)
+var _time_since_last_replan := 0.0
+var _time_since_last_plan_check := 0.0
+var _consecutive_no_plan_count := 0  # Track consecutive checks with no plan
+const MAX_NO_PLAN_BEFORE_FALLBACK := 3  # Switch to fallback after N consecutive no-plans
+
 
 func _ready() -> void:
 	# Initialize hysteresis settings from optimized config
@@ -67,15 +78,82 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_time_since_last_switch += delta
 	_time_in_current_goal += delta
+	_time_since_last_replan += delta
+	_time_since_last_plan_check += delta
+
+	# Don't process if agent is dead
+	if agent and "health" in agent and agent.health <= 0:
+		return
 
 	# Observe opponent behavior
 	_observe_opponent()
 
+	# Check for no-plan state periodically (not every frame!)
+	if _time_since_last_plan_check >= NO_PLAN_CHECK_INTERVAL:
+		_time_since_last_plan_check = 0.0
+		_check_plan_status()
+
+	# Periodic replanning to prevent stuck states
+	if _time_since_last_replan >= REPLAN_INTERVAL:
+		_time_since_last_replan = 0.0
+		force_replan()
+
 	# Check for defensive timeout - force attack if stuck defending too long
+	# Even if threatened, being stuck in pure defense forever is bad
 	if current_goal_type in ["avoid", "evade"] and _time_in_current_goal > DEFENSIVE_TIMEOUT:
+		# If no immediate threat, switch to attack
 		if not _melee_threat and not _ranged_threat:
-			print("GOAP: Defensive timeout - forcing attack mode")
+			print("GOAP: Defensive timeout - forcing attack mode (no threat)")
 			force_goal("kill")
+		# If threatened but stuck too long (2x timeout), force switch anyway
+		elif _time_in_current_goal > DEFENSIVE_TIMEOUT * 2.0:
+			print("GOAP: Extended defensive timeout - forcing attack mode despite threat")
+			force_goal("kill")
+
+
+## Checks if current goal has a valid plan, handles fallback if stuck
+func _check_plan_status() -> void:
+	if not _goap_task:
+		_goap_task = GOAPUtilsClass.find_goap_task_from_player(bt_player)
+	if not _goap_task:
+		return
+
+	var plan = _goap_task.get_current_plan()
+
+	if plan.is_empty():
+		_consecutive_no_plan_count += 1
+
+		# If we've been stuck with no plan for too long, switch to fallback goal
+		if _consecutive_no_plan_count >= MAX_NO_PLAN_BEFORE_FALLBACK:
+			var goal = _goap_task.get_goal()
+			var goal_name = goal.goal_name if goal else "?"
+			print("GOAP: No plan for '%s' after %d attempts - switching to fallback" % [goal_name, _consecutive_no_plan_count])
+
+			# Try to switch to a different goal based on priority
+			# If current is speed_boost or health, try kill
+			# If current is kill, try evade/avoid based on threat
+			if current_goal_type in ["speed_boost", "health"]:
+				force_goal("kill")
+			elif current_goal_type == "kill":
+				# Try defensive goal if threatened, otherwise just replan
+				if _melee_threat and goal_evade_melee:
+					force_goal("evade")
+				elif _ranged_threat:
+					force_goal("avoid")
+				else:
+					# Just force replan - maybe world state changed
+					force_replan()
+			elif current_goal_type in ["evade", "avoid"]:
+				# Stuck in defensive mode with no plan - try attacking
+				force_goal("kill")
+			else:
+				# Default fallback to kill
+				force_goal("kill")
+
+			_consecutive_no_plan_count = 0
+	else:
+		# We have a valid plan - reset counter
+		_consecutive_no_plan_count = 0
 
 
 ## Observes opponent state and flags when behavior changes
@@ -181,11 +259,16 @@ func evaluate(is_threatened: bool, is_low_health: bool) -> bool:
 	var new_goal_type: String
 	var new_goal: Resource
 
+	# Special case: if on speed_boost goal but we now have it, immediately switch to kill
+	# This bypasses hysteresis since the goal is satisfied
+	if current_goal_type == "speed_boost" and not _should_get_speed_boost():
+		return force_goal("kill")
+
 	# Priority-based goal selection with threat type awareness
 	# 1. Melee threat → Evade (retreat/maintain distance) - cover won't help!
 	# 2. Ranged threat → Take cover - cover blocks bullets
 	# 3. Low health → Seek healing
-	# 4. Default → Attack
+	# 4. Default → Attack (but consider speed boost opportunity)
 	if _melee_threat and goal_evade_melee:
 		new_goal_type = "evade"
 		new_goal = goal_evade_melee
@@ -195,6 +278,9 @@ func evaluate(is_threatened: bool, is_low_health: bool) -> bool:
 	elif is_low_health:
 		new_goal_type = "health"
 		new_goal = goal_regain_health
+	elif _should_get_speed_boost():
+		new_goal_type = "speed_boost"
+		new_goal = goal_get_speed_boost
 	else:
 		new_goal_type = "kill"
 		new_goal = goal_kill_target
@@ -241,6 +327,55 @@ func evaluate(is_threatened: bool, is_low_health: bool) -> bool:
 	return false
 
 
+## Checks if agent should opportunistically get speed boost
+## Returns true when: not already boosted, speed boost available, not actively in danger,
+## AND we're closer to the speed boost than the enemy (we can reach it first)
+func _should_get_speed_boost() -> bool:
+	if not goal_get_speed_boost:
+		return false
+	if not agent:
+		return false
+
+	# Don't pursue speed boost if we're actively threatened
+	if _melee_threat or _ranged_threat:
+		return false
+
+	# Check if agent already has speed boost
+	if agent.has_node("CombatComponent"):
+		var combat = agent.get_node("CombatComponent")
+		if "is_speed_boosted" in combat and combat.is_speed_boosted:
+			return false
+
+	# Check if speed boost pickup is available via blackboard
+	var bb := bt_player.get_blackboard() if bt_player else null
+	if not bb:
+		return false
+
+	var speed_boost_available: bool = bb.get_var(&"speed_boost_available", false)
+	var has_speed_boost: bool = bb.get_var(&"has_speed_boost", false)
+	if not speed_boost_available or has_speed_boost:
+		return false
+
+	# Simple safety check: Only pursue if we're closer to the pickup than the enemy
+	# This ensures we can reach it first without getting intercepted
+	var target: Node2D = bb.get_var(&"target", null)
+	var speed_boost_pickup: Node2D = bb.get_var(&"speed_boost_pickup", null)
+	if is_instance_valid(target) and is_instance_valid(speed_boost_pickup):
+		var agent_pos: Vector2 = agent.global_position
+		var target_pos: Vector2 = target.global_position
+		var pickup_pos: Vector2 = speed_boost_pickup.global_position
+
+		var our_dist: float = agent_pos.distance_to(pickup_pos)
+		var enemy_dist: float = target_pos.distance_to(pickup_pos)
+
+		# Only pursue if we're significantly closer (at least 100 units advantage)
+		# This gives us margin to reach it safely
+		if our_dist > enemy_dist - 100.0:
+			return false
+
+	return true
+
+
 ## Forces a specific goal type (bypasses hysteresis)
 func force_goal(goal_type: String) -> bool:
 	var new_goal: Resource
@@ -253,6 +388,8 @@ func force_goal(goal_type: String) -> bool:
 			new_goal = goal_regain_health
 		"evade":
 			new_goal = goal_evade_melee
+		"speed_boost":
+			new_goal = goal_get_speed_boost
 		_:
 			push_warning("GOAP GoalEvaluator: Unknown goal type: " + goal_type)
 			return false
@@ -292,6 +429,8 @@ func get_current_goal() -> Resource:
 			return goal_regain_health
 		"evade":
 			return goal_evade_melee
+		"speed_boost":
+			return goal_get_speed_boost
 	return null
 
 

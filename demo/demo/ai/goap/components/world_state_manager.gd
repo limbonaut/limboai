@@ -24,6 +24,7 @@ var melee_weapon_pickup: Node2D  # Melee weapon pickup location
 var ranged_weapon_pickup: Node2D  # Ranged weapon pickup location
 var ammo_pickup: Node2D
 var health_pickup: Node2D
+var speed_boost_pickup: Node2D  # Speed boost pickup location
 
 # Multiple cover objects support
 var cover_objects: Array[Node2D] = []
@@ -165,10 +166,11 @@ func _compute_facts() -> Dictionary:
 	var low_health: bool = health < GOAPConfigClass.LOW_HEALTH_THRESHOLD
 	var is_healthy: bool = health >= GOAPConfigClass.HEALTHY_THRESHOLD
 
-	# Weapon type from combat component
+	# Weapon type and buffs from combat component
 	var has_melee_weapon := false
 	var has_ranged_weapon := false
 	var is_suppressed := false
+	var has_speed_boost := false
 	if agent.has_node("CombatComponent"):
 		var combat = agent.get_node("CombatComponent")
 		if combat.has_method("is_melee"):
@@ -177,6 +179,8 @@ func _compute_facts() -> Dictionary:
 			has_ranged_weapon = combat.is_ranged()
 		if "is_suppressed" in combat:
 			is_suppressed = combat.is_suppressed
+		if "is_speed_boosted" in combat:
+			has_speed_boost = combat.is_speed_boosted
 
 	# Weapon loaded state: ranged needs ammo, melee is always "loaded"
 	var weapon_loaded := (has_weapon and has_ammo) or has_melee_weapon
@@ -264,6 +268,7 @@ func _compute_facts() -> Dictionary:
 	facts["has_melee_weapon"] = has_melee_weapon
 	facts["has_ranged_weapon"] = has_ranged_weapon
 	facts["is_suppressed"] = is_suppressed
+	facts["has_speed_boost"] = has_speed_boost
 	facts["target_too_close"] = target_too_close
 	facts["target_too_far"] = target_too_far
 
@@ -345,31 +350,25 @@ func _compute_threat_state() -> Dictionary:
 		# Melee is a threat when enemy is close AND has melee weapon
 		# Cover does NOT protect against melee
 		if target_has_melee:
-			var in_melee_threat_range := dist < GOAPConfigClass.TOO_CLOSE_THRESHOLD
+			# Check if agent is ranged - ranged agents need bigger threat range vs melee
+			var agent_has_ranged := false
+			if agent.has_node("CombatComponent"):
+				var agent_combat = agent.get_node("CombatComponent")
+				if agent_combat.has_method("is_ranged"):
+					agent_has_ranged = agent_combat.is_ranged()
+
+			# Ranged agents have MUCH extended melee threat range - they need to kite!
+			# Use SHOOTING_RANGE as the threat range since melee WILL close the gap
+			var threat_range := GOAPConfigClass.TOO_CLOSE_THRESHOLD
+			if agent_has_ranged:
+				# Ranged agent: treat armed melee as threat within shooting range
+				# This keeps ranged in evasive mode while melee is approaching
+				threat_range = GOAPConfigClass.SHOOTING_RANGE  # 480.0 - full engagement range!
+
+			var in_melee_threat_range := dist < threat_range
 			if in_melee_threat_range:
 				result["melee_threat"] = true
 				result["under_threat"] = true
-
-			# Extended threat range for ranged agents without ammo
-			# A defenseless ranged agent should feel melee threat from farther away
-			if not result["melee_threat"]:
-				var agent_has_ranged := false
-				if agent.has_node("CombatComponent"):
-					var agent_combat = agent.get_node("CombatComponent")
-					if agent_combat.has_method("is_ranged"):
-						agent_has_ranged = agent_combat.is_ranged()
-
-				if agent_has_ranged:
-					var agent_ammo: int = agent.ammo_count if "ammo_count" in agent else 0
-					var agent_jammed: bool = agent.weapon_jammed if "weapon_jammed" in agent else false
-					var agent_cant_shoot := agent_ammo <= 0 or agent_jammed
-
-					if agent_cant_shoot:
-						# Defenseless ranged agent - melee is scary even from mid-range
-						var in_extended_threat_range := dist < GOAPConfigClass.SHOOTING_RANGE
-						if in_extended_threat_range:
-							result["melee_threat"] = true
-							result["under_threat"] = true
 
 		# --- RANGED THREAT ---
 		# Ranged is a threat when enemy has loaded ranged weapon, is in range, and has LoS
@@ -460,6 +459,14 @@ func _compute_proximity_facts() -> Dictionary:
 		if health_available:
 			near_health_pickup = agent_pos.distance_to(health_pickup.global_position) < GOAPConfigClass.PICKUP_RANGE
 
+	# Speed boost pickup
+	var near_speed_boost := false
+	var speed_boost_available := false
+	if speed_boost_pickup and is_instance_valid(speed_boost_pickup):
+		speed_boost_available = _is_pickup_available(speed_boost_pickup)
+		if speed_boost_available:
+			near_speed_boost = agent_pos.distance_to(speed_boost_pickup.global_position) < GOAPConfigClass.PICKUP_RANGE
+
 	# Find best cover against current target
 	_update_best_cover()
 
@@ -476,11 +483,14 @@ func _compute_proximity_facts() -> Dictionary:
 	facts["ammo_available"] = ammo_available
 	facts["near_health_pickup"] = near_health_pickup
 	facts["health_available"] = health_available
+	facts["near_speed_boost"] = near_speed_boost
+	facts["speed_boost_available"] = speed_boost_available
 	facts["near_cover"] = near_cover
 
 	# Weapon pickup references for behavior trees
 	facts["melee_weapon_pickup"] = melee_weapon_pickup
 	facts["ranged_weapon_pickup"] = ranged_weapon_pickup
+	facts["speed_boost_pickup"] = speed_boost_pickup
 
 	return facts
 

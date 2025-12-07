@@ -1,0 +1,8 @@
+[gd_resource type="GOAPGoal" format=3]
+
+[resource]
+goal_name = "GetSpeedBoost"
+priority = 5
+target_state = {
+"has_speed_boost": true
+}

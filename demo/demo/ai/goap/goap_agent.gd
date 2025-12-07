@@ -9,6 +9,7 @@ const CombatComponentClass = preload("res://demo/ai/goap/components/combat_compo
 const MovementComponentClass = preload("res://demo/ai/goap/components/movement_component.gd")
 const WorldStateManagerClass = preload("res://demo/ai/goap/components/world_state_manager.gd")
 const GoalEvaluatorClass = preload("res://demo/ai/goap/components/goal_evaluator.gd")
+const PositionEvaluatorClass = preload("res://demo/ai/goap/components/position_evaluator.gd")
 
 signal target_killed
 signal health_changed(current: int, max_health: int)
@@ -55,6 +56,7 @@ var cover_objects: Array[Node2D] = []
 @export var goal_avoid_damage: Resource  # GOAPGoal (for ranged threats - seek cover)
 @export var goal_regain_health: Resource  # GOAPGoal
 @export var goal_evade_melee: Resource  # GOAPGoal (for melee threats - maintain distance)
+@export var goal_get_speed_boost: Resource  # GOAPGoal (opportunistic speed boost pickup)
 
 # Cover state (managed by actions)
 var in_cover := false
@@ -74,6 +76,9 @@ var cover_object: Node2D:
 @onready var movement = $MovementComponent
 @onready var world_state = $WorldStateManager
 @onready var goal_evaluator = $GoalEvaluator
+
+# PositionEvaluator (created dynamically if not present)
+var position_evaluator: Node = null
 
 # Weapon sprite (shown when weapon equipped)
 var weapon_sprite: Sprite2D
@@ -122,9 +127,22 @@ var jam_chance: float:
 func _ready() -> void:
 	_resolve_node_paths()
 	_find_weapon_sprite()
+	_setup_position_evaluator()
 	_setup_components()
 	_connect_signals()
 	_initial_sync()
+
+
+## Sets up the PositionEvaluator component (creates if needed)
+func _setup_position_evaluator() -> void:
+	# Check if PositionEvaluator already exists as a child node
+	if has_node("PositionEvaluator"):
+		position_evaluator = get_node("PositionEvaluator")
+	else:
+		# Create PositionEvaluator dynamically
+		position_evaluator = PositionEvaluatorClass.new()
+		position_evaluator.name = "PositionEvaluator"
+		add_child(position_evaluator)
 
 
 ## Finds the weapon sprite node in the rig (if it exists)
@@ -191,6 +209,7 @@ func _setup_components() -> void:
 		goal_evaluator.goal_avoid_damage = goal_avoid_damage
 		goal_evaluator.goal_regain_health = goal_regain_health
 		goal_evaluator.goal_evade_melee = goal_evade_melee
+		goal_evaluator.goal_get_speed_boost = goal_get_speed_boost
 
 
 func _connect_signals() -> void:
@@ -330,10 +349,11 @@ func update_facing() -> void:
 	if movement:
 		movement.update_facing()
 	elif root:
+		var scale_magnitude := absf(root.scale.x)
 		if velocity.x > 10 and root.scale.x < 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		elif velocity.x < -10 and root.scale.x > 0:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
 
 
 func get_facing() -> float:

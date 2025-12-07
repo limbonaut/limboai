@@ -123,7 +123,8 @@ func _on_health_damaged(_amount: float, _knockback: Vector2) -> void:
 	if has_node("Hurtbox"):
 		var hurtbox = get_node("Hurtbox")
 		if hurtbox.get("last_attack_vector"):
-			root.scale.x = -signf(hurtbox.last_attack_vector.x)
+			var scale_magnitude := absf(root.scale.x)
+			root.scale.x = -signf(hurtbox.last_attack_vector.x) * scale_magnitude
 	animation_player.clear_queue()
 	animation_player.play(&"hurt", 0.1)
 

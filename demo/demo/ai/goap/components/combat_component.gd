@@ -15,6 +15,7 @@ signal weapon_unjammed
 signal suppression_changed(is_suppressed: bool)
 signal weapon_equipped(weapon_type: int)
 signal died
+signal speed_boost_changed(is_boosted: bool)
 
 @export var max_health: int = GOAPConfigClass.DEFAULT_MAX_HEALTH
 @export var max_ammo: int = GOAPConfigClass.DEFAULT_MAX_AMMO
@@ -40,6 +41,10 @@ var accuracy_modifier: float = 1.0
 ## Suppression state - when suppressed, agent can't leave cover
 var is_suppressed: bool = false
 var _suppression_timer: float = 0.0
+
+## Speed boost state - when boosted, agent moves faster
+var is_speed_boosted: bool = false
+var _speed_boost_timer: float = 0.0
 
 var health: int:
 	get:
@@ -162,14 +167,20 @@ func should_hit() -> bool:
 
 
 ## Returns movement speed based on weapon type (ranged is faster for kiting)
+## Speed boost is applied on top of weapon-based speed
 func get_move_speed() -> float:
+	var base_speed: float
 	match weapon_type:
 		WeaponType.RANGED:
-			return GOAPConfigClass.RANGED_MOVE_SPEED
+			base_speed = GOAPConfigClass.RANGED_MOVE_SPEED
 		WeaponType.MELEE:
-			return GOAPConfigClass.MELEE_MOVE_SPEED
+			base_speed = GOAPConfigClass.MELEE_MOVE_SPEED
 		_:
-			return GOAPConfigClass.MOVE_SPEED
+			base_speed = GOAPConfigClass.MOVE_SPEED
+
+	if is_speed_boosted:
+		return base_speed * GOAPConfigClass.SPEED_BOOST_MULTIPLIER
+	return base_speed
 
 
 ## Apply suppression effect to the agent
@@ -182,11 +193,30 @@ func apply_suppression() -> void:
 		print("GOAP Combat: SUPPRESSED! Can't leave cover for %.1fs" % _suppression_timer)
 
 
-## Called every frame to update suppression timer
+## Apply speed boost effect to the agent
+func apply_speed_boost() -> void:
+	var was_boosted := is_speed_boosted
+	is_speed_boosted = true
+	_speed_boost_timer = GOAPConfigClass.SPEED_BOOST_DURATION
+	if not was_boosted:
+		speed_boost_changed.emit(true)
+		print("GOAP Combat: SPEED BOOST! Moving %.0f%% faster for %.1fs" % [(GOAPConfigClass.SPEED_BOOST_MULTIPLIER - 1.0) * 100, _speed_boost_timer])
+
+
+## Called every frame to update timers
 func _process(delta: float) -> void:
+	# Update suppression timer
 	if _suppression_timer > 0.0:
 		_suppression_timer -= delta
 		if _suppression_timer <= 0.0:
 			is_suppressed = false
 			suppression_changed.emit(false)
 			print("GOAP Combat: Suppression ended")
+
+	# Update speed boost timer
+	if _speed_boost_timer > 0.0:
+		_speed_boost_timer -= delta
+		if _speed_boost_timer <= 0.0:
+			is_speed_boosted = false
+			speed_boost_changed.emit(false)
+			print("GOAP Combat: Speed boost ended")

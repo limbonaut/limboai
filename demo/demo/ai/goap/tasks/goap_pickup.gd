@@ -26,6 +26,14 @@ func _generate_name() -> String:
 func _tick(_delta: float) -> Status:
 	var pickup_node: Node2D = blackboard.get_var(pickup_var)
 
+	# Handle speed boost pickup specially
+	if is_instance_valid(pickup_node) and "pickup_type" in pickup_node:
+		if pickup_node.pickup_type == "speed_boost":
+			if agent.has_node("CombatComponent"):
+				var combat: CombatComponentClass = agent.get_node("CombatComponent")
+				combat.apply_speed_boost()
+				print("GOAP: Collected SPEED BOOST!")
+
 	# For weapon pickups, set weapon type on combat component
 	if is_instance_valid(pickup_node) and "weapon_type" in pickup_node:
 		if agent.has_node("CombatComponent"):

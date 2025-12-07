@@ -14,8 +14,8 @@ func get_cover_position_against(threat_pos: Vector2) -> Vector2:
 	var away_from_threat := -to_threat.normalized()
 
 	# Start with a position behind cover (opposite side from threat)
-	# Using 100 units for clearer visual separation from the cover object
-	var base_offset := 100.0
+	# Using 60 units for clearer visual separation from the cover object (scaled from 100)
+	var base_offset := 60.0
 	var test_pos := global_position + away_from_threat * base_offset
 
 	# Verify this position breaks LoS using raycast
@@ -27,8 +27,8 @@ func get_cover_position_against(threat_pos: Vector2) -> Vector2:
 	if not result.is_empty() and result.collider == self:
 		return test_pos
 
-	# If LoS isn't blocked, try moving further back
-	for extra_distance in [20.0, 40.0, 60.0]:
+	# If LoS isn't blocked, try moving further back (scaled from 20, 40, 60)
+	for extra_distance in [12.0, 24.0, 36.0]:
 		test_pos = global_position + away_from_threat * (base_offset + extra_distance)
 		query = PhysicsRayQueryParameters2D.create(threat_pos, test_pos, LOS_COLLISION_LAYER)
 		result = space_state.intersect_ray(query)

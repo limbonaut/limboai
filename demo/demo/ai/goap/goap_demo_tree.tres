@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=24 format=3]
+[gd_resource type="BehaviorTree" load_steps=26 format=3]
 
 [ext_resource type="GOAPGoal" path="res://demo/ai/goap/resources/goal_kill_target.tres" id="1_goal"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_pickup_melee_weapon.tres" id="3_pickup_melee"]
@@ -21,10 +21,12 @@
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_retreat.tres" id="21_retreat"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_kite_attack.tres" id="22_kite_attack"]
 [ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_evade_to_ammo.tres" id="23_evade_ammo"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_go_to_speed_boost.tres" id="24_go_speed_boost"]
+[ext_resource type="GOAPAction" path="res://demo/ai/goap/resources/action_pick_speed_boost.tres" id="25_pick_speed_boost"]
 
 [sub_resource type="BTRunGOAPPlan" id="BTRunGOAPPlan_1"]
 goal = ExtResource("1_goal")
-available_actions = [ExtResource("3_pickup_melee"), ExtResource("3_pickup_ranged"), ExtResource("4_go_ammo"), ExtResource("5_load"), ExtResource("6_approach"), ExtResource("7_attack"), ExtResource("10_go_cover"), ExtResource("11_take_cover"), ExtResource("12_leave_cover"), ExtResource("13_go_health"), ExtResource("14_heal"), ExtResource("15_wait_cover"), ExtResource("16_unjam"), ExtResource("17_flank"), ExtResource("18_get_los"), ExtResource("19_shoot_cover"), ExtResource("20_close_gap"), ExtResource("21_retreat"), ExtResource("22_kite_attack"), ExtResource("23_evade_ammo")]
+available_actions = [ExtResource("3_pickup_melee"), ExtResource("3_pickup_ranged"), ExtResource("4_go_ammo"), ExtResource("5_load"), ExtResource("6_approach"), ExtResource("7_attack"), ExtResource("10_go_cover"), ExtResource("11_take_cover"), ExtResource("12_leave_cover"), ExtResource("13_go_health"), ExtResource("14_heal"), ExtResource("15_wait_cover"), ExtResource("16_unjam"), ExtResource("17_flank"), ExtResource("18_get_los"), ExtResource("19_shoot_cover"), ExtResource("20_close_gap"), ExtResource("21_retreat"), ExtResource("22_kite_attack"), ExtResource("23_evade_ammo"), ExtResource("24_go_speed_boost"), ExtResource("25_pick_speed_boost")]
 replan_cooldown = 0.1
 replan_debounce = 0.05
 max_iterations = 300

@@ -8,7 +8,7 @@ base_cost = 1
 preconditions = {
 "has_ranged_weapon": true,
 "has_ammo": false,
-"melee_threat": true,
+"enemy_has_melee_weapon": true,
 "ammo_available": true
 }
 effects = {

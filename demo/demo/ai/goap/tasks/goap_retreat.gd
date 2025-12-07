@@ -1,17 +1,23 @@
 @tool
 extends BTAction
-## Tactical Retreat: Circles around melee threats while heading toward resources.
-## Instead of just backing up, strafes perpendicular to maintain distance while
-## making progress toward ammo or other objectives.
+## Tactical Retreat: Uses PositionEvaluator for optimized retreat behavior.
+## Circles around melee threats while heading toward resources.
+## Uses optimizable weights to determine best positions.
+## NOW WITH SHOOTING: Opportunistically shoots while retreating if ammo available.
 ##
 ## Behavior:
-## - Very close (danger zone): Pure retreat to create space
-## - Medium range: Circle strafe toward nearest resource (ammo preferred)
+## - Evaluates positions using PositionEvaluator with retreat mode weights
+## - Very close (danger zone): Emphasizes threat distance
+## - Medium range: Balances retreat with strafe/resources
 ## - Safe range: Success - can transition to next action
+## - Shoots at target while retreating (if has ammo and ranged weapon)
 
 const GOAPConfigClass = preload("res://demo/ai/goap/goap_config.gd")
 const CombatComponentClass = preload("res://demo/ai/goap/components/combat_component.gd")
-const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
+const PositionEvaluatorClass = preload("res://demo/ai/goap/components/position_evaluator.gd")
+
+## Ninja star scene for shooting while retreating
+const NINJA_STAR_SCENE = preload("res://demo/agents/ninja_star/ninja_star.tscn")
 
 ## Blackboard variable storing the target node
 @export var target_var := &"target"
@@ -22,18 +28,17 @@ const ArenaUtilityClass = preload("res://demo/ai/goap/arena_utility.gd")
 ## Fallback retreat speed (uses combat component speed when available)
 @export var retreat_speed := 300.0
 
-## Distance at which we switch to pure retreat (too close!)
-@export var danger_distance := 150.0
-
-## Safe distance - we've evaded successfully
+## Safe distance - we've evaded successfully (uses evaluator's safe_distance if available)
 @export var safe_distance := 350.0
 
-## How much to weight circling vs retreating (0 = pure retreat, 1 = pure strafe)
-@export var circle_weight := 0.6
+## Cooldown between shots while retreating
+@export var shot_cooldown := 0.5
 
-# Escape state for corner handling
-var _escape_direction: Vector2 = Vector2.ZERO
-var _escape_timer: float = 0.0
+## Cached base weights for reset
+var _base_weights: Dictionary = {}
+
+## Shooting cooldown timer
+var _cooldown_timer := 0.0
 
 
 func _generate_name() -> String:
@@ -41,8 +46,8 @@ func _generate_name() -> String:
 
 
 func _enter() -> void:
-	_escape_direction = Vector2.ZERO
-	_escape_timer = 0.0
+	# Reset cooldown timer on entry
+	_cooldown_timer = 0.0
 
 
 func _tick(delta: float) -> Status:
@@ -54,8 +59,14 @@ func _tick(delta: float) -> Status:
 	var distance: float = to_target.length()
 	var dir_to_target: Vector2 = to_target.normalized()
 
-	# Check if we've retreated far enough
-	if distance >= safe_distance:
+	# Get evaluator for smart movement
+	var evaluator: Node = _get_evaluator()
+
+	# Check if we've retreated far enough (use evaluator's safe_distance if available)
+	var safe_dist := safe_distance
+	if evaluator:
+		safe_dist = evaluator.safe_distance
+	if distance >= safe_dist:
 		agent.velocity = Vector2.ZERO
 		return SUCCESS
 
@@ -66,14 +77,31 @@ func _tick(delta: float) -> Status:
 		if combat.has_method("get_move_speed"):
 			speed = combat.get_move_speed()
 
-	# Decrement escape timer
-	if _escape_timer > 0.0:
-		_escape_timer -= delta
-	else:
-		_escape_direction = Vector2.ZERO
+	# Calculate movement using PositionEvaluator if available
+	var move_dir: Vector2
+	if evaluator:
+		# Build context from blackboard
+		var context := PositionEvaluatorClass.build_context_from_blackboard(blackboard, agent)
 
-	# Calculate movement direction with smart corner/wall handling
-	var move_dir: Vector2 = _calculate_smart_retreat(dir_to_target, distance, delta)
+		# Set weapon type for weapon-aware positioning
+		var is_ranged: bool = context.get("is_ranged_weapon", false)
+		evaluator.set_weapon_type(is_ranged)
+
+		# Store and apply retreat mode weights
+		_store_base_weights(evaluator)
+		_apply_retreat_weights(evaluator)
+
+		# Get best position
+		var best_pos: Vector2 = evaluator.get_best_position(agent.global_position, context)
+
+		# Restore weights
+		_restore_base_weights(evaluator)
+
+		# Calculate direction to best position
+		move_dir = (best_pos - agent.global_position).normalized()
+	else:
+		# Fallback: simple retreat direction
+		move_dir = -dir_to_target
 
 	# If we can't move anywhere useful, just stop
 	if move_dir.length() < 0.1:
@@ -91,108 +119,116 @@ func _tick(delta: float) -> Status:
 		if anim.has_animation(&"walk"):
 			anim.play(&"walk")
 
+	# Opportunistic shooting while retreating (if has ranged weapon and ammo)
+	_cooldown_timer -= delta
+	if _cooldown_timer <= 0.0:
+		if _try_shoot_at_target(target_node, dir_to_target):
+			_cooldown_timer = shot_cooldown
+
 	return RUNNING
 
 
-## Calculates the best direction to circle around the threat
-## Chooses the strafe direction that moves us toward resources (ammo preferred)
-func _calculate_circle_direction(dir_to_target: Vector2, distance: float) -> Vector2:
-	# Calculate perpendicular directions (strafe left and right)
-	var strafe_left: Vector2 = Vector2(-dir_to_target.y, dir_to_target.x)
-	var strafe_right: Vector2 = Vector2(dir_to_target.y, -dir_to_target.x)
-
-	# Retreat component (away from target)
-	var retreat_dir: Vector2 = -dir_to_target
-
-	# Find the best strafe direction based on resources
-	var best_strafe: Vector2 = _choose_strafe_toward_resource(strafe_left, strafe_right)
-
-	# Blend retreat and strafe based on distance
-	# Closer = more retreat, farther = more strafe
-	var distance_factor: float = clampf((distance - danger_distance) / (safe_distance - danger_distance), 0.0, 1.0)
-	var actual_circle_weight: float = circle_weight * distance_factor
-
-	# Combine retreat and strafe
-	var combined: Vector2 = retreat_dir * (1.0 - actual_circle_weight) + best_strafe * actual_circle_weight
-	return combined.normalized()
+func _get_evaluator() -> Node:
+	if agent.has_node("PositionEvaluator"):
+		return agent.get_node("PositionEvaluator")
+	return null
 
 
-## Chooses which strafe direction moves us closer to resources
-func _choose_strafe_toward_resource(strafe_left: Vector2, strafe_right: Vector2) -> Vector2:
-	var best_strafe: Vector2 = strafe_left  # Default
-	var best_score: float = -INF
+func _store_base_weights(evaluator: Node) -> void:
+	_base_weights = {
+		"threat": evaluator.weight_threat_distance,
+		"ammo": evaluator.weight_ammo_proximity,
+		"health": evaluator.weight_health_proximity,
+		"cover": evaluator.weight_cover_proximity,
+		"center": evaluator.weight_center_proximity,
+		"strafe": evaluator.weight_strafe_preference,
+		"speed_boost": evaluator.weight_speed_boost_proximity,
+	}
 
-	# Check ammo pickup first (highest priority when evading)
-	var ammo_pickup: Node2D = blackboard.get_var(ammo_var, null)
-	if is_instance_valid(ammo_pickup):
-		if not ammo_pickup.has_method("is_available") or ammo_pickup.is_available():
-			var dir_to_ammo: Vector2 = (ammo_pickup.global_position - agent.global_position).normalized()
-			var left_score: float = strafe_left.dot(dir_to_ammo)
-			var right_score: float = strafe_right.dot(dir_to_ammo)
 
-			if left_score > right_score:
-				return strafe_left
-			else:
-				return strafe_right
+func _restore_base_weights(evaluator: Node) -> void:
+	if _base_weights.is_empty():
+		return
+	evaluator.weight_threat_distance = _base_weights.get("threat", 1.0)
+	evaluator.weight_ammo_proximity = _base_weights.get("ammo", 0.5)
+	evaluator.weight_health_proximity = _base_weights.get("health", 0.3)
+	evaluator.weight_cover_proximity = _base_weights.get("cover", 0.4)
+	evaluator.weight_center_proximity = _base_weights.get("center", 0.2)
+	evaluator.weight_strafe_preference = _base_weights.get("strafe", 0.6)
+	evaluator.weight_speed_boost_proximity = _base_weights.get("speed_boost", 0.2)
 
-	# Check health pickup as secondary
-	var health_pickup: Node2D = blackboard.get_var(&"health_pickup", null)
-	if is_instance_valid(health_pickup):
-		if not health_pickup.has_method("is_available") or health_pickup.is_available():
-			var dir_to_health: Vector2 = (health_pickup.global_position - agent.global_position).normalized()
-			var left_score: float = strafe_left.dot(dir_to_health)
-			var right_score: float = strafe_right.dot(dir_to_health)
 
-			if left_score > right_score:
-				return strafe_left
-			else:
-				return strafe_right
+func _apply_retreat_weights(evaluator: Node) -> void:
+	# Retreat mode: prioritize distance from threat based on how close enemy is
+	# The key insight: when enemy is close, we must retreat FIRST, strafe SECOND
+	var target_node: Node2D = blackboard.get_var(target_var)
+	var distance: float = 999.0
+	if is_instance_valid(target_node):
+		distance = agent.global_position.distance_to(target_node.global_position)
 
-	# No resources - pick based on arena center (stay in middle)
-	var arena_center: Vector2 = (GOAPConfigClass.ARENA_MIN + GOAPConfigClass.ARENA_MAX) / 2.0
-	var dir_to_center: Vector2 = (arena_center - agent.global_position).normalized()
-	var left_score: float = strafe_left.dot(dir_to_center)
-	var right_score: float = strafe_right.dot(dir_to_center)
-
-	if left_score > right_score:
-		return strafe_left
+	# Scale threat priority based on how close the enemy is
+	if distance < evaluator.danger_distance:
+		# DANGER ZONE: Pure retreat, no strafe
+		evaluator.weight_threat_distance *= evaluator.retreat_threat_mult * 2.0
+		evaluator.weight_strafe_preference *= 0.2  # Almost no strafe
+		evaluator.weight_center_proximity *= 2.0   # Head toward center for escape options
+	elif distance < evaluator.safe_distance:
+		# CAUTION ZONE: Prioritize retreat, some strafe allowed
+		evaluator.weight_threat_distance *= evaluator.retreat_threat_mult * 1.5
+		evaluator.weight_strafe_preference *= 0.5
+		evaluator.weight_center_proximity *= 1.5
 	else:
-		return strafe_right
+		# SAFE ZONE: Normal retreat behavior
+		evaluator.weight_threat_distance *= evaluator.retreat_threat_mult
+		evaluator.weight_strafe_preference *= 0.8
+		evaluator.weight_center_proximity *= 1.5  # Stronger center preference to avoid corners
 
-
-## Calculates retreat direction with smart corner/wall handling
-## Uses ArenaUtility to detect corners and calculate escape routes
-func _calculate_smart_retreat(dir_to_target: Vector2, distance: float, _delta: float) -> Vector2:
-	var position: Vector2 = agent.global_position
-
-	# Check if we're in a corner - use cached escape direction or calculate new one
-	if ArenaUtilityClass.is_in_corner(position):
-		if _escape_direction == Vector2.ZERO or _escape_timer <= 0.0:
-			_escape_direction = ArenaUtilityClass.calculate_escape_direction(position, dir_to_target)
-			_escape_timer = ArenaUtilityClass.ESCAPE_DURATION
-			print("GOAP Retreat: Corner detected! Escaping %s" % _escape_direction)
-		return _escape_direction
-
-	# Check if we're near a wall (but not cornered)
-	var wall_flags := ArenaUtilityClass.get_wall_flags(position)
-	if wall_flags != ArenaUtilityClass.WallFlags.NONE:
-		# Use ArenaUtility's smart escape which slides along walls
-		return ArenaUtilityClass.calculate_escape_direction(position, dir_to_target)
-
-	# Not near walls - use standard retreat/circle logic
-	if distance < danger_distance:
-		# DANGER ZONE: Pure retreat - just get away!
-		return -dir_to_target
-	else:
-		# SAFE ENOUGH TO CIRCLE: Strafe around threat toward resources
-		return _calculate_circle_direction(dir_to_target, distance)
+	# If out of ammo, boost ammo priority significantly during retreat
+	var ammo_ratio: float = 1.0
+	if "ammo_count" in agent and "max_ammo" in agent and agent.max_ammo > 0:
+		ammo_ratio = float(agent.ammo_count) / float(agent.max_ammo)
+	if ammo_ratio < 0.2:  # Out of ammo or very low
+		evaluator.weight_ammo_proximity *= 3.0  # Strong pull toward ammo
 
 
 ## Updates agent facing direction to always face the threat
 func _update_facing(dir_to_target: Vector2) -> void:
 	if agent.has_node("Root"):
 		var root: Node2D = agent.get_node("Root")
+		var scale_magnitude := absf(root.scale.x)
 		if dir_to_target.x > 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		else:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
+
+
+## Attempts to shoot at target while retreating
+## Returns true if shot was fired, false if couldn't shoot (no ammo, wrong weapon, etc.)
+func _try_shoot_at_target(target_node: Node2D, dir_to_target: Vector2) -> bool:
+	# Check if we have a ranged weapon
+	if not agent.has_node("CombatComponent"):
+		return false
+	var combat = agent.get_node("CombatComponent")
+	if not combat.is_ranged():
+		return false  # Not a ranged weapon, can't shoot
+
+	# Check ammo
+	if agent.has_method("use_ammo"):
+		if not agent.use_ammo():
+			return false  # No ammo
+
+	# Spawn ninja star
+	var star = NINJA_STAR_SCENE.instantiate()
+	var spawn_offset := dir_to_target * 60.0
+	star.global_position = agent.global_position + spawn_offset + Vector2(0, -40)
+	star.direction = dir_to_target
+	star.shooter = agent
+	agent.get_parent().add_child(star)
+
+	# Apply suppression to target
+	if target_node.has_node("CombatComponent"):
+		var target_combat = target_node.get_node("CombatComponent")
+		if target_combat.has_method("apply_suppression"):
+			target_combat.apply_suppression()
+
+	return true

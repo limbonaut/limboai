@@ -23,10 +23,11 @@ func _tick(_delta: float) -> Status:
 	var dir_to_target: Vector2 = (target_node.global_position - agent.global_position).normalized()
 	if agent.has_node("Root"):
 		var root: Node2D = agent.get_node("Root")
+		var scale_magnitude := absf(root.scale.x)
 		if dir_to_target.x > 0:
-			root.scale.x = 1.0
+			root.scale.x = scale_magnitude
 		else:
-			root.scale.x = -1.0
+			root.scale.x = -scale_magnitude
 
 	# Play melee swing animation
 	if agent.has_method("play_melee_swing"):

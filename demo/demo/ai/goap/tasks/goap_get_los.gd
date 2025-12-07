@@ -70,10 +70,11 @@ func _tick(_delta: float) -> Status:
 
 	# Update facing toward target
 	var face_dir: Vector2 = agent.global_position.direction_to(target_node.global_position)
+	var scale_magnitude := absf(agent.root.scale.x)
 	if face_dir.x > 0.1 and agent.root.scale.x < 0:
-		agent.root.scale.x = 1.0
+		agent.root.scale.x = scale_magnitude
 	elif face_dir.x < -0.1 and agent.root.scale.x > 0:
-		agent.root.scale.x = -1.0
+		agent.root.scale.x = -scale_magnitude
 
 	agent.animation_player.play(&"walk")
 	return RUNNING

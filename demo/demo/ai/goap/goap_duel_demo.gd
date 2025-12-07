@@ -41,6 +41,7 @@ var blue_team: Array[CharacterBody2D] = []
 @onready var weapon_pickup_blue: Node2D = $WeaponPickupBlue if has_node("WeaponPickupBlue") else null
 @onready var ammo_pickup: Node2D = $AmmoPickup if has_node("AmmoPickup") else null
 @onready var health_pickup: Node2D = $HealthPickup if has_node("HealthPickup") else null
+@onready var speed_boost_pickup: Node2D = $SpeedBoostPickup if has_node("SpeedBoostPickup") else null
 
 # Additional pickups for 2v2
 @onready var ammo_pickup2: Node2D = $AmmoPickup2 if has_node("AmmoPickup2") else null
@@ -205,6 +206,9 @@ func _setup_agent_pickups(agent: CharacterBody2D) -> void:
 	agent.health_pickup = health_pickup
 
 	if agent.world_state:
+		# Set speed boost pickup if available
+		if speed_boost_pickup:
+			agent.world_state.speed_boost_pickup = speed_boost_pickup
 		agent.world_state.ammo_pickup = ammo_pickup
 		agent.world_state.health_pickup = health_pickup
 
@@ -468,19 +472,21 @@ func _debug_single_agent_plan(agent: CharacterBody2D, label: String) -> void:
 		print("  melee_weapon_available=%s, ranged_weapon_available=%s" % [
 			bb.get_var(&"melee_weapon_available", false),
 			bb.get_var(&"ranged_weapon_available", false)])
-		print("  weapon_loaded=%s, weapon_jammed=%s, ammo_available=%s" % [
+		print("  weapon_loaded=%s, weapon_jammed=%s, ammo_available=%s, health_available=%s" % [
 			bb.get_var(&"weapon_loaded", false),
 			bb.get_var(&"weapon_jammed", false),
-			bb.get_var(&"ammo_available", false)])
+			bb.get_var(&"ammo_available", false),
+			bb.get_var(&"health_available", false)])
 		print("  in_cover=%s, is_suppressed=%s, under_threat=%s, target_visible=%s" % [
 			bb.get_var(&"in_cover", false),
 			bb.get_var(&"is_suppressed", false),
 			bb.get_var(&"under_threat", false),
 			bb.get_var(&"target_visible", false)])
-		print("  target_in_sight=%s, target_in_range=%s, target_dead=%s" % [
+		print("  target_in_sight=%s, target_in_range=%s, target_dead=%s, low_health=%s" % [
 			bb.get_var(&"target_in_sight", false),
 			bb.get_var(&"target_in_range", false),
-			bb.get_var(&"target_dead", false)])
+			bb.get_var(&"target_dead", false),
+			bb.get_var(&"low_health", false)])
 	else:
 		var current_idx = goap_task.get_current_action_index()
 		var action_names: Array[String] = []

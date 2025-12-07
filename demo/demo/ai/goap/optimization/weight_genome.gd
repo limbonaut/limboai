@@ -145,6 +145,99 @@ extends Resource
 @export_range(150, 500) var melee_move_speed := 280.0
 
 # ============================================
+# POSITION EVALUATION WEIGHTS
+# ============================================
+## Weights for the Position Evaluator system that controls movement decisions
+@export_group("Position Evaluation - Base Weights")
+## Weight for distance from threat (higher = prefer farther from threat)
+@export_range(0.0, 3.0) var pos_weight_threat_distance := 1.0
+## Weight for proximity to ammo pickup
+@export_range(0.0, 2.0) var pos_weight_ammo_proximity := 0.5
+## Weight for proximity to health pickup
+@export_range(0.0, 2.0) var pos_weight_health_proximity := 0.3
+## Weight for proximity to cover
+@export_range(0.0, 2.0) var pos_weight_cover_proximity := 0.4
+## Weight for proximity to arena center
+@export_range(0.0, 2.0) var pos_weight_center_proximity := 0.2
+## Weight for strafe movement (perpendicular to threat)
+@export_range(0.0, 2.0) var pos_weight_strafe_preference := 0.6
+## Weight for maintaining line of sight to target
+@export_range(0.0, 2.0) var pos_weight_los_to_target := 0.3
+## Weight for proximity to speed boost pickup
+@export_range(0.0, 2.0) var pos_weight_speed_boost := 0.2
+
+# ============================================
+# WEAPON-TYPE MULTIPLIERS
+# ============================================
+## Multipliers that adjust base weights depending on weapon type.
+## Final weight = base_weight * multiplier for the equipped weapon type.
+## This allows ranged and melee agents to have fundamentally different behaviors
+## from a single genome.
+@export_group("Weapon-Type Multipliers - Ranged")
+## Ranged: threat distance multiplier (>1 = stay farther, <1 = get closer)
+@export_range(0.5, 4.0) var ranged_threat_distance_mult := 2.5
+## Ranged: ammo proximity multiplier (ranged cares more about ammo)
+@export_range(0.5, 4.0) var ranged_ammo_proximity_mult := 2.0
+## Ranged: health proximity multiplier
+@export_range(0.5, 3.0) var ranged_health_proximity_mult := 1.2
+## Ranged: cover proximity multiplier (ranged benefits more from cover)
+@export_range(0.5, 3.0) var ranged_cover_proximity_mult := 1.5
+## Ranged: center proximity multiplier
+@export_range(0.5, 2.0) var ranged_center_proximity_mult := 1.0
+## Ranged: strafe preference multiplier (ranged should strafe more)
+@export_range(0.5, 3.0) var ranged_strafe_preference_mult := 1.8
+## Ranged: safe distance multiplier (ranged wants larger safe zone)
+@export_range(0.5, 3.0) var ranged_safe_distance_mult := 1.5
+## Ranged: danger distance multiplier (ranged triggers danger farther)
+@export_range(0.5, 3.0) var ranged_danger_distance_mult := 1.3
+
+@export_group("Weapon-Type Multipliers - Melee")
+## Melee: threat distance multiplier (<1 = approach, negative = actively close gap)
+@export_range(-1.0, 2.0) var melee_threat_distance_mult := 0.3
+## Melee: ammo proximity multiplier (melee cares less about ammo)
+@export_range(0.1, 2.0) var melee_ammo_proximity_mult := 0.3
+## Melee: health proximity multiplier (melee may need more health for trading)
+@export_range(0.5, 3.0) var melee_health_proximity_mult := 1.5
+## Melee: cover proximity multiplier (melee cares less about cover)
+@export_range(0.1, 2.0) var melee_cover_proximity_mult := 0.4
+## Melee: center proximity multiplier
+@export_range(0.5, 2.0) var melee_center_proximity_mult := 0.8
+## Melee: strafe preference multiplier (melee strafes less, approaches more)
+@export_range(0.1, 2.0) var melee_strafe_preference_mult := 0.5
+## Melee: safe distance multiplier (melee has smaller safe zone)
+@export_range(0.3, 2.0) var melee_safe_distance_mult := 0.5
+## Melee: danger distance multiplier (melee isn't in danger until very close)
+@export_range(0.3, 2.0) var melee_danger_distance_mult := 0.6
+
+@export_group("Position Evaluation - Urgency")
+## Multiplier for ammo weight when ammo is low
+@export_range(1.0, 4.0) var pos_ammo_urgency_scale := 1.5
+## Multiplier for health weight when health is low
+@export_range(1.0, 4.0) var pos_health_urgency_scale := 2.0
+## Ammo ratio below which urgency kicks in (0.0-1.0)
+@export_range(0.0, 1.0) var pos_low_ammo_threshold := 0.3
+## Health ratio below which urgency kicks in (0.0-1.0)
+@export_range(0.0, 1.0) var pos_low_health_threshold := 0.4
+
+@export_group("Position Evaluation - Movement")
+## Distance for candidate position generation
+@export_range(50.0, 200.0) var pos_step_distance := 100.0
+## Wall avoidance strength (0-1)
+@export_range(0.0, 1.0) var pos_wall_avoidance := 0.5
+## Distance considered "safe" from threat
+@export_range(100.0, 400.0) var pos_safe_distance := 250.0
+## Distance considered "dangerous" from threat
+@export_range(50.0, 200.0) var pos_danger_distance := 120.0
+
+@export_group("Position Evaluation - Mode Multipliers")
+## Threat weight multiplier in retreat mode
+@export_range(0.5, 3.0) var pos_retreat_threat_mult := 2.0
+## Strafe weight multiplier in kite mode
+@export_range(0.5, 3.0) var pos_kite_strafe_mult := 1.5
+## Speed multiplier in approach mode
+@export_range(0.5, 2.0) var pos_approach_speed_mult := 1.0
+
+# ============================================
 # FITNESS TRACKING (not saved, runtime only)
 # ============================================
 var fitness := 0.0
@@ -257,6 +350,48 @@ static func create_random() -> Resource:
 	genome.ranged_move_speed = randf_range(280.0, 420.0)
 	genome.melee_move_speed = randf_range(220.0, 350.0)
 
+	# Randomize weapon-type multipliers
+	# Ranged multipliers (generally want to stay away and use cover)
+	genome.ranged_threat_distance_mult = randf_range(1.5, 3.5)
+	genome.ranged_ammo_proximity_mult = randf_range(1.2, 3.0)
+	genome.ranged_health_proximity_mult = randf_range(0.8, 2.0)
+	genome.ranged_cover_proximity_mult = randf_range(1.0, 2.5)
+	genome.ranged_center_proximity_mult = randf_range(0.7, 1.5)
+	genome.ranged_strafe_preference_mult = randf_range(1.2, 2.5)
+	genome.ranged_safe_distance_mult = randf_range(1.0, 2.0)
+	genome.ranged_danger_distance_mult = randf_range(1.0, 2.0)
+
+	# Melee multipliers (generally want to close gap aggressively)
+	genome.melee_threat_distance_mult = randf_range(-0.5, 0.8)
+	genome.melee_ammo_proximity_mult = randf_range(0.1, 0.8)
+	genome.melee_health_proximity_mult = randf_range(1.0, 2.5)
+	genome.melee_cover_proximity_mult = randf_range(0.2, 0.8)
+	genome.melee_center_proximity_mult = randf_range(0.5, 1.2)
+	genome.melee_strafe_preference_mult = randf_range(0.2, 0.8)
+	genome.melee_safe_distance_mult = randf_range(0.3, 0.8)
+	genome.melee_danger_distance_mult = randf_range(0.3, 0.8)
+
+	# Randomize position evaluation weights
+	genome.pos_weight_threat_distance = randf_range(0.5, 2.0)
+	genome.pos_weight_ammo_proximity = randf_range(0.2, 1.0)
+	genome.pos_weight_health_proximity = randf_range(0.1, 0.8)
+	genome.pos_weight_cover_proximity = randf_range(0.1, 0.8)
+	genome.pos_weight_center_proximity = randf_range(0.1, 0.5)
+	genome.pos_weight_strafe_preference = randf_range(0.3, 1.2)
+	genome.pos_weight_los_to_target = randf_range(0.1, 0.6)
+	genome.pos_weight_speed_boost = randf_range(0.1, 0.5)
+	genome.pos_ammo_urgency_scale = randf_range(1.0, 3.0)
+	genome.pos_health_urgency_scale = randf_range(1.0, 3.0)
+	genome.pos_low_ammo_threshold = randf_range(0.2, 0.5)
+	genome.pos_low_health_threshold = randf_range(0.3, 0.6)
+	genome.pos_step_distance = randf_range(60.0, 150.0)
+	genome.pos_wall_avoidance = randf_range(0.3, 0.8)
+	genome.pos_safe_distance = randf_range(180.0, 350.0)
+	genome.pos_danger_distance = randf_range(80.0, 160.0)
+	genome.pos_retreat_threat_mult = randf_range(1.2, 2.5)
+	genome.pos_kite_strafe_mult = randf_range(1.0, 2.0)
+	genome.pos_approach_speed_mult = randf_range(0.8, 1.5)
+
 	return genome
 
 
@@ -343,6 +478,47 @@ static func crossover(parent_a: Resource, parent_b: Resource) -> Resource:
 
 	child.ranged_move_speed = parent_a.ranged_move_speed if randf() < 0.5 else parent_b.ranged_move_speed
 	child.melee_move_speed = parent_a.melee_move_speed if randf() < 0.5 else parent_b.melee_move_speed
+
+	# Weapon-type multipliers - Ranged
+	child.ranged_threat_distance_mult = parent_a.ranged_threat_distance_mult if randf() < 0.5 else parent_b.ranged_threat_distance_mult
+	child.ranged_ammo_proximity_mult = parent_a.ranged_ammo_proximity_mult if randf() < 0.5 else parent_b.ranged_ammo_proximity_mult
+	child.ranged_health_proximity_mult = parent_a.ranged_health_proximity_mult if randf() < 0.5 else parent_b.ranged_health_proximity_mult
+	child.ranged_cover_proximity_mult = parent_a.ranged_cover_proximity_mult if randf() < 0.5 else parent_b.ranged_cover_proximity_mult
+	child.ranged_center_proximity_mult = parent_a.ranged_center_proximity_mult if randf() < 0.5 else parent_b.ranged_center_proximity_mult
+	child.ranged_strafe_preference_mult = parent_a.ranged_strafe_preference_mult if randf() < 0.5 else parent_b.ranged_strafe_preference_mult
+	child.ranged_safe_distance_mult = parent_a.ranged_safe_distance_mult if randf() < 0.5 else parent_b.ranged_safe_distance_mult
+	child.ranged_danger_distance_mult = parent_a.ranged_danger_distance_mult if randf() < 0.5 else parent_b.ranged_danger_distance_mult
+
+	# Weapon-type multipliers - Melee
+	child.melee_threat_distance_mult = parent_a.melee_threat_distance_mult if randf() < 0.5 else parent_b.melee_threat_distance_mult
+	child.melee_ammo_proximity_mult = parent_a.melee_ammo_proximity_mult if randf() < 0.5 else parent_b.melee_ammo_proximity_mult
+	child.melee_health_proximity_mult = parent_a.melee_health_proximity_mult if randf() < 0.5 else parent_b.melee_health_proximity_mult
+	child.melee_cover_proximity_mult = parent_a.melee_cover_proximity_mult if randf() < 0.5 else parent_b.melee_cover_proximity_mult
+	child.melee_center_proximity_mult = parent_a.melee_center_proximity_mult if randf() < 0.5 else parent_b.melee_center_proximity_mult
+	child.melee_strafe_preference_mult = parent_a.melee_strafe_preference_mult if randf() < 0.5 else parent_b.melee_strafe_preference_mult
+	child.melee_safe_distance_mult = parent_a.melee_safe_distance_mult if randf() < 0.5 else parent_b.melee_safe_distance_mult
+	child.melee_danger_distance_mult = parent_a.melee_danger_distance_mult if randf() < 0.5 else parent_b.melee_danger_distance_mult
+
+	# Position evaluation weights
+	child.pos_weight_threat_distance = parent_a.pos_weight_threat_distance if randf() < 0.5 else parent_b.pos_weight_threat_distance
+	child.pos_weight_ammo_proximity = parent_a.pos_weight_ammo_proximity if randf() < 0.5 else parent_b.pos_weight_ammo_proximity
+	child.pos_weight_health_proximity = parent_a.pos_weight_health_proximity if randf() < 0.5 else parent_b.pos_weight_health_proximity
+	child.pos_weight_cover_proximity = parent_a.pos_weight_cover_proximity if randf() < 0.5 else parent_b.pos_weight_cover_proximity
+	child.pos_weight_center_proximity = parent_a.pos_weight_center_proximity if randf() < 0.5 else parent_b.pos_weight_center_proximity
+	child.pos_weight_strafe_preference = parent_a.pos_weight_strafe_preference if randf() < 0.5 else parent_b.pos_weight_strafe_preference
+	child.pos_weight_los_to_target = parent_a.pos_weight_los_to_target if randf() < 0.5 else parent_b.pos_weight_los_to_target
+	child.pos_weight_speed_boost = parent_a.pos_weight_speed_boost if randf() < 0.5 else parent_b.pos_weight_speed_boost
+	child.pos_ammo_urgency_scale = parent_a.pos_ammo_urgency_scale if randf() < 0.5 else parent_b.pos_ammo_urgency_scale
+	child.pos_health_urgency_scale = parent_a.pos_health_urgency_scale if randf() < 0.5 else parent_b.pos_health_urgency_scale
+	child.pos_low_ammo_threshold = parent_a.pos_low_ammo_threshold if randf() < 0.5 else parent_b.pos_low_ammo_threshold
+	child.pos_low_health_threshold = parent_a.pos_low_health_threshold if randf() < 0.5 else parent_b.pos_low_health_threshold
+	child.pos_step_distance = parent_a.pos_step_distance if randf() < 0.5 else parent_b.pos_step_distance
+	child.pos_wall_avoidance = parent_a.pos_wall_avoidance if randf() < 0.5 else parent_b.pos_wall_avoidance
+	child.pos_safe_distance = parent_a.pos_safe_distance if randf() < 0.5 else parent_b.pos_safe_distance
+	child.pos_danger_distance = parent_a.pos_danger_distance if randf() < 0.5 else parent_b.pos_danger_distance
+	child.pos_retreat_threat_mult = parent_a.pos_retreat_threat_mult if randf() < 0.5 else parent_b.pos_retreat_threat_mult
+	child.pos_kite_strafe_mult = parent_a.pos_kite_strafe_mult if randf() < 0.5 else parent_b.pos_kite_strafe_mult
+	child.pos_approach_speed_mult = parent_a.pos_approach_speed_mult if randf() < 0.5 else parent_b.pos_approach_speed_mult
 
 	return child
 
@@ -510,6 +686,82 @@ func mutate(mutation_rate: float = 0.1, mutation_strength: float = 0.2) -> void:
 	if randf() < mutation_rate:
 		melee_move_speed = clampf(melee_move_speed + randf_range(-40.0, 40.0), 150.0, 500.0)
 
+	# Weapon-type multipliers - Ranged
+	if randf() < mutation_rate:
+		ranged_threat_distance_mult = clampf(ranged_threat_distance_mult + randf_range(-0.4, 0.4), 0.5, 4.0)
+	if randf() < mutation_rate:
+		ranged_ammo_proximity_mult = clampf(ranged_ammo_proximity_mult + randf_range(-0.4, 0.4), 0.5, 4.0)
+	if randf() < mutation_rate:
+		ranged_health_proximity_mult = clampf(ranged_health_proximity_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		ranged_cover_proximity_mult = clampf(ranged_cover_proximity_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		ranged_center_proximity_mult = clampf(ranged_center_proximity_mult + randf_range(-0.2, 0.2), 0.5, 2.0)
+	if randf() < mutation_rate:
+		ranged_strafe_preference_mult = clampf(ranged_strafe_preference_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		ranged_safe_distance_mult = clampf(ranged_safe_distance_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		ranged_danger_distance_mult = clampf(ranged_danger_distance_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+
+	# Weapon-type multipliers - Melee
+	if randf() < mutation_rate:
+		melee_threat_distance_mult = clampf(melee_threat_distance_mult + randf_range(-0.3, 0.3), -1.0, 2.0)
+	if randf() < mutation_rate:
+		melee_ammo_proximity_mult = clampf(melee_ammo_proximity_mult + randf_range(-0.2, 0.2), 0.1, 2.0)
+	if randf() < mutation_rate:
+		melee_health_proximity_mult = clampf(melee_health_proximity_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		melee_cover_proximity_mult = clampf(melee_cover_proximity_mult + randf_range(-0.2, 0.2), 0.1, 2.0)
+	if randf() < mutation_rate:
+		melee_center_proximity_mult = clampf(melee_center_proximity_mult + randf_range(-0.2, 0.2), 0.5, 2.0)
+	if randf() < mutation_rate:
+		melee_strafe_preference_mult = clampf(melee_strafe_preference_mult + randf_range(-0.2, 0.2), 0.1, 2.0)
+	if randf() < mutation_rate:
+		melee_safe_distance_mult = clampf(melee_safe_distance_mult + randf_range(-0.2, 0.2), 0.3, 2.0)
+	if randf() < mutation_rate:
+		melee_danger_distance_mult = clampf(melee_danger_distance_mult + randf_range(-0.2, 0.2), 0.3, 2.0)
+
+	# Position evaluation weights
+	if randf() < mutation_rate:
+		pos_weight_threat_distance = clampf(pos_weight_threat_distance + randf_range(-0.3, 0.3), 0.0, 3.0)
+	if randf() < mutation_rate:
+		pos_weight_ammo_proximity = clampf(pos_weight_ammo_proximity + randf_range(-0.2, 0.2), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_health_proximity = clampf(pos_weight_health_proximity + randf_range(-0.2, 0.2), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_cover_proximity = clampf(pos_weight_cover_proximity + randf_range(-0.2, 0.2), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_center_proximity = clampf(pos_weight_center_proximity + randf_range(-0.15, 0.15), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_strafe_preference = clampf(pos_weight_strafe_preference + randf_range(-0.2, 0.2), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_los_to_target = clampf(pos_weight_los_to_target + randf_range(-0.15, 0.15), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_weight_speed_boost = clampf(pos_weight_speed_boost + randf_range(-0.15, 0.15), 0.0, 2.0)
+	if randf() < mutation_rate:
+		pos_ammo_urgency_scale = clampf(pos_ammo_urgency_scale + randf_range(-0.3, 0.3), 1.0, 4.0)
+	if randf() < mutation_rate:
+		pos_health_urgency_scale = clampf(pos_health_urgency_scale + randf_range(-0.3, 0.3), 1.0, 4.0)
+	if randf() < mutation_rate:
+		pos_low_ammo_threshold = clampf(pos_low_ammo_threshold + randf_range(-0.1, 0.1), 0.0, 1.0)
+	if randf() < mutation_rate:
+		pos_low_health_threshold = clampf(pos_low_health_threshold + randf_range(-0.1, 0.1), 0.0, 1.0)
+	if randf() < mutation_rate:
+		pos_step_distance = clampf(pos_step_distance + randf_range(-20.0, 20.0), 50.0, 200.0)
+	if randf() < mutation_rate:
+		pos_wall_avoidance = clampf(pos_wall_avoidance + randf_range(-0.15, 0.15), 0.0, 1.0)
+	if randf() < mutation_rate:
+		pos_safe_distance = clampf(pos_safe_distance + randf_range(-40.0, 40.0), 100.0, 400.0)
+	if randf() < mutation_rate:
+		pos_danger_distance = clampf(pos_danger_distance + randf_range(-25.0, 25.0), 50.0, 200.0)
+	if randf() < mutation_rate:
+		pos_retreat_threat_mult = clampf(pos_retreat_threat_mult + randf_range(-0.3, 0.3), 0.5, 3.0)
+	if randf() < mutation_rate:
+		pos_kite_strafe_mult = clampf(pos_kite_strafe_mult + randf_range(-0.25, 0.25), 0.5, 3.0)
+	if randf() < mutation_rate:
+		pos_approach_speed_mult = clampf(pos_approach_speed_mult + randf_range(-0.2, 0.2), 0.5, 2.0)
+
 
 ## Resets fitness tracking for a new evaluation round
 func reset_fitness() -> void:
@@ -617,6 +869,47 @@ func duplicate_genome() -> Resource:
 	copy.ranged_move_speed = ranged_move_speed
 	copy.melee_move_speed = melee_move_speed
 
+	# Weapon-type multipliers - Ranged
+	copy.ranged_threat_distance_mult = ranged_threat_distance_mult
+	copy.ranged_ammo_proximity_mult = ranged_ammo_proximity_mult
+	copy.ranged_health_proximity_mult = ranged_health_proximity_mult
+	copy.ranged_cover_proximity_mult = ranged_cover_proximity_mult
+	copy.ranged_center_proximity_mult = ranged_center_proximity_mult
+	copy.ranged_strafe_preference_mult = ranged_strafe_preference_mult
+	copy.ranged_safe_distance_mult = ranged_safe_distance_mult
+	copy.ranged_danger_distance_mult = ranged_danger_distance_mult
+
+	# Weapon-type multipliers - Melee
+	copy.melee_threat_distance_mult = melee_threat_distance_mult
+	copy.melee_ammo_proximity_mult = melee_ammo_proximity_mult
+	copy.melee_health_proximity_mult = melee_health_proximity_mult
+	copy.melee_cover_proximity_mult = melee_cover_proximity_mult
+	copy.melee_center_proximity_mult = melee_center_proximity_mult
+	copy.melee_strafe_preference_mult = melee_strafe_preference_mult
+	copy.melee_safe_distance_mult = melee_safe_distance_mult
+	copy.melee_danger_distance_mult = melee_danger_distance_mult
+
+	# Position evaluation weights
+	copy.pos_weight_threat_distance = pos_weight_threat_distance
+	copy.pos_weight_ammo_proximity = pos_weight_ammo_proximity
+	copy.pos_weight_health_proximity = pos_weight_health_proximity
+	copy.pos_weight_cover_proximity = pos_weight_cover_proximity
+	copy.pos_weight_center_proximity = pos_weight_center_proximity
+	copy.pos_weight_strafe_preference = pos_weight_strafe_preference
+	copy.pos_weight_los_to_target = pos_weight_los_to_target
+	copy.pos_weight_speed_boost = pos_weight_speed_boost
+	copy.pos_ammo_urgency_scale = pos_ammo_urgency_scale
+	copy.pos_health_urgency_scale = pos_health_urgency_scale
+	copy.pos_low_ammo_threshold = pos_low_ammo_threshold
+	copy.pos_low_health_threshold = pos_low_health_threshold
+	copy.pos_step_distance = pos_step_distance
+	copy.pos_wall_avoidance = pos_wall_avoidance
+	copy.pos_safe_distance = pos_safe_distance
+	copy.pos_danger_distance = pos_danger_distance
+	copy.pos_retreat_threat_mult = pos_retreat_threat_mult
+	copy.pos_kite_strafe_mult = pos_kite_strafe_mult
+	copy.pos_approach_speed_mult = pos_approach_speed_mult
+
 	copy.generation = generation
 	copy.parent_ids = parent_ids.duplicate()
 
@@ -710,6 +1003,45 @@ func to_dict() -> Dictionary:
 		"movement": {
 			"ranged_move_speed": ranged_move_speed,
 			"melee_move_speed": melee_move_speed,
+		},
+		"weapon_type_multipliers": {
+			"ranged_threat_distance_mult": ranged_threat_distance_mult,
+			"ranged_ammo_proximity_mult": ranged_ammo_proximity_mult,
+			"ranged_health_proximity_mult": ranged_health_proximity_mult,
+			"ranged_cover_proximity_mult": ranged_cover_proximity_mult,
+			"ranged_center_proximity_mult": ranged_center_proximity_mult,
+			"ranged_strafe_preference_mult": ranged_strafe_preference_mult,
+			"ranged_safe_distance_mult": ranged_safe_distance_mult,
+			"ranged_danger_distance_mult": ranged_danger_distance_mult,
+			"melee_threat_distance_mult": melee_threat_distance_mult,
+			"melee_ammo_proximity_mult": melee_ammo_proximity_mult,
+			"melee_health_proximity_mult": melee_health_proximity_mult,
+			"melee_cover_proximity_mult": melee_cover_proximity_mult,
+			"melee_center_proximity_mult": melee_center_proximity_mult,
+			"melee_strafe_preference_mult": melee_strafe_preference_mult,
+			"melee_safe_distance_mult": melee_safe_distance_mult,
+			"melee_danger_distance_mult": melee_danger_distance_mult,
+		},
+		"position_eval": {
+			"weight_threat_distance": pos_weight_threat_distance,
+			"weight_ammo_proximity": pos_weight_ammo_proximity,
+			"weight_health_proximity": pos_weight_health_proximity,
+			"weight_cover_proximity": pos_weight_cover_proximity,
+			"weight_center_proximity": pos_weight_center_proximity,
+			"weight_strafe_preference": pos_weight_strafe_preference,
+			"weight_los_to_target": pos_weight_los_to_target,
+			"weight_speed_boost": pos_weight_speed_boost,
+			"ammo_urgency_scale": pos_ammo_urgency_scale,
+			"health_urgency_scale": pos_health_urgency_scale,
+			"low_ammo_threshold": pos_low_ammo_threshold,
+			"low_health_threshold": pos_low_health_threshold,
+			"step_distance": pos_step_distance,
+			"wall_avoidance": pos_wall_avoidance,
+			"safe_distance": pos_safe_distance,
+			"danger_distance": pos_danger_distance,
+			"retreat_threat_mult": pos_retreat_threat_mult,
+			"kite_strafe_mult": pos_kite_strafe_mult,
+			"approach_speed_mult": pos_approach_speed_mult,
 		},
 		"meta": {
 			"generation": generation,
@@ -817,6 +1149,49 @@ static func from_dict(data: Dictionary) -> Resource:
 		var movement: Dictionary = data["movement"]
 		genome.ranged_move_speed = movement.get("ranged_move_speed", 350.0)
 		genome.melee_move_speed = movement.get("melee_move_speed", 280.0)
+
+	if "weapon_type_multipliers" in data:
+		var wt: Dictionary = data["weapon_type_multipliers"]
+		# Ranged multipliers
+		genome.ranged_threat_distance_mult = wt.get("ranged_threat_distance_mult", 2.5)
+		genome.ranged_ammo_proximity_mult = wt.get("ranged_ammo_proximity_mult", 2.0)
+		genome.ranged_health_proximity_mult = wt.get("ranged_health_proximity_mult", 1.2)
+		genome.ranged_cover_proximity_mult = wt.get("ranged_cover_proximity_mult", 1.5)
+		genome.ranged_center_proximity_mult = wt.get("ranged_center_proximity_mult", 1.0)
+		genome.ranged_strafe_preference_mult = wt.get("ranged_strafe_preference_mult", 1.8)
+		genome.ranged_safe_distance_mult = wt.get("ranged_safe_distance_mult", 1.5)
+		genome.ranged_danger_distance_mult = wt.get("ranged_danger_distance_mult", 1.3)
+		# Melee multipliers
+		genome.melee_threat_distance_mult = wt.get("melee_threat_distance_mult", 0.3)
+		genome.melee_ammo_proximity_mult = wt.get("melee_ammo_proximity_mult", 0.3)
+		genome.melee_health_proximity_mult = wt.get("melee_health_proximity_mult", 1.5)
+		genome.melee_cover_proximity_mult = wt.get("melee_cover_proximity_mult", 0.4)
+		genome.melee_center_proximity_mult = wt.get("melee_center_proximity_mult", 0.8)
+		genome.melee_strafe_preference_mult = wt.get("melee_strafe_preference_mult", 0.5)
+		genome.melee_safe_distance_mult = wt.get("melee_safe_distance_mult", 0.5)
+		genome.melee_danger_distance_mult = wt.get("melee_danger_distance_mult", 0.6)
+
+	if "position_eval" in data:
+		var pos: Dictionary = data["position_eval"]
+		genome.pos_weight_threat_distance = pos.get("weight_threat_distance", 1.0)
+		genome.pos_weight_ammo_proximity = pos.get("weight_ammo_proximity", 0.5)
+		genome.pos_weight_health_proximity = pos.get("weight_health_proximity", 0.3)
+		genome.pos_weight_cover_proximity = pos.get("weight_cover_proximity", 0.4)
+		genome.pos_weight_center_proximity = pos.get("weight_center_proximity", 0.2)
+		genome.pos_weight_strafe_preference = pos.get("weight_strafe_preference", 0.6)
+		genome.pos_weight_los_to_target = pos.get("weight_los_to_target", 0.3)
+		genome.pos_weight_speed_boost = pos.get("weight_speed_boost", 0.2)
+		genome.pos_ammo_urgency_scale = pos.get("ammo_urgency_scale", 1.5)
+		genome.pos_health_urgency_scale = pos.get("health_urgency_scale", 2.0)
+		genome.pos_low_ammo_threshold = pos.get("low_ammo_threshold", 0.3)
+		genome.pos_low_health_threshold = pos.get("low_health_threshold", 0.4)
+		genome.pos_step_distance = pos.get("step_distance", 100.0)
+		genome.pos_wall_avoidance = pos.get("wall_avoidance", 0.5)
+		genome.pos_safe_distance = pos.get("safe_distance", 250.0)
+		genome.pos_danger_distance = pos.get("danger_distance", 120.0)
+		genome.pos_retreat_threat_mult = pos.get("retreat_threat_mult", 2.0)
+		genome.pos_kite_strafe_mult = pos.get("kite_strafe_mult", 1.5)
+		genome.pos_approach_speed_mult = pos.get("approach_speed_mult", 1.0)
 
 	if "meta" in data:
 		var meta: Dictionary = data["meta"]
