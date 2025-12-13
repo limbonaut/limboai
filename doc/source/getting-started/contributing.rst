@@ -31,7 +31,7 @@ Compiling as module of the Godot Engine
    git checkout 4.3-stable  # Replace "4.3-stable" with the latest stable tag
    git clone https://github.com/limbonaut/limboai modules/limboai
 
-Consult the `Godot Engine documentation <https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html>`_
+Consult the `Godot Engine documentation <https://docs.godotengine.org/en/stable/engine_details/development/compiling/index.html>`_
 for detailed instructions on building the engine.
 
 **Unit tests** can be compiled using the ``tests=yes`` build option. To execute them,
@@ -41,13 +41,13 @@ Building C# Packages
 ~~~~~~~~~~~~~~~~~~~~
 
 If you want C# Support for LimboAI when building from source, follow Godot's instructions for building from source with
-C# Support: https://docs.godotengine.org/en/stable/contributing/development/compiling/compiling_with_dotnet.html.
+C# Support: `Compiling with .NET <https://docs.godotengine.org/en/stable/engine_details/development/compiling/compiling_with_dotnet.html>`_.
 LimboAI's classes will be included in the output from that build process.
 
 Compiling as GDExtension library
 --------------------------------
 
-You'll need the SCons build tool and a C++ compiler. See also `Compiling <https://docs.godotengine.org/en/stable/contributing/development/compiling/index.html>`_.
+You'll need the SCons build tool and a C++ compiler. See also `Compiling <https://docs.godotengine.org/en/stable/engine_details/development/compiling/index.html>`_.
 Run ``scons target=editor`` to build the plugin library for your current platform.
 
 - SCons will automatically clone the ``godot-cpp`` repository if it doesn't already exist in the ``limboai/godot-cpp`` directory.
