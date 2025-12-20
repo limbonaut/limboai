@@ -78,6 +78,8 @@ void LimboState::_enter() {
 	active = true;
 	GDVIRTUAL_CALL(_enter);
 	emit_signal(LW_NAME(entered));
+	set_process(true);
+	set_physics_process(true);
 	set_process_input(true);
 	set_process_unhandled_input(true);
 }
@@ -88,6 +90,8 @@ void LimboState::_exit() {
 	}
 	GDVIRTUAL_CALL(_exit);
 	emit_signal(LW_NAME(exited));
+	set_process(false);
+	set_physics_process(false);
 	set_process_input(false);
 	set_process_unhandled_input(false);
 	active = false;
@@ -204,8 +208,8 @@ void LimboState::_notification(int p_what) {
 				_update_blackboard_plan();
 			}
 
-			set_process(false);
-			set_physics_process(false);
+			set_process(active);
+			set_physics_process(active);
 			set_process_input(active);
 			set_process_unhandled_input(active);
 		} break;

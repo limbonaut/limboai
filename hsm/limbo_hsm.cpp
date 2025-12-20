@@ -22,8 +22,6 @@ void LimboHSM::set_active(bool p_active) {
 	}
 
 	active = p_active;
-	set_process(active && update_mode == UpdateMode::IDLE);
-	set_physics_process(active && update_mode == UpdateMode::PHYSICS);
 
 	if (active) {
 		_enter();
@@ -294,10 +292,14 @@ void LimboHSM::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_PROCESS: {
-			update(get_process_delta_time());
+			if (update_mode == UpdateMode::IDLE) {
+				update(get_process_delta_time());
+			}
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			update(get_physics_process_delta_time());
+			if (update_mode == UpdateMode::PHYSICS) {
+				update(get_physics_process_delta_time());
+			}
 		} break;
 	}
 }
