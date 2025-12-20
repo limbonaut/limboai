@@ -16,14 +16,14 @@ VARIANT_ENUM_CAST(LimboHSM::UpdateMode);
 void LimboHSM::set_active(bool p_active) {
 	ERR_FAIL_COND_MSG(agent == nullptr, "LimboHSM is not initialized.");
 	ERR_FAIL_COND_MSG(p_active && initial_state == nullptr, "LimboHSM has no initial substate candidate.");
+	ERR_FAIL_COND_MSG(!is_root(), "LimboHSM.set_active() should only be called on the root state.");
 
 	if (active == p_active) {
 		return;
 	}
 
 	active = p_active;
-	set_process(active && update_mode == UpdateMode::IDLE);
-	set_physics_process(active && update_mode == UpdateMode::PHYSICS);
+	is_initiating_update = p_active;
 
 	if (active) {
 		_enter();
@@ -294,10 +294,14 @@ void LimboHSM::_notification(int p_what) {
 			}
 		} break;
 		case NOTIFICATION_PROCESS: {
-			update(get_process_delta_time());
+			if (is_initiating_update && update_mode == UpdateMode::IDLE) {
+				update(get_process_delta_time());
+			}
 		} break;
 		case NOTIFICATION_PHYSICS_PROCESS: {
-			update(get_physics_process_delta_time());
+			if (is_initiating_update && update_mode == UpdateMode::PHYSICS) {
+				update(get_physics_process_delta_time());
+			}
 		} break;
 	}
 }
