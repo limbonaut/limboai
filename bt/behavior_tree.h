@@ -56,7 +56,7 @@ public:
 	String get_description() const { return description; }
 
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
-	Ref<BlackboardPlan> get_blackboard_plan() const { return blackboard_plan; }
+	Ref<BlackboardPlan> get_blackboard_plan() const;
 
 	void set_root_task(const Ref<BTTask> &p_value);
 	Ref<BTTask> get_root_task() const { return root_task; }

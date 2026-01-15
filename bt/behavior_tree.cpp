@@ -50,6 +50,15 @@ void BehaviorTree::set_blackboard_plan(const Ref<BlackboardPlan> &p_plan) {
 	_plan_changed();
 }
 
+Ref<BlackboardPlan> BehaviorTree::get_blackboard_plan() const {
+	if (blackboard_plan.is_null()) {
+		// Ensure we always return a valid plan to prevent null pointer dereferences
+		const_cast<BehaviorTree *>(this)->blackboard_plan = Ref<BlackboardPlan>(memnew(BlackboardPlan));
+	}
+
+	return blackboard_plan;
+}
+
 void BehaviorTree::set_root_task(const Ref<BTTask> &p_value) {
 #ifdef TOOLS_ENABLED
 	_unset_editor_behavior_tree_hint();
