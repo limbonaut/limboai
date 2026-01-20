@@ -15,6 +15,7 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
 #include "core/variant/variant.h"
 #include "scene/main/node.h"
 #endif
