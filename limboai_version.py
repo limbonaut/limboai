@@ -5,7 +5,7 @@ minor = 5
 patch = 3
 status = ""
 doc_branch = "v1.5.3"
-godot_cpp_ref = "godot-4.4-stable"
+godot_cpp_ref = "10.0.0-rc1"
 
 # Code that generates version header
 

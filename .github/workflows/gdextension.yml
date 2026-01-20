@@ -5,7 +5,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: godot-4.4-stable
+        default: 10.0.0-rc1
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -24,7 +24,7 @@ on:
       godot-cpp-ref:
         description: A tag, branch or commit hash in the godot-cpp repository.
         type: string
-        default: godot-4.4-stable
+        default: 10.0.0-rc1
       limboai-ref:
         description: A tag, branch or commit hash in the LimboAI repository.
         type: string
@@ -45,6 +45,7 @@ env:
   EM_VERSION: 4.0.11
   EM_CACHE_FOLDER: "emsdk-cache"
   GODOT_VERSION: 4.4.1-stable
+  API_VERSION: 4.4
   GODOT_REPO: godotengine/godot-builds
 
 jobs:
@@ -335,7 +336,14 @@ jobs:
           DEBUG_FLAGS: ${{ inputs.debug-symbols && 'debug_symbols=yes symbols_visibility=visible' || 'debug_symbols=no' }}
         run: |
           PATH=${GITHUB_WORKSPACE}/buildroot/bin:$PATH
-          scons platform=${{matrix.opts.platform}} target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} ${{ matrix.opts.threads == 'no' && 'threads=no' || '' }} ${{env.DEBUG_FLAGS}} ${{matrix.opts.scons-flags}} ${{env.SCONSFLAGS}}
+          scons platform=${{matrix.opts.platform}} \
+              target=${{matrix.opts.target}} \
+              arch=${{matrix.opts.arch}} \
+              ${{ matrix.opts.threads == 'no' && 'threads=no' || '' }} \
+              api_version=${{env.API_VERSION}} \
+              ${{env.DEBUG_FLAGS}} \
+              ${{matrix.opts.scons-flags}} \
+              ${{env.SCONSFLAGS}}
 
       - name: Prepare artifact
         shell: bash
