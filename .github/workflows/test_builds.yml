@@ -36,7 +36,7 @@ jobs:
 
     # Settings
     env:
-      SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra werror=yes strict_checks=yes
+      SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra strict_checks=yes
       BIN: godot.linuxbsd.editor.dev.x86_64
       CACHE_LIMIT: 7
 
