@@ -168,7 +168,7 @@ jobs:
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
+          python -m pip install scons==4.10.1
           python --version
           scons --version
 
@@ -252,7 +252,7 @@ jobs:
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
+          python -m pip install scons==4.10.1
           python --version
           scons --version
 

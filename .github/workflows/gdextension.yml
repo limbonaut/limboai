@@ -42,7 +42,7 @@ on:
 env:
   SCONS_CACHE_LIMIT: 4096
   SCONSFLAGS: use_mingw=yes dev_build=no
-  EM_VERSION: 4.0.11
+  EM_VERSION: 4.0.20
   EM_CACHE_FOLDER: "emsdk-cache"
   GODOT_VERSION: 4.4.1-stable
   API_VERSION: 4.4
@@ -296,7 +296,7 @@ jobs:
         if: matrix.opts.platform != 'linux'
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
+          python -m pip install scons==4.10.1
           python --version
           scons --version
 

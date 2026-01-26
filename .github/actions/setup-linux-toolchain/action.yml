@@ -11,14 +11,14 @@ runs:
       shell: bash
       run: |
         # ! Settings:
-        TOOLCHAIN_64_URL=https://github.com/godotengine/buildroot/releases/download/godot-2020.11.x-2/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
-        TOOLCHAIN_64_SHA=16c8302fcb676c1f0fb9df73d6cff250ba1f4286
-        TOOLCHAIN_32_URL=https://github.com/godotengine/buildroot/releases/download/godot-2020.11.x-2/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
-        TOOLCHAIN_32_SHA=6171652abc54ef219e5187bc53660ee4e2f796f4
-        TOOLCHAIN_ARM64_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-3/aarch64-godot-linux-gnu_sdk-buildroot.tar.bz2
-        TOOLCHAIN_ARM64_SHA=73bed3d26b92c8b9a93c0ceb6bcce8fe567d1764
-        TOOLCHAIN_ARM32_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-3/arm-godot-linux-gnueabihf_sdk-buildroot.tar.bz2
-        TOOLCHAIN_ARM32_SHA=aa5853fd73faec3837c6127649471275d7e61cb2
+        TOOLCHAIN_64_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-4/x86_64-godot-linux-gnu_sdk-buildroot.tar.bz2
+        TOOLCHAIN_64_SHA=b534305ef71487014c47e0f5fa146f411ff3b2bf
+        TOOLCHAIN_32_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-4/i686-godot-linux-gnu_sdk-buildroot.tar.bz2
+        TOOLCHAIN_32_SHA=d4177d80c82e8e9a4ac13155b4369cf1695a726a
+        TOOLCHAIN_ARM64_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-4/aarch64-godot-linux-gnu_sdk-buildroot.tar.bz2
+        TOOLCHAIN_ARM64_SHA=ccb38161202052c368a7abf35c84214f66c4f721
+        TOOLCHAIN_ARM32_URL=https://github.com/godotengine/buildroot/releases/download/godot-2023.08.x-4/arm-godot-linux-gnueabihf_sdk-buildroot.tar.bz2
+        TOOLCHAIN_ARM32_SHA=9b09667e24cce8a121144b2feb59cf03105e33dd
 
         # ! Export variables:
         if [[ "${{ inputs.arch }}" == "x86_64" ]]; then
