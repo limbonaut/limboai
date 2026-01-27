@@ -5,17 +5,11 @@ on:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
 
   workflow_dispatch:
     inputs:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
-        type: string
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
         type: string
 
 jobs:
@@ -32,9 +26,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Merge classical templates

@@ -6,14 +6,6 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: 4.6-stable
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
-      godot-cpp-ref:
-        description: A tag, branch or commit hash in the godot-cpp repository.
-        type: string
-        default: 10.0.0-rc1
 
 jobs:
   cache-sha:
@@ -21,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       godot-sha: ${{ steps.cache-sha.outputs.godot-sha }}
-      limboai-sha: ${{ steps.cache-sha.outputs.limboai-sha }}
     steps:
       - name: Clone Godot
         uses: actions/checkout@v4
@@ -29,18 +20,10 @@ jobs:
           repository: godotengine/godot
           ref: ${{ inputs.godot-ref }}
 
-      - name: Clone LimboAI module
-        uses: actions/checkout@v4
-        with:
-          path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
-
       - name: Cache SHA
         id: cache-sha
         run: |
           echo "godot-sha=$(git describe --tags --exact-match HEAD || git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-          cd modules/limboai
-          echo "limboai-sha=$(git describe --tags --exact-match HEAD || git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
   android-build:
     name: 🤖 Android
@@ -48,7 +31,6 @@ jobs:
     uses: ./.github/workflows/android.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
 
   ios-build:
     name: 🍏 iOS
@@ -56,7 +38,6 @@ jobs:
     uses: ./.github/workflows/ios.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
 
   linux-build:
     name: 🐧 Linux
@@ -64,7 +45,6 @@ jobs:
     uses: ./.github/workflows/linux.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
       test-build: false
 
   macos-build:
@@ -73,7 +53,6 @@ jobs:
     uses: ./.github/workflows/macos.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
 
   windows-build:
     name: 🪟 Windows
@@ -81,7 +60,6 @@ jobs:
     uses: ./.github/workflows/windows.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
       test-build: false
 
   web-build:
@@ -90,23 +68,17 @@ jobs:
     uses: ./.github/workflows/web.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
 
   gdextension:
     name: 🔌 GDExtension
-    needs: cache-sha
     uses: ./.github/workflows/gdextension.yml
     with:
-      godot-cpp-ref: ${{ inputs.godot-cpp-ref }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
       test-build: false
 
   demo:
     name: 🎮️ Demo project
     needs: cache-sha
     uses: ./.github/workflows/demo.yml
-    with:
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}
 
   merge_templates:
     name: 📦 Merge templates
@@ -124,4 +96,3 @@ jobs:
     uses: ./.github/workflows/merge_templates.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
-      limboai-ref: ${{ needs.cache-sha.outputs.limboai-sha }}

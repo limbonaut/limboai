@@ -1,21 +1,50 @@
-name: Setup version
+name: Init version vars
+description: Initialize version environment variables
 
 runs:
   using: "composite"
   steps:
-    - name: Set GODOT_VERSION & LIMBOAI_VERSION
+    - name: Import dependency versions
       shell: bash
       run: |
-        echo "GODOT_VERSION=$( (git describe --tags --exact-match HEAD || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1/g' )" >> "$GITHUB_ENV"
-        cd modules/limboai
-        echo "LIMBOAI_VERSION=$( (git describe --tags --exact-match HEAD || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1.\2/g' )" >> "$GITHUB_ENV"
+        if [[ -f modules/limboai/deps.env ]]; then
+          SRC=modules/limboai/deps.env
+        elif [[ -f deps.env ]]; then
+          SRC=deps.env
+        else
+          echo "ERROR: No deps.env file found" >&2
+          exit 1
+        fi
+
+        echo "Importing dependency manifest from $SRC"
+        grep -v '^#' "$SRC" | grep -v '^$' >> "$GITHUB_ENV"
+
+    - name: Set LIMBOAI_VERSION
+      shell: bash
+      run: |
+        if [[ -d modules/limboai ]]; then
+          cd modules/limboai
+        fi
+        echo "LIMBOAI_VERSION=$( (git describe --tags --exact-match HEAD 2>/dev/null || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1.\2/g' )" >> "$GITHUB_ENV"
+
+    - name: Set GODOT_VERSION (module build)
+      shell: bash
+      if: ${{ hashFiles('modules/limboai') != '' }}
+      run: |
+        echo "GODOT_VERSION=$( (git describe --tags --exact-match HEAD 2>/dev/null || git rev-parse --short HEAD) | sed 's/\(.*\)-\(.*\)/\1/g' )" >> "$GITHUB_ENV"
 
     - name: Set NAME_PREFIX
       shell: bash
-      run: echo "NAME_PREFIX=limboai+${LIMBOAI_VERSION}.godot-${GODOT_VERSION}" >> "$GITHUB_ENV"
+      run: |
+        if [[ -d modules/limboai ]]; then
+          echo "NAME_PREFIX=limboai+${LIMBOAI_VERSION}.godot-${GODOT_VERSION}" >> "$GITHUB_ENV"
+        else
+          echo "NAME_PREFIX=limboai+${LIMBOAI_VERSION}.gdextension-${GODOT_CPP_API_VERSION}" >> "$GITHUB_ENV"
+        fi
 
-    - name: Set GODOT_VERSION_STATUS & BUILD_NAME
+    - name: Set GODOT_VERSION_STATUS & BUILD_NAME (module build)
       shell: bash
+      if: ${{ hashFiles('modules/limboai') != '' }}
       run: |
         echo "GODOT_VERSION_STATUS=limboai+${LIMBOAI_VERSION}" >> "$GITHUB_ENV"
         echo "BUILD_NAME=gha" >> "$GITHUB_ENV"

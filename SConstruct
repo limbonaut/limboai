@@ -11,19 +11,20 @@ Use --project=DIR to customize output path for built targets.
 """
 
 import os
-import sys
 import subprocess
-from limboai_version import generate_module_version_header, godot_cpp_ref
+import sys
+
+from limboai_version import generate_module_version_header, get_godot_cpp_ref
 
 sys.path.append("gdextension")
-from update_icon_entries import update_icon_entries
 from fix_icon_imports import fix_icon_imports
+from update_icon_entries import update_icon_entries
 
 # Check if godot-cpp/ exists
 if not os.path.exists("godot-cpp"):
     print("Directory godot-cpp/ not found. Cloning repository...")
     result = subprocess.run(
-        ["git", "clone", "-b", godot_cpp_ref, "https://github.com/godotengine/godot-cpp.git"],
+        ["git", "clone", "-b", get_godot_cpp_ref(), "https://github.com/godotengine/godot-cpp.git"],
         check=True,
         # capture_output=True
     )

@@ -6,19 +6,11 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
 
   workflow_dispatch:
     inputs:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
-        type: string
-        default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
@@ -147,35 +139,35 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
-      - name: Set up Java 17
+      - name: Set up Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
 
       - uses: nttld/setup-ndk@v1
         if: matrix.opts.platform == 'android'
         id: setup-ndk
         with:
-          ndk-version: r28b
+          ndk-version: ${{ env.NDK_VERSION }}
           link-to-sdk: true
 
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.10.1
+          python -m pip install scons=="${{env.SCONS_VERSION}}"
           python --version
           scons --version
 
       - name: Set up Swappy
         run: |
           cd thirdparty/swappy-frame-pacing/
-          curl -L -O https://github.com/godotengine/godot-swappy/releases/download/from-source-2025-01-31/godot-swappy.7z
+          url="https://github.com/godotengine/godot-swappy/releases/download/${SWAPPY_VERSION}/godot-swappy.7z"
+          curl -L "${url}" -o godot-swappy.7z
           7z x -y godot-swappy.7z
           rm godot-swappy.7z
 
@@ -184,10 +176,10 @@ jobs:
       #   uses: actions/cache@v4
       #   with:
       #     path: ${{github.workspace}}/.scons_cache/
-      #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
       #     restore-keys: |
-      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
       #       ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
@@ -225,9 +217,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Download Android template builds
@@ -241,7 +232,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: ${{ env.JAVA_VERSION }}
 
       - name: Set up Python 3.x
         uses: actions/setup-python@v5
@@ -252,7 +243,7 @@ jobs:
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.10.1
+          python -m pip install scons=="${{env.SCONS_VERSION}}"
           python --version
           scons --version
 

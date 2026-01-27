@@ -6,10 +6,6 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
       test-build:
         description: Limit to pre-defined test builds
         type: boolean
@@ -21,10 +17,6 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
       test-build:
         description: Limit to pre-defined test builds
         type: boolean
@@ -33,9 +25,6 @@ on:
 # Global Settings
 env:
   SCONSFLAGS: production=yes use_mingw=yes verbose=yes warnings=no progress=no d3d12=yes
-  BUILD_IMAGE_VERSION: 4.6-f43
-  MESA_VERSION: 25.3.1-1
-  ANGLE_VERSION: 7578
   CACHE_LIMIT: 4
 
 jobs:
@@ -207,9 +196,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION, NAME_PREFIX, GODOT_VERSION_STATUS, BUILD_NAME environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up scons cache
@@ -217,10 +205,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+          key: ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
           restore-keys: |
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+            ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
+            ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Static ANGLE libs
@@ -334,9 +322,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Reconstruct artifact name
