@@ -225,6 +225,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-tags: true
+          ref: ${{ github.ref }}
 
       # Init version environment variables.
       - uses: ./.github/actions/init-version
