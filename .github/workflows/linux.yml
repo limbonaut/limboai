@@ -6,10 +6,6 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
       test-build:
         description: Limit to pre-defined test builds
         type: boolean
@@ -19,10 +15,6 @@ on:
     inputs:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
-        type: string
-        default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
       test-build:
@@ -212,9 +204,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Linux toolchain
@@ -231,10 +222,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+          key: ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
           restore-keys: |
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-            ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+            ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
+            ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation

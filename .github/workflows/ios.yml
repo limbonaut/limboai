@@ -6,19 +6,11 @@ on:
         description: A tag, branch or commit hash in the Godot repository.
         type: string
         default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
-        type: string
-        default: master
 
   workflow_dispatch:
     inputs:
       godot-ref:
         description: A tag, branch or commit hash in the Godot repository.
-        type: string
-        default: master
-      limboai-ref:
-        description: A tag, branch or commit hash in the LimboAI repository.
         type: string
         default: master
 
@@ -112,9 +104,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Python 3.x
@@ -126,7 +117,7 @@ jobs:
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
+          python -m pip install scons=="${{env.SCONS_VERSION}}"
 
       - name: Diagnostics
         run: |
@@ -142,10 +133,10 @@ jobs:
       #   uses: actions/cache@v4
       #   with:
       #     path: ${{github.workspace}}/.scons_cache/
-      #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
+      #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
       #     restore-keys: |
-      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}-${{env.LIMBOAI_VERSION}}
-      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{inputs.limboai-ref}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
+      #       ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
       #       ${{env.BIN}}-${{inputs.godot-ref}}
 
       - name: Compilation
@@ -183,9 +174,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
-          ref: ${{ inputs.limboai-ref }}
 
-      # Inits GODOT_VERSION, LIMBOAI_VERSION and NAME_PREFIX environment variables.
+      # Init version environment variables.
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Vulkan SDK
@@ -204,15 +194,13 @@ jobs:
       - name: Make template bundle
         run: |
           ls bin/
-          cp -r misc/dist/ios_xcode bin/
           cd bin/
+          cp -r ../misc/dist/apple_embedded_xcode ios_xcode
 
           mv libgodot.ios.template_debug.arm64.a ios_xcode/libgodot.ios.debug.xcframework/ios-arm64/libgodot.a
-          # ! lipo -create libgodot.ios.template_debug.arm64.simulator.a libgodot.ios.template_debug.x86_64.simulator.a -output ios_xcode/libgodot.ios.debug.xcframework/ios-arm64_x86_64-simulator/libgodot.a
           mv libgodot.ios.template_debug.x86_64.simulator.a ios_xcode/libgodot.ios.debug.xcframework/ios-arm64_x86_64-simulator/libgodot.a
 
           mv libgodot.ios.template_release.arm64.a ios_xcode/libgodot.ios.release.xcframework/ios-arm64/libgodot.a
-          # ! lipo -create libgodot.ios.template_release.arm64.simulator.a libgodot.ios.template_release.x86_64.simulator.a -output ios_xcode/libgodot.ios.release.xcframework/ios-arm64_x86_64-simulator/libgodot.a
           mv libgodot.ios.template_release.x86_64.simulator.a ios_xcode/libgodot.ios.release.xcframework/ios-arm64_x86_64-simulator/libgodot.a
 
           cp -r ~/VulkanSDK/*/macOS/lib/MoltenVK.xcframework ios_xcode

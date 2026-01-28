@@ -5,9 +5,20 @@ minor = 5
 patch = 3
 status = ""
 doc_branch = "v1.5.3"
-godot_cpp_ref = "godot-4.4-stable"
 
-# Code that generates version header
+
+def get_godot_cpp_ref():
+    import os
+
+    deps_env_path = os.path.join(os.path.dirname(__file__), "deps.env")
+    with open(deps_env_path, "r") as f:
+        for line in f:
+            if line.startswith("GODOT_CPP_REF="):
+                return line.strip().split("=", 1)[1]
+    return "unknown"
+
+
+# *** Code that generates version header
 
 
 def _git_hash(short: bool = False):

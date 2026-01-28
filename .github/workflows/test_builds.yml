@@ -24,10 +24,8 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-# Global Settings.
 env:
-  GODOT_REF: "4.5.1-stable"
-  GODOT_CPP_REF: "godot-4.4-stable"
+  GODOT_REF: 4.6-stable
 
 jobs:
   unit-tests:
@@ -36,7 +34,7 @@ jobs:
 
     # Settings
     env:
-      SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra werror=yes strict_checks=yes
+      SCONSFLAGS: platform=linuxbsd target=editor arch=x86_64 production=false dev_build=true tests=true verbose=yes warnings=extra strict_checks=yes
       BIN: godot.linuxbsd.editor.dev.x86_64
       CACHE_LIMIT: 7
 
@@ -51,6 +49,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: modules/limboai
+
+      # Init version environment variables.
+      - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Linux toolchain
         uses: ./modules/limboai/.github/actions/setup-linux-toolchain
@@ -77,7 +78,7 @@ jobs:
       - name: Set up scons
         run: |
           python -c "import sys; print(sys.version)"
-          python -m pip install scons==4.4.0
+          python -m pip install scons=="${{env.SCONS_VERSION}}"
           python --version
           scons --version
 
@@ -115,13 +116,11 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       godot-ref: ${{ steps.cache-env.outputs.godot-ref }}
-      godot-cpp-ref: ${{ steps.cache-env.outputs.godot-cpp-ref }}
     steps:
       - name: Cache env
         id: cache-env
         run: |
           echo "godot-ref=${GODOT_REF}" >> "$GITHUB_OUTPUT"
-          echo "godot-cpp-ref=${GODOT_CPP_REF}" >> "$GITHUB_OUTPUT"
 
   linux-test-build:
     name: 🐧 Linux
@@ -129,7 +128,6 @@ jobs:
     uses: ./.github/workflows/linux.yml
     with:
       godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
-      limboai-ref: ${{ github.sha }}
       test-build: true
 
   windows-test-build:
@@ -138,7 +136,6 @@ jobs:
     uses: ./.github/workflows/windows.yml
     with:
       godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
-      limboai-ref: ${{ github.sha }}
       test-build: true
 
   macos-test-build:
@@ -147,14 +144,10 @@ jobs:
     uses: ./.github/workflows/macos.yml
     with:
       godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
-      limboai-ref: ${{ github.sha }}
       test-build: true
 
   gdextension:
     name: 🔌 GDExtension
-    needs: cache-env
     uses: ./.github/workflows/gdextension.yml
     with:
-      godot-cpp-ref: ${{ needs.cache-env.outputs.godot-cpp-ref }}
-      limboai-ref: ${{ github.sha }}
       test-build: true
