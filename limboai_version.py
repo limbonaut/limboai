@@ -1,10 +1,10 @@
 # Edit the following variables to change version info
 
 major = 1
-minor = 5
-patch = 3
+minor = 6
+patch = 0
 status = ""
-doc_branch = "v1.5.3"
+doc_branch = "v1.6.0"
 
 
 def get_godot_cpp_ref():
