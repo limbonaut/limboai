@@ -13,7 +13,7 @@
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
->**Supported Godot Engine:**  **4.4 - 4.5**
+>**Supported Godot Engine:**  **4.4 - 4.6**
 > *(see below for older versions)*
 
 
@@ -54,10 +54,11 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 | Plugin Version           | GDExtension/AssetLib   | Module    |
 |--------------------------|------------------------|-----------|
-| `1.5.x` releases         | Godot 4.4 or later     | Godot 4.5 |
-| `1.4.x` releases         | Godot 4.4 or later     | Godot 4.4 |
-| `1.2.0`-`1.3.x` releases | Godot 4.3 or later     | Godot 4.3 |
-| `1.1.x` releases         | Godot 4.2 or later     | Godot 4.2 |
+| `1.6.x` releases         | Godot 4.4, 4.5, 4.6    | Godot 4.6 |
+| `1.5.x` releases         | Godot 4.4, 4.5         | Godot 4.5 |
+| `1.4.x` releases         | Godot 4.4, 4.5         | Godot 4.4 |
+| `1.2.0`-`1.3.x` releases | Godot 4.3              | Godot 4.3 |
+| `1.1.x` releases         | Godot 4.2              | Godot 4.2 |
 
 ## Features
 
