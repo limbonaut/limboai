@@ -16,6 +16,7 @@
 #include "../compat/editor.h"
 #include "../compat/editor_paths.h"
 #include "../compat/editor_scale.h"
+#include "../compat/editor_settings.h"
 #include "../compat/project_settings.h"
 #include "../compat/resource_loader.h"
 #include "../compat/translation.h"
@@ -37,6 +38,7 @@
 #include <godot_cpp/classes/button_group.hpp>
 #include <godot_cpp/classes/check_box.hpp>
 #include <godot_cpp/classes/config_file.hpp>
+#include <godot_cpp/classes/editor_settings.hpp>
 #include <godot_cpp/classes/font.hpp>
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/input_event_mouse_button.hpp>
@@ -169,6 +171,7 @@ void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture
 	btn->set_button_icon(icon);
 	btn->set_tooltip_text("dummy_text"); // Force tooltip to be shown.
 	btn->set_task_meta(p_meta);
+	btn->set_flat(use_flat_buttons);
 	btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to  be of the proper size.
 	btn->connect(LW_NAME(pressed), callable_mp(this, &TaskPaletteSection::_on_task_button_pressed).bind(p_meta));
 	btn->connect(LW_NAME(gui_input), callable_mp(this, &TaskPaletteSection::_on_task_button_gui_input).bind(p_meta));
@@ -185,6 +188,24 @@ void TaskPaletteSection::clear_task_buttons() {
 
 int TaskPaletteSection::get_task_button_count() const {
 	return tasks_container->get_child_count();
+}
+
+void TaskPaletteSection::_notification(int p_what) {
+	switch (p_what) {
+		case NOTIFICATION_THEME_CHANGED: {
+			const String theme_style = EDITOR_GET("interface/theme/style");
+			bool prev_value = use_flat_buttons;
+			use_flat_buttons = theme_style.contains("Modern");
+			if (use_flat_buttons != prev_value) {
+				for (int i = 0; i < tasks_container->get_child_count(); i++) {
+					Button *btn = Object::cast_to<Button>(tasks_container->get_child(i));
+					if (btn) {
+						btn->set_flat(use_flat_buttons);
+					}
+				}
+			}
+		} break;
+	}
 }
 
 void TaskPaletteSection::_bind_methods() {
@@ -453,7 +474,9 @@ void TaskPalette::refresh() {
 			if (sec->is_folded()) {
 				collapsed_sections.insert(sec->get_title());
 			}
-			sections->get_child(i)->queue_free();
+			if (sec != fav_section) {
+				sections->get_child(i)->queue_free();
+			}
 		}
 	}
 
