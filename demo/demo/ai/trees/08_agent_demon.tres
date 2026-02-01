@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=49 format=3 uid="uid://cpcnbi81jqge4"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://cpcnbi81jqge4"]
 
 [ext_resource type="Script" uid="uid://ccr43pgd4488l" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_ce4la"]
 [ext_resource type="Script" uid="uid://b7v2utjmtge0x" path="res://demo/ai/tasks/in_range.gd" id="2_atyuj"]
@@ -38,17 +38,13 @@ trigger_on_failure = true
 [sub_resource type="BTAction" id="BTAction_ohfp7"]
 script = ExtResource("1_ce4la")
 group = &"player"
-output_var = &"target"
 
 [sub_resource type="BTCondition" id="BTCondition_7a5nv"]
 script = ExtResource("2_atyuj")
-distance_min = 0.0
 distance_max = 150.0
-target_var = &"target"
 
 [sub_resource type="BTAction" id="BTAction_ddvrs"]
 script = ExtResource("3_3mw7l")
-target_var = &"target"
 
 [sub_resource type="BBNode" id="BBNode_c4nfu"]
 resource_name = "AnimationPlayer"
@@ -70,13 +66,10 @@ children = [SubResource("BTAction_ohfp7"), SubResource("BTCondition_7a5nv"), Sub
 
 [sub_resource type="BTCondition" id="BTCondition_h75v8"]
 script = ExtResource("2_atyuj")
-distance_min = 0.0
 distance_max = 300.0
-target_var = &"target"
 
 [sub_resource type="BTAction" id="BTAction_wpt7j"]
 script = ExtResource("3_3mw7l")
-target_var = &"target"
 
 [sub_resource type="BBNode" id="BBNode_iv62h"]
 resource_name = "AnimationPlayer"
@@ -90,8 +83,6 @@ speed = -1.0
 
 [sub_resource type="BTAction" id="BTAction_h2efl"]
 script = ExtResource("4_6dr32")
-speed_var = &"speed"
-max_angle_deviation = 0.7
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_wm5g2"]
 children = [SubResource("BTAction_h2efl")]
@@ -115,18 +106,10 @@ blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_4mmh0"]
 script = ExtResource("5_dho0d")
-target_var = &"target"
-flank_side = 0
-range_min = 300
 range_max = 700
-position_var = &"pos"
 
 [sub_resource type="BTAction" id="BTAction_vb5c3"]
 script = ExtResource("6_0pfsl")
-target_position_var = &"pos"
-speed_var = &"speed"
-tolerance = 50.0
-avoid_var = &""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_jyks2"]
 children = [SubResource("BTAction_vb5c3")]
@@ -136,7 +119,6 @@ custom_name = "Short break before action"
 
 [sub_resource type="BTAction" id="BTAction_fkevy"]
 script = ExtResource("3_3mw7l")
-target_var = &"target"
 
 [sub_resource type="BBNode" id="BBNode_lh25u"]
 resource_name = "AnimationPlayer"

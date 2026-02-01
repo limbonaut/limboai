@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=41 format=3 uid="uid://cqluon1y1hnn5"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://cqluon1y1hnn5"]
 
 [ext_resource type="Script" uid="uid://ccr43pgd4488l" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_4xk1i"]
 [ext_resource type="Script" uid="uid://dbhd2dvt77sm4" path="res://demo/ai/tasks/is_aligned_with_target.gd" id="2_a8qex"]
@@ -34,7 +34,6 @@ max_duration = 1.5
 [sub_resource type="BTAction" id="BTAction_c4cxo"]
 script = ExtResource("1_4xk1i")
 group = &"player"
-output_var = &"target"
 
 [sub_resource type="BTSequence" id="BTSequence_yhjh1"]
 custom_name = "Take a break"
@@ -52,17 +51,13 @@ speed = 1.5
 
 [sub_resource type="BTAction" id="BTAction_op6l6"]
 script = ExtResource("4_53hao")
-target_var = &"target"
 flank_side = 1
 range_min = 400
 range_max = 1000
-position_var = &"pos"
 
 [sub_resource type="BTAction" id="BTAction_ycjun"]
 script = ExtResource("3_q4r2p")
-target_position_var = &"pos"
 speed_var = &"run_speed"
-tolerance = 50.0
 avoid_var = &"target"
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_gadc6"]
@@ -71,7 +66,6 @@ time_limit = 7.0
 
 [sub_resource type="BTAction" id="BTAction_poqpu"]
 script = ExtResource("5_aexyq")
-target_var = &"target"
 
 [sub_resource type="BTSequence" id="BTSequence_0gdqn"]
 custom_name = "Change flank"
@@ -87,8 +81,6 @@ run_chance = 0.3
 
 [sub_resource type="BTAction" id="BTAction_kuuw2"]
 script = ExtResource("4_53hao")
-target_var = &"target"
-flank_side = 0
 range_min = 400
 range_max = 1000
 position_var = &"shoot_pos"
@@ -105,20 +97,15 @@ blend = 0.1
 [sub_resource type="BTAction" id="BTAction_66hsk"]
 script = ExtResource("3_q4r2p")
 target_position_var = &"shoot_pos"
-speed_var = &"speed"
-tolerance = 50.0
-avoid_var = &""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_24ath"]
 children = [SubResource("BTAction_66hsk")]
 
 [sub_resource type="BTAction" id="BTAction_enw2m"]
 script = ExtResource("5_aexyq")
-target_var = &"target"
 
 [sub_resource type="BTCondition" id="BTCondition_1fnyc"]
 script = ExtResource("2_a8qex")
-target_var = &"target"
 tolerance = 150.0
 
 [sub_resource type="BBNode" id="BBNode_s6vt4"]

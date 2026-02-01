@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=28 format=3 uid="uid://ylife72ym5et"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://ylife72ym5et"]
 
 [ext_resource type="Script" uid="uid://ccr43pgd4488l" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_657p6"]
 [ext_resource type="Script" uid="uid://ct71h72pech3b" path="res://demo/ai/tasks/select_flanking_pos.gd" id="2_t3udh"]
@@ -37,12 +37,9 @@ children = [SubResource("BTPlayAnimation_ha2ag"), SubResource("BTRandomWait_cedq
 [sub_resource type="BTAction" id="BTAction_pp23y"]
 script = ExtResource("1_657p6")
 group = &"player"
-output_var = &"target"
 
 [sub_resource type="BTAction" id="BTAction_pmvd0"]
 script = ExtResource("2_t3udh")
-target_var = &"target"
-flank_side = 0
 range_min = 500
 range_max = 600
 position_var = &"flank_pos"
@@ -59,9 +56,6 @@ blend = 0.1
 [sub_resource type="BTAction" id="BTAction_87mi0"]
 script = ExtResource("3_u2ra5")
 target_position_var = &"flank_pos"
-speed_var = &"speed"
-tolerance = 50.0
-avoid_var = &""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_is5ag"]
 children = [SubResource("BTAction_87mi0")]
@@ -73,7 +67,6 @@ children = [SubResource("BTAction_pp23y"), SubResource("BTAction_pmvd0"), SubRes
 
 [sub_resource type="BTAction" id="BTAction_q5g4a"]
 script = ExtResource("4_xwjl7")
-target_var = &"target"
 
 [sub_resource type="BBNode" id="BBNode_bfijg"]
 resource_name = "AnimationPlayer"

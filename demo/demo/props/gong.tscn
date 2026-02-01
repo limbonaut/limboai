@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bpd1wmw2f7bvg"]
+[gd_scene format=3 uid="uid://bpd1wmw2f7bvg"]
 
 [ext_resource type="Script" uid="uid://d3cmj6skb7k07" path="res://demo/props/gong.gd" id="1_77c1i"]
 [ext_resource type="Texture2D" uid="uid://i476iia1ua8q" path="res://demo/assets/env_gong.png" id="1_kbnv6"]
@@ -819,27 +819,27 @@ height = 186.37
 radius = 39.2
 height = 253.42
 
-[node name="Gong" type="StaticBody2D"]
+[node name="Gong" type="StaticBody2D" unique_id=2141737009]
 script = ExtResource("1_77c1i")
 metadata/_edit_horizontal_guides_ = [111.0]
 
-[node name="Root" type="Node2D" parent="."]
+[node name="Root" type="Node2D" parent="." unique_id=352779074]
 metadata/_edit_lock_ = true
 
-[node name="Shadow" type="Sprite2D" parent="Root"]
+[node name="Shadow" type="Sprite2D" parent="Root" unique_id=601999401]
 modulate = Color(1, 1, 1, 0.329412)
 position = Vector2(0, -8)
 scale = Vector2(2.31, 1.7)
 texture = ExtResource("1_vl1mv")
 
-[node name="Gong" type="Sprite2D" parent="Root"]
+[node name="Gong" type="Sprite2D" parent="Root" unique_id=1370778628]
 texture = ExtResource("1_kbnv6")
 offset = Vector2(0, -110)
 
-[node name="FX" type="Node2D" parent="."]
+[node name="FX" type="Node2D" parent="." unique_id=386112793]
 metadata/_edit_lock_ = true
 
-[node name="WaveL1" type="Sprite2D" parent="FX"]
+[node name="WaveL1" type="Sprite2D" parent="FX" unique_id=2147205537]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(-65, -89)
@@ -849,7 +849,7 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="WaverR1" type="Sprite2D" parent="FX"]
+[node name="WaverR1" type="Sprite2D" parent="FX" unique_id=1896556449]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(70, -89)
@@ -859,7 +859,7 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="WaveL2" type="Sprite2D" parent="FX"]
+[node name="WaveL2" type="Sprite2D" parent="FX" unique_id=1276066901]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(-65, -89)
@@ -869,7 +869,7 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="WaverR2" type="Sprite2D" parent="FX"]
+[node name="WaverR2" type="Sprite2D" parent="FX" unique_id=89798751]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(70, -89)
@@ -879,7 +879,7 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="WaveL3" type="Sprite2D" parent="FX"]
+[node name="WaveL3" type="Sprite2D" parent="FX" unique_id=574959018]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(-65, -89)
@@ -889,7 +889,7 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="WaverR3" type="Sprite2D" parent="FX"]
+[node name="WaverR3" type="Sprite2D" parent="FX" unique_id=807347373]
 visible = false
 modulate = Color(0.329412, 0.352941, 0.392157, 1)
 position = Vector2(70, -89)
@@ -899,32 +899,30 @@ texture = ExtResource("2_dib3m")
 region_enabled = true
 region_rect = Rect2(0, 0, 191, 74)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_332s2")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=2024851481]
+libraries/ = SubResource("AnimationLibrary_332s2")
 
-[node name="GongSFX" type="AudioStreamPlayer" parent="."]
+[node name="GongSFX" type="AudioStreamPlayer" parent="." unique_id=475942010]
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=810084465]
 position = Vector2(0, -14.395)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_nixvt")
 
-[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=1306563145 node_paths=PackedStringArray("health")]
 collision_layer = 8
 collision_mask = 0
 script = ExtResource("5_xeb5y")
 health = NodePath("../Health")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Hurtbox" unique_id=715587618]
 position = Vector2(0, -14.395)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_ru7jf")
 debug_color = Color(0.886275, 0.109804, 0.756863, 0.419608)
 
-[node name="Health" type="Node" parent="."]
+[node name="Health" type="Node" parent="." unique_id=883950545]
 script = ExtResource("6_6a3q1")
-max_health = 1e+11
+max_health = 100000000000.0
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]

@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=21 format=3 uid="uid://bpdm5jnegi38"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://bpdm5jnegi38"]
 
 [ext_resource type="Script" uid="uid://ccr43pgd4488l" path="res://demo/ai/tasks/get_first_in_group.gd" id="1_2jpsu"]
 [ext_resource type="Script" uid="uid://dcjgktglb1slf" path="res://demo/ai/tasks/pursue.gd" id="2_h5db5"]
@@ -10,6 +10,31 @@ var/speed/type = 3
 var/speed/value = 400.0
 var/speed/hint = 1
 var/speed/hint_string = "10,1000,10"
+var/var/name = &"var"
+var/var/type = 3
+var/var/value = 0.0
+var/var/hint = 0
+var/var/hint_string = ""
+var/var2/name = &"var2"
+var/var2/type = 3
+var/var2/value = 0.578
+var/var2/hint = 0
+var/var2/hint_string = ""
+var/var3/name = &"var3"
+var/var3/type = 3
+var/var3/value = -1.161
+var/var3/hint = 0
+var/var3/hint_string = ""
+var/var4/name = &"var4"
+var/var4/type = 3
+var/var4/value = 0.754
+var/var4/hint = 0
+var/var4/hint_string = ""
+var/var5/name = &"var5"
+var/var5/type = 3
+var/var5/value = 0.0
+var/var5/hint = 0
+var/var5/hint_string = ""
 
 [sub_resource type="BBNode" id="BBNode_nrd4b"]
 resource_name = "AnimationPlayer"
@@ -40,13 +65,9 @@ blend = 0.1
 [sub_resource type="BTAction" id="BTAction_ulbrf"]
 script = ExtResource("1_2jpsu")
 group = &"player"
-output_var = &"target"
 
 [sub_resource type="BTAction" id="BTAction_a4jqi"]
 script = ExtResource("2_h5db5")
-target_var = &"target"
-speed_var = &"speed"
-approach_distance = 100.0
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_xek5v"]
 children = [SubResource("BTAction_a4jqi")]
@@ -58,7 +79,6 @@ children = [SubResource("BTPlayAnimation_olf37"), SubResource("BTAction_ulbrf"),
 
 [sub_resource type="BTAction" id="BTAction_kidxn"]
 script = ExtResource("3_bpmfp")
-target_var = &"target"
 
 [sub_resource type="BTWait" id="BTWait_tadkc"]
 duration = 0.1
