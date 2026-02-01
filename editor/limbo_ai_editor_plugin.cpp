@@ -378,13 +378,7 @@ void LimboAIEditor::get_window_layout(const Ref<ConfigFile> &p_configuration) {
 		open_bts.push_back(bt->get_path());
 	}
 	p_configuration->set_value("LimboAI", "bteditor_open_bts", open_bts);
-
-	int split_offset = hsc->get_split_offset();
-	if (editor_layout != (int)EDITOR_GET("limbo_ai/editor/layout")) {
-		// Editor layout settings changed - flip split offset.
-		split_offset *= -1;
-	}
-	p_configuration->set_value("LimboAI", "bteditor_hsplit", split_offset);
+	p_configuration->set_value("LimboAI", "bteditor_hsplit", hsc->get_split_offset());
 }
 
 void LimboAIEditor::_set_as_dirty(const Ref<BehaviorTree> &p_bt, bool p_dirty) {
@@ -914,16 +908,7 @@ void LimboAIEditor::_misc_option_selected(int p_id) {
 		case MISC_PROJECT_SETTINGS: {
 			_edit_project_settings();
 		} break;
-		case MISC_LAYOUT_CLASSIC: {
-			EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", LAYOUT_CLASSIC);
-			EDITOR_SETTINGS()->mark_setting_changed("limbo_ai/editor/layout");
-			_update_banners();
-		} break;
-		case MISC_LAYOUT_WIDESCREEN_OPTIMIZED: {
-			EDITOR_SETTINGS()->set_setting("limbo_ai/editor/layout", LAYOUT_WIDESCREEN_OPTIMIZED);
-			EDITOR_SETTINGS()->mark_setting_changed("limbo_ai/editor/layout");
-			_update_banners();
-		} break;
+
 		case MISC_CREATE_SCRIPT_TEMPLATE: {
 			String template_path = _get_script_template_path();
 			String template_dir = template_path.get_base_dir();
@@ -1464,20 +1449,6 @@ void LimboAIEditor::_update_misc_menu() {
 #endif // LIMBOAI_MODULE
 	misc_menu->add_item(TTR("Project Settings..."), MISC_PROJECT_SETTINGS);
 
-	PopupMenu *layout_menu = Object::cast_to<PopupMenu>(misc_menu->get_node_or_null(NodePath("LayoutMenu")));
-	if (layout_menu == nullptr) {
-		layout_menu = memnew(PopupMenu);
-		layout_menu->set_name("LayoutMenu");
-		layout_menu->connect(LW_NAME(id_pressed), callable_mp(this, &LimboAIEditor::_misc_option_selected));
-		misc_menu->add_child(layout_menu);
-		layout_menu->add_radio_check_item(TTR("Classic"), MISC_LAYOUT_CLASSIC);
-		layout_menu->add_radio_check_item(TTR("Widescreen Optimized"), MISC_LAYOUT_WIDESCREEN_OPTIMIZED);
-	}
-	misc_menu->add_submenu_item(TTR("Layout"), "LayoutMenu");
-	EditorLayout saved_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
-	layout_menu->set_item_checked(0, saved_layout == LAYOUT_CLASSIC);
-	layout_menu->set_item_checked(1, saved_layout == LAYOUT_WIDESCREEN_OPTIMIZED);
-
 	misc_menu->add_separator();
 	misc_menu->add_item(
 			FILE_EXISTS(_get_script_template_path()) ? TTR("Edit Script Template") : TTR("Create Script Template"),
@@ -1522,15 +1493,6 @@ void LimboAIEditor::_update_banners() {
 			banner->set_meta(LW_NAME(managed), Variant(true));
 			banners->add_child(banner);
 		}
-	}
-
-	EditorLayout saved_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
-	if (saved_layout != editor_layout) {
-		ActionBanner *banner = memnew(ActionBanner);
-		banner->set_text(TTR("Restart required to apply changes to editor layout"));
-		banner->add_action(TTR("Save & Restart"), callable_mp(this, &LimboAIEditor::_save_and_restart), true);
-		banner->set_meta(LW_NAME(managed), Variant(true));
-		banners->add_child(banner);
 	}
 }
 
@@ -1648,19 +1610,6 @@ LimboAIEditor::LimboAIEditor() {
 	dummy_history_context = memnew(Object);
 
 	EDITOR_DEF("limbo_ai/editor/prefer_online_documentation", false);
-
-	EDITOR_DEF("limbo_ai/editor/layout", 0);
-#ifdef LIMBOAI_MODULE
-	EDITOR_SETTINGS()->add_property_hint(PropertyInfo(Variant::INT, "limbo_ai/editor/layout", PROPERTY_HINT_ENUM, "Classic:0,Widescreen Optimized:1"));
-	EDITOR_SETTINGS()->set_restart_if_changed("limbo_ai/editor/layout", true);
-#elif LIMBOAI_GDEXTENSION
-	Dictionary pinfo;
-	pinfo["name"] = "limbo_ai/editor/layout";
-	pinfo["type"] = Variant::INT;
-	pinfo["hint"] = PROPERTY_HINT_ENUM;
-	pinfo["hint_string"] = "Classic:0,Widescreen Optimized:1";
-	EDITOR_SETTINGS()->add_property_info(pinfo);
-#endif
 
 	LW_SHORTCUT("limbo_ai/rename_task", TTR("Rename"), LW_KEY(F2));
 	// Todo: Add override support for shortcuts.
@@ -1835,9 +1784,8 @@ LimboAIEditor::LimboAIEditor() {
 	banners = memnew(VBoxContainer);
 	vbox->add_child(banners);
 
-	editor_layout = (EditorLayout)(int)EDITOR_GET("limbo_ai/editor/layout");
-	if (editor_layout == LAYOUT_WIDESCREEN_OPTIMIZED) {
-		// * Alternative layout optimized for wide screen.
+	{
+		// * Widescreen layout.
 		VBoxContainer *sidebar_vbox = memnew(VBoxContainer);
 		hsc->add_child(sidebar_vbox);
 		sidebar_vbox->set_v_size_flags(SIZE_EXPAND_FILL);
@@ -1867,7 +1815,7 @@ LimboAIEditor::LimboAIEditor() {
 		banners->reparent(editor_vbox);
 	}
 
-	hsc->set_split_offset((editor_layout == LAYOUT_CLASSIC ? -320 : 320) * EDSCALE);
+	hsc->set_split_offset(320 * EDSCALE);
 
 	change_type_popup = memnew(PopupPanel);
 	add_child(change_type_popup);

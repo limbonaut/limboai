@@ -91,8 +91,6 @@ private:
 		MISC_DOC_INTRODUCTION,
 		MISC_DOC_CUSTOM_TASKS,
 		MISC_OPEN_DEBUGGER,
-		MISC_LAYOUT_CLASSIC,
-		MISC_LAYOUT_WIDESCREEN_OPTIMIZED,
 		MISC_PROJECT_SETTINGS,
 		MISC_CREATE_SCRIPT_TEMPLATE,
 		MISC_SEARCH_TREE
@@ -105,11 +103,6 @@ private:
 		TAB_CLOSE_OTHER,
 		TAB_CLOSE_RIGHT,
 		TAB_CLOSE_ALL,
-	};
-
-	enum EditorLayout {
-		LAYOUT_CLASSIC,
-		LAYOUT_WIDESCREEN_OPTIMIZED,
 	};
 
 	struct ThemeCache {
@@ -137,7 +130,6 @@ private:
 	} theme_cache;
 
 	EditorPlugin *plugin;
-	EditorLayout editor_layout;
 	Vector<Ref<BehaviorTree>> history;
 	int idx_history;
 	HashMap<Ref<BehaviorTree>, TreeSearch::SearchInfo> tab_search_context;
