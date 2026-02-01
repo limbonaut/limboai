@@ -33,7 +33,7 @@ window/stretch/mode="canvas_items"
 
 [limbo_ai]
 
-behavior_tree/favorite_tasks=PackedStringArray()
+behavior_tree/favorite_tasks=PackedStringArray("BTSequence", "BTSelector", "BTComment")
 behavior_tree/behavior_tree_default_dir="res://demo/ai/trees"
 behavior_tree/user_task_dirs=PackedStringArray("res://demo/ai/tasks")
 behavior_tree/user_task_dir_1="res://demo/ai/tasks"

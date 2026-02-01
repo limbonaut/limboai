@@ -60,7 +60,6 @@ LimboStringNames::LimboStringNames() {
 	EVENT_SUCCESS = StringName("success");
 	exited = StringName("exited");
 	ExternalLink = StringName("ExternalLink");
-	favorite_tasks_changed = StringName("favorite_tasks_changed");
 	Favorites = StringName("Favorites");
 	FlatButton = StringName("FlatButton");
 	Focus = StringName("Focus");

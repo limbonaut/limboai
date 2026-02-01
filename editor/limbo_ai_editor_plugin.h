@@ -158,7 +158,6 @@ private:
 	VBoxContainer *banners;
 	Panel *usage_hint;
 	PopupMenu *menu;
-	HBoxContainer *fav_tasks_hbox;
 	TaskPalette *task_palette;
 
 	PopupPanel *probability_popup;
@@ -198,7 +197,6 @@ private:
 	Ref<BTTask> _create_task_by_class_or_path(const String &p_class_or_path) const;
 	void _add_task_by_class_or_path(const String &p_class_or_path);
 	void _remove_task(const Ref<BTTask> &p_task);
-	void _update_favorite_tasks();
 	void _update_misc_menu();
 	void _update_banners();
 	void _new_bt();
