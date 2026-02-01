@@ -87,7 +87,6 @@ public:
 	StringName EVENT_SUCCESS;
 	StringName exited;
 	StringName ExternalLink;
-	StringName favorite_tasks_changed;
 	StringName Favorites;
 	StringName FlatButton;
 	StringName focus_exited;

@@ -1019,7 +1019,6 @@ void LimboAIEditor::_on_visibility_changed() {
 		task_palette->refresh();
 		_update_banners();
 	}
-	_update_favorite_tasks();
 
 	if (request_update_tabs && history.size() > 0) {
 		_update_tabs();
@@ -1449,38 +1448,6 @@ void LimboAIEditor::save_all(bool p_external_only) {
 	}
 }
 
-void LimboAIEditor::_update_favorite_tasks() {
-	for (int i = 0; i < fav_tasks_hbox->get_child_count(); i++) {
-		fav_tasks_hbox->get_child(i)->queue_free();
-	}
-	Array favorite_tasks = GLOBAL_GET("limbo_ai/behavior_tree/favorite_tasks");
-	for (int i = 0; i < favorite_tasks.size(); i++) {
-		String task_meta = favorite_tasks[i];
-
-		if (task_meta.is_empty() || (!FILE_EXISTS(task_meta) && !ClassDB::class_exists(task_meta))) {
-			callable_mp(this, &LimboAIEditor::_update_banners).call_deferred();
-			continue;
-		}
-
-		Button *btn = memnew(Button);
-		String task_name;
-		if (task_meta.begins_with("res:")) {
-			task_name = task_meta.get_file().get_basename().trim_prefix("BT").to_pascal_case();
-		} else {
-			task_name = task_meta.trim_prefix("BT");
-		}
-		btn->set_text(task_name);
-		btn->set_meta(LW_NAME(task_meta), task_meta);
-		btn->set_button_icon(LimboUtility::get_singleton()->get_task_icon(task_meta));
-		btn->set_tooltip_text(vformat(TTR("Add %s task."), task_name));
-		btn->set_flat(true);
-		btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to be of the proper size.
-		btn->set_focus_mode(Control::FOCUS_NONE);
-		btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path).bind(task_meta));
-		fav_tasks_hbox->add_child(btn);
-	}
-}
-
 void LimboAIEditor::_update_misc_menu() {
 	PopupMenu *misc_menu = misc_btn->get_popup();
 
@@ -1619,7 +1586,6 @@ void LimboAIEditor::_notification(int p_what) {
 			misc_btn->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_update_misc_menu));
 			misc_btn->get_popup()->connect("id_pressed", callable_mp(this, &LimboAIEditor::_misc_option_selected));
 			task_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_add_task_by_class_or_path));
-			task_palette->connect("favorite_tasks_changed", callable_mp(this, &LimboAIEditor::_update_favorite_tasks));
 			change_type_palette->connect("task_selected", callable_mp(this, &LimboAIEditor::_task_type_selected));
 			menu->connect("id_pressed", callable_mp(this, &LimboAIEditor::_action_selected));
 			weight_mode->connect(LW_NAME(pressed), callable_mp(this, &LimboAIEditor::_update_probability_edit));
@@ -1651,8 +1617,6 @@ void LimboAIEditor::_notification(int p_what) {
 			save_btn->set_button_icon(get_theme_icon(LW_NAME(Save), LW_NAME(EditorIcons)));
 			new_script_btn->set_button_icon(get_theme_icon(LW_NAME(ScriptCreate), LW_NAME(EditorIcons)));
 			misc_btn->set_button_icon(get_theme_icon(LW_NAME(Tools), LW_NAME(EditorIcons)));
-
-			_update_favorite_tasks();
 		} break;
 		case EditorSettings::NOTIFICATION_EDITOR_SETTINGS_CHANGED: {
 			if (is_visible_in_tree()) {
@@ -1758,11 +1722,6 @@ LimboAIEditor::LimboAIEditor() {
 	favorite_tasks_default.append("BTSequence");
 	favorite_tasks_default.append("BTComment");
 	GLOBAL_DEF(PropertyInfo(Variant::PACKED_STRING_ARRAY, "limbo_ai/behavior_tree/favorite_tasks", PROPERTY_HINT_ARRAY_TYPE, "String"), favorite_tasks_default);
-
-	fav_tasks_hbox = memnew(HBoxContainer);
-	toolbar->add_child(fav_tasks_hbox);
-
-	toolbar->add_child(memnew(VSeparator));
 
 	new_btn = memnew(Button);
 	new_btn->set_text(TTR("New"));

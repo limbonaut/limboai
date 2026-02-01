@@ -24,16 +24,19 @@
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
 #include "scene/gui/scroll_container.h"
+#include "scene/gui/separator.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
 #include <godot_cpp/classes/foldable_container.hpp>
 #include <godot_cpp/classes/h_flow_container.hpp>
+#include <godot_cpp/classes/h_separator.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
 #include <godot_cpp/classes/popup_panel.hpp>
 #include <godot_cpp/classes/scroll_container.hpp>
+#include <godot_cpp/classes/separator.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
 #include <godot_cpp/templates/hash_set.hpp>
 using namespace godot;
@@ -82,6 +85,8 @@ protected:
 public:
 	void set_filter(const String &p_filter);
 	void add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_meta);
+	void clear_task_buttons();
+	int get_task_button_count() const;
 
 	TaskPaletteSection();
 	~TaskPaletteSection();
@@ -124,6 +129,8 @@ private:
 
 	LineEdit *filter_edit;
 	VBoxContainer *sections;
+	TaskPaletteSection *fav_section;
+	HSeparator *fav_separator;
 	PopupMenu *menu;
 	Button *tool_filters;
 	Button *tool_refresh;
@@ -148,6 +155,7 @@ private:
 	void _menu_action_selected(int p_id);
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_rmb(const String &p_task);
+	void _refresh_favorites();
 	void _apply_filter(const String &p_text);
 	void _update_filter_popup();
 	void _show_filter_popup();
