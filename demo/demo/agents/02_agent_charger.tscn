@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://g1pnvanyxcpa"]
+[gd_scene format=3 uid="uid://g1pnvanyxcpa"]
 
 [ext_resource type="PackedScene" uid="uid://ooigbfhfy4wa" path="res://demo/agents/agent_base.tscn" id="1_n83hi"]
 [ext_resource type="Texture2D" uid="uid://ce16nc0wy2s8" path="res://demo/assets/agent_charger.png" id="2_y7pic"]
@@ -6,32 +6,32 @@
 
 [sub_resource type="BlackboardPlan" id="BlackboardPlan_pmyhf"]
 
-[node name="AgentCharger" instance=ExtResource("1_n83hi")]
+[node name="AgentCharger" unique_id=2045336463 instance=ExtResource("1_n83hi")]
 
-[node name="LegL" parent="Root/Rig" index="1"]
+[node name="LegL" parent="Root/Rig" parent_id_path=PackedInt32Array(99014800) index="1" unique_id=1846803080]
 texture = ExtResource("2_y7pic")
 
-[node name="LegR" parent="Root/Rig" index="2"]
+[node name="LegR" parent="Root/Rig" parent_id_path=PackedInt32Array(99014800) index="2" unique_id=1298898798]
 texture = ExtResource("2_y7pic")
 
-[node name="Body" parent="Root/Rig" index="3"]
+[node name="Body" parent="Root/Rig" parent_id_path=PackedInt32Array(99014800) index="3" unique_id=1986703668]
 texture = ExtResource("2_y7pic")
 
-[node name="Hat" parent="Root/Rig/Body" index="0"]
+[node name="Hat" parent="Root/Rig/Body" index="0" unique_id=1581505781]
 texture = ExtResource("2_y7pic")
 
-[node name="HandL" parent="Root/Rig/Body" index="1"]
+[node name="HandL" parent="Root/Rig/Body" index="1" unique_id=1237044871]
 texture = ExtResource("2_y7pic")
 
-[node name="HandR" parent="Root/Rig/Body" index="2"]
+[node name="HandR" parent="Root/Rig/Body" index="2" unique_id=1388852439]
 texture = ExtResource("2_y7pic")
 
-[node name="Hitbox" parent="Root" index="1"]
+[node name="Hitbox" parent="Root" parent_id_path=PackedInt32Array(961776610) index="1" unique_id=2090984012]
 damage = 2.0
 
-[node name="Health" parent="." index="3"]
+[node name="Health" parent="." index="3" unique_id=531975927]
 max_health = 8.0
 
-[node name="BTPlayer" type="BTPlayer" parent="." index="4"]
+[node name="BTPlayer" type="BTPlayer" parent="." index="4" unique_id=1733921525]
 behavior_tree = ExtResource("3_nacc3")
 blackboard_plan = SubResource("BlackboardPlan_pmyhf")

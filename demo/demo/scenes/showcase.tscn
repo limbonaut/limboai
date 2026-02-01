@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://b3ae14mc2ty3y"]
+[gd_scene format=3 uid="uid://b3ae14mc2ty3y"]
 
 [ext_resource type="Script" uid="uid://qpj1dk7ugnja" path="res://demo/scenes/showcase.gd" id="1_l12ql"]
 [ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_3d7dj"]
@@ -39,13 +39,13 @@ font_color = Color(0.804089, 0.811917, 0.823636, 1)
 outline_size = 10
 outline_color = Color(0.145083, 0.168536, 0.203708, 1)
 
-[node name="AgentShowcase" type="Node2D"]
+[node name="AgentShowcase" type="Node2D" unique_id=1288213603]
 y_sort_enabled = true
 script = ExtResource("1_l12ql")
 
-[node name="UI Layer" type="CanvasLayer" parent="."]
+[node name="UI Layer" type="CanvasLayer" parent="." unique_id=820288795]
 
-[node name="Control" type="Control" parent="UI Layer"]
+[node name="Control" type="Control" parent="UI Layer" unique_id=527678231]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -54,7 +54,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_3d7dj")
 
-[node name="Toolbar" type="PanelContainer" parent="UI Layer/Control"]
+[node name="Toolbar" type="PanelContainer" parent="UI Layer/Control" unique_id=593294706]
 custom_minimum_size = Vector2(0, 54.26)
 layout_mode = 1
 anchors_preset = 10
@@ -63,11 +63,11 @@ offset_right = -612.0
 offset_bottom = 58.0
 grow_horizontal = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/Toolbar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/Toolbar" unique_id=1993711483]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=1916564581]
 layout_mode = 2
 focus_mode = 0
 theme_override_fonts/font = ExtResource("3_7vli5")
@@ -75,14 +75,14 @@ theme_override_font_sizes/font_size = 22
 text = "Toggle Fullscreen"
 script = ExtResource("6_uggpo")
 
-[node name="SwitchToGame" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="SwitchToGame" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=330565684]
 layout_mode = 2
 focus_mode = 0
 theme_override_fonts/font = ExtResource("3_7vli5")
 theme_override_font_sizes/font_size = 22
 text = "Switch to Game"
 
-[node name="BeginTutorial" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="BeginTutorial" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=700159127]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
@@ -91,14 +91,14 @@ theme_override_font_sizes/font_size = 22
 text = "Begin Tutorial
 "
 
-[node name="SceneTitle" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="SceneTitle" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=238378066]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Tutorial"
 label_settings = SubResource("LabelSettings_rdr7a")
 
-[node name="NavigationHint" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="NavigationHint" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=345394561]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
@@ -106,7 +106,7 @@ text = "Select Agent ➤"
 label_settings = SubResource("LabelSettings_3uhve")
 horizontal_alignment = 2
 
-[node name="BehaviorInspector" type="PanelContainer" parent="UI Layer/Control"]
+[node name="BehaviorInspector" type="PanelContainer" parent="UI Layer/Control" unique_id=260656634]
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
@@ -116,23 +116,23 @@ offset_left = -612.0
 grow_horizontal = 0
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control/BehaviorInspector"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control/BehaviorInspector" unique_id=1926929085]
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/BehaviorInspector/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/BehaviorInspector/VBoxContainer" unique_id=1851644467]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="Previous" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
+[node name="Previous" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer" unique_id=172731598]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
 icon = ExtResource("5_bvrtp")
 
-[node name="AgentSelection" type="MenuButton" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
+[node name="AgentSelection" type="MenuButton" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer" unique_id=206153490]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(400, 50)
 layout_mode = 2
@@ -143,20 +143,20 @@ text = "02_agent_imp.tres
 "
 flat = false
 
-[node name="Next" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer"]
+[node name="Next" type="Button" parent="UI Layer/Control/BehaviorInspector/VBoxContainer/HBoxContainer" unique_id=594431451]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_font_sizes/font_size = 28
 icon = ExtResource("7_5do2y")
 
-[node name="BehaviorTreeView" type="BehaviorTreeView" parent="UI Layer/Control/BehaviorInspector/VBoxContainer"]
+[node name="BehaviorTreeView" type="BehaviorTreeView" parent="UI Layer/Control/BehaviorInspector/VBoxContainer" unique_id=656954310]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(600, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="PanelContainer" type="PanelContainer" parent="UI Layer/Control"]
+[node name="PanelContainer" type="PanelContainer" parent="UI Layer/Control" unique_id=1137916148]
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -167,17 +167,17 @@ offset_right = -612.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="Control" type="Control" parent="UI Layer/Control/PanelContainer"]
+[node name="Control" type="Control" parent="UI Layer/Control/PanelContainer" unique_id=1979729221]
 layout_mode = 2
 
-[node name="Logo" type="TextureRect" parent="UI Layer/Control/PanelContainer/Control"]
+[node name="Logo" type="TextureRect" parent="UI Layer/Control/PanelContainer/Control" unique_id=259622260]
 layout_mode = 1
 offset_top = -128.0
 offset_right = 256.0
 offset_bottom = -43.0
 texture = ExtResource("5_rwygb")
 
-[node name="Demo project" type="Label" parent="UI Layer/Control/PanelContainer/Control/Logo"]
+[node name="Demo project" type="Label" parent="UI Layer/Control/PanelContainer/Control/Logo" unique_id=1003790860]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -195,21 +195,21 @@ label_settings = SubResource("LabelSettings_la4ui")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Header" type="HBoxContainer" parent="UI Layer/Control/PanelContainer/Control"]
-layout_mode = 2
+[node name="Header" type="HBoxContainer" parent="UI Layer/Control/PanelContainer/Control" unique_id=1409843934]
+layout_mode = 0
 offset_left = 3.0
 offset_top = -43.0
 offset_right = 1299.0
 offset_bottom = -7.0
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="UI Layer/Control/PanelContainer/Control/Header"]
+[node name="Label" type="Label" parent="UI Layer/Control/PanelContainer/Control/Header" unique_id=213429430]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "Description"
 label_settings = SubResource("LabelSettings_tlprv")
 
-[node name="MinimizeDescription" type="Button" parent="UI Layer/Control/PanelContainer/Control/Header"]
+[node name="MinimizeDescription" type="Button" parent="UI Layer/Control/PanelContainer/Control/Header" unique_id=2146499049]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
@@ -219,37 +219,38 @@ focus_mode = 0
 theme_override_fonts/font = ExtResource("3_7vli5")
 text = "-"
 
-[node name="MarginContainer" type="MarginContainer" parent="UI Layer/Control/PanelContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="UI Layer/Control/PanelContainer" unique_id=791995614]
 layout_mode = 2
 theme_override_constants/margin_left = 20
 theme_override_constants/margin_top = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control/PanelContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="UI Layer/Control/PanelContainer/MarginContainer" unique_id=2091956890]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Description" type="RichTextLabel" parent="UI Layer/Control/PanelContainer/MarginContainer/VBoxContainer"]
+[node name="Description" type="RichTextLabel" parent="UI Layer/Control/PanelContainer/MarginContainer/VBoxContainer" unique_id=430231376]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
 theme_override_font_sizes/bold_italics_font_size = 20
 theme_override_font_sizes/italics_font_size = 20
 theme_override_font_sizes/mono_font_size = 20
-theme_override_font_sizes/normal_font_size = 20
-theme_override_font_sizes/bold_font_size = 20
 bbcode_enabled = true
 text = "[b]Behavior Trees[/b] are composed of tasks that represent specific actions or decision-making rules. Tasks can be broadly categorized into two main types: control tasks and leaf tasks. Control tasks determine the execution flow within the tree. They include Sequence, Selector, and Invert. Leaf tasks represent specific actions to perform, like moving or attacking, or conditions that need to be checked. The BTTask class provides the foundation for various building blocks of the Behavior Trees. BT tasks can share data with the help of the Blackboard."
 fit_content = true
 
-[node name="CodePopup" type="PopupPanel" parent="UI Layer/Control"]
+[node name="CodePopup" type="PopupPanel" parent="UI Layer/Control" unique_id=542471976]
 unique_name_in_owner = true
+oversampling_override = 1.0
 position = Vector2i(0, 60)
 size = Vector2i(1024, 708)
 visible = true
 
-[node name="CodeEdit" type="CodeEdit" parent="UI Layer/Control/CodePopup"]
+[node name="CodeEdit" type="CodeEdit" parent="UI Layer/Control/CodePopup" unique_id=50454680]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(800, 700)
 anchors_preset = 15
@@ -264,7 +265,7 @@ grow_vertical = 2
 gutters_draw_line_numbers = true
 script = ExtResource("9_txke7")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=686501120]
 position = Vector2(400, 0)
 zoom = Vector2(0.88, 0.88)
 process_callback = 0
@@ -276,10 +277,10 @@ drag_top_margin = 0.1
 drag_right_margin = 0.0
 drag_bottom_margin = 0.1
 
-[node name="Arena" parent="." instance=ExtResource("7_42nq6")]
+[node name="Arena" parent="." unique_id=1958497507 instance=ExtResource("7_42nq6")]
 metadata/_edit_lock_ = true
 
-[node name="Dummy" parent="." instance=ExtResource("8_apshw")]
+[node name="Dummy" parent="." unique_id=1431895392 instance=ExtResource("8_apshw")]
 position = Vector2(1106, 423)
 
 [connection signal="pressed" from="UI Layer/Control/Toolbar/HBoxContainer/SwitchToGame" to="." method="_on_switch_to_game_pressed"]

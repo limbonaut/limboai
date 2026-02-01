@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://c5fhe3tulhlco"]
+[gd_scene format=3 uid="uid://c5fhe3tulhlco"]
 
 [ext_resource type="Script" uid="uid://mapy7metn1kt" path="res://demo/props/dummy.gd" id="1_kqftw"]
 [ext_resource type="Texture2D" uid="uid://cltutcxjx8jnl" path="res://demo/assets/dummy.png" id="1_vdhcl"]
@@ -353,53 +353,51 @@ _data = {
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pknym"]
 size = Vector2(80, 35)
 
-[node name="Dummy" type="CharacterBody2D" groups=["player"]]
+[node name="Dummy" type="CharacterBody2D" unique_id=1624821985 groups=["player"]]
 script = ExtResource("1_kqftw")
 
-[node name="Root" type="Node2D" parent="."]
+[node name="Root" type="Node2D" parent="." unique_id=96637686]
 metadata/_edit_lock_ = true
 
-[node name="Rig" type="Node2D" parent="Root"]
+[node name="Rig" type="Node2D" parent="Root" unique_id=1280195022]
 
-[node name="Shadow" type="Sprite2D" parent="Root/Rig"]
+[node name="Shadow" type="Sprite2D" parent="Root/Rig" unique_id=1313418452]
 modulate = Color(1, 1, 1, 0.290196)
 texture = ExtResource("2_535g7")
 
-[node name="Stick" type="Sprite2D" parent="Root/Rig"]
+[node name="Stick" type="Sprite2D" parent="Root/Rig" unique_id=1439552851]
 position = Vector2(0, -1)
 texture = ExtResource("1_vdhcl")
 offset = Vector2(-1, -28)
 region_enabled = true
 region_rect = Rect2(100.613, 0, 22.3875, 64.0292)
 
-[node name="Body" type="Sprite2D" parent="Root/Rig/Stick"]
+[node name="Body" type="Sprite2D" parent="Root/Rig/Stick" unique_id=809406421]
 position = Vector2(0, -49)
 texture = ExtResource("1_vdhcl")
 offset = Vector2(-1, -56)
 region_enabled = true
 region_rect = Rect2(0, 0, 99.6683, 136)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_blnjx")
-}
-autoplay = "idle"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=841280958]
+libraries/ = SubResource("AnimationLibrary_blnjx")
+autoplay = &"idle"
 next/hurt = &"idle"
-blend_times = [&"idle", &"hurt", 0.05, &"hurt", &"idle", 0.3]
+blend_times = [&"hurt", &"idle", 0.3, &"idle", &"hurt", 0.05]
 
-[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+[node name="Hurtbox" type="Area2D" parent="." unique_id=242929745 node_paths=PackedStringArray("health")]
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("4_pkfnd")
 health = NodePath("../Health")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox" unique_id=2061671598]
 shape = SubResource("RectangleShape2D_pknym")
 debug_color = Color(0.466325, 0.590206, 0.107862, 0.42)
 metadata/_edit_lock_ = true
 
-[node name="Health" type="Node" parent="."]
+[node name="Health" type="Node" parent="." unique_id=1678447554]
 script = ExtResource("5_8qcls")
-max_health = 1e+07
+max_health = 10000000.0
 
 [connection signal="damaged" from="Health" to="." method="_on_health_damaged"]

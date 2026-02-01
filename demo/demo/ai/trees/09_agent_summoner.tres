@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=35 format=3 uid="uid://cpxk7jnqpwwlc"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://cpxk7jnqpwwlc"]
 
 [ext_resource type="Script" uid="uid://bicxffqmm7ek" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_sgn0p"]
 [ext_resource type="Script" uid="uid://df82exuqnfdb2" path="res://demo/ai/tasks/arrive_pos.gd" id="2_pshl2"]
@@ -70,8 +70,6 @@ duration = 0.5
 
 [sub_resource type="BTAction" id="BTAction_yeyns"]
 script = ExtResource("1_sgn0p")
-range_min = 300.0
-range_max = 500.0
 position_var = &"minion_pos"
 
 [sub_resource type="BBVariant" id="BBVariant_wfjwy"]
@@ -102,9 +100,7 @@ children = [SubResource("BTCheckAgentProperty_olmdj"), SubResource("BTCheckVar_h
 
 [sub_resource type="BTAction" id="BTAction_33wje"]
 script = ExtResource("1_sgn0p")
-range_min = 300.0
 range_max = 700.0
-position_var = &"pos"
 
 [sub_resource type="BBNode" id="BBNode_w5fh2"]
 resource_name = "AnimationPlayer"
@@ -117,10 +113,6 @@ blend = 0.1
 
 [sub_resource type="BTAction" id="BTAction_dfifw"]
 script = ExtResource("2_pshl2")
-target_position_var = &"pos"
-speed_var = &"speed"
-tolerance = 50.0
-avoid_var = &""
 
 [sub_resource type="BTTimeLimit" id="BTTimeLimit_i05cm"]
 children = [SubResource("BTAction_dfifw")]

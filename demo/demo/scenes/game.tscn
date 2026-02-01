@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://clyhgbpfpmtw7"]
+[gd_scene format=3 uid="uid://clyhgbpfpmtw7"]
 
 [ext_resource type="Script" uid="uid://bwhv180m71qs4" path="res://demo/scenes/game.gd" id="1_qw71e"]
 [ext_resource type="Theme" uid="uid://boqtjf88xcpu4" path="res://demo/assets/ui.theme" id="2_r21q3"]
@@ -31,13 +31,13 @@ font_size = 37
 outline_size = 12
 outline_color = Color(0.317525, 0.344884, 0.388373, 1)
 
-[node name="Game" type="Node2D"]
+[node name="Game" type="Node2D" unique_id=1801956992]
 y_sort_enabled = true
 script = ExtResource("1_qw71e")
 
-[node name="UI Layer" type="CanvasLayer" parent="."]
+[node name="UI Layer" type="CanvasLayer" parent="." unique_id=876263967]
 
-[node name="Control" type="Control" parent="UI Layer"]
+[node name="Control" type="Control" parent="UI Layer" unique_id=1705458422]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,7 +46,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_r21q3")
 
-[node name="Toolbar" type="PanelContainer" parent="UI Layer/Control"]
+[node name="Toolbar" type="PanelContainer" parent="UI Layer/Control" unique_id=103915776]
 custom_minimum_size = Vector2(0, 54.26)
 layout_mode = 1
 anchors_preset = 10
@@ -54,11 +54,11 @@ anchor_right = 1.0
 offset_bottom = 64.0
 grow_horizontal = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/Toolbar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="UI Layer/Control/Toolbar" unique_id=817546466]
 layout_mode = 2
 theme_override_constants/separation = 4
 
-[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="ToggleFullscreen" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=2008513897]
 layout_mode = 2
 focus_mode = 0
 theme_override_fonts/font = ExtResource("4_w0vii")
@@ -66,7 +66,7 @@ theme_override_font_sizes/font_size = 22
 text = "Toggle Fullscreen"
 script = ExtResource("5_m16ov")
 
-[node name="Switch to Showcase" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="Switch to Showcase" type="Button" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=767941678]
 layout_mode = 2
 focus_mode = 0
 theme_override_fonts/font = ExtResource("4_w0vii")
@@ -74,14 +74,14 @@ theme_override_font_sizes/font_size = 22
 text = "Switch to Showcase
 "
 
-[node name="RoundCounter" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="RoundCounter" type="Label" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=1893018503]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Strike the Gong to begin!"
 label_settings = SubResource("LabelSettings_qvxvp")
 
-[node name="HPBar" type="TextureProgressBar" parent="UI Layer/Control/Toolbar/HBoxContainer"]
+[node name="HPBar" type="TextureProgressBar" parent="UI Layer/Control/Toolbar/HBoxContainer" unique_id=1903605432]
 unique_name_in_owner = true
 layout_mode = 2
 value = 100.0
@@ -89,7 +89,7 @@ texture_under = ExtResource("6_622dk")
 texture_over = ExtResource("7_430mt")
 texture_progress = ExtResource("8_invih")
 
-[node name="Logo" type="TextureRect" parent="UI Layer/Control"]
+[node name="Logo" type="TextureRect" parent="UI Layer/Control" unique_id=801119834]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -104,7 +104,7 @@ grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("3_g0us4")
 
-[node name="Demo project" type="Label" parent="UI Layer/Control/Logo"]
+[node name="Demo project" type="Label" parent="UI Layer/Control/Logo" unique_id=2028180824]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -122,7 +122,7 @@ label_settings = SubResource("LabelSettings_628x3")
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Keys" type="Label" parent="UI Layer/Control"]
+[node name="Keys" type="Label" parent="UI Layer/Control" unique_id=1538454448]
 layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
@@ -141,16 +141,16 @@ Attack    ENTER / F
 "
 label_settings = SubResource("LabelSettings_grcwx")
 
-[node name="Arena" parent="." instance=ExtResource("9_k3uu1")]
+[node name="Arena" parent="." unique_id=937680588 instance=ExtResource("9_k3uu1")]
 metadata/_edit_lock_ = true
 
-[node name="Gong" parent="." instance=ExtResource("10_tftjb")]
+[node name="Gong" parent="." unique_id=1864183725 instance=ExtResource("10_tftjb")]
 position = Vector2(923, -21)
 
-[node name="Player" parent="." instance=ExtResource("11_bndob")]
+[node name="Player" parent="." unique_id=831866403 instance=ExtResource("11_bndob")]
 position = Vector2(843, 455)
 
-[node name="Camera2D" type="Camera2D" parent="Player"]
+[node name="Camera2D" type="Camera2D" parent="Player" unique_id=1335653447]
 position = Vector2(0, -100)
 zoom = Vector2(0.88, 0.88)
 process_callback = 0
@@ -160,36 +160,36 @@ drag_vertical_enabled = true
 drag_top_margin = 0.1
 drag_bottom_margin = 0.1
 
-[node name="SpawnPoints" type="Node2D" parent="."]
+[node name="SpawnPoints" type="Node2D" parent="." unique_id=855023223]
 
-[node name="SpawnPosition1" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition1" type="Marker2D" parent="SpawnPoints" unique_id=986754785]
 position = Vector2(512, -180)
 
-[node name="SpawnPosition2" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition2" type="Marker2D" parent="SpawnPoints" unique_id=719842184]
 position = Vector2(1421, -150)
 
-[node name="SpawnPosition3" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition3" type="Marker2D" parent="SpawnPoints" unique_id=1706242731]
 position = Vector2(1512, 300)
 
-[node name="SpawnPosition4" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition4" type="Marker2D" parent="SpawnPoints" unique_id=2114504959]
 position = Vector2(2264, 345)
 
-[node name="SpawnPosition5" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition5" type="Marker2D" parent="SpawnPoints" unique_id=1530300617]
 position = Vector2(1655, 789)
 
-[node name="SpawnPosition6" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition6" type="Marker2D" parent="SpawnPoints" unique_id=576952141]
 position = Vector2(823, 826)
 
-[node name="SpawnPosition7" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition7" type="Marker2D" parent="SpawnPoints" unique_id=904857911]
 position = Vector2(67, 648)
 
-[node name="SpawnPosition8" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition8" type="Marker2D" parent="SpawnPoints" unique_id=1858692741]
 position = Vector2(-399, 434)
 
-[node name="SpawnPosition9" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition9" type="Marker2D" parent="SpawnPoints" unique_id=346880510]
 position = Vector2(629, 417)
 
-[node name="SpawnPosition10" type="Marker2D" parent="SpawnPoints"]
+[node name="SpawnPosition10" type="Marker2D" parent="SpawnPoints" unique_id=423676587]
 position = Vector2(1859, 3)
 
 [connection signal="pressed" from="UI Layer/Control/Toolbar/HBoxContainer/Switch to Showcase" to="." method="_on_switch_to_showcase_pressed"]

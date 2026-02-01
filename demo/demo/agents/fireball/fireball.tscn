@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://wdauoepicegb"]
+[gd_scene format=3 uid="uid://wdauoepicegb"]
 
 [ext_resource type="Script" uid="uid://cw0jj6rj3e4dp" path="res://demo/agents/fireball/fireball.gd" id="1_ituf4"]
 [ext_resource type="Texture2D" uid="uid://dwhhxj5557qrb" path="res://demo/assets/shadow.png" id="2_6n8mx"]
@@ -108,62 +108,60 @@ _data = {
 &"default": SubResource("Animation_ey8it")
 }
 
-[node name="Fireball" type="Node2D"]
+[node name="Fireball" type="Node2D" unique_id=943362276]
 script = ExtResource("1_ituf4")
 
-[node name="FX" type="Node2D" parent="."]
+[node name="FX" type="Node2D" parent="." unique_id=1832286385]
 position = Vector2(0, -92)
 
-[node name="Trail" type="GPUParticles2D" parent="FX"]
+[node name="Trail" type="GPUParticles2D" parent="FX" unique_id=1635748523]
 show_behind_parent = true
 amount = 6
-process_material = SubResource("ParticleProcessMaterial_gbya7")
 texture = ExtResource("5_dcbp6")
 lifetime = 0.4
 fixed_fps = 60
+process_material = SubResource("ParticleProcessMaterial_gbya7")
 
-[node name="Death" type="GPUParticles2D" parent="FX"]
+[node name="Death" type="GPUParticles2D" parent="FX" unique_id=1295484150]
 emitting = false
 amount = 6
-process_material = SubResource("ParticleProcessMaterial_gilhy")
 texture = ExtResource("5_dcbp6")
 lifetime = 0.7
 one_shot = true
 explosiveness = 0.7
 fixed_fps = 60
 local_coords = true
+process_material = SubResource("ParticleProcessMaterial_gilhy")
 
-[node name="Root" type="Node2D" parent="."]
+[node name="Root" type="Node2D" parent="." unique_id=892661448]
 
-[node name="Shadow" type="Sprite2D" parent="Root"]
+[node name="Shadow" type="Sprite2D" parent="Root" unique_id=415632468]
 modulate = Color(1, 1, 1, 0.686275)
 position = Vector2(0, -1)
 scale = Vector2(0.382, 0.297)
 texture = ExtResource("2_6n8mx")
 
-[node name="Fireball" type="Sprite2D" parent="Root"]
+[node name="Fireball" type="Sprite2D" parent="Root" unique_id=1166968307]
 position = Vector2(0, -92)
 texture = ExtResource("3_1an0e")
 hframes = 3
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/Fireball"]
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/Fireball" unique_id=1150039106]
 remote_path = NodePath("../../../FX")
 update_rotation = false
 update_scale = false
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1286838192]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("4_rjhgc")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=1631538459]
 shape = SubResource("CircleShape2D_7uc1b")
 debug_color = Color(0.839216, 0.192157, 0.815686, 0.419608)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-"": SubResource("AnimationLibrary_cphpk")
-}
-autoplay = "default"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=585928245]
+libraries/ = SubResource("AnimationLibrary_cphpk")
+autoplay = &"default"
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

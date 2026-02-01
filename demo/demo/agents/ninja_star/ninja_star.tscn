@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bj5n72nomeaci"]
+[gd_scene format=3 uid="uid://bj5n72nomeaci"]
 
 [ext_resource type="Script" uid="uid://ea3wq7unbfaw" path="res://demo/agents/ninja_star/ninja_star.gd" id="1_pja57"]
 [ext_resource type="Texture2D" uid="uid://2uyxh7sy8qny" path="res://demo/assets/weapon_ninja_star.png" id="1_ptof7"]
@@ -36,45 +36,45 @@ scale_min = 0.8
 scale_max = 1.2
 scale_curve = SubResource("CurveTexture_1f5jp")
 
-[node name="NinjaStar" type="Node2D"]
+[node name="NinjaStar" type="Node2D" unique_id=1747014584]
 script = ExtResource("1_pja57")
 
-[node name="Root" type="Node2D" parent="."]
+[node name="Root" type="Node2D" parent="." unique_id=996020542]
 
-[node name="Shadow" type="Sprite2D" parent="Root"]
+[node name="Shadow" type="Sprite2D" parent="Root" unique_id=1298527125]
 modulate = Color(1, 1, 1, 0.686275)
 position = Vector2(0, -1)
 scale = Vector2(0.382, 0.297)
 texture = ExtResource("2_2rj5a")
 
-[node name="NinjaStar" type="Sprite2D" parent="Root"]
+[node name="NinjaStar" type="Sprite2D" parent="Root" unique_id=1749751253]
 position = Vector2(0, -93)
 texture = ExtResource("1_ptof7")
 
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/NinjaStar"]
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Root/NinjaStar" unique_id=2142563158]
 remote_path = NodePath("../../../Death")
 update_rotation = false
 update_scale = false
 
-[node name="Hitbox" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." unique_id=1818428034]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("2_iem02")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox" unique_id=714067082]
 shape = SubResource("CircleShape2D_7uc1b")
 debug_color = Color(0.839216, 0.192157, 0.815686, 0.419608)
 
-[node name="Death" type="GPUParticles2D" parent="."]
+[node name="Death" type="GPUParticles2D" parent="." unique_id=792091693]
 position = Vector2(0, -93)
 emitting = false
 amount = 1
-process_material = SubResource("ParticleProcessMaterial_gilhy")
 texture = ExtResource("5_t37aw")
 lifetime = 0.7
 one_shot = true
 explosiveness = 0.7
 fixed_fps = 60
 local_coords = true
+process_material = SubResource("ParticleProcessMaterial_gilhy")
 
 [connection signal="area_entered" from="Hitbox" to="." method="_on_hitbox_area_entered"]

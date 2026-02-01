@@ -1,4 +1,4 @@
-[gd_resource type="BehaviorTree" load_steps=15 format=3 uid="uid://dln8ywvtqedt7"]
+[gd_resource type="BehaviorTree" format=3 uid="uid://dln8ywvtqedt7"]
 
 [ext_resource type="Script" uid="uid://bicxffqmm7ek" path="res://demo/ai/tasks/select_random_nearby_pos.gd" id="1_gk66j"]
 [ext_resource type="Script" uid="uid://df82exuqnfdb2" path="res://demo/ai/tasks/arrive_pos.gd" id="2_v5eou"]
@@ -31,16 +31,9 @@ animation_name = &"walk"
 
 [sub_resource type="BTAction" id="BTAction_fc1oo"]
 script = ExtResource("1_gk66j")
-range_min = 300.0
-range_max = 500.0
-position_var = &"pos"
 
 [sub_resource type="BTAction" id="BTAction_djl5v"]
 script = ExtResource("2_v5eou")
-target_position_var = &"pos"
-speed_var = &"speed"
-tolerance = 50.0
-avoid_var = &""
 
 [sub_resource type="BTFail" id="BTFail_i2f36"]
 
