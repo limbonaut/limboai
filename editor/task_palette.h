@@ -76,11 +76,15 @@ class TaskPaletteSection : public FoldableContainer {
 private:
 	HFlowContainer *tasks_container;
 
+	bool use_flat_buttons = false;
+
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_gui_input(const Ref<InputEvent> &p_event, const String &p_task);
 
 protected:
 	static void _bind_methods();
+
+	void _notification(int p_what);
 
 public:
 	void set_filter(const String &p_filter);
