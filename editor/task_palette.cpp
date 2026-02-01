@@ -145,11 +145,7 @@ void TaskPaletteSection::_on_task_button_gui_input(const Ref<InputEvent> &p_even
 	}
 }
 
-void TaskPaletteSection::_on_header_pressed() {
-	set_collapsed(!is_collapsed());
-}
-
-void TaskPaletteSection::set_filter(String p_filter_text) {
+void TaskPaletteSection::set_filter(const String &p_filter_text) {
 	int num_hidden = 0;
 	if (p_filter_text.is_empty()) {
 		for (int i = 0; i < tasks_container->get_child_count(); i++) {
@@ -178,43 +174,12 @@ void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture
 	tasks_container->add_child(btn);
 }
 
-void TaskPaletteSection::set_collapsed(bool p_collapsed) {
-	tasks_container->set_visible(!p_collapsed);
-	section_header->set_button_icon((p_collapsed ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
-}
-
-bool TaskPaletteSection::is_collapsed() const {
-	return !tasks_container->is_visible();
-}
-
-void TaskPaletteSection::_do_update_theme_item_cache() {
-	theme_cache.arrow_down_icon = get_theme_icon(LW_NAME(GuiTreeArrowDown), LW_NAME(EditorIcons));
-	theme_cache.arrow_right_icon = get_theme_icon(LW_NAME(GuiTreeArrowRight), LW_NAME(EditorIcons));
-}
-
-void TaskPaletteSection::_notification(int p_what) {
-	switch (p_what) {
-		case NOTIFICATION_READY: {
-			section_header->connect(LW_NAME(pressed), callable_mp(this, &TaskPaletteSection::_on_header_pressed));
-		} break;
-		case NOTIFICATION_THEME_CHANGED: {
-			_do_update_theme_item_cache();
-			section_header->set_button_icon((is_collapsed() ? theme_cache.arrow_right_icon : theme_cache.arrow_down_icon));
-			section_header->add_theme_font_override(LW_NAME(font), get_theme_font(LW_NAME(bold), LW_NAME(EditorFonts)));
-		} break;
-	}
-}
-
 void TaskPaletteSection::_bind_methods() {
 	ADD_SIGNAL(MethodInfo("task_button_pressed"));
 	ADD_SIGNAL(MethodInfo("task_button_rmb"));
 }
 
 TaskPaletteSection::TaskPaletteSection() {
-	section_header = memnew(Button);
-	add_child(section_header);
-	section_header->set_focus_mode(FOCUS_NONE);
-
 	tasks_container = memnew(HFlowContainer);
 	add_child(tasks_container);
 }
@@ -441,8 +406,8 @@ void TaskPalette::refresh() {
 		for (int i = 0; i < sections->get_child_count(); i++) {
 			TaskPaletteSection *sec = Object::cast_to<TaskPaletteSection>(sections->get_child(i));
 			ERR_FAIL_NULL(sec);
-			if (sec->is_collapsed()) {
-				collapsed_sections.insert(sec->get_category_name());
+			if (sec->is_folded()) {
+				collapsed_sections.insert(sec->get_title());
 			}
 			sections->get_child(i)->queue_free();
 		}
@@ -463,7 +428,7 @@ void TaskPalette::refresh() {
 		}
 
 		TaskPaletteSection *sec = memnew(TaskPaletteSection());
-		sec->set_category_name(cat);
+		sec->set_title(cat);
 		for (const String &task_meta : tasks) {
 			Ref<Texture2D> icon = LimboUtility::get_singleton()->get_task_icon(task_meta);
 
@@ -487,7 +452,7 @@ void TaskPalette::refresh() {
 		sec->connect(LW_NAME(task_button_pressed), callable_mp(this, &TaskPalette::_on_task_button_pressed));
 		sec->connect(LW_NAME(task_button_rmb), callable_mp(this, &TaskPalette::_on_task_button_rmb));
 		sections->add_child(sec);
-		sec->set_collapsed(!dialog_mode && collapsed_sections.has(cat));
+		sec->set_folded(!dialog_mode && collapsed_sections.has(cat));
 	}
 
 	if (!dialog_mode && !filter_edit->get_text().is_empty()) {
@@ -565,8 +530,8 @@ void TaskPalette::_notification(int p_what) {
 			Array collapsed_sections;
 			for (int i = 0; i < sections->get_child_count(); i++) {
 				TaskPaletteSection *sec = Object::cast_to<TaskPaletteSection>(sections->get_child(i));
-				if (sec->is_collapsed()) {
-					collapsed_sections.push_back(sec->get_category_name());
+				if (sec->is_folded()) {
+					collapsed_sections.push_back(sec->get_title());
 				}
 			}
 			cf->set_value("LimboAI", "task_palette_collapsed_sections", collapsed_sections);

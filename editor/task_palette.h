@@ -19,6 +19,7 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/button.h"
 #include "scene/gui/flow_container.h"
+#include "scene/gui/foldable_container.h"
 #include "scene/gui/line_edit.h"
 #include "scene/gui/panel_container.h"
 #include "scene/gui/popup.h"
@@ -27,6 +28,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/classes/foldable_container.hpp>
 #include <godot_cpp/classes/h_flow_container.hpp>
 #include <godot_cpp/classes/line_edit.hpp>
 #include <godot_cpp/classes/panel_container.hpp>
@@ -65,38 +67,21 @@ public:
 	TaskButton();
 };
 
-class TaskPaletteSection : public VBoxContainer {
-	GDCLASS(TaskPaletteSection, VBoxContainer);
+class TaskPaletteSection : public FoldableContainer {
+	GDCLASS(TaskPaletteSection, FoldableContainer);
 
 private:
-	struct ThemeCache {
-		Ref<Texture2D> arrow_down_icon;
-		Ref<Texture2D> arrow_right_icon;
-	} theme_cache;
-
 	HFlowContainer *tasks_container;
-	Button *section_header;
 
 	void _on_task_button_pressed(const String &p_task);
 	void _on_task_button_gui_input(const Ref<InputEvent> &p_event, const String &p_task);
-	void _on_header_pressed();
 
 protected:
 	static void _bind_methods();
 
-	void _notification(int p_what);
-
-	virtual void _do_update_theme_item_cache();
-
 public:
-	void set_filter(String p_filter);
+	void set_filter(const String &p_filter);
 	void add_task_button(const String &p_name, const Ref<Texture> &icon, const String &p_meta);
-
-	void set_collapsed(bool p_collapsed);
-	bool is_collapsed() const;
-
-	String get_category_name() const { return section_header->get_text(); }
-	void set_category_name(const String &p_cat) { section_header->set_text(p_cat); }
 
 	TaskPaletteSection();
 	~TaskPaletteSection();
