@@ -60,8 +60,6 @@ protected:
 public:
 #ifdef LIMBOAI_MODULE
 	virtual Control *make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(); }
-#elif LIMBOAI_GDEXTENSION
-	virtual Object *_make_custom_tooltip(const String &p_text) const override { return _do_make_tooltip(); }
 #endif
 
 	String get_task_meta() const { return task_meta; }
