@@ -113,6 +113,10 @@
 #ifdef TOOLS_ENABLED
 #include "editor/debugger/behavior_tree_view.h"
 #include "editor/limbo_ai_editor_plugin.h"
+#ifdef LIMBOAI_GDEXTENSION
+#include "editor/task_help_tooltip.h"
+#include "util/limbo_doc_data.h"
+#endif // LIMBOAI_GDEXTENSION
 #endif // TOOLS_ENABLED
 
 #ifdef LIMBOAI_MODULE
@@ -276,6 +280,7 @@ void initialize_limboai_module(ModuleInitializationLevel p_level) {
 		GDREGISTER_INTERNAL_CLASS(LimboAIEditorPlugin);
 		GDREGISTER_INTERNAL_CLASS(TreeSearchPanel);
 		GDREGISTER_INTERNAL_CLASS(TreeSearch);
+		GDREGISTER_INTERNAL_CLASS(TaskHelpTooltip);
 #endif // LIMBOAI_GDEXTENSION
 
 		EditorPlugins::add_by_type<LimboAIEditorPlugin>();
@@ -290,6 +295,13 @@ void uninitialize_limboai_module(ModuleInitializationLevel p_level) {
 		LimboStringNames::free();
 		memdelete(_limbo_utility);
 	}
+#ifdef TOOLS_ENABLED
+#ifdef LIMBOAI_GDEXTENSION
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		LimboDocData::clear();
+	}
+#endif // LIMBOAI_GDEXTENSION
+#endif // TOOLS_ENABLED
 }
 
 #ifdef LIMBOAI_GDEXTENSION

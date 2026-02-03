@@ -35,6 +35,10 @@
 #endif // LIMBO_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#include "task_help_tooltip.h"
+
+#include "../util/limbo_doc_data.h"
+
 #include <godot_cpp/classes/button_group.hpp>
 #include <godot_cpp/classes/check_box.hpp>
 #include <godot_cpp/classes/config_file.hpp>
@@ -84,8 +88,11 @@ Control *TaskButton::_do_make_tooltip() const {
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-	// TODO: When we figure out how to retrieve documentation in GDEXTENSION, should add a tooltip control here.
-	return nullptr; // Make the standard tooltip invisible
+	String desc = LimboDocData::get_class_description(task_meta);
+	if (desc.is_empty()) {
+		return nullptr; // No documentation available.
+	}
+	return TaskHelpTooltip::make_tooltip(task_meta, desc);
 #endif // LIMBOAI_GDEXTENSION
 }
 
@@ -169,9 +176,7 @@ void TaskPaletteSection::add_task_button(const String &p_name, const Ref<Texture
 	TaskButton *btn = memnew(TaskButton);
 	btn->set_text(p_name);
 	btn->set_button_icon(icon);
-#ifdef LIMBOAI_MODULE
 	btn->set_tooltip_text("dummy_text"); // Force tooltip to be shown.
-#endif
 	btn->set_task_meta(p_meta);
 	btn->set_flat(use_flat_buttons);
 	btn->add_theme_constant_override(LW_NAME(icon_max_width), 16 * EDSCALE); // Force user icons to  be of the proper size.
