@@ -208,23 +208,23 @@ void LimboDocData::parse_xml_docs(const String &p_xml) {
 				ClassDoc doc;
 				doc.name = class_name;
 
-				// Extract brief_description
+				// Extract brief_description (keep raw BBCode for proper formatting).
 				int brief_start = class_xml.find("<brief_description>");
 				if (brief_start != -1) {
 					brief_start += 19; // Skip "<brief_description>"
 					int brief_end = class_xml.find("</brief_description>");
 					if (brief_end != -1) {
-						doc.brief_description = strip_bbcode(class_xml.substr(brief_start, brief_end - brief_start).strip_edges());
+						doc.brief_description = class_xml.substr(brief_start, brief_end - brief_start).strip_edges();
 					}
 				}
 
-				// Extract description
+				// Extract description (keep raw BBCode for proper formatting).
 				int desc_start = class_xml.find("<description>");
 				if (desc_start != -1) {
 					desc_start += 13; // Skip "<description>"
 					int desc_end = class_xml.find("</description>");
 					if (desc_end != -1) {
-						doc.description = strip_bbcode(class_xml.substr(desc_start, desc_end - desc_start).strip_edges());
+						doc.description = class_xml.substr(desc_start, desc_end - desc_start).strip_edges();
 					}
 				}
 

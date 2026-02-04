@@ -88,11 +88,7 @@ Control *TaskButton::_do_make_tooltip() const {
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-	String desc = LimboDocData::get_class_description(task_meta);
-	if (desc.is_empty()) {
-		return nullptr; // No documentation available.
-	}
-	return TaskHelpTooltip::make_tooltip(task_meta, desc);
+	return TaskHelpTooltip::make_tooltip(const_cast<TaskButton *>(this), task_meta);
 #endif // LIMBOAI_GDEXTENSION
 }
 
