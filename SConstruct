@@ -17,7 +17,7 @@ import sys
 from limboai_version import generate_module_version_header, get_godot_cpp_ref
 
 sys.path.append("gdextension")
-from doc_lookup_generator import scons_generate_doc_lookup_source
+from doc_data_generator import inject_doc_data_accessor
 from fix_icon_imports import fix_icon_imports
 from update_icon_entries import update_icon_entries
 
@@ -127,11 +127,8 @@ if env["target"] in ["editor", "template_debug"]:
     doc_data = env.GodotCPPDocData("gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
     sources.append(doc_data)
 
-    # Generate documentation lookup for GDExtension help tooltips.
-    doc_lookup_builder = Builder(action=scons_generate_doc_lookup_source)
-    env.Append(BUILDERS={"LimboDocLookup": doc_lookup_builder})
-    doc_lookup = env.LimboDocLookup("gen/doc_lookup.gen.cpp", source=Glob("doc_classes/*.xml"))
-    sources.append(doc_lookup)
+    # Post-process doc_data.gen.cpp to inject accessor function for LimboDocData.
+    env.AddPostAction(doc_data, inject_doc_data_accessor)
 
 # Build library.
 if env["platform"] == "macos":

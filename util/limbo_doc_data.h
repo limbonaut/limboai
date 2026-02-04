@@ -18,26 +18,20 @@
 #include <godot_cpp/templates/hash_map.hpp>
 #include <godot_cpp/variant/string.hpp>
 
-#include <vector>
-
 using namespace godot;
+
+// Accessor function defined in doc_data.gen.cpp to retrieve compressed XML data.
+extern void limbo_doc_data_load(const unsigned char **r_data, int *r_compressed_size, int *r_uncompressed_size);
 
 // Stores class documentation data parsed from embedded XML for GDExtension.
 // This allows us to show help tooltips in the editor even though EditorHelp
 // and EditorHelpBitTooltip are not exposed in the Godot API.
 //
-// Documentation is registered via static initializers from the generated
-// doc_lookup.gen.cpp file using raw C strings to avoid initialization order issues.
+// Documentation is parsed from compressed XML data in doc_data.gen.cpp via the
+// limbo_doc_data_load() accessor function, avoiding data duplication.
 class LimboDocData {
 public:
-	// Raw doc entry using const char* for safe static initialization.
-	struct DocEntry {
-		const char *name;
-		const char *brief_description;
-		const char *description;
-	};
-
-	// Converted doc with Godot Strings for runtime use.
+	// Class documentation with Godot Strings for runtime use.
 	struct ClassDoc {
 		String name;
 		String brief_description;
@@ -45,12 +39,6 @@ public:
 	};
 
 private:
-	// Use std::vector for raw entries to avoid godot-cpp initialization issues.
-	static std::vector<DocEntry> &get_raw_entries() {
-		static std::vector<DocEntry> entries;
-		return entries;
-	}
-
 	static HashMap<String, ClassDoc> &get_class_docs() {
 		static HashMap<String, ClassDoc> class_docs;
 		return class_docs;
@@ -61,13 +49,16 @@ private:
 		return initialized;
 	}
 
-	// Convert raw entries to ClassDoc and populate the lookup map.
+	// Initialize from compressed XML data and populate the lookup map.
 	static void ensure_initialized();
 
-public:
-	// Register a raw documentation entry. Safe to call from static initializers.
-	static void register_doc_entry(const DocEntry &p_entry);
+	// Parse XML string and extract class documentation.
+	static void parse_xml_docs(const String &p_xml);
 
+	// Strip BBCode tags for brief descriptions while preserving readability.
+	static String strip_bbcode(const String &p_text);
+
+public:
 	// Get class documentation by class name or script path.
 	// For script paths (starting with "res://"), tries to find by path or by guessed class name.
 	static const ClassDoc *get_class_doc(const String &p_class_or_script_path);
