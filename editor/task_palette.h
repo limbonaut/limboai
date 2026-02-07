@@ -187,6 +187,7 @@ public:
 	void refresh();
 	void use_dialog_mode();
 	void clear_filter() { filter_edit->set_text(""); }
+	void focus_filter() { filter_edit->grab_focus(); }
 
 	TaskPalette();
 	~TaskPalette();

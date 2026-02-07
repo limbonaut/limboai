@@ -150,6 +150,7 @@ private:
 	VBoxContainer *banners;
 	Panel *usage_hint;
 	PopupMenu *menu;
+	Vector2 context_menu_position;
 	TaskPalette *task_palette;
 
 	PopupPanel *probability_popup;
