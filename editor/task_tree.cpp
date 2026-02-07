@@ -525,20 +525,20 @@ void TaskTree::_draw_probability(Object *item_obj, Rect2 rect) {
 	String text = rtos(Math::snapped(sel->get_probability(item->get_index()) * 100, 0.01)) + "%";
 	Size2 text_size = theme_cache.probability_font->get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.probability_font_size);
 
-	Rect2 prob_rect = rect;
-	prob_rect.position.x += theme_cache.name_font->get_string_size(item->get_text(0), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.name_font_size).x;
-	prob_rect.position.x += EDSCALE * 40.0;
+	Rect2 prob_rect;
 	prob_rect.size.x = text_size.x + EDSCALE * 12;
-	prob_rect.position.y += 4 * EDSCALE;
-	prob_rect.size.y -= 8 * EDSCALE;
+	prob_rect.size.y = text_size.y + EDSCALE * 4;
+	prob_rect.position.x = rect.position.x + theme_cache.name_font->get_string_size(item->get_text(0), HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.name_font_size).x;
+	prob_rect.position.x += EDSCALE * 40.0;
+	prob_rect.position.y = rect.position.y + (rect.size.y - prob_rect.size.y) * 0.5;
 	probability_rect_cache[item->get_instance_id()] = prob_rect; // Cache rect for later click detection.
 
 	theme_cache.probability_bg->draw(tree->get_canvas_item(), prob_rect);
 
+	double ascent = theme_cache.probability_font->get_ascent(theme_cache.probability_font_size);
+	double descent = theme_cache.probability_font->get_descent(theme_cache.probability_font_size);
 	Point2 text_pos = prob_rect.position;
-	text_pos.y += text_size.y + (prob_rect.size.y - text_size.y) * 0.5;
-	text_pos.y -= theme_cache.probability_font->get_descent(theme_cache.probability_font_size);
-	text_pos.y = Math::floor(text_pos.y);
+	text_pos.y = Math::round(prob_rect.position.y + (prob_rect.size.y + ascent - descent) * 0.5);
 
 	tree->draw_string(theme_cache.probability_font, text_pos, text, HORIZONTAL_ALIGNMENT_CENTER,
 			prob_rect.size.x, theme_cache.probability_font_size, theme_cache.probability_font_color);
