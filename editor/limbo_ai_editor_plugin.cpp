@@ -654,6 +654,7 @@ void LimboAIEditor::_action_selected(int p_id) {
 			change_type_popup->set_position(context_menu_position);
 			change_type_popup->set_size(Size2(400.0, 600.0) * EDSCALE);
 			change_type_popup->popup();
+			change_type_palette->focus_filter();
 		} break;
 		case ACTION_EDIT_PROBABILITY: {
 			Rect2 rect = task_tree->get_selected_probability_rect();
