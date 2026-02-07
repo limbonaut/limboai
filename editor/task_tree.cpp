@@ -26,11 +26,13 @@
 #include "scene/gui/box_container.h"
 #include "scene/gui/label.h"
 #include "scene/gui/texture_rect.h"
+#include "servers/rendering/rendering_server.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/h_box_container.hpp>
 #include <godot_cpp/classes/label.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
 #include <godot_cpp/classes/script.hpp>
 #include <godot_cpp/classes/texture_rect.hpp>
 #include <godot_cpp/classes/v_box_container.hpp>
@@ -122,6 +124,7 @@ void TaskTree::_update_tree() {
 	Vector<Ref<BTTask>> selection = get_selected_tasks();
 
 	tree->clear();
+	RenderingServer::get_singleton()->canvas_item_clear(overlay_ci);
 	if (bt.is_null()) {
 		return;
 	}
@@ -259,6 +262,7 @@ void TaskTree::unload() {
 
 	bt.unref();
 	tree->clear();
+	RenderingServer::get_singleton()->canvas_item_clear(overlay_ci);
 }
 
 void TaskTree::update_task(const Ref<BTTask> &p_task) {
@@ -522,6 +526,11 @@ void TaskTree::_draw_probability(Object *item_obj, Rect2 rect) {
 		return;
 	}
 
+	if (overlay_ci_needs_clear) {
+		RenderingServer::get_singleton()->canvas_item_clear(overlay_ci);
+		overlay_ci_needs_clear = false;
+	}
+
 	String text = rtos(Math::snapped(sel->get_probability(item->get_index()) * 100, 0.01)) + "%";
 	Size2 text_size = theme_cache.probability_font->get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, theme_cache.probability_font_size);
 
@@ -533,15 +542,25 @@ void TaskTree::_draw_probability(Object *item_obj, Rect2 rect) {
 	prob_rect.position.y = rect.position.y + (rect.size.y - prob_rect.size.y) * 0.5;
 	probability_rect_cache[item->get_instance_id()] = prob_rect; // Cache rect for later click detection.
 
-	theme_cache.probability_bg->draw(tree->get_canvas_item(), prob_rect);
+	theme_cache.probability_bg->draw(overlay_ci, prob_rect);
 
 	double ascent = theme_cache.probability_font->get_ascent(theme_cache.probability_font_size);
 	double descent = theme_cache.probability_font->get_descent(theme_cache.probability_font_size);
 	Point2 text_pos = prob_rect.position;
 	text_pos.y = Math::round(prob_rect.position.y + (prob_rect.size.y + ascent - descent) * 0.5);
 
-	tree->draw_string(theme_cache.probability_font, text_pos, text, HORIZONTAL_ALIGNMENT_CENTER,
+	theme_cache.probability_font->draw_string(overlay_ci, text_pos, text, HORIZONTAL_ALIGNMENT_CENTER,
 			prob_rect.size.x, theme_cache.probability_font_size, theme_cache.probability_font_color);
+}
+
+void TaskTree::_on_tree_draw() {
+	// NOTE: _on_tree_draw() is called AFTER the tree draw cycle is completed.
+	if (overlay_ci_needs_clear) {
+		// No probability pills were drawn this cycle - clear stale pills.
+		RenderingServer::get_singleton()->canvas_item_clear(overlay_ci);
+	}
+	// Ensure overlay gets cleared on the next draw cycle.
+	overlay_ci_needs_clear = true;
 }
 
 void TaskTree::_do_update_theme_item_cache() {
@@ -571,6 +590,7 @@ void TaskTree::_notification(int p_what) {
 			tree->connect("multi_selected", callable_mp(this, &TaskTree::_on_item_selected).unbind(3), CONNECT_DEFERRED);
 			tree->connect("item_activated", callable_mp(this, &TaskTree::_on_item_activated));
 			tree->connect("item_collapsed", callable_mp(this, &TaskTree::_on_item_collapsed));
+			tree->connect("draw", callable_mp(this, &TaskTree::_on_tree_draw));
 			tree_search_panel->connect("update_requested", callable_mp(tree_search.ptr(), &TreeSearch::update_search).bind(tree));
 			tree_search_panel->connect("visibility_changed", callable_mp(tree_search.ptr(), &TreeSearch::update_search).bind(tree));
 		} break;
@@ -646,6 +666,11 @@ TaskTree::TaskTree() {
 	tree->set_allow_reselect(true);
 	tree->set_select_mode(Tree::SelectMode::SELECT_MULTI);
 
+	RenderingServer *rs = RenderingServer::get_singleton();
+	overlay_ci = rs->canvas_item_create();
+	rs->canvas_item_set_parent(overlay_ci, tree->get_canvas_item());
+	rs->canvas_item_set_z_index(overlay_ci, 1);
+
 	tree->set_drag_forwarding(callable_mp(this, &TaskTree::_get_drag_data_fw), callable_mp(this, &TaskTree::_can_drop_data_fw), callable_mp(this, &TaskTree::_drop_data_fw));
 
 	tree_search_panel = memnew(TreeSearchPanel);
@@ -658,6 +683,7 @@ TaskTree::~TaskTree() {
 	if (last_selected.is_valid() && last_selected->is_connected(LW_NAME(changed), on_task_changed)) {
 		last_selected->disconnect(LW_NAME(changed), on_task_changed);
 	}
+	RenderingServer::get_singleton()->free_rid(overlay_ci);
 }
 
 #endif // ! TOOLS_ENABLED

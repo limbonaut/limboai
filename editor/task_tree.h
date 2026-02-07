@@ -46,6 +46,8 @@ private:
 	bool editable;
 	bool updating_tree;
 	HashMap<RECT_CACHE_KEY, Rect2> probability_rect_cache;
+	RID overlay_ci;
+	bool overlay_ci_needs_clear = true;
 
 	Ref<TreeSearch> tree_search;
 	TreeSearchPanel *tree_search_panel;
@@ -86,6 +88,7 @@ private:
 	void _normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask> &to_task) const;
 
 	void _draw_probability(Object *item_obj, Rect2 rect);
+	void _on_tree_draw();
 
 protected:
 	virtual void _do_update_theme_item_cache();
