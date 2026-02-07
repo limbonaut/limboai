@@ -656,7 +656,6 @@ void LimboAIEditor::_action_selected(int p_id) {
 			Rect2 rect = task_tree->get_selected_probability_rect();
 			ERR_FAIL_COND(rect == Rect2());
 			rect.position.y += rect.size.y;
-			rect.position += task_tree->get_rect().position;
 			rect = task_tree->get_screen_transform().xform(rect);
 			_update_probability_edit();
 			probability_popup->popup(rect);
