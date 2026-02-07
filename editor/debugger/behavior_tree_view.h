@@ -46,6 +46,9 @@ private:
 		Ref<Texture2D> icon_failure;
 
 		Ref<Font> font_custom_name;
+
+		int tree_inner_margin_top = 0;
+		int tree_inner_margin_bottom = 0;
 	} theme_cache;
 
 	Vector<uint64_t> collapsed_ids;
