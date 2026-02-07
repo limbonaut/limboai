@@ -536,6 +536,7 @@ void LimboAIEditor::_process_shortcut_input(const Ref<InputEvent> &p_event) {
 }
 
 void LimboAIEditor::_on_tree_rmb(const Vector2 &p_menu_pos) {
+	context_menu_position = p_menu_pos;
 	menu->clear();
 
 	Vector<Ref<BTTask>> selection = task_tree->get_selected_tasks();
@@ -649,8 +650,10 @@ void LimboAIEditor::_action_selected(int p_id) {
 		case ACTION_CHANGE_TYPE: {
 			change_type_palette->clear_filter();
 			change_type_palette->refresh();
-			Rect2 rect = Rect2(get_global_mouse_position(), Size2(400.0, 600.0) * EDSCALE);
-			change_type_popup->popup(rect);
+			change_type_popup->reset_size();
+			change_type_popup->set_position(context_menu_position);
+			change_type_popup->set_size(Size2(400.0, 600.0) * EDSCALE);
+			change_type_popup->popup();
 		} break;
 		case ACTION_EDIT_PROBABILITY: {
 			Rect2 rect = task_tree->get_selected_probability_rect();
