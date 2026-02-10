@@ -19,6 +19,7 @@
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/input/input.h"
 #include "editor/editor_interface.h"
 #include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"
@@ -308,11 +309,11 @@ void BlackboardPlanEditor::_drag_button_down(Control *p_row) {
 	drag_index = p_row->get_index();
 	drag_start = drag_index;
 	drag_mouse_y_delta = 0.0;
-	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
+	Input::get_singleton()->set_mouse_mode(InputClassEnums::MOUSE_MODE_CAPTURED);
 }
 
 void BlackboardPlanEditor::_drag_button_up() {
-	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+	Input::get_singleton()->set_mouse_mode(InputClassEnums::MOUSE_MODE_VISIBLE);
 	plan->move_var(drag_start, drag_index);
 	drag_index = -1;
 	drag_start = -1;
