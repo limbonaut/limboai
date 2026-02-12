@@ -46,6 +46,8 @@ void LimboHSM::change_active_state(LimboState *p_state) {
 	active_state->_enter();
 
 	emit_signal(LW_NAME(active_state_changed), active_state, previous_active);
+
+	active_state->_clear_cargo();
 }
 
 void LimboHSM::_enter() {
@@ -192,6 +194,7 @@ bool LimboHSM::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 				}
 			}
 			if (permitted) {
+				to_state->cargo = &p_cargo;
 				if (!updating) {
 					change_active_state(to_state);
 				} else if (!next_active) {

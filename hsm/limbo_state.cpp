@@ -124,6 +124,18 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	_setup();
 }
 
+Variant LimboState::get_cargo() {
+	if (cargo != nullptr) {
+		return *cargo;
+	} else {
+		return Variant();
+	}
+}
+
+void LimboState::_clear_cargo() {
+	cargo = nullptr;
+}
+
 bool LimboState::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event == StringName(), false);
 	if (handlers.size() > 0 && handlers.has(p_event)) {
@@ -168,6 +180,11 @@ void LimboState::add_event_handler(const StringName &p_event, const Callable &p_
 	ERR_FAIL_COND(p_event == StringName());
 	ERR_FAIL_COND(!p_handler.is_valid());
 	handlers.insert(p_event, p_handler);
+}
+
+void LimboState::remove_event_handler(const StringName &p_event) {
+	ERR_FAIL_COND(p_event == StringName());
+	handlers.erase(p_event);
 }
 
 bool LimboState::dispatch(const StringName &p_event, const Variant &p_cargo) {
@@ -217,6 +234,7 @@ void LimboState::_notification(int p_what) {
 }
 
 void LimboState::_bind_methods() {
+	ClassDB::bind_method(D_METHOD("get_cargo"), &LimboState::get_cargo);
 	ClassDB::bind_method(D_METHOD("restart"), &LimboState::restart);
 	ClassDB::bind_method(D_METHOD("get_root"), &LimboState::get_root);
 	ClassDB::bind_method(D_METHOD("get_agent"), &LimboState::get_agent);
@@ -227,6 +245,7 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("dispatch", "event", "cargo"), &LimboState::dispatch, Variant());
 	ClassDB::bind_method(D_METHOD("named", "name"), &LimboState::named);
 	ClassDB::bind_method(D_METHOD("add_event_handler", "event", "handler"), &LimboState::add_event_handler);
+	ClassDB::bind_method(D_METHOD("remove_event_handler", "event"), &LimboState::remove_event_handler);
 	ClassDB::bind_method(D_METHOD("call_on_enter", "callable"), &LimboState::call_on_enter);
 	ClassDB::bind_method(D_METHOD("call_on_exit", "callable"), &LimboState::call_on_exit);
 	ClassDB::bind_method(D_METHOD("call_on_update", "callable"), &LimboState::call_on_update);
@@ -256,6 +275,7 @@ void LimboState::_bind_methods() {
 }
 
 LimboState::LimboState() {
+	cargo = nullptr;
 	EVENT_FINISHED = StringName("finished_" + itos(get_instance_id()));
 	agent = nullptr;
 	active = false;
