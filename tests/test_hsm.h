@@ -39,6 +39,10 @@ void _on_enter_set_initial_state(LimboHSM *p_state, LimboState *p_initial) {
 	p_state->set_initial_state(p_initial);
 }
 
+void _on_enter_get_cargo(LimboState *p_state, const Variant &expected_cargo) {
+	CHECK(p_state->get_cargo() == expected_cargo);
+}
+
 // Helper function to simulate scene tree idle process notifications
 // Recursively sends NOTIFICATION_PROCESS to nodes that have process mode enabled
 void _simulate_scene_tree_idle_process(Node *p_node) {
@@ -233,6 +237,15 @@ TEST_CASE("[Modules][LimboAI] HSM") {
 		CHECK(beta_entries->num_callbacks == 1);
 		CHECK(beta_updates->num_callbacks == 0);
 		CHECK(beta_exits->num_callbacks == 1);
+	}
+	SUBCASE("Test get_cargo() inside and outside _enter()") {
+		const Variant cargo = "some data";
+		state_beta->connect("entered",
+				callable_mp_static(_on_enter_get_cargo).bind(state_beta, cargo));
+		hsm->dispatch("event_one", cargo);
+		REQUIRE(hsm->get_active_state() == state_beta);
+		CHECK(state_beta->get_cargo() == Variant()); // * pointer was dereferenced, null object is returned
+		CHECK(&cargo != nullptr); // * original Variant wasn't modified and will be cleared automaticaly
 	}
 	SUBCASE("Test setting initial_state on enter") {
 		// Setting initial state on HSM enter should be allowed.

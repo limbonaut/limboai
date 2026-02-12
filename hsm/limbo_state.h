@@ -41,6 +41,7 @@ private:
 	Ref<Blackboard> blackboard;
 	HashMap<StringName, Callable> handlers;
 	Callable guard_callable;
+	const Variant *cargo;
 
 	Ref<BlackboardPlan> _get_parent_scope_plan() const;
 
@@ -49,6 +50,7 @@ protected:
 
 	static void _bind_methods();
 
+	void _clear_cargo();
 	void _notification(int p_what);
 
 	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
@@ -73,6 +75,7 @@ protected:
 #endif
 
 public:
+	Variant get_cargo();
 	void restart();
 
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
