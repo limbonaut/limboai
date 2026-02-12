@@ -92,6 +92,7 @@ public:
 	LimboState *call_on_update(const Callable &p_callable);
 
 	void add_event_handler(const StringName &p_event, const Callable &p_handler);
+	void remove_event_handler(const StringName &p_event);
 	bool dispatch(const StringName &p_event, const Variant &p_cargo = Variant());
 
 	_FORCE_INLINE_ StringName event_finished() const { return EVENT_FINISHED; }

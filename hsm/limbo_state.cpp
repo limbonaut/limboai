@@ -182,6 +182,11 @@ void LimboState::add_event_handler(const StringName &p_event, const Callable &p_
 	handlers.insert(p_event, p_handler);
 }
 
+void LimboState::remove_event_handler(const StringName &p_event) {
+	ERR_FAIL_COND(p_event == StringName());
+	handlers.erase(p_event);
+}
+
 bool LimboState::dispatch(const StringName &p_event, const Variant &p_cargo) {
 	return get_root()->_dispatch(p_event, p_cargo);
 }
@@ -240,6 +245,7 @@ void LimboState::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("dispatch", "event", "cargo"), &LimboState::dispatch, Variant());
 	ClassDB::bind_method(D_METHOD("named", "name"), &LimboState::named);
 	ClassDB::bind_method(D_METHOD("add_event_handler", "event", "handler"), &LimboState::add_event_handler);
+	ClassDB::bind_method(D_METHOD("remove_event_handler", "event"), &LimboState::remove_event_handler);
 	ClassDB::bind_method(D_METHOD("call_on_enter", "callable"), &LimboState::call_on_enter);
 	ClassDB::bind_method(D_METHOD("call_on_exit", "callable"), &LimboState::call_on_exit);
 	ClassDB::bind_method(D_METHOD("call_on_update", "callable"), &LimboState::call_on_update);
