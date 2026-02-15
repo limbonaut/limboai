@@ -87,6 +87,7 @@
 		<method name="get_cargo">
 			<return type="Variant" />
 			<description>
+				Returns cargo passed to [method dispatch]. Available only during [method _enter].
 			</description>
 		</method>
 		<method name="get_root" qualifiers="const">
@@ -112,6 +113,7 @@
 			<return type="void" />
 			<param index="0" name="event" type="StringName" />
 			<description>
+				Unregisters event handler added by [method add_event_handler] (if it exists).
 			</description>
 		</method>
 		<method name="restart">
