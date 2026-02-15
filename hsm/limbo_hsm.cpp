@@ -194,11 +194,12 @@ bool LimboHSM::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 				}
 			}
 			if (permitted) {
-				to_state->cargo = &p_cargo;
 				if (!updating) {
+					to_state->_set_cargo(p_cargo);
 					change_active_state(to_state);
 				} else if (!next_active) {
 					// Only set next_active if we are not already in the process of changing states.
+					to_state->_set_cargo(p_cargo);
 					next_active = to_state;
 				}
 				event_consumed = true;

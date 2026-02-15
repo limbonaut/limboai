@@ -124,18 +124,6 @@ void LimboState::_initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard)
 	_setup();
 }
 
-Variant LimboState::get_cargo() {
-	if (cargo != nullptr) {
-		return *cargo;
-	} else {
-		return Variant();
-	}
-}
-
-void LimboState::_clear_cargo() {
-	cargo = nullptr;
-}
-
 bool LimboState::_dispatch(const StringName &p_event, const Variant &p_cargo) {
 	ERR_FAIL_COND_V(p_event == StringName(), false);
 	if (handlers.size() > 0 && handlers.has(p_event)) {
@@ -275,7 +263,7 @@ void LimboState::_bind_methods() {
 }
 
 LimboState::LimboState() {
-	cargo = nullptr;
+	cargo = Variant();
 	EVENT_FINISHED = StringName("finished_" + itos(get_instance_id()));
 	agent = nullptr;
 	active = false;
