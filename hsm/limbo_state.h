@@ -41,6 +41,7 @@ private:
 	Ref<Blackboard> blackboard;
 	HashMap<StringName, Callable> handlers;
 	Callable guard_callable;
+	Variant cargo;
 
 	Ref<BlackboardPlan> _get_parent_scope_plan() const;
 
@@ -49,6 +50,8 @@ protected:
 
 	static void _bind_methods();
 
+	void _clear_cargo() { cargo = Variant(); }
+	void _set_cargo(const Variant &p_cargo) { cargo = p_cargo; }
 	void _notification(int p_what);
 
 	virtual void _initialize(Node *p_agent, const Ref<Blackboard> &p_blackboard);
@@ -73,6 +76,7 @@ protected:
 #endif
 
 public:
+	Variant get_cargo() { return cargo; }
 	void restart();
 
 	void set_blackboard_plan(const Ref<BlackboardPlan> &p_plan);
@@ -89,6 +93,7 @@ public:
 	LimboState *call_on_update(const Callable &p_callable);
 
 	void add_event_handler(const StringName &p_event, const Callable &p_handler);
+	void remove_event_handler(const StringName &p_event);
 	bool dispatch(const StringName &p_event, const Variant &p_cargo = Variant());
 
 	_FORCE_INLINE_ StringName event_finished() const { return EVENT_FINISHED; }
