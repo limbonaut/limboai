@@ -45,7 +45,10 @@ protected:
 #endif
 
 public:
-	void set_parent(const Ref<Blackboard> &p_blackboard) { parent = p_blackboard; }
+	void set_parent(const Ref<Blackboard> &p_blackboard) {
+		ERR_FAIL_COND_MSG(p_blackboard == this, "Blackboard: Can't set parent to itself.");
+		parent = p_blackboard;
+	}
 	Ref<Blackboard> get_parent() const { return parent; }
 
 	Ref<Blackboard> top() const;
