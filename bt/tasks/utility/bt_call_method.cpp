@@ -105,9 +105,10 @@ BT::Status BTCallMethod::_tick(double p_delta) {
 		if (include_delta) {
 			argptrs[0] = &delta;
 		}
+		call_args.resize(args.size());
 		for (int i = 0; i < args.size(); i++) {
 			Ref<BBVariant> param = args[i];
-			call_args.push_back(param->get_value(get_scene_root(), get_blackboard()));
+			call_args[i] = param->get_value(get_scene_root(), get_blackboard());
 			argptrs[i + int(include_delta)] = &call_args[i];
 		}
 	}
