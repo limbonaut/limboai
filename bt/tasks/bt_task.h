@@ -79,6 +79,8 @@ private:
 #endif
 	} data;
 
+	mutable bool _is_cloning = false;
+
 	Array _get_children() const;
 	void _set_children(Array children);
 
