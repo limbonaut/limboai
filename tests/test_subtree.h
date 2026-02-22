@@ -65,6 +65,47 @@ TEST_CASE("[Modules][LimboAI] BTSubtree") {
 		}
 	}
 
+	SUBCASE("Test clone() preserves derived blackboard plan") {
+		Ref<BehaviorTree> bt = memnew(BehaviorTree);
+		Ref<BTTestAction> task = memnew(BTTestAction(BTTask::SUCCESS));
+		bt->set_root_task(task);
+
+		// Add variables to the subtree BT's plan.
+		Ref<BlackboardPlan> bt_plan = memnew(BlackboardPlan);
+		BBVariable speed_var(Variant::FLOAT);
+		speed_var.set_value(100.0);
+		bt_plan->add_var("speed", speed_var);
+		BBVariable health_var(Variant::INT);
+		health_var.set_value(50);
+		bt_plan->add_var("health", health_var);
+		bt->set_blackboard_plan(bt_plan);
+
+		st->set_subtree(bt);
+
+		// Verify the subtree's plan is derived from the BT's plan.
+		Ref<BlackboardPlan> st_plan = st->get("blackboard_plan");
+		REQUIRE(st_plan.is_valid());
+		REQUIRE(st_plan->is_derived());
+		REQUIRE(st_plan->get_base_plan() == bt_plan);
+		CHECK(st_plan->has_var("speed"));
+		CHECK(st_plan->has_var("health"));
+
+		// Clone the subtree.
+		Ref<BTSubtree> cloned = st->clone();
+		REQUIRE(cloned.is_valid());
+
+		// Cloned subtree's plan should be derived from its BT's plan.
+		Ref<BehaviorTree> cloned_bt = cloned->get_subtree();
+		Ref<BlackboardPlan> cloned_plan = cloned->get("blackboard_plan");
+		REQUIRE(cloned_plan.is_valid());
+		CHECK(cloned_plan->is_derived());
+		CHECK(cloned_plan->get_base_plan() == cloned_bt->get_blackboard_plan());
+
+		// All variables should be present in the cloned plan.
+		CHECK(cloned_plan->has_var("speed"));
+		CHECK(cloned_plan->has_var("health"));
+	}
+
 	memdelete(dummy);
 }
 
