@@ -558,7 +558,7 @@ Ref<Shortcut> LimboUtility::add_shortcut(const String &p_path, const String &p_n
 	Ref<InputEventKey> ev = memnew(InputEventKey);
 	if (((int)LW_KEY_MASK(CMD_OR_CTRL) & (int)keycode) == (int)LW_KEY_MASK(CMD_OR_CTRL)) {
 		keycode = (Key)((int)keycode & (~((int)LW_KEY_MASK(CMD_OR_CTRL))));
-		ev->set_ctrl_pressed(true);
+		ev->set_command_or_control_autoremap(true);
 	}
 	if (((int)LW_KEY_MASK(ALT) & (int)keycode) == (int)LW_KEY_MASK(ALT)) {
 		keycode = (Key)((int)keycode & (~((int)LW_KEY_MASK(ALT))));
