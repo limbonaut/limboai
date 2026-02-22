@@ -227,4 +227,69 @@ TEST_CASE("[SceneTree][LimboAI] BTPlayer blackboard persistence") {
 	scene_root->queue_free();
 }
 
+TEST_CASE("[SceneTree][LimboAI] BTPlayer blackboard plan") {
+	Node *scene_root = memnew(Node);
+
+	Ref<BehaviorTree> bt = memnew(BehaviorTree);
+	Ref<BTAction> test_action = memnew(BTAction);
+	bt->set_root_task(test_action);
+
+	// Add variables to the BT's plan.
+	Ref<BlackboardPlan> bt_plan = memnew(BlackboardPlan);
+	BBVariable speed_var(Variant::FLOAT);
+	speed_var.set_value(100.0);
+	bt_plan->add_var("speed", speed_var);
+	BBVariable health_var(Variant::INT);
+	health_var.set_value(50);
+	bt_plan->add_var("health", health_var);
+	bt->set_blackboard_plan(bt_plan);
+
+	BTPlayer *bt_player = memnew(BTPlayer);
+
+	SUBCASE("Blackboard plan should be derived from BT plan after initialization") {
+		bt_player->set_behavior_tree(bt);
+		scene_root->add_child(bt_player);
+		bt_player->set_owner(scene_root);
+		SceneTree::get_singleton()->get_root()->add_child(scene_root);
+
+		// BTPlayer's plan should be derived from the BT's plan.
+		Ref<BlackboardPlan> player_plan = bt_player->get_blackboard_plan();
+		REQUIRE(player_plan.is_valid());
+		CHECK(player_plan->is_derived());
+		CHECK(player_plan->get_base_plan() == bt->get_blackboard_plan());
+
+		// All variables should be present in the player's plan.
+		CHECK(player_plan->has_var("speed"));
+		CHECK(player_plan->has_var("health"));
+
+		// Blackboard should be populated with the plan's values.
+		CHECK(bt_player->get_blackboard()->get_var("speed") == Variant(100.0));
+		CHECK(bt_player->get_blackboard()->get_var("health") == Variant(50));
+	}
+
+	SUBCASE("Blackboard should be populated with overridden values from derived plan") {
+		bt_player->set_behavior_tree(bt);
+
+		// Simulate a derived plan with an overridden value, as it would be saved in a scene.
+		Ref<BlackboardPlan> player_plan = memnew(BlackboardPlan);
+		bt_player->set_blackboard_plan(player_plan);
+		REQUIRE(player_plan->is_derived());
+		player_plan->get_var("speed").set_value(200.0);
+
+		scene_root->add_child(bt_player);
+		bt_player->set_owner(scene_root);
+		SceneTree::get_singleton()->get_root()->add_child(scene_root);
+
+		// Blackboard should have the overridden value.
+		CHECK(bt_player->get_blackboard()->get_var("speed") == Variant(200.0));
+		// Non-overridden variable should have the base plan's value.
+		CHECK(bt_player->get_blackboard()->get_var("health") == Variant(50));
+		// Original BT plan should be unchanged.
+		CHECK(bt_plan->get_var("speed").get_value() == Variant(100.0));
+	}
+
+	// Clean up
+	scene_root->queue_free();
+}
+
 } // namespace TestBTPlayer
