@@ -62,6 +62,9 @@ String BTTask::_generate_name() {
 }
 
 Array BTTask::_get_children() const {
+	if (_is_cloning) {
+		return Array();
+	}
 	Array arr;
 	int num_children = get_child_count();
 	arr.resize(num_children);
@@ -193,49 +196,19 @@ Ref<BTTask> BTTask::clone() const {
 		return nullptr;
 	}
 
-	Ref<BTTask> inst = duplicate(false);
+	// * Deep duplicate to properly copy all properties (sub-resources, arrays, dicts).
+	// * _is_cloning makes _get_children() return empty, so duplicate(true) skips children.
+	_is_cloning = true;
+	Ref<BTTask> inst = duplicate(true);
+	_is_cloning = false;
 
-	// * Children are duplicated via children property. See _set_children().
-
-	// * Make BBParam properties unique.
-	HashMap<Ref<Resource>, Ref<Resource>> duplicates;
-#ifdef LIMBOAI_MODULE
-	List<PropertyInfo> props;
-	inst->get_property_list(&props);
-	for (List<PropertyInfo>::Element *E = props.front(); E; E = E->next()) {
-		PropertyInfo prop = E->get();
-#elif LIMBOAI_GDEXTENSION
-	TypedArray<Dictionary> props = inst->get_property_list();
-	for (int i = 0; i < props.size(); i++) {
-		PropertyInfo prop = PropertyInfo::from_dict(props[i]);
-#endif
-		if (!(prop.usage & PROPERTY_USAGE_STORAGE)) {
-			continue;
-		}
-
-		Variant prop_value = inst->get(prop.name);
-		Ref<Resource> res = prop_value;
-		if (res.is_valid() && res->is_class("BBParam")) {
-			// Duplicate BBParam
-			if (!duplicates.has(res)) {
-				duplicates[res] = res->duplicate();
-			}
-			res = duplicates[res];
-			inst->set(prop.name, res);
-		} else if (prop_value.get_type() == Variant::ARRAY) {
-			// Duplicate BBParams instances inside an array.
-			// - This code doesn't handle arrays of arrays.
-			// - A partial workaround for: https://github.com/godotengine/godot/issues/74918
-			// - We actually don't want to duplicate resources in clone() except for BBParam subtypes.
-			Array arr = prop_value;
-			if (arr.is_typed() && ClassDB::is_parent_class(arr.get_typed_class_name(), LW_NAME(BBParam))) {
-				for (int j = 0; j < arr.size(); j++) {
-					Ref<Resource> bb_param = arr[j];
-					if (bb_param.is_valid()) {
-						arr[j] = bb_param->duplicate();
-					}
-				}
-			}
+	// * Clone children through clone() for runtime disabled-task filtering.
+	for (int i = 0; i < data.children.size(); i++) {
+		Ref<BTTask> child = data.children[i]->clone();
+		if (child.is_valid()) {
+			child->data.parent = inst.ptr();
+			child->data.index = inst->data.children.size();
+			inst->data.children.push_back(child);
 		}
 	}
 

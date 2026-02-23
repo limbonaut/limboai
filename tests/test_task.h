@@ -16,6 +16,7 @@
 
 #include "modules/limboai/blackboard/blackboard.h"
 #include "modules/limboai/bt/tasks/bt_task.h"
+#include "modules/limboai/bt/tasks/utility/bt_call_method.h"
 #include "tests/test_macros.h"
 
 namespace TestTask {
@@ -232,6 +233,70 @@ TEST_CASE("[Modules][LimboAI] BTTask") {
 		REQUIRE(cloned->get_child_count() == 2);
 		CHECK_FALSE(cloned->get_child(0) == child1);
 		CHECK_FALSE(cloned->get_child(1) == child2);
+	}
+
+	SUBCASE("Test clone() deep copies sub-resources") {
+		Ref<BTCallMethod> task = memnew(BTCallMethod);
+		Ref<BBNode> node_param = memnew(BBNode);
+		node_param->set_saved_value("some/path");
+		task->set_node_param(node_param);
+
+		Ref<BTCallMethod> cloned = task->clone();
+		REQUIRE(cloned.is_valid());
+		CHECK(cloned->get_node_param().is_valid());
+		CHECK_FALSE(cloned->get_node_param() == node_param);
+		CHECK(String(cloned->get_node_param()->get_saved_value()) == "some/path");
+	}
+
+	SUBCASE("Test clone() deep copies arrays and sub-resources within") {
+		Ref<BTCallMethod> task = memnew(BTCallMethod);
+
+		TypedArray<BBVariant> args;
+		Ref<BBVariant> arg1 = memnew(BBVariant);
+		arg1->set_saved_value(42);
+		Ref<BBVariant> arg2 = memnew(BBVariant);
+		arg2->set_saved_value("hello");
+		args.push_back(arg1);
+		args.push_back(arg2);
+		task->set_args(args);
+
+		Ref<BTCallMethod> cloned = task->clone();
+		REQUIRE(cloned.is_valid());
+		TypedArray<BBVariant> cloned_args = cloned->get_args();
+		REQUIRE(cloned_args.size() == 2);
+
+		// Sub-resources within the array should be new instances.
+		Ref<BBVariant> cloned_arg1 = cloned_args[0];
+		Ref<BBVariant> cloned_arg2 = cloned_args[1];
+		CHECK(cloned_arg1.is_valid());
+		CHECK(cloned_arg2.is_valid());
+		CHECK_FALSE(cloned_arg1 == arg1);
+		CHECK_FALSE(cloned_arg2 == arg2);
+
+		// Values should be preserved.
+		CHECK(int(cloned_arg1->get_saved_value()) == 42);
+		CHECK(String(cloned_arg2->get_saved_value()) == "hello");
+
+		// Modifying cloned sub-resource should not affect the original.
+		cloned_arg1->set_saved_value(100);
+		CHECK(int(arg1->get_saved_value()) == 42);
+	}
+
+	SUBCASE("Test clone() filters disabled children") {
+		Ref<BTTestAction> task = memnew(BTTestAction);
+		Ref<BTTestAction> child1 = memnew(BTTestAction);
+		Ref<BTTestAction> child2 = memnew(BTTestAction);
+		child2->set_enabled(false);
+		Ref<BTTestAction> child3 = memnew(BTTestAction);
+
+		task->add_child(child1);
+		task->add_child(child2);
+		task->add_child(child3);
+		REQUIRE(task->get_child_count() == 3);
+
+		Ref<BTTask> cloned = task->clone();
+		REQUIRE(cloned.is_valid());
+		CHECK(cloned->get_child_count() == 2);
 	}
 }
 
