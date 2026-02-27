@@ -13,7 +13,7 @@
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
-> 此 `README_zh-cn.md` 文件翻译自 `.\README.md`
+> 此 `README_zh-cn.md` 文件翻译自 [`.\README.md`](./README.md)。
 
 > **支持的 Godot 引擎版本：** **4.4 - 4.6**
 > *（旧版本支持情况见下文）*
