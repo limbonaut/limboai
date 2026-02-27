@@ -15,6 +15,14 @@
 
 #include "../util/limbo_string_names.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void ModeSwitchButton::add_mode(int p_id, const Ref<Texture2D> &p_icon, const String &p_tooltip) {
 	bool unique_id = true;
 	for (int i = 0; i < modes.size(); i++) {

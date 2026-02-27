@@ -17,6 +17,7 @@
 #include "../util/limbo_utility.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
 #include "scene/main/node.h"
 #ifdef TOOLS_ENABLED
 #include "editor/inspector/editor_inspector.h"
