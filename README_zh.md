@@ -1,18 +1,17 @@
 <p align="center">
-  <img src="doc/images/logo.svg" width="400" alt="LimboAI 标志">
+  <img src="doc/images/logo.svg" width="400" alt="LimboAI logo">
 </p>
 
 # LimboAI - Godot 4 的行为树与状态机插件
 
 <!--
-[![🔗 全部构建](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
+[![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
 -->
-[![🔎 单元测试](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
-[![文档状态](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
-[![GitHub 许可证](https://img.shields.io/github/license/limbonaut/limboai)](https://github.com/limbonaut/limboai/blob/master/LICENSE.md)
+[![🔎 Unit Tests](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/test_builds.yml)
+[![Documentation Status](https://readthedocs.org/projects/limboai/badge/?version=latest)](https://limboai.readthedocs.io/en/latest/?badge=latest)
+[![GitHub License](https://img.shields.io/github/license/limbonaut/limboai)](https://github.com/limbonaut/limboai/blob/master/LICENSE.md)
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
-[![Mastodon 关注](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
-
+[![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
 > **支持的 Godot 引擎版本：** **4.4 - 4.6**
 > *（旧版本支持情况见下文）*
