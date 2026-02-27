@@ -124,7 +124,7 @@ LimboAI 可以作为 C++ 模块或 GDExtension 共享库使用。GDExtension 版
 
 ## 使用插件
 
-- 在线文档：[稳定版](https://limboai.readthedocs.io/en/stable/index.html), [最新版](https://limboai.readthedocs.io/en/latest/index.html)
+- 在线文档：[稳定版](https://limboai.readthedocs.io/en/stable/index.html)，[最新版](https://limboai.readthedocs.io/en/latest/index.html)
 - [入门指南](https://limboai.readthedocs.io/en/stable/getting-started/getting-limboai.html)
 - [行为树简介](https://limboai.readthedocs.io/en/stable/behavior-trees/introduction.html)
 - [在 GDScript 中创建自定义任务](https://limboai.readthedocs.io/en/stable/behavior-trees/custom-tasks.html)
