@@ -13,6 +13,8 @@
 [![Discord](https://img.shields.io/discord/1185664967379267774?logo=discord&link=https%3A%2F%2Fdiscord.gg%2FN5MGC95GpP)](https://discord.gg/N5MGC95GpP)
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109346796150895359?domain=https%3A%2F%2Fmastodon.gamedev.place)](https://mastodon.gamedev.place/@limbo)
 
+> 此 `README_zh-cn.md` 文件翻译自 `.\README.md`
+
 > **支持的 Godot 引擎版本：** **4.4 - 4.6**
 > *（旧版本支持情况见下文）*
 
@@ -24,7 +26,7 @@
 
 ![带纹理的截图](doc/images/behavior-tree-editor-debugger.png)
 
-行为树是一种强大的层次化结构，用于建模和控制游戏中代理（如角色、敌人）的行为。它们旨在让您更轻松地为游戏创建丰富且高度模块化的行为。要了解更多关于行为树的信息，请查看 [行为树简介](https://limboai.readthedocs.io/en/stable/behavior-trees/introduction.html) 以及我们的演示项目（包含教程）。
+行为树是一种强大的层次化结构，用于建模和控制游戏中单位（如角色、敌人）的行为。它们旨在让您更轻松地为游戏创建丰富且高度模块化的行为。要了解更多关于行为树的信息，请查看 [行为树简介](https://limboai.readthedocs.io/en/stable/behavior-trees/introduction.html) 以及我们的演示项目（包含教程）。
 
 ## 演示
 
@@ -61,35 +63,35 @@
 ## 功能特性
 
 - **行为树（BT）：**
-    - 在编辑器中轻松创建、编辑和保存 `BehaviorTree` 资源。
-    - 使用 `BTPlayer` 节点执行 `BehaviorTree` 资源。
+    - 可以在编辑器中轻松创建、编辑和保存 `BehaviorTree` 资源。
+    - 使用 `BTPlayer` 来节点执行 `BehaviorTree` 资源。
     - 通过组合和嵌套任务，构建复杂的层次化行为。
     - 使用组合、装饰器和条件任务控制执行流程。
-    - [创建自定义任务](https://limboai.readthedocs.io/en/stable/behavior-trees/custom-tasks.html)：继承核心类 `BTAction`、`BTCondition`、`BTDecorator` 和 `BTComposite`。
+    - 通过扩展核心类（`BTAction`、`BTCondition`、`BTDecorator` 和 `BTComposite`）来[创建自定义任务](https://limboai.readthedocs.io/en/stable/behavior-trees/custom-tasks.html)：
     - 内置类文档。
     - 黑板系统：通过 `Blackboard` 在任务间无缝共享数据。
       - 黑板计划：在 BehaviorTree 资源中定义变量，并在 BTPlayer 节点中覆盖其值。
       - 计划编辑器：管理变量及其数据类型和属性提示。
-      - 黑板作用域：防止名称冲突，并支持高级技巧，如[在多个代理间共享数据](https://limboai.readthedocs.io/en/stable/behavior-trees/using-blackboard.html#sharing-data-between-several-agents)。
+      - 黑板作用域：可避免名称冲突，并支持高级技巧，如[在多个代理间共享数据](https://limboai.readthedocs.io/en/stable/behavior-trees/using-blackboard.html#sharing-data-between-several-agents)。
       - 黑板参数：[导出 BB 参数](https://limboai.readthedocs.io/en/stable/behavior-trees/using-blackboard.html#task-parameters)，用户可为参数提供值或将其绑定到黑板变量（可用于自定义任务）。
       - 检查器支持指定黑板变量（为以 "_var" 结尾的导出 `StringName` 属性提供自定义编辑器）。
-    - 使用 `BTSubtree` 任务执行来自不同资源文件的树，提升组织性和可复用性。
+    - 使用 `BTSubtree` 任务可以执行来自不同资源文件的树，提升组织性和可复用性。
     - 可视化调试器：在运行场景中检查任意行为树的执行情况，以识别和解决问题。
     - 使用 `BehaviorTreeView` 节点在游戏内可视化行为树（用于自定义游戏内工具）。
     - 通过自定义性能监视器监控树性能。
 
 - **分层状态机（HSM）：**
-    - 继承 `LimboState` 类来实现状态逻辑。
+    - 扩展 `LimboState` 类以实现状态逻辑。
     - `LimboHSM` 节点作为状态机，管理 `LimboState` 实例和状态转换。
     - `LimboHSM` 本身也是一个状态，可以嵌套在其他 `LimboHSM` 实例中。
-    - [基于事件](https://limboai.readthedocs.io/en/stable/hierarchical-state-machines/create-hsm.html#events-and-transitions)：转换与事件关联，当相关事件被派发时由状态机触发，从而更好地解耦转换与状态逻辑。
-    - 结合状态机与行为树：使用 `BTState` 实现高级响应式 AI。
+    - [基于事件](https://limboai.readthedocs.io/en/stable/hierarchical-state-machines/create-hsm.html#events-and-transitions)：过渡与特定事件关联，当事件被派发时，状态机即触发相应过渡。这种机制实现了过渡与状态逻辑的解耦。
+    - 结合状态机与行为树：通过 `BTState` 来实现高级响应式 AI。
     - 委托选项：使用原生 `LimboState`，将实现[委托给回调函数](https://limboai.readthedocs.io/en/stable/hierarchical-state-machines/create-hsm.html#single-file-state-machine-setup)，非常适合快速原型开发和游戏开发挑战赛。
     - 注意：状态机的设置和初始化需要编写代码；目前没有图形界面编辑器。
 
 - **测试覆盖：** 行为树任务和 HSM 均有单元测试覆盖。
 
-- **GDExtension：** LimboAI 可以作为 [扩展使用](https://limboai.readthedocs.io/en/stable/getting-started/getting-limboai.html#get-gdextension-version)。无需自定义引擎构建。
+- **GDExtension：** LimboAI 可以[作为扩展使用](https://limboai.readthedocs.io/en/stable/getting-started/getting-limboai.html#get-gdextension-version)。无需自定义引擎构建。
 
 - **演示 + 教程：** 查看我们详尽的演示项目，其中包含通过示例介绍行为树的入门教程。
 
