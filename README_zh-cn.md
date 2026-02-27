@@ -138,7 +138,7 @@ LimboAI 可以作为 C++ 模块或 GDExtension 共享库使用。GDExtension 版
 
 ## 贡献
 
-欢迎贡献！对于 Bug 报告、功能请求或代码更改，请开启 Issue。关于贡献代码或文档的详细指南，请查看我们的 [贡献指南](hhttps://limboai.readthedocs.io/en/latest/getting-started/contributing.html) 页面。
+欢迎贡献！对于 Bug 报告、功能请求或代码更改，请开启 Issue。关于贡献代码或文档的详细指南，请查看我们的 [贡献指南](https://limboai.readthedocs.io/en/latest/getting-started/contributing.html) 页面。
 
 如果您有关于行为树任务或功能的想法，且能在多种项目中发挥作用，请开启 Issue 进行讨论。
 
