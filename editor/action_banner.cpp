@@ -18,11 +18,13 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
 #include "scene/gui/button.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/button.hpp>
+#include <godot_cpp/core/class_db.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void ActionBanner::set_text(const String &p_text) {

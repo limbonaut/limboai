@@ -11,6 +11,7 @@
 
 #include "editor_property_property_path.h"
 
+#include "../compat/scene_tree.h"
 #include "../compat/translation.h"
 #include "../util/limbo_string_names.h"
 
