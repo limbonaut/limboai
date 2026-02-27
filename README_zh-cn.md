@@ -4,7 +4,7 @@
 
 # LimboAI - Godot 4 的行为树与状态机插件
 
-本文档为中文翻译版，[点击查看英文原版](README.md)。
+本文档为中文翻译版（[点击查看英文原版](README.md)）。如果你发现本文档与英文原版存在差异，恳请通过 Issue 反馈或提交 Pull Request 修正。
 
 <!--
 [![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
