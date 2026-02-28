@@ -52,4 +52,7 @@
 
 #endif // ! LIMBOAI_GDEXTENSION
 
+// Property visible to the remote debugger at runtime, but hidden in the editor.
+#define PROPERTY_USAGE_RUNTIME (Engine::get_singleton()->is_editor_hint() ? PROPERTY_USAGE_NONE : PROPERTY_USAGE_EDITOR)
+
 #endif // LIMBO_COMPAT_H

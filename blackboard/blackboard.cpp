@@ -12,6 +12,82 @@
 #include "blackboard.h"
 #include "../compat/print.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/classes/engine.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
+bool Blackboard::_set(const StringName &p_name, const Variant &p_value) {
+	// Read-only for now.
+	return false;
+}
+
+bool Blackboard::_get(const StringName &p_name, Variant &r_ret) const {
+	String name_str = p_name;
+	if (!name_str.begins_with("scope_")) {
+		return false;
+	}
+
+	// Parse "scope_N/var_name".
+	String scope_part = name_str.get_slicec('/', 0);
+	int scope_idx = scope_part.substr(6).to_int(); // Skip "scope_".
+	String var_name = name_str.substr(scope_part.length() + 1);
+
+	// Walk to the target scope.
+	const Blackboard *bb = this;
+	for (int i = 0; i < scope_idx && bb; i++) {
+		bb = bb->parent.ptr();
+	}
+
+	if (!bb || !bb->data.has(var_name)) {
+		return false;
+	}
+
+	r_ret = bb->data.get(var_name).get_value();
+	return true;
+}
+
+void Blackboard::_get_property_list(List<PropertyInfo> *p_list) const {
+	if (Engine::get_singleton()->is_editor_hint()) {
+		return;
+	}
+
+	// Collect scopes: [0]=this (local), [1]=parent, [2]=grandparent, ...
+	Vector<const Blackboard *> scopes;
+	const Blackboard *bb = this;
+	while (bb) {
+		scopes.push_back(bb);
+		bb = bb->parent.ptr();
+	}
+
+	// Emit in reverse order: top-most scope first, local scope last.
+	for (int i = scopes.size() - 1; i >= 0; i--) {
+		String scope_prefix = "scope_" + itos(i) + "/";
+		String group_name = "Scope " + itos(i);
+		if (i == 0) {
+			group_name += " (local)";
+		} else {
+			group_name += " (parent)";
+		}
+		p_list->push_back(PropertyInfo(Variant::NIL, group_name, PROPERTY_HINT_NONE, scope_prefix, PROPERTY_USAGE_GROUP));
+
+		// Collect and sort variable names.
+		Vector<String> sorted_names;
+		for (const KeyValue<StringName, BBVariable> &kv : scopes[i]->data) {
+			sorted_names.push_back(kv.key);
+		}
+		sorted_names.sort();
+
+		for (const String &var_name : sorted_names) {
+			const BBVariable &var = scopes[i]->data.get(var_name);
+			p_list->push_back(PropertyInfo(var.get_type(), scope_prefix + var_name, var.get_hint(), var.get_hint_string(), PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_READ_ONLY));
+		}
+	}
+}
+
 Ref<Blackboard> Blackboard::top() const {
 	Ref<Blackboard> bb(this);
 	while (bb->get_parent().is_valid()) {
