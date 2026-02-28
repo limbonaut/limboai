@@ -76,9 +76,10 @@ void Blackboard::_get_property_list(List<PropertyInfo> *p_list) const {
 	}
 
 	// Collect scopes: [0]=this (local), [1]=parent, [2]=grandparent, ...
+	static constexpr int MAX_SCOPE_DEPTH = 16;
 	Vector<const Blackboard *> scopes;
 	const Blackboard *bb = this;
-	while (bb && scopes.size() < 16) {
+	while (bb && scopes.size() < MAX_SCOPE_DEPTH) {
 		scopes.push_back(bb);
 		bb = bb->parent.ptr();
 	}
