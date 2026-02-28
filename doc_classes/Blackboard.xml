@@ -7,6 +7,7 @@
 		Blackboard is where data is stored and shared between states in the [LimboHSM] system and tasks in a [BehaviorTree]. Each state and task in the [BehaviorTree] can access this Blackboard, allowing them to read and write data. This makes it easy to share information between different actions and behaviors.
 		Blackboard can also act as a parent scope for another Blackboard. If a specific variable is not found in the active scope, it looks in the parent Blackboard to find it. A parent Blackboard can itself have its own parent scope, forming what we call a "blackboard scope chain." Importantly, there is no limit to how many Blackboards can be in this chain, and the Blackboard doesn't modify values in the parent scopes.
 		New scopes can be created using the [BTNewScope] and [BTSubtree] decorators. Additionally, a new scope is automatically created for any [LimboState] that has defined non-empty Blackboard data or for any root-level [LimboHSM] node.
+		[b]Debugging:[/b] When debugging a running project, a Blackboard can be viewed in the remote Inspector, displaying all variables across the full scope chain grouped by scope. Variables can also be edited live.
 	</description>
 	<tutorials>
 	</tutorials>
