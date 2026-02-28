@@ -66,13 +66,15 @@ void Blackboard::_get_property_list(List<PropertyInfo> *p_list) const {
 	// Emit in reverse order: top-most scope first, local scope last.
 	for (int i = scopes.size() - 1; i >= 0; i--) {
 		String scope_prefix = "scope_" + itos(i) + "/";
-		String group_name = "Scope " + itos(i);
+		String group_name;
 		if (i == 0) {
-			group_name += " (local)";
+			group_name = "Local Scope";
+		} else if (scopes.size() == 2) {
+			group_name = "Parent Scope";
 		} else {
-			group_name += " (parent)";
+			group_name = "Parent Scope " + itos(i);
 		}
-		p_list->push_back(PropertyInfo(Variant::NIL, group_name, PROPERTY_HINT_NONE, scope_prefix, PROPERTY_USAGE_GROUP));
+		p_list->push_back(PropertyInfo(Variant::NIL, group_name, PROPERTY_HINT_NONE, scope_prefix, PROPERTY_USAGE_GROUP | PROPERTY_USAGE_EDITOR));
 
 		// Collect and sort variable names.
 		Vector<String> sorted_names;
