@@ -80,6 +80,8 @@ public:
 	void clear();
 	void update_tree(const Ref<BehaviorTreeData> &p_data);
 
+	uint64_t get_selected_task_id() const;
+
 	void set_update_interval_msec(int p_milliseconds) { update_interval_msec = p_milliseconds; }
 	int get_update_interval_msec() const { return update_interval_msec; }
 

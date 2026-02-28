@@ -152,6 +152,18 @@ void LimboDebuggerTab::_window_visibility_changed(bool p_visible) {
 	make_floating->set_visible(!p_visible);
 }
 
+void LimboDebuggerTab::_on_task_selected(const String &p_type_name, const String &p_script_path) {
+	uint64_t task_id = bt_view->get_selected_task_id();
+	if (task_id != 0) {
+		Array ids;
+		ids.push_back(task_id);
+		Array msg;
+		msg.push_back(ids);
+		msg.push_back(true); // Request remote object inspection.
+		session->send_message("scene:inspect_objects", msg);
+	}
+}
+
 void LimboDebuggerTab::_resource_header_pressed() {
 	String bt_path = resource_header->get_text();
 	if (bt_path.is_empty()) {
@@ -173,6 +185,7 @@ void LimboDebuggerTab::_notification(int p_what) {
 			resource_header->connect(LW_NAME(pressed), callable_mp(this, &LimboDebuggerTab::_resource_header_pressed));
 			filter_players->connect(LW_NAME(text_changed), callable_mp(this, &LimboDebuggerTab::_filter_changed));
 			bt_instance_list->connect(LW_NAME(item_selected), callable_mp(this, &LimboDebuggerTab::_bt_instance_selected));
+			bt_view->connect(LW_NAME(task_selected), callable_mp(this, &LimboDebuggerTab::_on_task_selected));
 			update_interval->connect("value_changed", callable_mp(bt_view, &BehaviorTreeView::set_update_interval_msec));
 
 			Ref<ConfigFile> cf;

@@ -82,6 +82,7 @@ private:
 	void _filter_changed(String p_text);
 	void _window_visibility_changed(bool p_visible);
 	void _resource_header_pressed();
+	void _on_task_selected(const String &p_type_name, const String &p_script_path);
 
 protected:
 	static void _bind_methods();

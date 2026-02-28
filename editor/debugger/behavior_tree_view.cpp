@@ -232,6 +232,14 @@ void BehaviorTreeView::_update_tree(const Ref<BehaviorTreeData> &p_data) {
 	}
 }
 
+uint64_t BehaviorTreeView::get_selected_task_id() const {
+	TreeItem *selected = tree->get_selected();
+	if (selected) {
+		return item_get_task_id(selected);
+	}
+	return 0;
+}
+
 void BehaviorTreeView::clear() {
 	tree->clear();
 	collapsed_ids.clear();
