@@ -217,6 +217,7 @@
 		<member name="blackboard" type="Blackboard" setter="" getter="get_blackboard">
 			Provides access to the [Blackboard]. Blackboard is used to share data among tasks of the associated [BehaviorTree].
 			See [Blackboard] for additional info.
+			[b]Debugging:[/b] When a task is selected in the LimboAI debugger, its properties are shown in the remote Inspector. Click the [Blackboard] reference to inspect and edit variables across the full scope chain.
 		</member>
 		<member name="custom_name" type="String" setter="set_custom_name" getter="get_custom_name" default="&quot;&quot;">
 			User-provided name for the task. If not empty, it is used by the editor to represent the task. See [method get_task_name].

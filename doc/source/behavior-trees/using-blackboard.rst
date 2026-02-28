@@ -248,3 +248,13 @@ We assign that scope to each agent in a group through code:
 In conclusion, the :ref:`Blackboard<class_Blackboard>` scope chain not only
 prevents naming conflicts that can occur between state machines, behavior trees, and sub-trees,
 but it can also be used to share data between several agents.
+
+Debugging blackboard variables
+------------------------------
+
+When debugging a running project, you can inspect :ref:`Blackboard<class_Blackboard>` variables
+in the remote Inspector. Click on a task in the LimboAI debugger to view its properties,
+then click the :ref:`Blackboard<class_Blackboard>` reference to see all variables across the full
+scope chain, grouped by scope. Variables can be edited live to aid in debugging.
+For state machines, select a :ref:`LimboState<class_LimboState>` node in the Remote Scene Tree
+to access its :ref:`Blackboard<class_Blackboard>` in the same way.
