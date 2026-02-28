@@ -789,6 +789,10 @@ void LimboAIEditor::_action_selected(int p_id) {
 			for (const Ref<BTTask> &dup : duplicated) {
 				task_tree->add_selection(dup);
 			}
+			// Update Inspector to edit the duplicated task.
+			if (task_tree->get_selected().is_valid()) {
+				EditorInterface::get_singleton()->edit_resource(task_tree->get_selected());
+			}
 		} break;
 		case ACTION_MAKE_ROOT: {
 			Ref<BTTask> task = task_tree->get_selected();
