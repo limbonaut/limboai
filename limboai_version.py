@@ -3,8 +3,8 @@
 major = 1
 minor = 7
 patch = 0
-status = "dev"
-doc_branch = "latest"
+status = ""
+doc_branch = "1.7.0"
 
 
 def get_godot_cpp_ref():
