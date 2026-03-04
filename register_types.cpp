@@ -116,6 +116,7 @@
 #endif // TOOLS_ENABLED
 
 #ifdef LIMBOAI_MODULE
+#include "core/config/engine.h"
 #include "core/object/class_db.h"
 #include "core/os/memory.h"
 #endif // LIMBOAI_MODULE
