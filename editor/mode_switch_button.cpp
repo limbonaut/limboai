@@ -16,6 +16,7 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
 #include "core/object/class_db.h"
 #endif // LIMBOAI_MODULE
 

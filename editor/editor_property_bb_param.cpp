@@ -20,6 +20,7 @@
 #include "editor_property_variable_name.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
 #include "core/object/class_db.h"
 #include "editor/editor_interface.h"
 #include "scene/gui/margin_container.h"

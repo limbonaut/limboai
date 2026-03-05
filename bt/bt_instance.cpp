@@ -17,6 +17,7 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
 #include "core/os/time.h"
 #include "main/performance.h"
 #endif
