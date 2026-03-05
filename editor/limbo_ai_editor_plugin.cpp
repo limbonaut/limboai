@@ -40,6 +40,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/input/input.h"
+#include "core/object/callable_mp.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/docks/filesystem_dock.h"
@@ -48,6 +49,7 @@
 #include "editor/script/script_editor_plugin.h"
 #include "editor/settings/project_settings_editor.h"
 #include "scene/gui/separator.h"
+#include "servers/display/display_server.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION

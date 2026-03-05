@@ -14,6 +14,10 @@
 #include "../../../compat/scene_tree.h"
 #include "../../../util/limbo_string_names.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
+#endif
+
 //**** Setters / Getters
 
 void BTCooldown::set_duration(double p_value) {

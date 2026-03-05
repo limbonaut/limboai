@@ -11,6 +11,14 @@
 
 #include "bb_variant.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 void BBVariant::set_type(Variant::Type p_type) {
 	if (type != p_type) {
 		type = p_type;

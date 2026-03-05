@@ -15,10 +15,12 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
+#include "core/object/class_db.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/core/class_db.hpp>
 #endif
 
 void LimboState::restart() {

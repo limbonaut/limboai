@@ -18,6 +18,10 @@
 #include "../compat/resource_loader.h"
 #include "../compat/translation.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
+#endif
+
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/editor_file_system_directory.hpp>
 #endif
