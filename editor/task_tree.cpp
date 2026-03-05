@@ -22,6 +22,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "../bt/tasks/bt_comment.h"
+#include "core/object/callable_mp.h"
 #include "core/object/script_language.h"
 #include "scene/gui/box_container.h"
 #include "scene/gui/label.h"

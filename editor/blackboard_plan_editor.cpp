@@ -20,6 +20,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/input/input.h"
+#include "core/object/callable_mp.h"
 #include "editor/editor_interface.h"
 #include "scene/gui/label.h"
 #include "scene/gui/margin_container.h"

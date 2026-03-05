@@ -16,6 +16,7 @@
 #include "../util/limbo_string_names.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
 #include "editor/editor_data.h"
 #include "editor/editor_interface.h"
 #include "servers/display/display_server.h"
