@@ -14,6 +14,14 @@
 #include "../../compat/variant.h"
 #include "../../util/limbo_utility.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/class_db.h"
+#endif // LIMBOAI_MODULE
+
+#ifdef LIMBOAI_GDEXTENSION
+#include <godot_cpp/core/class_db.hpp>
+#endif // LIMBOAI_GDEXTENSION
+
 VARIANT_ENUM_CAST(BBParam::ValueSource);
 
 void BBParam::set_value_source(ValueSource p_value) {
