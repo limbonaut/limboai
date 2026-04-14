@@ -16,6 +16,11 @@
 
 #include "../bt/behavior_tree.h"
 #include "../bt/tasks/bt_task.h"
+#include "blackboard_plan_editor.h"
+#include "debugger/limbo_debugger_plugin.h"
+#include "editor_property_bb_param.h"
+#include "editor_property_property_path.h"
+#include "editor_property_variable_name.h"
 #include "owner_picker.h"
 #include "task_palette.h"
 #include "task_tree.h"
@@ -274,6 +279,11 @@ class LimboAIEditorPlugin : public EditorPlugin {
 
 private:
 	LimboAIEditor *limbo_ai_editor;
+	Ref<LimboDebuggerPlugin> debugger_plugin;
+	Ref<EditorInspectorPluginBBPlan> plan_plugin;
+	Ref<EditorInspectorPluginVariableName> var_plugin;
+	Ref<EditorInspectorPluginPropertyPath> path_plugin;
+	Ref<EditorInspectorPluginBBParam> param_plugin;
 
 protected:
 	static void _bind_methods();
