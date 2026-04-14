@@ -21,6 +21,7 @@
 #include "blackboard_plan_editor.h"
 
 #ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
 #include "scene/gui/box_container.h"
 #endif // LIMBOAI_MODULE
 
