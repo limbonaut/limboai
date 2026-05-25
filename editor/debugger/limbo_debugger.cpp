@@ -35,6 +35,12 @@ LimboDebugger::LimboDebugger() {
 }
 
 LimboDebugger::~LimboDebugger() {
+#if defined(DEBUG_ENABLED) && defined(LIMBOAI_MODULE)
+	EngineDebugger::unregister_message_capture("limboai");
+#elif defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
+	EngineDebugger *debugger = EngineDebugger::get_singleton();
+	debugger->unregister_message_capture("limboai");
+#endif
 	singleton = nullptr;
 }
 
