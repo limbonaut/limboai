@@ -310,11 +310,19 @@ void BlackboardPlanEditor::_drag_button_down(Control *p_row) {
 	drag_index = p_row->get_index();
 	drag_start = drag_index;
 	drag_mouse_y_delta = 0.0;
+#ifdef LIMBOAI_MODULE
 	Input::get_singleton()->set_mouse_mode(InputClassEnums::MOUSE_MODE_CAPTURED);
+#elif LIMBOAI_GDEXTENSION
+	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_CAPTURED);
+#endif
 }
 
 void BlackboardPlanEditor::_drag_button_up() {
+#ifdef LIMBOAI_MODULE
 	Input::get_singleton()->set_mouse_mode(InputClassEnums::MOUSE_MODE_VISIBLE);
+#elif LIMBOAI_GDEXTENSION
+	Input::get_singleton()->set_mouse_mode(Input::MOUSE_MODE_VISIBLE);
+#endif
 	plan->move_var(drag_start, drag_index);
 	drag_index = -1;
 	drag_start = -1;
