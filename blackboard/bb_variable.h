@@ -17,6 +17,9 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
+#ifdef DEV_ENABLED
+#include <godot_cpp/core/error_macros.hpp>
+#endif // DEV_ENABLED
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/templates/safe_refcount.hpp>
 #include <godot_cpp/variant/variant.hpp>
