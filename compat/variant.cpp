@@ -15,7 +15,7 @@
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
-#include <godot_cpp/classes/ref_counted.hpp>
+#include <godot_cpp/classes/ref.hpp>
 #endif // LIMBOAI_GDEXTENSION
 
 void VARIANT_DELETE_IF_OBJECT(const Variant &p_variant) {
