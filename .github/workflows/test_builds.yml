@@ -40,13 +40,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
           ref: ${{ env.GODOT_REF }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           path: modules/limboai
 
@@ -59,7 +59,7 @@ jobs:
           arch: x86_64
 
       - name: Set up scons cache
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{env.GODOT_REF}}-${{github.ref}}-${{github.sha}}
@@ -70,7 +70,7 @@ jobs:
         continue-on-error: true
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.x"
           architecture: "x64"
@@ -81,9 +81,6 @@ jobs:
           python -m pip install scons=="${{env.SCONS_VERSION}}"
           python --version
           scons --version
-
-      - name: Setup GCC problem matcher
-        uses: ammaraskar/gcc-problem-matcher@master
 
       - name: Compilation
         run: |
@@ -105,10 +102,10 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
 
       - name: Code style checks
-        uses: pre-commit/action@v3.0.1
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
         with:
           extra_args: --all-files
 

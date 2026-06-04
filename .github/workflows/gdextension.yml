@@ -222,7 +222,7 @@ jobs:
 
     steps:
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           fetch-tags: true
           ref: ${{ github.ref }}
@@ -231,7 +231,7 @@ jobs:
       - uses: ./.github/actions/init-version
 
       - name: Clone godot-cpp
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot-cpp
           fetch-tags: true
@@ -252,21 +252,21 @@ jobs:
 
       - name: Set up Python 3.x
         if: matrix.opts.platform == 'windows' || matrix.opts.platform == 'macos'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.x"
           architecture: "x64"
 
       - name: Set up Emscripten cache
         if: matrix.opts.platform == 'web'
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
         if: matrix.opts.platform == 'web'
-        uses: mymindstorm/setup-emsdk@v14
+        uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -287,25 +287,21 @@ jobs:
 
       - name: Set up Java 17
         if: matrix.opts.platform == 'android'
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
 
-      - uses: nttld/setup-ndk@v1
+      - uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779 # v1.6.0
         if: matrix.opts.platform == 'android'
         id: setup-ndk
         with:
           ndk-version: ${{ env.NDK_VERSION }}
           link-to-sdk: true
 
-      - name: Set up MSVC problem matcher on Windows
-        if: matrix.opts.platform == 'windows'
-        uses: ammaraskar/msvc-problem-matcher@master
-
       - name: Set up scons cache
         if: inputs.test-build # ! Only cache test/PR builds
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{github.workspace}}/.scons_cache/
           key: ${{env.BIN}}-${{inputs.debug-symbols}}-${{env.GODOT_CPP_REF}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
@@ -346,7 +342,7 @@ jobs:
           ls -R out/
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         env:
           NAME: tmp-gdextension.${{matrix.opts.platform}}.${{matrix.opts.target}}.${{matrix.opts.arch}}${{ matrix.opts.threads == 'no' && '.nothreads' || '' }}
         with:
@@ -360,14 +356,14 @@ jobs:
 
     steps:
       - name: Merge artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{needs.gdextension.outputs.name-prefix}}
           pattern: tmp-gdextension.*
           delete-merged: true
 
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{needs.gdextension.outputs.name-prefix}}
           path: out/
@@ -406,7 +402,7 @@ jobs:
           sed -i 's|editor/convert_colors_with_editor_theme=false|editor/convert_colors_with_editor_theme=true|' out/addons/limboai/icons/*.import
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{needs.gdextension.outputs.name-prefix}}
           path: out/*

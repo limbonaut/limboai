@@ -15,7 +15,7 @@ jobs:
       godot-sha: ${{ steps.cache-sha.outputs.godot-sha }}
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-ref }}
@@ -83,16 +83,7 @@ jobs:
   merge_templates:
     name: 📦 Merge templates
     if: ${{ always() }}
-    needs:
-      [
-        cache-sha,
-        android-build,
-        ios-build,
-        linux-build,
-        macos-build,
-        windows-build,
-        web-build,
-      ]
+    needs: [cache-sha, android-build, ios-build, linux-build, macos-build, windows-build, web-build]
     uses: ./.github/workflows/merge_templates.yml
     with:
       godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}

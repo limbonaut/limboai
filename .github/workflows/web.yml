@@ -74,13 +74,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-ref }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           path: modules/limboai
 
@@ -88,13 +88,13 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Emscripten cache
-        uses: actions/cache@v4
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{env.EM_CACHE_FOLDER}}
           key: ${{env.EM_VERSION}}-${{runner.os}}-libs
 
       - name: Set up Emscripten
-        uses: mymindstorm/setup-emsdk@6ab9eb1bda2574c4ddb79809fc9247783eaf9021 # v14
+        uses: mymindstorm/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984 # v16
         with:
           version: ${{env.EM_VERSION}}
           actions-cache-folder: ${{env.EM_CACHE_FOLDER}}
@@ -112,7 +112,7 @@ jobs:
 
       # ! Note: we stopped using the scons cache in release builds.
       # - name: Set up scons cache
-      #   uses: actions/cache@v4
+      #   uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       #   with:
       #     path: ${{github.workspace}}/.scons_cache/
       #     key: ${{env.CACHE_NAME}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
@@ -140,7 +140,7 @@ jobs:
           echo "${GODOT_VERSION}.limboai+${LIMBOAI_VERSION}" > out/templates/version.txt
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{env.NAME_PREFIX}}.${{matrix.target}}.web${{matrix.threads == false && '.nothreads' || ''}}${{matrix.dlink == true && '.dlink' || ''}}
           path: out/*

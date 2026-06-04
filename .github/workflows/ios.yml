@@ -95,13 +95,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-ref }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           path: modules/limboai
 
@@ -109,7 +109,7 @@ jobs:
       - uses: ./modules/limboai/.github/actions/init-version
 
       - name: Set up Python 3.x
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.x"
           architecture: "x64"
@@ -130,7 +130,7 @@ jobs:
 
       # ! Note: we stopped using the scons cache in release builds.
       # - name: Set up scons cache
-      #   uses: actions/cache@v4
+      #   uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
       #   with:
       #     path: ${{github.workspace}}/.scons_cache/
       #     key: ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}-${{env.LIMBOAI_VERSION}}
@@ -144,7 +144,7 @@ jobs:
           scons platform=ios target=${{matrix.target}} arch=${{matrix.arch}} ios_simulator=${{matrix.ios_simulator}} module_mono_enabled=${{matrix.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-${{strategy.job-index}}
           path: bin/*
@@ -165,13 +165,13 @@ jobs:
 
     steps:
       - name: Clone Godot
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
           ref: ${{ inputs.godot-ref }}
 
       - name: Clone LimboAI module
-        uses: actions/checkout@v4
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           path: modules/limboai
 
@@ -185,7 +185,7 @@ jobs:
           sh /tmp/install-vulkan.sh
 
       - name: Download templates artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           merge-multiple: true
@@ -215,13 +215,13 @@ jobs:
           ls -l ${{github.workspace}}/out/*
 
       - name: Upload template bundle
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{env.NAME_PREFIX}}${{matrix.dotnet == true && '.dotnet' || ''}}.export-templates.ios
           path: out/*
 
       - name: Delete templates artifact
-        uses: geekyeggo/delete-artifact@v5
+        uses: geekyeggo/delete-artifact@176a747ab7e287e3ff4787bf8a148716375ca118 # v6.0.0
         with:
           name: tmp-ios${{matrix.dotnet == true && '-dotnet' || ''}}-templates-*
           useGlob: true
