@@ -23,6 +23,7 @@
 
 void BTCheckAgentProperty::set_property(StringName p_prop) {
 	property = p_prop;
+	property_path = NodePath{ p_prop };
 	emit_changed();
 }
 
@@ -67,10 +68,10 @@ BT::Status BTCheckAgentProperty::_tick(double p_delta) {
 
 #ifdef LIMBOAI_MODULE
 	bool r_valid;
-	Variant left_value = get_agent()->get(property, &r_valid);
+	Variant left_value = get_agent()->get_indexed(property_path, &r_valid);
 	ERR_FAIL_COND_V_MSG(r_valid == false, FAILURE, vformat("BTCheckAgentProperty: Agent has no property named \"%s\"", property));
 #elif LIMBOAI_GDEXTENSION
-	Variant left_value = get_agent()->get(property);
+	Variant left_value = get_agent()->get_indexed(property_path);
 #endif
 
 	Variant right_value = value->get_value(get_scene_root(), get_blackboard());

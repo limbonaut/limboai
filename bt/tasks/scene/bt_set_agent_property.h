@@ -23,6 +23,7 @@ class BTSetAgentProperty : public BTAction {
 
 private:
 	StringName property;
+	NodePath property_path;
 	Ref<BBVariant> value;
 	LimboUtility::Operation operation = LimboUtility::OPERATION_NONE;
 

@@ -23,6 +23,7 @@
 
 void BTSetAgentProperty::set_property(StringName p_prop) {
 	property = p_prop;
+	property_path = NodePath{ p_prop };
 	emit_changed();
 }
 
@@ -75,20 +76,20 @@ BT::Status BTSetAgentProperty::_tick(double p_delta) {
 		result = right_value;
 	} else {
 #ifdef LIMBOAI_MODULE
-		Variant left_value = get_agent()->get(property, &r_valid);
+		Variant left_value = get_agent()->get_indexed(property_path, &r_valid);
 		ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Failed to get agent's \"%s\" property. Returning FAILURE.", property));
 #elif LIMBOAI_GDEXTENSION
-		Variant left_value = get_agent()->get(property);
+		Variant left_value = get_agent()->get_indexed(property_path);
 #endif
 		result = LimboUtility::get_singleton()->perform_operation(operation, left_value, right_value);
 		ERR_FAIL_COND_V_MSG(result == Variant(), FAILURE, "BTSetAgentProperty: Operation not valid. Returning FAILURE.");
 	}
 
 #ifdef LIMBOAI_MODULE
-	get_agent()->set(property, result, &r_valid);
+	get_agent()->set_indexed(property_path, result, &r_valid);
 	ERR_FAIL_COND_V_MSG(!r_valid, FAILURE, vformat("BTSetAgentProperty: Couldn't set property \"%s\" with value \"%s\"", property, result));
 #elif LIMBOAI_GDEXTENSION
-	get_agent()->set(property, result);
+	get_agent()->set_indexed(property_path, result);
 #endif
 	return SUCCESS;
 }

@@ -23,6 +23,7 @@ class BTCheckAgentProperty : public BTCondition {
 
 private:
 	StringName property;
+	NodePath property_path;
 	LimboUtility::CheckType check_type = LimboUtility::CheckType::CHECK_EQUAL;
 	Ref<BBVariant> value;
 
@@ -35,6 +36,7 @@ protected:
 public:
 	void set_property(StringName p_prop);
 	StringName get_property() const { return property; }
+	NodePath get_property_path() const { return property_path; }
 
 	void set_check_type(LimboUtility::CheckType p_check_type);
 	LimboUtility::CheckType get_check_type() const { return check_type; }
