@@ -228,6 +228,9 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
+      - name: Set up AccessKit SDK
+        run: python ./misc/scripts/install_accesskit.py
+
       - name: Compilation
         env:
           SCONS_CACHE: ${{github.workspace}}/.scons_cache/
@@ -248,6 +251,7 @@ jobs:
         run: |
           chmod +x ./bin/godot.*
           rm -rf bin/obj/
+          rm -rf bin/build_deps/
           mkdir -p ${{env.OUTDIR}}
           mv bin/* ${{env.OUTDIR}}
           ls -R out/

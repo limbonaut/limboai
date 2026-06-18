@@ -203,8 +203,16 @@ jobs:
           mv libgodot.ios.template_release.arm64.a ios_xcode/libgodot.ios.release.xcframework/ios-arm64/libgodot.a
           mv libgodot.ios.template_release.x86_64.simulator.a ios_xcode/libgodot.ios.release.xcframework/ios-arm64_x86_64-simulator/libgodot.a
 
+          mv libgodot_camera.ios.template_debug.arm64.a ios_xcode/libgodot_camera.ios.debug.xcframework/ios-arm64/libgodot_camera.a
+          mv libgodot_camera.ios.template_debug.x86_64.simulator.a ios_xcode/libgodot_camera.ios.debug.xcframework/ios-arm64_x86_64-simulator/libgodot_camera.a
+
+          mv libgodot_camera.ios.template_release.arm64.a ios_xcode/libgodot_camera.ios.release.xcframework/ios-arm64/libgodot_camera.a
+          mv libgodot_camera.ios.template_release.x86_64.simulator.a ios_xcode/libgodot_camera.ios.release.xcframework/ios-arm64_x86_64-simulator/libgodot_camera.a
+
+          rm -rf ios_xcode/libgodot.visionos.* ios_xcode/libgodot_camera.visionos.*
+
           cp -r ~/VulkanSDK/*/macOS/lib/MoltenVK.xcframework ios_xcode
-          rm -rf ios_xcode/MoltenVK.xcframework/{macos,tvos}*
+          rm -rf ios_xcode/MoltenVK.xcframework/{macos,tvos,xros}*
 
           mkdir -p ${{github.workspace}}/out/templates/
           cd ios_xcode

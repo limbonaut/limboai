@@ -25,7 +25,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  GODOT_REF: 4.6-stable
+  GODOT_REF: 4.7-stable
 
 jobs:
   unit-tests:
@@ -81,6 +81,9 @@ jobs:
           python -m pip install scons=="${{env.SCONS_VERSION}}"
           python --version
           scons --version
+
+      - name: Set up AccessKit SDK
+        run: python ./misc/scripts/install_accesskit.py
 
       - name: Compilation
         run: |

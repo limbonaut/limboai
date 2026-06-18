@@ -165,6 +165,12 @@ jobs:
             ${{env.BIN}}-${{inputs.godot-ref}}-${{github.ref}}
             ${{env.BIN}}-${{inputs.godot-ref}}
 
+      - name: Set up AccessKit SDK
+        run: python ./misc/scripts/install_accesskit.py
+
+      - name: Set up ANGLE
+        run: python ./misc/scripts/install_angle.py
+
       - name: Compilation
         run: |
           scons -j2 platform=macos target=${{matrix.opts.target}} arch=${{matrix.opts.arch}} module_mono_enabled=${{matrix.opts.dotnet}} ${{env.SCONSFLAGS}} cache_path=${{github.workspace}}/.scons_cache/ cache_limit=${{env.CACHE_LIMIT}}
@@ -178,6 +184,7 @@ jobs:
 
       - name: Prepare artifact
         run: |
+          rm -rf bin/build_deps/
           chmod +x bin/godot.*
 
       - name: Upload artifact
