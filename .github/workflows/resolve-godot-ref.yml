@@ -1,0 +1,33 @@
+on:
+  workflow_call:
+    inputs:
+      godot-ref:
+        description: Godot tag, branch, or commit hash.
+        type: string
+        default: ""
+    outputs:
+      godot-sha:
+        description: Resolved commit SHA
+        value: ${{ jobs.resolve.outputs.godot-sha }}
+
+jobs:
+  resolve:
+    name: Resolve SHA
+    runs-on: ubuntu-latest
+    outputs:
+      godot-sha: ${{ steps.resolve.outputs.godot-sha }}
+    steps:
+      - name: Clone LimboAI module
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      # Loads GODOT_REF from deps.env
+      - uses: ./.github/actions/init-version
+
+      - name: Resolve Godot ref to commit SHA
+        id: resolve
+        env:
+          GODOT_REF: ${{ inputs.godot-ref || env.GODOT_REF }}
+        run: |
+          # Resolve branch/tag to SHA; raw commit hashes pass through.
+          SHA=$(git ls-remote https://github.com/godotengine/godot "refs/heads/${GODOT_REF}" "refs/tags/${GODOT_REF}" "refs/tags/${GODOT_REF}^{}" | tail -n1 | cut -f1)
+          echo "godot-sha=${SHA:-$GODOT_REF}" >> "$GITHUB_OUTPUT"

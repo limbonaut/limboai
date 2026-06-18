@@ -24,13 +24,15 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
-env:
-  GODOT_REF: 4.7-stable
-
 jobs:
+  resolve-godot-ref:
+    name: 🔖 Godot ref
+    uses: ./.github/workflows/resolve-godot-ref.yml
+
   unit-tests:
     name: 🧪 Unit tests
     runs-on: "ubuntu-22.04"
+    needs: resolve-godot-ref
 
     # Settings
     env:
@@ -43,7 +45,7 @@ jobs:
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
         with:
           repository: godotengine/godot
-          ref: ${{ env.GODOT_REF }}
+          ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
 
       - name: Clone LimboAI module
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
@@ -62,11 +64,11 @@ jobs:
         uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
           path: ${{github.workspace}}/.scons_cache/
-          key: ${{env.BIN}}-${{env.GODOT_REF}}-${{github.ref}}-${{github.sha}}
+          key: ${{env.BIN}}-${{needs.resolve-godot-ref.outputs.godot-sha}}-${{github.ref}}-${{github.sha}}
           restore-keys: |
-            ${{env.BIN}}-${{env.GODOT_REF}}-${{github.ref}}-${{github.sha}}
-            ${{env.BIN}}-${{env.GODOT_REF}}-${{github.ref}}
-            ${{env.BIN}}-${{env.GODOT_REF}}
+            ${{env.BIN}}-${{needs.resolve-godot-ref.outputs.godot-sha}}-${{github.ref}}-${{github.sha}}
+            ${{env.BIN}}-${{needs.resolve-godot-ref.outputs.godot-sha}}-${{github.ref}}
+            ${{env.BIN}}-${{needs.resolve-godot-ref.outputs.godot-sha}}
         continue-on-error: true
 
       - name: Set up Python 3.x
@@ -112,38 +114,28 @@ jobs:
         with:
           extra_args: --all-files
 
-  cache-env:
-    runs-on: ubuntu-latest
-    outputs:
-      godot-ref: ${{ steps.cache-env.outputs.godot-ref }}
-    steps:
-      - name: Cache env
-        id: cache-env
-        run: |
-          echo "godot-ref=${GODOT_REF}" >> "$GITHUB_OUTPUT"
-
   linux-test-build:
     name: 🐧 Linux
-    needs: cache-env
+    needs: resolve-godot-ref
     uses: ./.github/workflows/linux.yml
     with:
-      godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
       test-build: true
 
   windows-test-build:
     name: 🪟 Windows
-    needs: cache-env
+    needs: resolve-godot-ref
     uses: ./.github/workflows/windows.yml
     with:
-      godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
       test-build: true
 
   macos-test-build:
     name: 🍎 macOS
-    needs: cache-env
+    needs: resolve-godot-ref
     uses: ./.github/workflows/macos.yml
     with:
-      godot-ref: ${{ needs.cache-env.outputs.godot-ref }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
       test-build: true
 
   gdextension:
