@@ -22,6 +22,8 @@
 
 // *** API abstractions: Module edition
 
+#include "core/io/resource_saver.h"
+
 #define RESOURCE_SAVE(m_res, m_path, m_flags) ResourceSaver::save(m_res, m_path, m_flags)
 #define FILE_EXISTS(m_path) FileAccess::exists(m_path)
 #define DIR_ACCESS_CREATE() DirAccess::create(DirAccess::ACCESS_RESOURCES)

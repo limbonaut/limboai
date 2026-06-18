@@ -22,6 +22,7 @@
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
+#include "core/object/callable_mp.h"
 #include "core/os/time.h"
 #endif // LIMBOAI_MODULE
 

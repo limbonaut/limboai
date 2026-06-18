@@ -17,6 +17,10 @@
 #include "../../util/limbo_string_names.h"
 #include "behavior_tree_data.h"
 
+#ifdef LIMBOAI_MODULE
+#include "core/object/callable_mp.h"
+#endif
+
 //**** LimboDebugger
 
 LimboDebugger *LimboDebugger::singleton = nullptr;
@@ -31,6 +35,12 @@ LimboDebugger::LimboDebugger() {
 }
 
 LimboDebugger::~LimboDebugger() {
+#if defined(DEBUG_ENABLED) && defined(LIMBOAI_MODULE)
+	EngineDebugger::unregister_message_capture("limboai");
+#elif defined(DEBUG_ENABLED) && defined(LIMBOAI_GDEXTENSION)
+	EngineDebugger *debugger = EngineDebugger::get_singleton();
+	debugger->unregister_message_capture("limboai");
+#endif
 	singleton = nullptr;
 }
 

@@ -32,14 +32,10 @@
 #include "../util/limbo_utility.h"
 #include "../util/limboai_version.h"
 #include "action_banner.h"
-#include "blackboard_plan_editor.h"
-#include "debugger/limbo_debugger_plugin.h"
-#include "editor_property_bb_param.h"
-#include "editor_property_property_path.h"
-#include "editor_property_variable_name.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/input/input.h"
+#include "core/object/callable_mp.h"
 #include "editor/debugger/editor_debugger_node.h"
 #include "editor/debugger/script_editor_debugger.h"
 #include "editor/docks/filesystem_dock.h"
@@ -48,6 +44,7 @@
 #include "editor/script/script_editor_plugin.h"
 #include "editor/settings/project_settings_editor.h"
 #include "scene/gui/separator.h"
+#include "servers/display/display_server.h"
 #endif // LIMBOAI_MODULE
 
 #ifdef LIMBOAI_GDEXTENSION
@@ -1946,21 +1943,6 @@ void LimboAIEditorPlugin::_bind_methods() {
 
 void LimboAIEditorPlugin::_notification(int p_notification) {
 	switch (p_notification) {
-		case NOTIFICATION_READY: {
-			add_debugger_plugin(memnew(LimboDebuggerPlugin));
-			add_inspector_plugin(memnew(EditorInspectorPluginBBPlan));
-
-			EditorInspectorPluginVariableName *var_plugin = memnew(EditorInspectorPluginVariableName);
-			var_plugin->set_editor_plan_provider(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
-			add_inspector_plugin(var_plugin);
-
-			EditorInspectorPluginPropertyPath *path_plugin = memnew(EditorInspectorPluginPropertyPath);
-			add_inspector_plugin(path_plugin);
-
-			EditorInspectorPluginBBParam *param_plugin = memnew(EditorInspectorPluginBBParam);
-			param_plugin->set_plan_getter(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
-			add_inspector_plugin(param_plugin);
-		} break;
 		case NOTIFICATION_ENTER_TREE: {
 			// Add BehaviorTree to the list of resources that should open in a new inspector.
 			PackedStringArray open_in_new_inspector = EDITOR_GET("interface/inspector/resources_to_open_in_new_inspector");
@@ -1968,6 +1950,30 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 				open_in_new_inspector.push_back("BehaviorTree");
 				EDITOR_SETTINGS()->set_setting("interface/inspector/resources_to_open_in_new_inspector", open_in_new_inspector);
 			}
+
+			debugger_plugin = memnew(LimboDebuggerPlugin);
+			add_debugger_plugin(debugger_plugin);
+
+			plan_plugin = memnew(EditorInspectorPluginBBPlan);
+			add_inspector_plugin(plan_plugin);
+
+			var_plugin = memnew(EditorInspectorPluginVariableName);
+			var_plugin->set_editor_plan_provider(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
+			add_inspector_plugin(var_plugin);
+
+			path_plugin = memnew(EditorInspectorPluginPropertyPath);
+			add_inspector_plugin(path_plugin);
+
+			param_plugin = memnew(EditorInspectorPluginBBParam);
+			param_plugin->set_plan_getter(Callable(limbo_ai_editor, "get_edited_blackboard_plan"));
+			add_inspector_plugin(param_plugin);
+		} break;
+		case NOTIFICATION_EXIT_TREE: {
+			remove_debugger_plugin(debugger_plugin);
+			remove_inspector_plugin(plan_plugin);
+			remove_inspector_plugin(var_plugin);
+			remove_inspector_plugin(path_plugin);
+			remove_inspector_plugin(param_plugin);
 		} break;
 	}
 }
