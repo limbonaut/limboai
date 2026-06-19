@@ -1,10 +1,10 @@
 # Edit the following variables to change version info
 
 major = 1
-minor = 7
-patch = 1
+minor = 8
+patch = 0
 status = ""
-doc_branch = "v1.7.1"
+doc_branch = "v1.8.0"
 
 
 def get_godot_cpp_ref():
@@ -69,8 +69,6 @@ def generate_module_version_header():
 #define LIMBOAI_VERSION_DOC_URL "https://limboai.readthedocs.io/en/" LIMBOAI_VERSION_DOC_BRANCH "/"
 
 #endif // LIMBOAI_VERSION_GEN_H
-""".format(
-            **version_info
-        )
+""".format(**version_info)
     )
     f.close()
