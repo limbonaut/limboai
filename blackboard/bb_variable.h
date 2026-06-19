@@ -41,6 +41,7 @@ private:
 		NodePath binding_path;
 		uint64_t bound_object = 0;
 		StringName bound_property;
+		NodePath bound_nodepath;
 	};
 
 	Data *data = nullptr;
