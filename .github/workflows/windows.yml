@@ -237,6 +237,12 @@ jobs:
         run: |
           podman pull ghcr.io/limbonaut/godot-windows:${{env.BUILD_IMAGE_VERSION}}
 
+      - name: Set up AccessKit SDK
+        run: python ./misc/scripts/install_accesskit.py
+
+      - name: Set up WinRT SDK
+        run: python ./misc/scripts/install_winrt.py
+
       - name: Build using container
         shell: bash
         run: |
@@ -273,6 +279,7 @@ jobs:
           rm -f bin/*.{exp,lib,pdb,a}
           mkdir -p ${{env.OUTDIR}}
           rm -rf bin/obj/
+          rm -rf bin/build_deps/
           mv bin/* ${{env.OUTDIR}}
           ls -R out/
 

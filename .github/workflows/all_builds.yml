@@ -3,71 +3,60 @@ on:
   workflow_dispatch:
     inputs:
       godot-ref:
-        description: A tag, branch or commit hash in the Godot repository.
+        description: Godot tag, branch, or commit hash. Leave empty to use default.
         type: string
-        default: 4.6-stable
+        default: ""
 
 jobs:
-  cache-sha:
-    name: Cache SHA
-    runs-on: ubuntu-latest
-    outputs:
-      godot-sha: ${{ steps.cache-sha.outputs.godot-sha }}
-    steps:
-      - name: Clone Godot
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-        with:
-          repository: godotengine/godot
-          ref: ${{ inputs.godot-ref }}
-
-      - name: Cache SHA
-        id: cache-sha
-        run: |
-          echo "godot-sha=$(git describe --tags --exact-match HEAD || git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  resolve-godot-ref:
+    name: 🔖 Godot ref
+    uses: ./.github/workflows/resolve-godot-ref.yml
+    with:
+      godot-ref: ${{ inputs.godot-ref }}
 
   android-build:
     name: 🤖 Android
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/android.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
 
   ios-build:
     name: 🍏 iOS
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/ios.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
 
   linux-build:
     name: 🐧 Linux
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/linux.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
       test-build: false
 
   macos-build:
     name: 🍎 macOS
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/macos.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
 
   windows-build:
     name: 🪟 Windows
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/windows.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
       test-build: false
 
   web-build:
     name: 🌐 Web
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/web.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
 
   gdextension:
     name: 🔌 GDExtension
@@ -77,13 +66,13 @@ jobs:
 
   demo:
     name: 🎮️ Demo project
-    needs: cache-sha
+    needs: resolve-godot-ref
     uses: ./.github/workflows/demo.yml
 
   merge_templates:
     name: 📦 Merge templates
     if: ${{ always() }}
-    needs: [cache-sha, android-build, ios-build, linux-build, macos-build, windows-build, web-build]
+    needs: [resolve-godot-ref, android-build, ios-build, linux-build, macos-build, windows-build, web-build]
     uses: ./.github/workflows/merge_templates.yml
     with:
-      godot-ref: ${{ needs.cache-sha.outputs.godot-sha }}
+      godot-ref: ${{ needs.resolve-godot-ref.outputs.godot-sha }}
