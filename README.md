@@ -54,6 +54,7 @@ Behavior Trees are powerful hierarchical structures used to model and control th
 
 | Plugin Version           | GDExtension/AssetLib   | Module    |
 |--------------------------|------------------------|-----------|
+| `1.8.x` releases         | Godot 4.6 or higher    | Godot 4.7 |
 | `1.7.x` releases         | Godot 4.6 or higher    | Godot 4.6 |
 | `1.6.x` releases         | Godot 4.4, 4.5, 4.6    | Godot 4.6 |
 | `1.5.x` releases         | Godot 4.4, 4.5         | Godot 4.5 |
