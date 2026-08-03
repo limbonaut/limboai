@@ -12,6 +12,7 @@
 #include "limbo_state.h"
 
 #include "../compat/limbo_compat.h"
+#include "limbo_hsm.h"
 
 #ifdef LIMBOAI_MODULE
 #include "core/config/engine.h"
@@ -71,6 +72,10 @@ LimboState *LimboState::get_root() const {
 		state = state->get_parent();
 	}
 	return const_cast<LimboState *>(Object::cast_to<LimboState>(state));
+}
+
+bool LimboState::is_root() const {
+	return !(get_parent() && IS_CLASS(get_parent(), LimboHSM));
 }
 
 LimboState *LimboState::named(const String &p_name) {

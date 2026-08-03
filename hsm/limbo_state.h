@@ -98,7 +98,7 @@ public:
 
 	_FORCE_INLINE_ StringName event_finished() const { return EVENT_FINISHED; }
 	LimboState *get_root() const;
-	_FORCE_INLINE_ bool is_root() const { return !(get_parent() && IS_CLASS(get_parent(), LimboState)); }
+	bool is_root() const;
 	_FORCE_INLINE_ bool is_active() const { return active; }
 
 	void set_guard(const Callable &p_guard_callable);
