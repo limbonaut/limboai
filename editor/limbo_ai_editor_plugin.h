@@ -29,6 +29,7 @@
 #ifdef LIMBOAI_MODULE
 #include "core/templates/hash_map.h"
 #include "core/templates/hash_set.h"
+#include "editor/docks/editor_dock.h"
 #include "editor/editor_undo_redo_manager.h"
 #include "editor/gui/editor_spin_slider.h"
 #include "editor/plugins/editor_plugin.h"
@@ -48,6 +49,7 @@
 
 #ifdef LIMBOAI_GDEXTENSION
 #include <godot_cpp/classes/config_file.hpp>
+#include <godot_cpp/classes/editor_dock.hpp>
 #include <godot_cpp/classes/editor_plugin.hpp>
 #include <godot_cpp/classes/editor_spin_slider.hpp>
 #include <godot_cpp/classes/editor_undo_redo_manager.hpp>
@@ -280,6 +282,7 @@ class LimboAIEditorPlugin : public EditorPlugin {
 
 private:
 	LimboAIEditor *limbo_ai_editor;
+	EditorDock *limbo_ai_dock = nullptr;
 	Ref<LimboDebuggerPlugin> debugger_plugin;
 	Ref<EditorInspectorPluginBBPlan> plan_plugin;
 	Ref<EditorInspectorPluginVariableName> var_plugin;
@@ -292,9 +295,6 @@ protected:
 
 public:
 #ifdef LIMBOAI_MODULE
-	bool has_main_screen() const override { return true; }
-
-	virtual String get_plugin_name() const override { return "LimboAI"; }
 	virtual void make_visible(bool p_visible) override;
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
@@ -303,13 +303,9 @@ public:
 	virtual void save_external_data() override;
 
 #elif LIMBOAI_GDEXTENSION
-	bool _has_main_screen() const override { return true; }
-
-	virtual String _get_plugin_name() const override { return "LimboAI"; }
 	virtual void _make_visible(bool p_visible) override;
 	virtual void _edit(Object *p_object) override;
 	virtual bool _handles(Object *p_object) const override;
-	virtual Ref<Texture2D> _get_plugin_icon() const override;
 	virtual void _set_window_layout(const Ref<ConfigFile> &p_configuration) override;
 	virtual void _get_window_layout(const Ref<ConfigFile> &p_configuration) override;
 	virtual void _save_external_data() override;
