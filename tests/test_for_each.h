@@ -112,6 +112,8 @@ TEST_CASE("[Modules][LimboAI] BTForEach") {
 		CHECK_ENTRIES_TICKS_EXITS(task, 1, 1, 1); // Task is not re-executed as there is not enough elements to continue iteration.
 		CHECK(blackboard->get_var("element", "wetgoop") == "apple"); // Not changed.
 	}
+
+	memdelete(dummy);
 }
 
 } //namespace TestForEach

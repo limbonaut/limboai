@@ -161,6 +161,8 @@ TEST_CASE("[Modules][LimboAI] BTSetVar") {
 			CHECK(bb->get_var("var", 0) == Variant(2));
 		}
 	}
+
+	memdelete(dummy);
 }
 
 } //namespace TestSetVar
