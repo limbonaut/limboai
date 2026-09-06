@@ -30,10 +30,10 @@ void BBVariable::set_value(const Variant &p_value) {
 		ERR_FAIL_COND_MSG(!obj, "Blackboard: Failed to get bound object.");
 #ifdef LIMBOAI_MODULE
 		bool r_valid;
-		obj->set(data->bound_property, p_value, &r_valid);
-		ERR_FAIL_COND_MSG(!r_valid, vformat("Blackboard: Failed to set bound property `%s` on %s", data->bound_property, obj));
+		obj->set_indexed(data->bound_nodepath, p_value, &r_valid);
+		ERR_FAIL_COND_MSG(!r_valid, vformat("Blackboard: Failed to set bound property `%s` on %s", data->bound_nodepath, obj));
 #elif LIMBOAI_GDEXTENSION
-		obj->set(data->bound_property, p_value);
+		obj->set_indexed(data->bound_nodepath, p_value);
 #endif
 	}
 }
@@ -44,10 +44,10 @@ Variant BBVariable::get_value() const {
 		ERR_FAIL_COND_V_MSG(!obj, data->value, "Blackboard: Failed to get bound object.");
 #ifdef LIMBOAI_MODULE
 		bool r_valid;
-		Variant ret = obj->get(data->bound_property, &r_valid);
-		ERR_FAIL_COND_V_MSG(!r_valid, data->value, vformat("Blackboard: Failed to get bound property `%s` on %s", data->bound_property, obj));
+		Variant ret = obj->get_indexed(data->bound_nodepath, &r_valid);
+		ERR_FAIL_COND_V_MSG(!r_valid, data->value, vformat("Blackboard: Failed to get bound property `%s` on %s", data->bound_nodepath, obj));
 #elif LIMBOAI_GDEXTENSION
-		Variant ret = obj->get(data->bound_property);
+		Variant ret = obj->get_indexed(data->bound_nodepath);
 #endif
 		return ret;
 	}
@@ -120,11 +120,13 @@ void BBVariable::bind(Object *p_object, const StringName &p_property) {
 	ERR_FAIL_COND_MSG(!OBJECT_HAS_PROPERTY(p_object, p_property), vformat("Blackboard: Binding failed - %s has no property `%s`.", p_object, p_property));
 	data->bound_object = p_object->get_instance_id();
 	data->bound_property = p_property;
+	data->bound_nodepath = NodePath{ p_property };
 }
 
 void BBVariable::unbind() {
 	data->bound_object = 0;
 	data->bound_property = StringName();
+	data->bound_nodepath = NodePath();
 }
 
 bool BBVariable::operator==(const BBVariable &p_var) const {

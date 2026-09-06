@@ -21,7 +21,12 @@
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
 	bool r_valid;
-	return Variant(p_obj).has_key(p_prop, r_valid);
+	if (p_prop.find(":") > -1) {
+		// Nested subnames cannot be checked
+		return true;
+	} else {
+		return Variant(p_obj).has_key(p_prop, r_valid);
+	}
 }
 
 #endif // LIMBOAI_MODULE
@@ -37,7 +42,12 @@ _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop)
 #define GET_SCRIPT(m_obj) (m_obj->get_script())
 
 _FORCE_INLINE_ bool OBJECT_HAS_PROPERTY(Object *p_obj, const StringName &p_prop) {
-	return Variant(p_obj).has_key(p_prop);
+	if (p_prop.find(":") > -1) {
+		// Nested subnames cannot be checked
+		return true;
+	} else {
+		return Variant(p_obj).has_key(p_prop);
+	}
 }
 
 #endif // LIMBOAI_GDEXTENSION
