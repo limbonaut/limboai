@@ -23,6 +23,24 @@ Node-type parameter intended for use with :ref:`BehaviorTree<class_BehaviorTree>
 
 If the source is a blackboard variable, it allows any type extended from ``Object``.
 
+
+
+Creating a new **BBNode** and setting it from source uses the path of the target node in the
+
+tree, for example:
+
+::
+
+    # Example: set a BTPlayAnimation task to point at a specific AnimationPlayer
+    var bbnode: BBNode = BBNode.new()
+
+    # Set it directly via the node in question
+    bbnode.saved_value = $AnimationPlayer
+    # Or use a NodePath()
+    bbnode.saved_value = NodePath($AnimationPlayer.get_path())
+
+    bt_play_animation.animation_player = bbnode
+
 .. |virtual| replace:: :abbr:`virtual (This method should typically be overridden by the user to have any effect.)`
 .. |const| replace:: :abbr:`const (This method has no side effects. It doesn't modify any of the instance's member variables.)`
 .. |vararg| replace:: :abbr:`vararg (This method accepts any number of arguments after the ones described here.)`
