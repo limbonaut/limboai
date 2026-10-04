@@ -6,6 +6,20 @@
 	<description>
 		Node-type parameter intended for use with [BehaviorTree] tasks. See [BBParam].
 		If the source is a blackboard variable, it allows any type extended from [Object].
+
+		Creating a new [BBNode] and setting it from source uses the path of the target node in the
+		tree, for example:
+		[codeblock]
+		# Example: set a BTPlayAnimation task to point at a specific AnimationPlayer
+		var bbnode: BBNode = BBNode.new()
+
+		# Set it directly via the node in question
+		bbnode.saved_value = $AnimationPlayer
+		# Or use a NodePath()
+		bbnode.saved_value = NodePath($AnimationPlayer.get_path())
+
+		bt_play_animation.animation_player = bbnode
+		[/codeblock]
 	</description>
 	<tutorials>
 	</tutorials>
