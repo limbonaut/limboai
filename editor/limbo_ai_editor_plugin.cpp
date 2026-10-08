@@ -1980,6 +1980,15 @@ void LimboAIEditorPlugin::_notification(int p_notification) {
 			remove_inspector_plugin(var_plugin);
 			remove_inspector_plugin(path_plugin);
 			remove_inspector_plugin(param_plugin);
+			// Remove the plugin's dock when the plugin is being removed from the editor
+			// (e.g. when the addon or GDExtension is disabled at runtime).
+			// NOTE: NOTIFICATION_EXIT_TREE is not emitted when the editor itself is
+			// closing, in which case the dock is freed with the editor's scene tree.
+			if (limbo_ai_dock) {
+				remove_dock(limbo_ai_dock);
+				memdelete(limbo_ai_dock);
+				limbo_ai_dock = nullptr;
+			}
 		} break;
 	}
 }
@@ -1989,7 +1998,10 @@ void LimboAIEditorPlugin::make_visible(bool p_visible) {
 #elif LIMBOAI_GDEXTENSION
 void LimboAIEditorPlugin::_make_visible(bool p_visible) {
 #endif
-	limbo_ai_editor->set_visible(p_visible);
+
+	if (p_visible) {
+		limbo_ai_dock->make_visible();
+	}
 }
 
 #ifdef LIMBOAI_MODULE
@@ -2038,17 +2050,16 @@ void LimboAIEditorPlugin::_save_external_data() {
 	limbo_ai_editor->save_all(true);
 }
 
-#ifdef LIMBOAI_GDEXTENSION
-Ref<Texture2D> LimboAIEditorPlugin::_get_plugin_icon() const {
-	return LimboUtility::get_singleton()->get_task_icon("LimboAI");
-}
-#endif // LIMBOAI_GDEXTENSION
-
 LimboAIEditorPlugin::LimboAIEditorPlugin() {
 	limbo_ai_editor = memnew(LimboAIEditor());
-	limbo_ai_editor->set_v_size_flags(Control::SIZE_EXPAND_FILL);
-	EditorInterface::get_singleton()->get_editor_main_screen()->add_child(limbo_ai_editor);
-	limbo_ai_editor->hide();
+
+	limbo_ai_dock = memnew(EditorDock);
+	limbo_ai_dock->set_title("LimboAI");
+	limbo_ai_dock->set_dock_icon(LimboUtility::get_singleton()->get_task_icon("LimboAI"));
+	limbo_ai_dock->set_default_slot(EditorDock::DOCK_SLOT_MAIN_SCREEN);
+	limbo_ai_dock->set_available_layouts(EditorDock::DOCK_LAYOUT_MAIN_SCREEN | EditorDock::DOCK_LAYOUT_FLOATING);
+	limbo_ai_dock->add_child(limbo_ai_editor);
+	add_dock(limbo_ai_dock);
 	limbo_ai_editor->set_plugin(this);
 }
 
