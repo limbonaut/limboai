@@ -21,7 +21,7 @@ Description
 
 BTDynamicSelector executes its child tasks sequentially, from first to last, until any child returns ``SUCCESS``. Unlike :ref:`BTSelector<class_BTSelector>`, it will execute tasks from the beginning every tick, reevaluating their statuses. It is quite useful when you want to retry higher-priority behaviors in every tick.
 
-Returns ``RUNNING`` if a child task results in ``RUNNING``. BTDynamicSelector will remember the last ``RUNNING`` child, but, unlike :ref:`BTSequence<class_BTSequence>`, on the next execution tick, it will reexecute preceding tasks and reevaluate their return statuses. If any of the preceding tasks doesn't result in ``FAILURE``, it will abort the remembered ``RUNNING`` task.
+Returns ``RUNNING`` if a child task results in ``RUNNING``. BTDynamicSelector will remember the last ``RUNNING`` child, but, unlike :ref:`BTSelector<class_BTSelector>`, on the next execution tick, it will reexecute preceding tasks and reevaluate their return statuses. If any of the preceding tasks doesn't result in ``FAILURE``, it will abort the remembered ``RUNNING`` task.
 
 Returns ``FAILURE`` if all child tasks result in ``FAILURE``.
 
