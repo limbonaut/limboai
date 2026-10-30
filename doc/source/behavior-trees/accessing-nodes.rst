@@ -48,4 +48,4 @@ at runtime (see :ref:`BlackboardPlan.prefetch_nodepath_vars<class_BlackboardPlan
    func _tick(delta) -> Status:
        var shape_cast: ShapeCast3D = blackboard.get_var(shape_var)
 
-The property :ref:`BTPlayer.prefetch_nodepath_vars<class_BTPlayer_property_prefetch_nodepath_vars>` should be set to ``true``.
+The property :ref:`BlackboardPlan.prefetch_nodepath_vars<class_BlackboardPlan_property_prefetch_nodepath_vars>` should be set to ``true``.
