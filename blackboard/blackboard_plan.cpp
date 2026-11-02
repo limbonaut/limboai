@@ -568,13 +568,12 @@ void BlackboardPlan::populate_blackboard(const Ref<Blackboard> &p_blackboard, bo
 				binding_path = get_base_plan()->property_bindings[p.first];
 				binding_root = p_prefetch_root_for_base_plan;
 			}
-			ERR_CONTINUE_MSG(binding_path.get_subname_count() != 1, vformat("BlackboardPlan: Can't bind variable %s using property path that contains multiple sub-names: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
 			NodePath node_path{ binding_path.get_concatenated_names() };
-			StringName prop_name = binding_path.get_subname(0);
+			StringName property_path{ binding_path.get_concatenated_subnames() };
 			// TODO: Implement binding for base plan as well.
 			Node *n = binding_root->get_node_or_null(node_path);
 			ERR_CONTINUE_MSG(n == nullptr, vformat("BlackboardPlan: Binding failed for variable %s using property path: %s", LimboUtility::get_singleton()->decorate_var(p.first), binding_path));
-			var.bind(n, prop_name);
+			var.bind(n, property_path);
 		}
 	}
 }
