@@ -4,6 +4,8 @@
 
 # LimboAI - Behavior Trees & State Machines for Godot 4
 
+[![中文](https://img.shields.io/badge/README-中文-blue)](./README_zh-cn.md)
+
 <!--
 [![🔗 All builds](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml/badge.svg)](https://github.com/limbonaut/limboai/actions/workflows/all_builds.yml)
 -->
