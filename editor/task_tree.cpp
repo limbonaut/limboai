@@ -460,7 +460,7 @@ void TaskTree::_drop_data_fw(const Point2 &p_point, const Variant &p_data) {
 	TreeItem *item = tree->get_item_at_position(p_point);
 	int type = tree->get_drop_section_at_position(p_point);
 	ERR_FAIL_NULL(item);
-	ERR_FAIL_COND(type < -1 || type > 1);
+	ERR_FAIL_COND(type < -1 || type > 2);
 
 	// The drop behavior depends on the TreeItem's state.
 	// Normalize and emit the parent task and position instead of exposing TreeItem.
@@ -475,6 +475,9 @@ void TaskTree::_normalize_drop(TreeItem *item, int type, int &to_pos, Ref<BTTask
 	switch (type) {
 		case 0: // Drop as last child of target.
 			to_pos = to_task->get_child_count();
+			break;
+		case 2: // Drop as first child of target (Godot 4.7+).
+			to_pos = 0;
 			break;
 		case -1: // Drop above target.
 			ERR_FAIL_COND_MSG(to_task->get_parent().is_null(), "Cannot perform drop above the root task!");
